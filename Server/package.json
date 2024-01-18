@@ -1,13 +1,15 @@
 {
-    "name": "Skills Plus",
-    "version": "1.0.0",
+    "name": "Skills Extended",
+    "version": "0.1.0",
     "main": "src/mod.js",
     "license": "MIT",
     "author": "dirtbikercj",
     "akiVersion": "3.7.x",
     "loadBefore": [],
     "loadAfter": [],
-    "incompatibilities": [],
+    "incompatibilities": [
+        "MedicalAttention"
+    ],
     "contributors": [],
     "isBundleMod": false,
     "scripts": {

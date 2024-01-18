@@ -5,11 +5,9 @@ using UnityEngine;
 using BepInEx.Logging;
 using System.Reflection;
 using SkillRedux.Helpers;
+using Aki.Reflection.Utils;
 using SkillRedux.Controllers;
 using DrakiaXYZ.VersionChecker;
-using Skill_Redux.Patches;
-using Skill_Redux.Helpers;
-using Aki.Reflection.Utils;
 
 namespace SkillRedux
 {
@@ -34,9 +32,6 @@ namespace SkillRedux
             }
             
             Directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-
-            // Bind the configs
-            CJConfig.BindConfig(Config);
 
             Log = Logger;
             Log.LogInfo("Loading Skill Redux");
