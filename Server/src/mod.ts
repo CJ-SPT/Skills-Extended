@@ -77,10 +77,7 @@ class SkillsPlus implements IPreAkiLoadMod, IPostDBLoadMod
                     // Route hook for start up initialization
                     url: "/client/raid/configuration",
                     action: (url, info, sessionId, output) => 
-                    {
-                        this.profile = this.Instance.profileHelper.getPmcProfile(sessionId);
-                        this.firstAidSkill = this.Instance.profileHelper.getSkillFromProfile(this.profile, SkillTypes.FIRST_AID);
-                        
+                    {   
                         // Set the HP resource based on level of the first Aid Skill
                         this.setHPResource();
                         return output;
@@ -147,7 +144,7 @@ class SkillsPlus implements IPreAkiLoadMod, IPostDBLoadMod
                 
                 this.Instance.logger.logWithColor(`New max resource: ${medItem._props.MaxHpResource} \n\n`, LogTextColor.GREEN); 
 
-                //this.fixProfileItemsOfType(item, medItem._props.MaxHpResource);
+                this.fixProfileItemsOfType(item, medItem._props.MaxHpResource);
             }
         }
     }
@@ -159,7 +156,7 @@ class SkillsPlus implements IPreAkiLoadMod, IPostDBLoadMod
 
         for (const item of profileItems)
         {
-            if (item._tpl == tpl)
+            if (item._tpl === tpl)
             {
                 // Only change items that have not been changed.
                 if (item?.upd?.MedKit?.HpResource === maxHpResource - this.getMedkitHPBonus(currentLevel))

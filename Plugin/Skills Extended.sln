@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34221.43
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Skill Redux", "Skill Redux.csproj", "{E5814CC9-E67C-415B-A1EA-FA4B8C0FC56B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Skills Extended", "Skills Extended.csproj", "{E5814CC9-E67C-415B-A1EA-FA4B8C0FC56B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
