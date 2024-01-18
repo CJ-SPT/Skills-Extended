@@ -44,7 +44,7 @@ class SkillsPlus implements IPreAkiLoadMod, IPostDBLoadMod
 
     private setLocales(): void
     {
-        this.Instance.database.locales.global["en"]["FirstAidDescription"] += "\n\n Increases the speed of healing items by 0.7% per level. \n\n Elite bonus 15% \n\n Increases the HP resource of medical items by 5 per level. \n\n Elite bonus: 10 per level.";
+        this.Instance.database.locales.global["en"]["FirstAidDescription"] += "\n\n Increases the speed of healing items by 0.7% per level. \n\n Elite bonus: 15% \n\n Increases the HP resource of medical items by 5 per level. \n\n Elite bonus: 10 per level.";
     }
 
     private registerRoutes(): void

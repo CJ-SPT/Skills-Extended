@@ -2,8 +2,6 @@
 using UnityEngine;
 using Comfort.Common;
 using Skill_Redux.Patches;
-using Aki.SinglePlayer;
-using System.CodeDom;
 
 namespace SkillRedux.Controllers
 {
@@ -30,7 +28,7 @@ namespace SkillRedux.Controllers
             {
                 _playerSkillManager = Plugin.Session.Profile.Skills;
                 _ScavSkillManager = Plugin.Session.ProfileOfPet.Skills;
-                Plugin.Log.LogDebug("Skill Manager instance set.");
+                Plugin.Log.LogDebug("Skill Manager instances set.");
             }
         }
 
@@ -62,7 +60,7 @@ namespace SkillRedux.Controllers
             }
             else
             {
-                Plugin.Log.LogDebug($"No XP gain occured. Something went horribly wrong.");
+                Plugin.Log.LogDebug($"No XP gain occured. Something went horribly wrong: Invalid Player side.");
             }   
         }
 
