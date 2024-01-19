@@ -5,6 +5,7 @@ using System.IO;
 using UnityEngine;
 using BepInEx.Logging;
 using System.Reflection;
+using SkillRedux.Helpers;
 using Aki.Reflection.Utils;
 using SkillsExtended.Controllers;
 using DrakiaXYZ.VersionChecker;
@@ -19,7 +20,6 @@ namespace SkillsExtended
 
         public static ISession Session;
 
-        internal static string Directory;
         internal static GameObject Hook;
         internal static FirstAid FAScript;
         internal static ManualLogSource Log;
@@ -32,8 +32,8 @@ namespace SkillsExtended
             {
                 throw new Exception("Invalid EFT Version");
             }
-            
-            Directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+
+            Incompatible();
 
             Log = Logger;
             Log.LogInfo("Loading Skill Redux");
@@ -59,6 +59,18 @@ namespace SkillsExtended
             {
                 Session = ClientAppUtils.GetMainApp().GetClientBackEndSession();
                 Log.LogDebug("Session set");
+            }
+        }
+
+        private void Incompatible()
+        {
+            var dllLoc = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var modsLoc = Path.Combine(dllLoc, "..", "..", "user", "mods", "wayfarer");
+            var fullPath = Path.GetFullPath(modsLoc);
+
+            if (Directory.Exists(fullPath))
+            {
+                Environment.Exit(0);
             }
         }
     }
