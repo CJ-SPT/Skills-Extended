@@ -12,6 +12,8 @@ using System.Collections;
 using System.Reflection;
 using System;
 using UnityEngine.SceneManagement;
+using EFT.UI;
+using static SkillsExtended.Patches.FirstAidSkillPatches;
 
 namespace SkillsExtended.Controllers
 {
@@ -31,8 +33,7 @@ namespace SkillsExtended.Controllers
         private static SkillManager _playerSkillManager;
         private static SkillManager _ScavSkillManager;
 
-        private int currentLevel { get => _playerSkillManager.FirstAid.Level; }
-        private int bonusHpPmc { get => currentLevel * 5; }
+        private int bonusHpPmc { get => _playerSkillManager.FirstAid.Level * 5; }
 
         private static Dictionary<string, int> _originalHPValues = new Dictionary<string, int>
         {
@@ -50,9 +51,9 @@ namespace SkillsExtended.Controllers
 
         private void Awake()
         {
-            new FirstAidSkillPatches.HealthControllerMedEffectPatch().Enable();
-            new FirstAidSkillPatches.HealthEffectComponentPatch().Enable();
-            new FirstAidSkillPatches.FirstAidEnablePatch().Enable();
+            new HealthControllerMedEffectPatch().Enable();
+            new HealthEffectComponentPatch().Enable();
+            new FirstAidEnablePatch().Enable();
         }
 
         private void Update()
@@ -70,6 +71,8 @@ namespace SkillsExtended.Controllers
 
             // Dont continue if skill manager is null
             if (_playerSkillManager == null) { return; }
+
+            if (Singleton<PreloaderUI>.Instantiated) { instanceIDs.Clear(); }
 
             StaticManager.Instance.StartCoroutine(FirstAidUpdate());
         }
@@ -156,7 +159,7 @@ namespace SkillsExtended.Controllers
                 {
                     int previouslySet = instanceIDs[item.Id];
 
-                    if (previouslySet == currentLevel) 
+                    if (previouslySet == _playerSkillManager.FirstAid.Level) 
                     { 
                         continue; 
                     }
@@ -167,7 +170,7 @@ namespace SkillsExtended.Controllers
                 }
 
                 if (item is MedsClass meds &&
-                    currentLevel > 0 &&
+                    _playerSkillManager.FirstAid.Level > 0 &&
                     meds.MedKitComponent.MaxHpResource != _originalHPValues[meds.TemplateId] + bonusHpPmc)
                 {
                     
@@ -189,7 +192,7 @@ namespace SkillsExtended.Controllers
                     }
                     
                     // Add the instance ID of the item to a list, so we dont change already changed items.
-                    instanceIDs.Add(item.Id, currentLevel);
+                    instanceIDs.Add(item.Id, _playerSkillManager.FirstAid.Level);
 
                     Plugin.Log.LogDebug($"Set instance {item.Id} of type {item.TemplateId} to {_originalHPValues[meds.TemplateId] + bonusHpPmc}");
                 }
