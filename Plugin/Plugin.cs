@@ -12,7 +12,7 @@ using DrakiaXYZ.VersionChecker;
 
 namespace SkillsExtended
 {
-    [BepInPlugin("com.dirtbikercj.SkillsExtended", "Skill Extended", "0.1.1")]
+    [BepInPlugin("com.dirtbikercj.SkillsExtended", "Skill Extended", "0.1.2")]
 
     public class Plugin : BaseUnityPlugin
     {
