@@ -3,10 +3,11 @@ using Aki.Reflection.Utils;
 using System;
 using System.Linq;
 
-namespace SkillRedux.Helpers
+namespace SkillsExtended.Helpers
 {
     public static class Utils
     {
+        // GClass 1633 (3.7.6)
         public static Type GetSkillBaseType()
         {
             return PatchConstants.EftTypes.Single(x =>
@@ -28,6 +29,15 @@ namespace SkillRedux.Helpers
             return PatchConstants.EftTypes.Single(x =>
                 x.GetField("WeaponBaseType") != null &&
                 x.GetMethod("IsAssignableFrom") != null);
+        }
+
+        // GInterface249 (3.7.6)
+        public static Type GetMedkitHPInterface()
+        {
+            return PatchConstants.EftTypes.Single(x =>
+                x.GetProperty("MaxHpResource") != null &&
+                x.GetProperty("HpResourceRate") != null &&
+                x.IsInterface == true);
         }
     }
 }

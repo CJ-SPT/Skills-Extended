@@ -1,15 +1,12 @@
 ﻿using EFT;
-using System;
-using SkillRedux;
+using HarmonyLib;
 using EFT.HealthSystem;
 using System.Reflection;
 using EFT.InventoryLogic;
+using SkillsExtended.Helpers;
 using Aki.Reflection.Patching;
-using SkillRedux.Helpers;
-using HarmonyLib;
-using EFT.UI.DragAndDrop;
 
-namespace Skill_Redux.Patches
+namespace SkillsExtended.Patches
 {
     internal class FirstAidSkillPatches
     {
@@ -64,9 +61,7 @@ namespace Skill_Redux.Patches
             [PatchPostfix]
             public static void Postfix(SkillManager __instance)
             {
-                var skillType = Utils.GetSkillType();
-
-                AccessTools.Field(skillType, "Locked").SetValue(__instance.FirstAid, false);
+                AccessTools.Field(Utils.GetSkillType(), "Locked").SetValue(__instance.FirstAid, false);
             }
         }
     }

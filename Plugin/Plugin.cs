@@ -4,14 +4,14 @@ using System.IO;
 using UnityEngine;
 using BepInEx.Logging;
 using System.Reflection;
-using SkillRedux.Helpers;
 using Aki.Reflection.Utils;
-using SkillRedux.Controllers;
+using SkillsExtended.Controllers;
 using DrakiaXYZ.VersionChecker;
+using SkillRedux.Helpers;
 
-namespace SkillRedux
+namespace SkillsExtended
 {
-    [BepInPlugin("com.dirtbikercj.SkillRedux", "Skill Redux", "0.1.0")]
+    [BepInPlugin("com.dirtbikercj.SkillsExtended", "Skill Extended", "0.1.0")]
 
     public class Plugin : BaseUnityPlugin
     {
