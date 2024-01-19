@@ -1,4 +1,5 @@
 ﻿using System;
+using EFT.UI;
 using BepInEx;
 using System.IO;
 using UnityEngine;
@@ -7,11 +8,10 @@ using System.Reflection;
 using Aki.Reflection.Utils;
 using SkillsExtended.Controllers;
 using DrakiaXYZ.VersionChecker;
-using SkillRedux.Helpers;
 
 namespace SkillsExtended
 {
-    [BepInPlugin("com.dirtbikercj.SkillsExtended", "Skill Extended", "0.1.0")]
+    [BepInPlugin("com.dirtbikercj.SkillsExtended", "Skill Extended", "0.1.1")]
 
     public class Plugin : BaseUnityPlugin
     {
@@ -23,6 +23,8 @@ namespace SkillsExtended
         internal static GameObject Hook;
         internal static FirstAid FAScript;
         internal static ManualLogSource Log;
+
+        private bool _warned = false;
 
         void Awake()
         {
@@ -46,6 +48,13 @@ namespace SkillsExtended
 
         void Update()
         {
+            if (!_warned && PreloaderUI.Instance != null)
+            {
+                PreloaderUI.Instance.ShowErrorScreen("Skills Extended", "Skills Extended: This is an early BETA build. Make frequent backups of your profile. I'm not responsible for profile corruption, consider yourself warned.");
+                Log.LogDebug("User was warned.");
+                _warned = true;
+            }
+
             if (Session == null && ClientAppUtils.GetMainApp().GetClientBackEndSession() != null)
             {
                 Session = ClientAppUtils.GetMainApp().GetClientBackEndSession();
