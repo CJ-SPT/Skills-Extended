@@ -48,5 +48,14 @@ namespace SkillsExtended.Helpers
                 x.GetProperty("HpResourceRate") != null &&
                 x.IsInterface == true);
         }
+
+        // GInterface243 (3.7.6)
+        public static Type GetHealthEffectInterface()
+        {
+            return PatchConstants.EftTypes.Single(x =>
+                x.GetProperty("UseTime") != null &&
+                x.GetProperty("HealthEffects") != null &&
+                x.IsInterface == true);
+        }
     }
 }

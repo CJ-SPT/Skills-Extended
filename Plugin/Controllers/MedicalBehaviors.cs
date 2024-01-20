@@ -7,7 +7,8 @@ using Comfort.Common;
 using EFT.InventoryLogic;
 using System.Collections;
 using System.Collections.Generic;
-using static SkillsExtended.Patches.FirstAidSkillPatches;
+using static SkillsExtended.Patches.MedicalPatches;
+using EFT.HealthSystem;
 
 namespace SkillsExtended.Controllers
 {
@@ -15,6 +16,15 @@ namespace SkillsExtended.Controllers
     {
         public int MaxHpResource { set; get; }
         public float HpResourceRate { set; get; }
+    }
+
+    internal class GInterface243Impl : GInterface243
+    {
+        public float UseTime { set; get; }
+        public KeyValuePair<EBodyPart, float>[] BodyPartTimeMults { set; get; }
+        public Dictionary<EHealthFactorType, GClass1146> HealthEffects { set; get; }
+        public Dictionary<EDamageEffectType, GClass1145> DamageEffects { set; get; }
+        public string StimulatorBuffs { set; get; }
     }
 
 
@@ -40,15 +50,15 @@ namespace SkillsExtended.Controllers
             { "60098ad7c2240c0fe85c570a", 400 }    // AFAK
         };
         
+
         // Store the instance ID of the item and the level its bonus resource is set to.
         private static Dictionary<string, int> instanceIDs = new Dictionary<string, int>();
 
         private void Awake()
         {
-            new HealthControllerMedEffectPatch().Enable();
-            new HealthEffectComponentPatch().Enable();
-            new FirstAidEnablePatch().Enable();
-            new FirstAidImageBuffPatch().Enable();
+            new EnableSkillsPatch().Enable();
+            new DoMedEffectPatch().Enable();
+            new UseTimeForPatch().Enable();
         }
 
         private void Update()
@@ -61,7 +71,7 @@ namespace SkillsExtended.Controllers
                 
                 StaticManager.Instance.StartCoroutine(FirstAidUpdate());
                 
-                Plugin.Log.LogDebug("FirstAid Skill Initialized.");
+                Plugin.Log.LogDebug("Medical Component Initialized.");
             }
 
             // Dont continue if skill manager is null
@@ -72,7 +82,7 @@ namespace SkillsExtended.Controllers
             StaticManager.Instance.StartCoroutine(FirstAidUpdate());
         }
 
-        public void ApplyExp()
+        public void ApplyFirstAidExp()
         {
             float xpGain = 1.5f;
 
@@ -100,11 +110,43 @@ namespace SkillsExtended.Controllers
             }
             else
             {
-                Plugin.Log.LogDebug($"No XP gain occured. Something went horribly wrong: Invalid Player side.");
+                Plugin.Log.LogDebug($"No XP gain occured. Something went horribly wrong: Invalid Player side on first aid.");
             }
         }
 
-        public float CalculateSpeedBonus()
+        public void ApplyFieldMedicineExp()
+        {
+            float xpGain = 1.5f;
+
+            if (player.Side == EPlayerSide.Usec || player.Side == EPlayerSide.Bear)
+            {
+                _playerSkillManager.FieldMedicine.SetCurrent(_playerSkillManager.FieldMedicine.Current + xpGain, true);
+
+                if (_playerSkillManager.FieldMedicine.LevelProgress >= _playerSkillManager.FieldMedicine.LevelExp)
+                {
+                    _playerSkillManager.FieldMedicine.SetLevel(_playerSkillManager.FieldMedicine.Level + 1);
+                }
+
+                Plugin.Log.LogDebug($"Skill: {_playerSkillManager.FieldMedicine.Id} Side: {player.Side} Gained: {xpGain} exp.");
+            }
+            else if (player.Side == EPlayerSide.Savage)
+            {
+                _ScavSkillManager.FieldMedicine.SetCurrent(_ScavSkillManager.FieldMedicine.Current + xpGain, true);
+
+                if (_ScavSkillManager.FieldMedicine.LevelProgress >= _ScavSkillManager.FieldMedicine.LevelExp)
+                {
+                    _ScavSkillManager.FieldMedicine.SetLevel(_ScavSkillManager.FieldMedicine.Level + 1);
+                }
+
+                Plugin.Log.LogDebug($"Skill: {_ScavSkillManager.FieldMedicine.Id} Side: {player.Side} Gained: {xpGain} exp.");
+            }
+            else
+            {
+                Plugin.Log.LogDebug($"No XP gain occured. Something went horribly wrong: Invalid Player side on field medicine.");
+            }
+        }
+
+        public float CalculateFirstAidSpeedBonus()
         {
             float bonus;
 
@@ -135,6 +177,42 @@ namespace SkillsExtended.Controllers
                 }
 
                 Plugin.Log.LogDebug($"{_ScavSkillManager.FirstAid.Id} Bonus: {(1 - bonus) * 100}%, Is elite: {_ScavSkillManager.FirstAid.IsEliteLevel}");
+
+                return bonus;
+            }
+        }
+
+        public float CalculateFieldMedicineSpeedBonus()
+        {
+            float bonus;
+
+            if (player.Side != EPlayerSide.Savage)
+            {
+                // 0.07% per level, Max 35%
+                bonus = 1f - (_playerSkillManager.FieldMedicine.Level * 0.007f);
+
+                if (_playerSkillManager.FieldMedicine.IsEliteLevel)
+                {
+                    // 15% Elite bonus
+                    bonus = bonus - 0.15f;
+                }
+
+                Plugin.Log.LogDebug($"{_playerSkillManager.FieldMedicine.Id} Bonus: {(1 - bonus) * 100}%, Is elite: {_playerSkillManager.FieldMedicine.IsEliteLevel}");
+
+                return bonus;
+            }
+            else
+            {
+                // 0.07% per level, Max 35%
+                bonus = 1f - (_ScavSkillManager.FieldMedicine.Level * 0.007f);
+
+                if (_ScavSkillManager.FieldMedicine.IsEliteLevel)
+                {
+                    // 15% Elite bonus
+                    bonus = bonus - 0.15f;
+                }
+
+                Plugin.Log.LogDebug($"{_ScavSkillManager.FieldMedicine.Id} Bonus: {(1 - bonus) * 100}%, Is elite: {_ScavSkillManager.FieldMedicine.IsEliteLevel}");
 
                 return bonus;
             }

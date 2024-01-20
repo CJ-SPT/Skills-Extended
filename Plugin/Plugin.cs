@@ -24,7 +24,7 @@ namespace SkillsExtended
         internal static FirstAid FAScript;
         internal static ManualLogSource Log;
 
-        private bool _warned = false;
+        private bool _warned = true;
 
         void Awake()
         {
