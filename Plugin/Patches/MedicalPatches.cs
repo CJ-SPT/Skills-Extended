@@ -1,12 +1,12 @@
-﻿using Aki.Reflection.Patching;
-using EFT;
-using EFT.HealthSystem;
-using EFT.InventoryLogic;
-using EFT.UI;
+﻿using EFT;
 using HarmonyLib;
-using SkillsExtended.Helpers;
-using System.Collections.Generic;
+using EFT.HealthSystem;
 using System.Reflection;
+using EFT.InventoryLogic;
+using SkillsExtended.Helpers;
+using Aki.Reflection.Patching;
+using System.Collections.Generic;
+
 
 namespace SkillsExtended.Patches
 {

@@ -8,7 +8,6 @@ using EFT.InventoryLogic;
 using System.Collections;
 using System.Collections.Generic;
 using static SkillsExtended.Patches.MedicalPatches;
-using EFT.HealthSystem;
 
 namespace SkillsExtended.Controllers
 {
@@ -17,16 +16,6 @@ namespace SkillsExtended.Controllers
         public int MaxHpResource { set; get; }
         public float HpResourceRate { set; get; }
     }
-
-    internal class GInterface243Impl : GInterface243
-    {
-        public float UseTime { set; get; }
-        public KeyValuePair<EBodyPart, float>[] BodyPartTimeMults { set; get; }
-        public Dictionary<EHealthFactorType, GClass1146> HealthEffects { set; get; }
-        public Dictionary<EDamageEffectType, GClass1145> DamageEffects { set; get; }
-        public string StimulatorBuffs { set; get; }
-    }
-
 
     public class FirstAid : MonoBehaviour
     {

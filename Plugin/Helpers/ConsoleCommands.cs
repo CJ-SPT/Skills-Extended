@@ -3,7 +3,6 @@ using EFT.UI;
 using System;
 using Comfort.Common;
 using SkillsExtended;
-using SkillsExtended.Controllers;
 
 namespace SkillRedux.Helpers
 {
