@@ -1,10 +1,13 @@
 ﻿using EFT;
+using System;
+using EFT.UI;
 using HarmonyLib;
 using EFT.HealthSystem;
 using System.Reflection;
 using EFT.InventoryLogic;
 using SkillsExtended.Helpers;
 using Aki.Reflection.Patching;
+using System.CodeDom;
 
 namespace SkillsExtended.Patches
 {
@@ -62,6 +65,21 @@ namespace SkillsExtended.Patches
             public static void Postfix(SkillManager __instance)
             {
                 AccessTools.Field(Utils.GetSkillType(), "Locked").SetValue(__instance.FirstAid, false);
+            }
+        }
+
+        internal class FirstAidImageBuffPatch : ModulePatch
+        {
+            protected override MethodBase GetTargetMethod() =>
+                typeof(SkillPanel).GetMethod("Show", BindingFlags.Public | BindingFlags.Instance);
+           
+            [PatchPostfix]
+            public static void Postfix(SkillPanel __instance, GClass1635 skill)
+            {
+                if (skill.Id == ESkillId.FirstAid)
+                {
+                    
+                }
             }
         }
     }

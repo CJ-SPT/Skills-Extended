@@ -1,18 +1,12 @@
 ﻿using EFT;
+using EFT.UI;
 using HarmonyLib;
 using System.Linq;
 using UnityEngine;
 using Comfort.Common;
 using EFT.InventoryLogic;
-using SkillsExtended.Patches;
-using SkillsExtended.Helpers;
-using System.Security.Cryptography;
-using System.Collections.Generic;
 using System.Collections;
-using System.Reflection;
-using System;
-using UnityEngine.SceneManagement;
-using EFT.UI;
+using System.Collections.Generic;
 using static SkillsExtended.Patches.FirstAidSkillPatches;
 
 namespace SkillsExtended.Controllers
@@ -54,6 +48,7 @@ namespace SkillsExtended.Controllers
             new HealthControllerMedEffectPatch().Enable();
             new HealthEffectComponentPatch().Enable();
             new FirstAidEnablePatch().Enable();
+            new FirstAidImageBuffPatch().Enable();
         }
 
         private void Update()

@@ -31,6 +31,15 @@ namespace SkillsExtended.Helpers
                 x.GetMethod("IsAssignableFrom") != null);
         }
 
+        // GClass 1640 (3.7.6)
+        public static Type GetBuffType()
+        {
+            return PatchConstants.EftTypes.Single(x =>
+                x.GetField("HidenForPlayers") != null &&
+                x.GetField("EliteRuleFunc") != null &&
+                x.IsAbstract == true);
+        }
+
         // GInterface249 (3.7.6)
         public static Type GetMedkitHPInterface()
         {
