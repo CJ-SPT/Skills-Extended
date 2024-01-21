@@ -8,6 +8,8 @@ using Aki.Reflection.Patching;
 using System.Collections.Generic;
 using SkillsExtended.Controllers;
 using System.Linq;
+using EFT.UI;
+using EFT.UI.Screens;
 
 namespace SkillsExtended.Patches
 {
@@ -54,6 +56,22 @@ namespace SkillsExtended.Patches
                 }
 
                 Plugin.MedicalScript.ApplyFirstAidExp();
+            }
+        }
+
+        internal class OnScreenChangePatch : ModulePatch
+        {
+            protected override MethodBase GetTargetMethod() =>
+                typeof(MenuTaskBar).GetMethod("OnScreenChanged");
+
+            [PatchPrefix]
+            public static void Prefix(EEftScreenType eftScreenType)
+            {
+               if (eftScreenType == EEftScreenType.Inventory)
+               {
+                    Plugin.MedicalScript.fieldMedicineInstanceIDs.Clear();
+                    Plugin.MedicalScript.firstAidInstanceIDs.Clear();
+               }
             }
         }
     }

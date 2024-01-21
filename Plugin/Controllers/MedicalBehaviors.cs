@@ -4,11 +4,11 @@ using HarmonyLib;
 using System.Linq;
 using UnityEngine;
 using Comfort.Common;
+using EFT.HealthSystem;
 using EFT.InventoryLogic;
 using System.Collections;
 using System.Collections.Generic;
 using static SkillsExtended.Patches.MedicalPatches;
-using EFT.HealthSystem;
 
 namespace SkillsExtended.Controllers
 {
@@ -76,8 +76,8 @@ namespace SkillsExtended.Controllers
         private int bonusHpPmc { get => _playerSkillManager.FirstAid.Level * 5; }
 
         // Store the instance ID of the item and the level its bonus resource is set to.
-        private static Dictionary<string, int> _firstAidInstanceIDs = new Dictionary<string, int>();
-        private static Dictionary<string, int> _fieldMedicineInstanceIDs = new Dictionary<string, int>();
+        public Dictionary<string, int> firstAidInstanceIDs = new Dictionary<string, int>();
+        public Dictionary<string, int> fieldMedicineInstanceIDs = new Dictionary<string, int>();
 
         private bool _setOnMenu = false;
 
@@ -85,6 +85,7 @@ namespace SkillsExtended.Controllers
         {
             new EnableSkillsPatch().Enable();
             new DoMedEffectPatch().Enable();
+            new OnScreenChangePatch().Enable(); 
         }
 
         private void Update()
@@ -100,17 +101,6 @@ namespace SkillsExtended.Controllers
 
             // Dont continue if session is null
             if (_playerSkillManager == null) { return; }
-
-            if (Singleton<PreloaderUI>.Instantiated && _setOnMenu == false) 
-            {
-                _firstAidInstanceIDs.Clear();
-                _fieldMedicineInstanceIDs.Clear();
-                _setOnMenu = true;
-            }
-            else if (!Singleton<PreloaderUI>.Instantiated)
-            {
-                _setOnMenu = false;
-            }
 
             StaticManager.Instance.StartCoroutine(FirstAidUpdate());
         }
@@ -183,7 +173,7 @@ namespace SkillsExtended.Controllers
         {
             float bonus = 1f;
             
-            if (_firstAidInstanceIDs.ContainsKey(item.Id)) { return; }
+            if (firstAidInstanceIDs.ContainsKey(item.Id)) { return; }
 
             if (gameWorld == null)
             {
@@ -227,7 +217,7 @@ namespace SkillsExtended.Controllers
 
         private void ApplyFirstAidHPBonus(Item item)
         {
-            if (_firstAidInstanceIDs.ContainsKey(item.Id)) { return; }
+            if (firstAidInstanceIDs.ContainsKey(item.Id)) { return; }
 
             if (item is MedsClass meds &&
                     _playerSkillManager.FirstAid.Level > 0 &&
@@ -309,9 +299,9 @@ namespace SkillsExtended.Controllers
             foreach (var item in items)
             {
                 // Skip if we already set this first aid item.
-                if (_firstAidInstanceIDs.ContainsKey(item.Id))
+                if (firstAidInstanceIDs.ContainsKey(item.Id))
                 {
-                    int previouslySet = _firstAidInstanceIDs[item.Id];
+                    int previouslySet = firstAidInstanceIDs[item.Id];
 
                     if (previouslySet == _playerSkillManager.FirstAid.Level) 
                     { 
@@ -319,14 +309,14 @@ namespace SkillsExtended.Controllers
                     }
                     else 
                     {
-                        _firstAidInstanceIDs.Remove(item.Id); 
+                        firstAidInstanceIDs.Remove(item.Id); 
                     }
                 }
 
                 // Skip if we already set this field medicine item.
-                if (_fieldMedicineInstanceIDs.ContainsKey(item.Id))
+                if (fieldMedicineInstanceIDs.ContainsKey(item.Id))
                 {
-                    int previouslySet = _fieldMedicineInstanceIDs[item.Id];
+                    int previouslySet = fieldMedicineInstanceIDs[item.Id];
 
                     if (previouslySet == _playerSkillManager.FieldMedicine.Level)
                     {
@@ -334,7 +324,7 @@ namespace SkillsExtended.Controllers
                     }
                     else
                     {
-                        _fieldMedicineInstanceIDs.Remove(item.Id);
+                        fieldMedicineInstanceIDs.Remove(item.Id);
                     }
                 }
 
@@ -343,14 +333,14 @@ namespace SkillsExtended.Controllers
                 {
                     ApplyFirstAidSpeedBonus(item);
                     ApplyFirstAidHPBonus(item);
-                    _firstAidInstanceIDs.Add(item.Id, _playerSkillManager.FirstAid.Level);
+                    firstAidInstanceIDs.Add(item.Id, _playerSkillManager.FirstAid.Level);
                 }
                 
                 // Apply Field medicine speed bonus to items
                 if (originalFieldMedicineUseTimes.ContainsKey(item.TemplateId))
                 {
                     ApplyFieldMedicineSpeedBonus(item);
-                    _fieldMedicineInstanceIDs.Add(item.Id, _playerSkillManager.FieldMedicine.Level);
+                    fieldMedicineInstanceIDs.Add(item.Id, _playerSkillManager.FieldMedicine.Level);
                 }
                 
             }
