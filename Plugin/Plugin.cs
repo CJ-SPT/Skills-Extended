@@ -12,7 +12,7 @@ using DrakiaXYZ.VersionChecker;
 
 namespace SkillsExtended
 {
-    [BepInPlugin("com.dirtbikercj.SkillsExtended", "Skills Extended", "0.1.3")]
+    [BepInPlugin("com.dirtbikercj.SkillsExtended", "Skills Extended", "0.2.0")]
 
     public class Plugin : BaseUnityPlugin
     {
@@ -24,7 +24,7 @@ namespace SkillsExtended
         internal static MedicalBehavior MedicalScript;
         internal static ManualLogSource Log;
 
-        private bool _warned = true;
+        private bool _warned = false;
 
         void Awake()
         {
@@ -50,7 +50,7 @@ namespace SkillsExtended
         {
             if (!_warned && PreloaderUI.Instance != null)
             {
-                PreloaderUI.Instance.ShowErrorScreen("Skills Extended", "Skills Extended: This is an early BETA build. Make frequent backups of your profile. I'm not responsible for profile corruption, consider yourself warned.");
+                PreloaderUI.Instance.ShowErrorScreen("Skills Extended", "Skills Extended: This is a BETA build. Report all bugs in the thread, or on the website. Not compatible with realisms med changes.");
                 Log.LogDebug("User was warned.");
                 _warned = true;
             }
