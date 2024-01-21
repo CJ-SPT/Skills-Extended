@@ -58,6 +58,7 @@ namespace SkillsExtended
             if (Session == null && ClientAppUtils.GetMainApp().GetClientBackEndSession() != null)
             {
                 Session = ClientAppUtils.GetMainApp().GetClientBackEndSession();
+
                 Log.LogDebug("Session set");
             }
         }
