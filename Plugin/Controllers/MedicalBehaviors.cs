@@ -6,9 +6,11 @@ using UnityEngine;
 using Comfort.Common;
 using EFT.HealthSystem;
 using EFT.InventoryLogic;
+using SkillsExtended.Helpers;
 using System.Collections;
 using System.Collections.Generic;
 using static SkillsExtended.Patches.MedicalPatches;
+using Diz.Jobs;
 
 namespace SkillsExtended.Controllers
 {

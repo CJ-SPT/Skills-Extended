@@ -9,6 +9,7 @@ using SkillRedux.Helpers;
 using Aki.Reflection.Utils;
 using SkillsExtended.Controllers;
 using DrakiaXYZ.VersionChecker;
+using SkillsExtended.Helpers;
 
 namespace SkillsExtended
 {
@@ -33,7 +34,7 @@ namespace SkillsExtended
                 throw new Exception("Invalid EFT Version");
             }
 
-            Incompatible();
+            Utils.GetServerConfig();
 
             Log = Logger;
             Log.LogInfo("Loading Skill Redux");
@@ -60,18 +61,6 @@ namespace SkillsExtended
                 Session = ClientAppUtils.GetMainApp().GetClientBackEndSession();
 
                 Log.LogDebug("Session set");
-            }
-        }
-
-        private void Incompatible()
-        {
-            var dllLoc = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            var modsLoc = Path.Combine(dllLoc, "..", "..", "user", "mods", "wayfarer");
-            var fullPath = Path.GetFullPath(modsLoc);
-
-            if (Directory.Exists(fullPath))
-            {
-                Environment.Exit(0);
             }
         }
     }

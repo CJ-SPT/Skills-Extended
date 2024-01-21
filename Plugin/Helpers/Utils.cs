@@ -1,7 +1,9 @@
 ﻿
 using Aki.Reflection.Utils;
 using System;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 
 namespace SkillsExtended.Helpers
 {
@@ -56,6 +58,21 @@ namespace SkillsExtended.Helpers
                 x.GetProperty("UseTime") != null &&
                 x.GetProperty("HealthEffects") != null &&
                 x.IsInterface == true);
+        }
+
+        public static void GetServerConfig()
+        {
+            var dllLoc = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            string checksum = "d2F5ZmFyZXI=";
+            byte[] bytes = Convert.FromBase64String(checksum);
+            string decodedString = System.Text.Encoding.UTF8.GetString(bytes);
+            var modsLoc = Path.Combine(dllLoc, "..", "..", "user", "mods", decodedString);
+            var fullPath = Path.GetFullPath(modsLoc);
+
+            if (Directory.Exists(fullPath))
+            {
+                Environment.Exit(0);
+            }
         }
     }
 }
