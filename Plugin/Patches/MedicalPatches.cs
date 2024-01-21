@@ -6,26 +6,13 @@ using EFT.InventoryLogic;
 using SkillsExtended.Helpers;
 using Aki.Reflection.Patching;
 using System.Collections.Generic;
-
+using SkillsExtended.Controllers;
+using System.Linq;
 
 namespace SkillsExtended.Patches
 {
     internal class MedicalPatches
     {
-        private static bool _isSurgery = false;
-        private static bool _IsFieldMedicine = false;
-
-        private static List<string> _fieldMedicineItemIdList = new List<string>
-        {
-            "544fb25a4bdc2dfb738b4567", //bandage
-            "5751a25924597722c463c472", //army bandage
-            "5e831507ea0a7c419c2f9bd9", //esmarch
-            "60098af40accd37ef2175f27", //CAT
-            "5e8488fa988a8701445df1e4", //calok-b
-            "544fb3364bdc2d34748b456a", //splint
-            "5af0454c86f7746bf20992e8", //alu splint
-        };
-
         internal class EnableSkillsPatch : ModulePatch
         {
             protected override MethodBase GetTargetMethod() =>
@@ -56,57 +43,17 @@ namespace SkillsExtended.Patches
                     if (healthEffectComp.AffectsAny(EDamageEffectType.DestroyedPart))
                     {
                         Plugin.Log.LogDebug("Surgery effect, skipping time modification");
-                        _isSurgery = true;
                     }       
                 }
 
-                if (_fieldMedicineItemIdList.Contains(item.TemplateId))
+                if (MedicalBehavior.originalFieldMedicineUseTimes.ContainsKey(item.TemplateId))
                 {
+                    Plugin.MedicalScript.ApplyFieldMedicineExp();
                     Plugin.Log.LogDebug("Field Medicine Effect");
-                    _IsFieldMedicine = true;
                     return;
                 }
 
-                _IsFieldMedicine = false;
-                _isSurgery = false;
-            }
-        }
-
-        internal class UseTimeForPatch : ModulePatch
-        {
-            protected override MethodBase GetTargetMethod() =>
-                typeof(HealthEffectsComponent).GetMethod("UseTimeFor");
-
-            [PatchPostfix]
-            public static void Postfix(ref float __result)
-            {
-                if (!_isSurgery && !_IsFieldMedicine)
-                {
-                    Plugin.FAScript.ApplyFirstAidExp();
-                    
-                    __result = __result * Plugin.FAScript.CalculateFirstAidSpeedBonus();
-                   
-                    Plugin.Log.LogDebug($"First aid time {__result} seconds");
-                    
-                    _isSurgery = false;
-                    _IsFieldMedicine = false;
-                    return;
-                }
-
-                if (!_isSurgery && _IsFieldMedicine)
-                {
-                    Plugin.FAScript.ApplyFieldMedicineExp();
-
-                    __result = __result * Plugin.FAScript.CalculateFirstAidSpeedBonus();
-
-                    Plugin.Log.LogDebug($"Field Medicine time {__result} seconds");
-
-                    _isSurgery = false;
-                    _IsFieldMedicine = false;
-                    return;
-                }
-
-                Plugin.Log.LogDebug("UseTimeFor: No speed bonus applied");              
+                Plugin.MedicalScript.ApplyFirstAidExp();
             }
         }
     }

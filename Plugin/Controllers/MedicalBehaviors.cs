@@ -8,27 +8,43 @@ using EFT.InventoryLogic;
 using System.Collections;
 using System.Collections.Generic;
 using static SkillsExtended.Patches.MedicalPatches;
+using EFT.HealthSystem;
 
 namespace SkillsExtended.Controllers
 {
+    internal class GInterface243Impl : GInterface243
+    {
+        public float UseTime { set; get; }
+
+        public KeyValuePair<EBodyPart, float>[] BodyPartTimeMults { set; get; }
+
+        public Dictionary<EHealthFactorType, GClass1146> HealthEffects { set; get; }
+
+        public Dictionary<EDamageEffectType, GClass1145> DamageEffects { set; get; }
+
+        public string StimulatorBuffs { set; get; }
+    }
+
     internal class GInterface249Impl : GInterface249
     {
         public int MaxHpResource { set; get; }
         public float HpResourceRate { set; get; }
     }
 
-    public class FirstAid : MonoBehaviour
+    public class MedicalBehavior : MonoBehaviour
     {
-        private GameWorld gameWorld { get => Singleton<GameWorld>.Instance; }
+        public static Dictionary<string, float> originalFieldMedicineUseTimes = new Dictionary<string, float>
+        {
+            { "544fb25a4bdc2dfb738b4567", 2f},  //bandage
+            { "5751a25924597722c463c472", 2f},  //army bandage
+            { "5e831507ea0a7c419c2f9bd9", 5f},  //esmarch
+            { "60098af40accd37ef2175f27", 3f},  //CAT
+            { "5e8488fa988a8701445df1e4", 3f},  //calok-b
+            { "544fb3364bdc2d34748b456a", 5f},  //splint
+            { "5af0454c86f7746bf20992e8", 3f},  //alu splint
+        };
 
-        private Player player { get => gameWorld.MainPlayer; }
-
-        private static SkillManager _playerSkillManager;
-        private static SkillManager _ScavSkillManager;
-
-        private int bonusHpPmc { get => _playerSkillManager.FirstAid.Level * 5; }
-
-        private static Dictionary<string, int> _originalHPValues = new Dictionary<string, int>
+        private static Dictionary<string, int> _originalFirstAidHPValues = new Dictionary<string, int>
         {
             { "544fb45d4bdc2dee738b4568", 400 },   // Salewa
             { "5755356824597772cb798962", 100 },   // AI-2
@@ -38,16 +54,37 @@ namespace SkillsExtended.Controllers
             { "5e99711486f7744bfc4af328", 3000 },  // Sanitars
             { "60098ad7c2240c0fe85c570a", 400 }    // AFAK
         };
-        
+
+        private static Dictionary<string, float> _originalFirstAidUseTimes = new Dictionary<string, float>
+        {
+            { "544fb45d4bdc2dee738b4568", 3f }, // Salewa
+            { "5755356824597772cb798962", 2f }, // AI-2
+            { "590c657e86f77412b013051d", 5f }, // Grizzly
+            { "590c661e86f7741e566b646a", 3f }, // Car
+            { "590c678286f77426c9660122", 3f }, // Ifak
+            { "5e99711486f7744bfc4af328", 2f }, // Sanitars
+            { "60098ad7c2240c0fe85c570a", 3f }  // AFAK
+        };
+
+        private GameWorld gameWorld { get => Singleton<GameWorld>.Instance; }
+
+        private Player player { get => gameWorld.MainPlayer; }
+
+        private static SkillManager _playerSkillManager;
+        private static SkillManager _ScavSkillManager;
+
+        private int bonusHpPmc { get => _playerSkillManager.FirstAid.Level * 5; }
 
         // Store the instance ID of the item and the level its bonus resource is set to.
-        private static Dictionary<string, int> instanceIDs = new Dictionary<string, int>();
+        private static Dictionary<string, int> _firstAidInstanceIDs = new Dictionary<string, int>();
+        private static Dictionary<string, int> _fieldMedicineInstanceIDs = new Dictionary<string, int>();
+
+        private bool _setOnMenu = false;
 
         private void Awake()
         {
             new EnableSkillsPatch().Enable();
             new DoMedEffectPatch().Enable();
-            new UseTimeForPatch().Enable();
         }
 
         private void Update()
@@ -57,16 +94,23 @@ namespace SkillsExtended.Controllers
             {
                 _playerSkillManager = Plugin.Session.Profile.Skills;
                 _ScavSkillManager = Plugin.Session.ProfileOfPet.Skills;
-                
-                StaticManager.Instance.StartCoroutine(FirstAidUpdate());
-                
+         
                 Plugin.Log.LogDebug("Medical Component Initialized.");
             }
 
-            // Dont continue if skill manager is null
+            // Dont continue if session is null
             if (_playerSkillManager == null) { return; }
 
-            if (Singleton<PreloaderUI>.Instantiated) { instanceIDs.Clear(); }
+            if (Singleton<PreloaderUI>.Instantiated && _setOnMenu == false) 
+            {
+                _firstAidInstanceIDs.Clear();
+                _fieldMedicineInstanceIDs.Clear();
+                _setOnMenu = true;
+            }
+            else if (!Singleton<PreloaderUI>.Instantiated)
+            {
+                _setOnMenu = false;
+            }
 
             StaticManager.Instance.StartCoroutine(FirstAidUpdate());
         }
@@ -135,76 +179,127 @@ namespace SkillsExtended.Controllers
             }
         }
 
-        public float CalculateFirstAidSpeedBonus()
+        private void ApplyFirstAidSpeedBonus(Item item)
         {
-            float bonus;
+            float bonus = 1f;
+            
+            if (_firstAidInstanceIDs.ContainsKey(item.Id)) { return; }
 
-            if (player.Side != EPlayerSide.Savage)
+            if (gameWorld == null)
             {
-                // 0.07% per level, Max 35%
                 bonus = 1f - (_playerSkillManager.FirstAid.Level * 0.007f);
-
-                if (_playerSkillManager.FirstAid.IsEliteLevel)
-                {
-                    // 15% Elite bonus
-                    bonus = bonus - 0.15f;
-                }
-
-                Plugin.Log.LogDebug($"{_playerSkillManager.FirstAid.Id} Bonus: {(1 - bonus) * 100}%, Is elite: {_playerSkillManager.FirstAid.IsEliteLevel}");
-
-                return bonus;
+                
+                if (_playerSkillManager.FirstAid.IsEliteLevel) { bonus -= 0.15f; }
             }
             else
             {
-                // 0.07% per level, Max 35%
-                bonus = 1f - (_ScavSkillManager.FirstAid.Level * 0.007f);
-
-                if (_ScavSkillManager.FirstAid.IsEliteLevel)
+                if (player.Side == EPlayerSide.Bear || player.Side == EPlayerSide.Usec)
                 {
-                    // 15% Elite bonus
-                    bonus = bonus - 0.15f;
+                    bonus = 1f - (_playerSkillManager.FirstAid.Level * 0.007f);
+                    
+                    if (_playerSkillManager.FirstAid.IsEliteLevel) { bonus -= 0.15f; }
+                }
+                else if (player.Side == EPlayerSide.Savage)
+                {
+                    bonus = 1f - (_ScavSkillManager.FirstAid.Level * 0.007f);
+                    
+                    if (_ScavSkillManager.FirstAid.IsEliteLevel) { bonus -= 0.15f; }
+                }
+            }
+        
+            if (item is MedsClass meds && _playerSkillManager.FirstAid.Level > 0)
+            {
+                GInterface243 newGInterface = new GInterface243Impl
+                {
+                    UseTime = _originalFirstAidUseTimes[meds.TemplateId] * bonus,
+                    BodyPartTimeMults = meds.HealthEffectsComponent.BodyPartTimeMults,
+                    HealthEffects = meds.HealthEffectsComponent.HealthEffects,
+                    DamageEffects = meds.HealthEffectsComponent.DamageEffects,
+                    StimulatorBuffs = meds.HealthEffectsComponent.StimulatorBuffs
+                };
+
+                var healthEffectComp = AccessTools.Field(typeof(MedsClass), "HealthEffectsComponent").GetValue(meds);
+                AccessTools.Field(typeof(HealthEffectsComponent), "ginterface243_0").SetValue(healthEffectComp, newGInterface);
+
+                Plugin.Log.LogDebug($"First Aid: Set instance {item.Id} of type {item.TemplateId} to {_originalFirstAidUseTimes[meds.TemplateId] * bonus} seconds");
+            }        
+        }
+
+        private void ApplyFirstAidHPBonus(Item item)
+        {
+            if (_firstAidInstanceIDs.ContainsKey(item.Id)) { return; }
+
+            if (item is MedsClass meds &&
+                    _playerSkillManager.FirstAid.Level > 0 &&
+                    meds.MedKitComponent.MaxHpResource != _originalFirstAidHPValues[meds.TemplateId] + bonusHpPmc)
+            {
+
+                GInterface249 newGInterface = new GInterface249Impl
+                {
+                    MaxHpResource = _originalFirstAidHPValues[meds.TemplateId] + bonusHpPmc,
+                    HpResourceRate = meds.MedKitComponent.HpResourceRate
+                };
+
+                var currentResouce = meds.MedKitComponent.HpResource;
+                var currentMaxResouce = meds.MedKitComponent.MaxHpResource;
+
+                var medComp = AccessTools.Field(typeof(MedsClass), "MedKitComponent").GetValue(meds);
+                AccessTools.Field(typeof(MedKitComponent), "ginterface249_0").SetValue(medComp, newGInterface);
+
+                // Only change the current resource if the item is unused.
+                if (currentResouce == currentMaxResouce)
+                {
+                    meds.MedKitComponent.HpResource = _originalFirstAidHPValues[meds.TemplateId] + bonusHpPmc;
                 }
 
-                Plugin.Log.LogDebug($"{_ScavSkillManager.FirstAid.Id} Bonus: {(1 - bonus) * 100}%, Is elite: {_ScavSkillManager.FirstAid.IsEliteLevel}");
-
-                return bonus;
+                Plugin.Log.LogDebug($"First Aid: Set instance {item.Id} of type {item.TemplateId} to {_originalFirstAidHPValues[meds.TemplateId] + bonusHpPmc} HP");
             }
         }
 
-        public float CalculateFieldMedicineSpeedBonus()
+        private void ApplyFieldMedicineSpeedBonus(Item item)
         {
-            float bonus;
+            float bonus = 1f;
 
-            if (player.Side != EPlayerSide.Savage)
+            if (gameWorld == null)
             {
-                // 0.07% per level, Max 35%
                 bonus = 1f - (_playerSkillManager.FieldMedicine.Level * 0.007f);
-
-                if (_playerSkillManager.FieldMedicine.IsEliteLevel)
-                {
-                    // 15% Elite bonus
-                    bonus = bonus - 0.15f;
-                }
-
-                Plugin.Log.LogDebug($"{_playerSkillManager.FieldMedicine.Id} Bonus: {(1 - bonus) * 100}%, Is elite: {_playerSkillManager.FieldMedicine.IsEliteLevel}");
-
-                return bonus;
+                if (_playerSkillManager.FieldMedicine.IsEliteLevel) { bonus -= 0.15f; }         
             }
             else
             {
-                // 0.07% per level, Max 35%
-                bonus = 1f - (_ScavSkillManager.FieldMedicine.Level * 0.007f);
-
-                if (_ScavSkillManager.FieldMedicine.IsEliteLevel)
+                if (player.Side == EPlayerSide.Bear || player.Side == EPlayerSide.Usec)
                 {
-                    // 15% Elite bonus
-                    bonus = bonus - 0.15f;
+                    bonus = 1f - (_playerSkillManager.FieldMedicine.Level * 0.007f);
+                    if (_playerSkillManager.FieldMedicine.IsEliteLevel) { bonus -= 0.15f; }
                 }
-
-                Plugin.Log.LogDebug($"{_ScavSkillManager.FieldMedicine.Id} Bonus: {(1 - bonus) * 100}%, Is elite: {_ScavSkillManager.FieldMedicine.IsEliteLevel}");
-
-                return bonus;
+                else if (player.Side == EPlayerSide.Savage)
+                {
+                    bonus = 1f - (_ScavSkillManager.FieldMedicine.Level * 0.007f);
+                    if (_ScavSkillManager.FieldMedicine.IsEliteLevel) { bonus -= 0.15f; }
+                }
+                else
+                {
+                    Plugin.Log.LogDebug($"No Field Medicine Bonus Applied: Invalid playerside.");
+                }
             }
+
+
+            if (item is MedsClass meds && _playerSkillManager.FieldMedicine.Level > 0)
+            {
+                GInterface243 newGInterface = new GInterface243Impl
+                {
+                    UseTime = originalFieldMedicineUseTimes[meds.TemplateId] * bonus,
+                    BodyPartTimeMults = meds.HealthEffectsComponent.BodyPartTimeMults,
+                    HealthEffects = meds.HealthEffectsComponent.HealthEffects,
+                    DamageEffects = meds.HealthEffectsComponent.DamageEffects,
+                    StimulatorBuffs = meds.HealthEffectsComponent.StimulatorBuffs
+                };
+
+                var healthEffectComp = AccessTools.Field(typeof(MedsClass), "HealthEffectsComponent").GetValue(meds);
+                AccessTools.Field(typeof(HealthEffectsComponent), "ginterface243_0").SetValue(healthEffectComp, newGInterface);
+
+                Plugin.Log.LogDebug($"Field Medicine: Set instance {item.Id} of type {item.TemplateId} to {originalFieldMedicineUseTimes[meds.TemplateId] * bonus} seconds");
+            }    
         }
 
         private IEnumerator FirstAidUpdate()
@@ -213,51 +308,51 @@ namespace SkillsExtended.Controllers
 
             foreach (var item in items)
             {
-                // Skip if not a med kit
-                if (!_originalHPValues.ContainsKey(item.TemplateId)) { continue; }
-
-                // Skip if we already set this item at the current level.
-                if (instanceIDs.ContainsKey(item.Id))
+                // Skip if we already set this first aid item.
+                if (_firstAidInstanceIDs.ContainsKey(item.Id))
                 {
-                    int previouslySet = instanceIDs[item.Id];
+                    int previouslySet = _firstAidInstanceIDs[item.Id];
 
                     if (previouslySet == _playerSkillManager.FirstAid.Level) 
                     { 
                         continue; 
                     }
                     else 
-                    { 
-                        instanceIDs.Remove(item.Id); 
-                    }
-                }
-
-                if (item is MedsClass meds &&
-                    _playerSkillManager.FirstAid.Level > 0 &&
-                    meds.MedKitComponent.MaxHpResource != _originalHPValues[meds.TemplateId] + bonusHpPmc)
-                {
-                    
-                    GInterface249 newGInterface = new GInterface249Impl { 
-                        MaxHpResource = _originalHPValues[meds.TemplateId] + bonusHpPmc, 
-                        HpResourceRate = meds.MedKitComponent.HpResourceRate 
-                    };
-
-                    var currentResouce = meds.MedKitComponent.HpResource;
-                    var currentMaxResouce = meds.MedKitComponent.MaxHpResource;
-
-                    var medComp = AccessTools.Field(typeof(MedsClass), "MedKitComponent").GetValue(meds);
-                    AccessTools.Field(typeof(MedKitComponent), "ginterface249_0").SetValue(medComp, newGInterface);
-
-                    // Only change the current resource if the item is unused.
-                    if (currentResouce == currentMaxResouce)
                     {
-                        meds.MedKitComponent.HpResource = _originalHPValues[meds.TemplateId] + bonusHpPmc;
+                        _firstAidInstanceIDs.Remove(item.Id); 
                     }
-                    
-                    // Add the instance ID of the item to a list, so we dont change already changed items.
-                    instanceIDs.Add(item.Id, _playerSkillManager.FirstAid.Level);
-
-                    Plugin.Log.LogDebug($"Set instance {item.Id} of type {item.TemplateId} to {_originalHPValues[meds.TemplateId] + bonusHpPmc}");
                 }
+
+                // Skip if we already set this field medicine item.
+                if (_fieldMedicineInstanceIDs.ContainsKey(item.Id))
+                {
+                    int previouslySet = _fieldMedicineInstanceIDs[item.Id];
+
+                    if (previouslySet == _playerSkillManager.FieldMedicine.Level)
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        _fieldMedicineInstanceIDs.Remove(item.Id);
+                    }
+                }
+
+                // Apply first aid speed bonus to items
+                if (_originalFirstAidUseTimes.ContainsKey(item.TemplateId))
+                {
+                    ApplyFirstAidSpeedBonus(item);
+                    ApplyFirstAidHPBonus(item);
+                    _firstAidInstanceIDs.Add(item.Id, _playerSkillManager.FirstAid.Level);
+                }
+                
+                // Apply Field medicine speed bonus to items
+                if (originalFieldMedicineUseTimes.ContainsKey(item.TemplateId))
+                {
+                    ApplyFieldMedicineSpeedBonus(item);
+                    _fieldMedicineInstanceIDs.Add(item.Id, _playerSkillManager.FieldMedicine.Level);
+                }
+                
             }
 
             yield break;

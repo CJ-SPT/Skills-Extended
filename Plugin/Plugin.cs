@@ -12,7 +12,7 @@ using DrakiaXYZ.VersionChecker;
 
 namespace SkillsExtended
 {
-    [BepInPlugin("com.dirtbikercj.SkillsExtended", "Skill Extended", "0.1.3")]
+    [BepInPlugin("com.dirtbikercj.SkillsExtended", "Skills Extended", "0.1.3")]
 
     public class Plugin : BaseUnityPlugin
     {
@@ -21,7 +21,7 @@ namespace SkillsExtended
         public static ISession Session;
 
         internal static GameObject Hook;
-        internal static FirstAid FAScript;
+        internal static MedicalBehavior MedicalScript;
         internal static ManualLogSource Log;
 
         private bool _warned = true;
@@ -38,7 +38,7 @@ namespace SkillsExtended
             Log = Logger;
             Log.LogInfo("Loading Skill Redux");
             Hook = new GameObject("Event Object");
-            FAScript = Hook.AddComponent<FirstAid>();
+            MedicalScript = Hook.AddComponent<MedicalBehavior>();
             DontDestroyOnLoad(Hook);
 
             #if DEBUG
