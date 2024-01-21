@@ -8,7 +8,6 @@
     "loadBefore": [],
     "loadAfter": [],
     "incompatibilities": [
-        "MedicalAttention"
     ],
     "contributors": [],
     "isBundleMod": false,
