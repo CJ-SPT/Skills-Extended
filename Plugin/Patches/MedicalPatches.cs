@@ -35,16 +35,10 @@ namespace SkillsExtended.Patches
             [PatchPrefix]
             public static void Prefix(ref Item item, EBodyPart bodyPart)
             {
-                // We dont want to alter surgery with the first aid skill
-                if (item is MedsClass meds)
+                // Dont give xp for surgery
+                if (item.TemplateId == "5d02778e86f774203e7dedbe" || item.TemplateId == "5d02797c86f774203f38e30a")
                 {
-                    var healthEffectComp = meds.HealthEffectsComponent;
-
-                    // Surgery item, dont adjust time
-                    if (healthEffectComp.AffectsAny(EDamageEffectType.DestroyedPart))
-                    {
-                        Plugin.Log.LogDebug("Surgery effect, skipping time modification");
-                    }
+                    return;
                 }
 
                 if (MedicalBehavior.originalFieldMedicineUseTimes.ContainsKey(item.TemplateId))
