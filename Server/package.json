@@ -1,8 +1,8 @@
 {
     "name": "Skills Extended",
-    "version": "0.2.1",
+    "version": "0.2.2",
     "main": "src/mod.js",
-    "license": "MIT",
+    "license": "CC BY-NC-ND 4.0",
     "author": "dirtbikercj",
     "akiVersion": "3.7.x",
     "loadBefore": [],
