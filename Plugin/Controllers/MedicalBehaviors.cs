@@ -77,6 +77,7 @@ namespace SkillsExtended.Controllers
         public static SkillManager ScavSkillManager;
 
         private int bonusHpPmc { get => playerSkillManager.FirstAid.Level * 5; }
+        private int bonusHpPmcElite { get => playerSkillManager.FirstAid.Level * 10; }
 
         // Store the instance ID of the item and the level its bonus resource is set to.
         public Dictionary<string, int> firstAidInstanceIDs = new Dictionary<string, int>();
@@ -256,25 +257,40 @@ namespace SkillsExtended.Controllers
                     meds.MedKitComponent.MaxHpResource != _originalFirstAidHPValues[meds.TemplateId] + bonusHpPmc)
             {
 
-                GInterface249 newGInterface = new GInterface249Impl
+                GInterface249 newInterface;
+
+                if (playerSkillManager.FirstAid.IsEliteLevel)
                 {
-                    MaxHpResource = _originalFirstAidHPValues[meds.TemplateId] + bonusHpPmc,
-                    HpResourceRate = meds.MedKitComponent.HpResourceRate
-                };
+                    newInterface = new GInterface249Impl
+                    {
+                        MaxHpResource = _originalFirstAidHPValues[meds.TemplateId] + bonusHpPmcElite,
+                        HpResourceRate = meds.MedKitComponent.HpResourceRate
+                    };
+
+                    Plugin.Log.LogDebug($"First Aid: Set instance {item.Id} of type {item.TemplateId} to {_originalFirstAidHPValues[meds.TemplateId] + bonusHpPmcElite} HP");
+                }
+                else
+                {
+                    newInterface = new GInterface249Impl
+                    {
+                        MaxHpResource = _originalFirstAidHPValues[meds.TemplateId] + bonusHpPmc,
+                        HpResourceRate = meds.MedKitComponent.HpResourceRate
+                    };
+
+                    Plugin.Log.LogDebug($"First Aid: Set instance {item.Id} of type {item.TemplateId} to {_originalFirstAidHPValues[meds.TemplateId] + bonusHpPmc} HP");
+                }
 
                 var currentResouce = meds.MedKitComponent.HpResource;
                 var currentMaxResouce = meds.MedKitComponent.MaxHpResource;
 
                 var medComp = AccessTools.Field(typeof(MedsClass), "MedKitComponent").GetValue(meds);
-                AccessTools.Field(typeof(MedKitComponent), "ginterface249_0").SetValue(medComp, newGInterface);
+                AccessTools.Field(typeof(MedKitComponent), "ginterface249_0").SetValue(medComp, newInterface);
 
                 // Only change the current resource if the item is unused.
                 if (currentResouce == currentMaxResouce)
                 {
                     meds.MedKitComponent.HpResource = _originalFirstAidHPValues[meds.TemplateId] + bonusHpPmc;
-                }
-
-                Plugin.Log.LogDebug($"First Aid: Set instance {item.Id} of type {item.TemplateId} to {_originalFirstAidHPValues[meds.TemplateId] + bonusHpPmc} HP");
+                }              
             }
         }
 
