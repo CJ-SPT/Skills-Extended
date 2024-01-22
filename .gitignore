@@ -559,3 +559,8 @@ FodyWeavers.xsd
 /Plugin/Dependencies/MonoMod.RuntimeDetour.xml
 /Plugin/Dependencies/MonoMod.Utils.dll
 /Plugin/Dependencies/MonoMod.Utils.xml
+/Server/build/user/mods/SkillsExtended/.buildignore
+/Server/build/user/mods/SkillsExtended/license.txt
+/Server/build/user/mods/SkillsExtended/package.json
+/Server/build/user/mods/SkillsExtended/src/InstanceManager.ts
+/Server/build/user/mods/SkillsExtended/src/mod.ts
