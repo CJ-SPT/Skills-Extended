@@ -83,8 +83,8 @@ namespace SkillsExtended.Patches
             [PatchPostfix]
             public static void Postfix(SimpleTooltip __instance, ref string text)
             {
-                string firstAid = @"\bfirst aid\b";
-                string fieldMedicine = @"\bField Medicine\b";
+                string firstAid = @"\bFirstAidDescriptionPattern\b";
+                string fieldMedicine = @"\bFieldMedicineDescriptionPattern\b";
 
                 if (Regex.IsMatch(text, firstAid))
                 {

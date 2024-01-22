@@ -2,9 +2,8 @@
 using EFT.UI;
 using System;
 using Comfort.Common;
-using SkillsExtended;
 
-namespace SkillRedux.Helpers
+namespace SkillsExtended.Helpers
 {
     internal static class ConsoleCommands
     {

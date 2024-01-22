@@ -6,10 +6,11 @@ using BepInEx.Logging;
 using Aki.Reflection.Utils;
 using SkillsExtended.Controllers;
 using DrakiaXYZ.VersionChecker;
+using SkillsExtended.Helpers;
 
 namespace SkillsExtended
 {
-    [BepInPlugin("com.dirtbikercj.SkillsExtended", "Skills Extended", "0.2.2")]
+    [BepInPlugin("com.dirtbikercj.SkillsExtended", "Skills Extended", "0.2.3")]
 
     public class Plugin : BaseUnityPlugin
     {
