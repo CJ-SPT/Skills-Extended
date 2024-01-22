@@ -34,8 +34,6 @@ namespace SkillsExtended
                 throw new Exception("Invalid EFT Version");
             }
 
-            Utils.GetServerConfig();
-
             Log = Logger;
             Log.LogInfo("Loading Skill Redux");
             Hook = new GameObject("Event Object");

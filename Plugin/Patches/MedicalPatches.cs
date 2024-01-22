@@ -1,14 +1,13 @@
-﻿using EFT;
-using HarmonyLib;
+﻿using Aki.Reflection.Patching;
+using EFT;
 using EFT.HealthSystem;
-using System.Reflection;
 using EFT.InventoryLogic;
-using SkillsExtended.Helpers;
-using Aki.Reflection.Patching;
-using SkillsExtended.Controllers;
 using EFT.UI;
 using EFT.UI.Screens;
-using System;
+using HarmonyLib;
+using SkillsExtended.Controllers;
+using SkillsExtended.Helpers;
+using System.Reflection;
 using System.Text.RegularExpressions;
 
 namespace SkillsExtended.Patches
@@ -34,7 +33,7 @@ namespace SkillsExtended.Patches
                 typeof(ActiveHealthController).GetMethod("DoMedEffect");
 
             [PatchPrefix]
-            public static void Prefix(ref Item item)
+            public static void Prefix(ref Item item, EBodyPart bodyPart)
             {
                 // We dont want to alter surgery with the first aid skill
                 if (item is MedsClass meds)
@@ -45,17 +44,17 @@ namespace SkillsExtended.Patches
                     if (healthEffectComp.AffectsAny(EDamageEffectType.DestroyedPart))
                     {
                         Plugin.Log.LogDebug("Surgery effect, skipping time modification");
-                    }       
+                    }
                 }
 
                 if (MedicalBehavior.originalFieldMedicineUseTimes.ContainsKey(item.TemplateId))
                 {
-                    Plugin.MedicalScript.ApplyFieldMedicineExp();
+                    Plugin.MedicalScript.ApplyFieldMedicineExp(bodyPart);
                     Plugin.Log.LogDebug("Field Medicine Effect");
                     return;
                 }
 
-                Plugin.MedicalScript.ApplyFirstAidExp();
+                Plugin.MedicalScript.ApplyFirstAidExp(bodyPart);
             }
         }
 
@@ -67,11 +66,12 @@ namespace SkillsExtended.Patches
             [PatchPrefix]
             public static void Prefix(EEftScreenType eftScreenType)
             {
-               if (eftScreenType == EEftScreenType.Inventory)
-               {
+                if (eftScreenType == EEftScreenType.Inventory)
+                {
                     Plugin.MedicalScript.fieldMedicineInstanceIDs.Clear();
                     Plugin.MedicalScript.firstAidInstanceIDs.Clear();
-               }
+                    Utils.GetServerConfig();
+                }
             }
         }
 

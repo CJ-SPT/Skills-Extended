@@ -11,6 +11,7 @@ using System.Collections;
 using System.Collections.Generic;
 using static SkillsExtended.Patches.MedicalPatches;
 using Diz.Jobs;
+using System;
 
 namespace SkillsExtended.Controllers
 {
@@ -81,7 +82,10 @@ namespace SkillsExtended.Controllers
         public Dictionary<string, int> firstAidInstanceIDs = new Dictionary<string, int>();
         public Dictionary<string, int> fieldMedicineInstanceIDs = new Dictionary<string, int>();
 
-        private bool _setOnMenu = false;
+        // Store a dictionary of bodyparts to prevent the user from spam exploiting the leveling system.
+        // Bodypart, Last time healed
+        private Dictionary<EBodyPart, DateTime> _firstAidBodypartCahce = new Dictionary<EBodyPart, DateTime>();
+        private Dictionary<EBodyPart, DateTime> _fieldMedicineBodyPartCache = new Dictionary<EBodyPart, DateTime>();
 
         private void Awake()
         {
@@ -102,15 +106,35 @@ namespace SkillsExtended.Controllers
                 Plugin.Log.LogDebug("Medical Component Initialized.");
             }
 
+            if (gameWorld?.MainPlayer == null)
+            {
+                _fieldMedicineBodyPartCache.Clear();
+                _firstAidBodypartCahce.Clear();
+            }
+
+            if (gameWorld?.MainPlayer != null)
+            {
+                if (player.Side == EPlayerSide.Bear || player.Side == EPlayerSide.Usec)
+                {
+                    playerSkillManager = player.Skills;
+                } 
+                else if (player.Side == EPlayerSide.Savage)
+                {
+                    ScavSkillManager = player.Skills;
+                }
+            }
+
             // Dont continue if session is null
             if (playerSkillManager == null) { return; }
 
             StaticManager.Instance.StartCoroutine(FirstAidUpdate());
         }
 
-        public void ApplyFirstAidExp()
+        public void ApplyFirstAidExp(EBodyPart bodypart)
         {
             float xpGain = 1.5f;
+            
+            if (!CanGainXPForLimb(_firstAidBodypartCahce, bodypart)) { return; }
 
             if (player.Side == EPlayerSide.Usec || player.Side == EPlayerSide.Bear)
             {
@@ -140,9 +164,12 @@ namespace SkillsExtended.Controllers
             }
         }
 
-        public void ApplyFieldMedicineExp()
+        public void ApplyFieldMedicineExp(EBodyPart bodypart)
         {
-            float xpGain = 1.5f;
+            float xpGain = 2.5f;
+
+            // If we recently healed this limb, return
+            if (!CanGainXPForLimb(_fieldMedicineBodyPartCache, bodypart)) { return; }
 
             if (player.Side == EPlayerSide.Usec || player.Side == EPlayerSide.Bear)
             {
@@ -152,6 +179,8 @@ namespace SkillsExtended.Controllers
                 {
                     playerSkillManager.FieldMedicine.SetLevel(playerSkillManager.FieldMedicine.Level + 1);
                 }
+
+                //_fieldMedicineBodyPartCache.Add(bodypart, );
 
                 Plugin.Log.LogDebug($"Skill: {playerSkillManager.FieldMedicine.Id} Side: {player.Side} Gained: {xpGain} exp.");
             }
@@ -349,6 +378,28 @@ namespace SkillsExtended.Controllers
             }
 
             yield break;
+        }
+
+        private bool CanGainXPForLimb(Dictionary<EBodyPart, DateTime> dict, EBodyPart bodypart)
+        {
+            if (!dict.ContainsKey(bodypart))
+            {
+                dict.Add(bodypart, DateTime.Now);
+                return true;
+            }
+            else
+            {
+                TimeSpan elapsed = DateTime.Now - dict[bodypart];
+
+                if (elapsed.TotalSeconds >= 60)
+                { 
+                    dict.Remove(bodypart);
+                    return true;
+                }
+
+                Plugin.Log.LogDebug($"Time until next available xp: {60 - elapsed.TotalSeconds} seconds");
+                return false;
+            }
         }
     }
 }
