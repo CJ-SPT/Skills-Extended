@@ -283,14 +283,14 @@ namespace SkillsExtended.Controllers
                 var currentResouce = meds.MedKitComponent.HpResource;
                 var currentMaxResouce = meds.MedKitComponent.MaxHpResource;
 
-                var medComp = AccessTools.Field(typeof(MedsClass), "MedKitComponent").GetValue(meds);
-                AccessTools.Field(typeof(MedKitComponent), "ginterface249_0").SetValue(medComp, newInterface);
-
                 // Only change the current resource if the item is unused.
                 if (currentResouce == currentMaxResouce)
                 {
-                    meds.MedKitComponent.HpResource = _originalFirstAidHPValues[meds.TemplateId] + bonusHpPmc;
-                }              
+                    meds.MedKitComponent.HpResource = newInterface.MaxHpResource;
+                }
+
+                var medComp = AccessTools.Field(typeof(MedsClass), "MedKitComponent").GetValue(meds);
+                AccessTools.Field(typeof(MedKitComponent), "ginterface249_0").SetValue(medComp, newInterface);         
             }
         }
 
