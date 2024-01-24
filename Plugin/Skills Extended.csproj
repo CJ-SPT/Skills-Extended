@@ -16,9 +16,6 @@
 		<Reference Include="0Harmony">
 			<HintPath>..\..\376Deps\0Harmony.dll</HintPath>
 		</Reference>
-		<Reference Include="aki-custom">
-			<HintPath>..\..\376Deps\aki-custom.dll</HintPath>
-		</Reference>
 		<Reference Include="Aki.Common">
 			<HintPath>..\..\376Deps\Aki.Common.dll</HintPath>
 		</Reference>
