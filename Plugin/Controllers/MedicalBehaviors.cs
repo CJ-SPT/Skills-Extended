@@ -75,9 +75,6 @@ namespace SkillsExtended.Controllers
         public static SkillManager playerSkillManager;
         public static SkillManager ScavSkillManager;
 
-        private int bonusHpPmc { get => playerSkillManager.FirstAid.Level * 5; }
-        private int bonusHpPmcElite { get => playerSkillManager.FirstAid.Level * 10; }
-
         // Store the instance ID of the item and the level its bonus resource is set to.
         public Dictionary<string, int> firstAidInstanceIDs = new Dictionary<string, int>();
         public Dictionary<string, int> fieldMedicineInstanceIDs = new Dictionary<string, int>();
@@ -86,6 +83,13 @@ namespace SkillsExtended.Controllers
         // Bodypart, Last time healed
         private Dictionary<EBodyPart, DateTime> _firstAidBodypartCahce = new Dictionary<EBodyPart, DateTime>();
         private Dictionary<EBodyPart, DateTime> _fieldMedicineBodyPartCache = new Dictionary<EBodyPart, DateTime>();
+
+        private float FaPmcSpeedBonus => playerSkillManager.FirstAid.IsEliteLevel ? 1f - (playerSkillManager.FirstAid.Level * 0.007f) - 0.15f : 1f - (playerSkillManager.FirstAid.Level * 0.007f);
+        private float FaScavSpeedBonus => ScavSkillManager.FirstAid.IsEliteLevel ? 1f - (ScavSkillManager.FirstAid.Level * 0.007f) - 0.15f : 1f - (ScavSkillManager.FirstAid.Level * 0.007f);
+        private int FaHpBonus => playerSkillManager.FirstAid.IsEliteLevel ? playerSkillManager.FirstAid.Level * 10 : playerSkillManager.FirstAid.Level * 5;
+
+        private float FmPmcSpeedBonus => playerSkillManager.FirstAid.IsEliteLevel ? 1f - (playerSkillManager.FirstAid.Level * 0.007f) - 0.15f : 1f - (playerSkillManager.FirstAid.Level * 0.007f);
+        private float FmScavSpeedBonus => ScavSkillManager.FirstAid.IsEliteLevel ? 1f - (ScavSkillManager.FirstAid.Level * 0.007f) - 0.15f : 1f - (ScavSkillManager.FirstAid.Level * 0.007f);
 
         private void Awake()
         {
@@ -200,33 +204,29 @@ namespace SkillsExtended.Controllers
 
         private void ApplyFirstAidSpeedBonus(Item item)
         {
-            float bonus = 1f;
+            float bonus = 0f;
             
             if (firstAidInstanceIDs.ContainsKey(item.Id)) { return; }
 
+            // If we're in the menu always use the PMC bonus
+            // Otherwise check the player side for the applicable bonus
             if (gameWorld == null)
             {
-                bonus = 1f - (playerSkillManager.FirstAid.Level * 0.007f);
-                
-                if (playerSkillManager.FirstAid.IsEliteLevel) { bonus -= 0.15f; }
+                bonus = FaPmcSpeedBonus;
             }
             else
             {
                 if (player.Side == EPlayerSide.Bear || player.Side == EPlayerSide.Usec)
                 {
-                    bonus = 1f - (playerSkillManager.FirstAid.Level * 0.007f);
-                    
-                    if (playerSkillManager.FirstAid.IsEliteLevel) { bonus -= 0.15f; }
+                    bonus = FaPmcSpeedBonus;
                 }
                 else if (player.Side == EPlayerSide.Savage)
                 {
-                    bonus = 1f - (ScavSkillManager.FirstAid.Level * 0.007f);
-                    
-                    if (ScavSkillManager.FirstAid.IsEliteLevel) { bonus -= 0.15f; }
+                    bonus = FaScavSpeedBonus;
                 }
             }
         
-            if (item is MedsClass meds && playerSkillManager.FirstAid.Level > 0)
+            if (item is MedsClass meds)
             {
                 GInterface243 newGInterface = new GInterface243Impl
                 {
@@ -248,33 +248,17 @@ namespace SkillsExtended.Controllers
         {
             if (firstAidInstanceIDs.ContainsKey(item.Id)) { return; }
 
-            if (item is MedsClass meds &&
-                    playerSkillManager.FirstAid.Level > 0 &&
-                    meds.MedKitComponent.MaxHpResource != _originalFirstAidHPValues[meds.TemplateId] + bonusHpPmc)
+            if (item is MedsClass meds && meds.MedKitComponent.MaxHpResource != _originalFirstAidHPValues[meds.TemplateId] + FaHpBonus)
             {
-
                 GInterface249 newInterface;
 
-                if (playerSkillManager.FirstAid.IsEliteLevel)
+                newInterface = new GInterface249Impl
                 {
-                    newInterface = new GInterface249Impl
-                    {
-                        MaxHpResource = _originalFirstAidHPValues[meds.TemplateId] + bonusHpPmcElite,
-                        HpResourceRate = meds.MedKitComponent.HpResourceRate
-                    };
+                    MaxHpResource = _originalFirstAidHPValues[meds.TemplateId] + FaHpBonus,
+                    HpResourceRate = meds.MedKitComponent.HpResourceRate
+                };
 
-                    Plugin.Log.LogDebug($"First Aid: Set instance {item.Id} of type {item.TemplateId} to {_originalFirstAidHPValues[meds.TemplateId] + bonusHpPmcElite} HP");
-                }
-                else
-                {
-                    newInterface = new GInterface249Impl
-                    {
-                        MaxHpResource = _originalFirstAidHPValues[meds.TemplateId] + bonusHpPmc,
-                        HpResourceRate = meds.MedKitComponent.HpResourceRate
-                    };
-
-                    Plugin.Log.LogDebug($"First Aid: Set instance {item.Id} of type {item.TemplateId} to {_originalFirstAidHPValues[meds.TemplateId] + bonusHpPmc} HP");
-                }
+                Plugin.Log.LogDebug($"First Aid: Set instance {item.Id} of type {item.TemplateId} to {_originalFirstAidHPValues[meds.TemplateId] + FaHpBonus} HP");
 
                 var currentResouce = meds.MedKitComponent.HpResource;
                 var currentMaxResouce = meds.MedKitComponent.MaxHpResource;
@@ -297,29 +281,21 @@ namespace SkillsExtended.Controllers
 
             if (gameWorld == null)
             {
-                bonus = 1f - (playerSkillManager.FieldMedicine.Level * 0.007f);
-                if (playerSkillManager.FieldMedicine.IsEliteLevel) { bonus -= 0.15f; }         
+                bonus = FmPmcSpeedBonus;
             }
             else
             {
                 if (player.Side == EPlayerSide.Bear || player.Side == EPlayerSide.Usec)
                 {
-                    bonus = 1f - (playerSkillManager.FieldMedicine.Level * 0.007f);
-                    if (playerSkillManager.FieldMedicine.IsEliteLevel) { bonus -= 0.15f; }
+                    bonus = FmPmcSpeedBonus;
                 }
                 else if (player.Side == EPlayerSide.Savage)
                 {
-                    bonus = 1f - (ScavSkillManager.FieldMedicine.Level * 0.007f);
-                    if (ScavSkillManager.FieldMedicine.IsEliteLevel) { bonus -= 0.15f; }
-                }
-                else
-                {
-                    Plugin.Log.LogDebug($"No Field Medicine Bonus Applied: Invalid playerside.");
+                    bonus = FmScavSpeedBonus;
                 }
             }
 
-
-            if (item is MedsClass meds && playerSkillManager.FieldMedicine.Level > 0)
+            if (item is MedsClass meds)
             {
                 GInterface243 newGInterface = new GInterface243Impl
                 {
