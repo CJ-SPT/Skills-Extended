@@ -85,13 +85,13 @@ namespace SkillsExtended.Patches
 
                 if (Regex.IsMatch(text, firstAid))
                 {
-                    var speedBonus = MedicalBehavior.playerSkillManager.FirstAid.Level * 0.007f;
-                    var hpBonus = MedicalBehavior.playerSkillManager.FirstAid.Level * 5f;
+                    var speedBonus = Plugin.MedicalScript._playerSkillManager.FirstAid.Level * 0.007f;
+                    var hpBonus = Plugin.MedicalScript._playerSkillManager.FirstAid.Level * 5f;
 
-                    if (MedicalBehavior.playerSkillManager.FirstAid.IsEliteLevel)
+                    if (Plugin.MedicalScript._playerSkillManager.FirstAid.IsEliteLevel)
                     {
                         speedBonus += 0.15f;
-                        hpBonus = MedicalBehavior.playerSkillManager.FirstAid.Level * 10f;
+                        hpBonus = Plugin.MedicalScript._playerSkillManager.FirstAid.Level * 10f;
                     }
 
                     __instance.SetText($"First aid skills make use of first aid kits quicker and more effective." +
@@ -101,9 +101,9 @@ namespace SkillsExtended.Patches
 
                 if (Regex.IsMatch(text, fieldMedicine))
                 {
-                    var speedBonus = MedicalBehavior.playerSkillManager.FieldMedicine.Level * 0.007f;
+                    var speedBonus = Plugin.MedicalScript._playerSkillManager.FieldMedicine.Level * 0.007f;
 
-                    if (MedicalBehavior.playerSkillManager.FirstAid.IsEliteLevel)
+                    if (Plugin.MedicalScript._playerSkillManager.FirstAid.IsEliteLevel)
                     {
                         speedBonus += 0.15f;
                     }

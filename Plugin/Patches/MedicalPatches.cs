@@ -20,7 +20,7 @@ namespace SkillsExtended.Patches
                 return;
             }
 
-            if (MedicalBehavior.originalFieldMedicineUseTimes.ContainsKey(item.TemplateId))
+            if (Plugin.MedicalScript.fieldMedicineItemList.Contains(item.TemplateId))
             {
                 Plugin.MedicalScript.ApplyFieldMedicineExp(bodyPart);
                 Plugin.Log.LogDebug("Field Medicine Effect");

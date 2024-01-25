@@ -1,95 +1,87 @@
-﻿using EFT;
-using EFT.UI;
-using HarmonyLib;
-using System.Linq;
-using UnityEngine;
-using Comfort.Common;
+﻿using Comfort.Common;
+using EFT;
 using EFT.HealthSystem;
 using EFT.InventoryLogic;
-using SkillsExtended.Helpers;
+using HarmonyLib;
+using SkillsExtended.Patches;
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using System;
-using SkillsExtended.Patches;
+using System.Linq;
+using UnityEngine;
 
 namespace SkillsExtended.Controllers
 {
-    internal class GInterface243Impl : GInterface243
-    {
-        public float UseTime { set; get; }
-
-        public KeyValuePair<EBodyPart, float>[] BodyPartTimeMults { set; get; }
-
-        public Dictionary<EHealthFactorType, GClass1146> HealthEffects { set; get; }
-
-        public Dictionary<EDamageEffectType, GClass1145> DamageEffects { set; get; }
-
-        public string StimulatorBuffs { set; get; }
-    }
-
-    internal class GInterface249Impl : GInterface249
-    {
-        public int MaxHpResource { set; get; }
-        public float HpResourceRate { set; get; }
-    }
-
     public class MedicalBehavior : MonoBehaviour
     {
-        public static Dictionary<string, float> originalFieldMedicineUseTimes = new Dictionary<string, float>
+        public sealed class MedKitValues : GInterface249
         {
-            { "544fb25a4bdc2dfb738b4567", 2f},  //bandage
-            { "5751a25924597722c463c472", 2f},  //army bandage
-            { "5e831507ea0a7c419c2f9bd9", 5f},  //esmarch
-            { "60098af40accd37ef2175f27", 3f},  //CAT
-            { "5e8488fa988a8701445df1e4", 3f},  //calok-b
-            { "544fb3364bdc2d34748b456a", 5f},  //splint
-            { "5af0454c86f7746bf20992e8", 3f},  //alu splint
+            public int MaxHpResource { set; get; }
+            public float HpResourceRate { set; get; }
+        }
+
+        public sealed class HealthEffectValues : GInterface243
+        {
+            public float UseTime { set; get; }
+
+            public KeyValuePair<EBodyPart, float>[] BodyPartTimeMults { set; get; }
+
+            public Dictionary<EHealthFactorType, GClass1146> HealthEffects { set; get; }
+
+            public Dictionary<EDamageEffectType, GClass1145> DamageEffects { set; get; }
+
+            public string StimulatorBuffs { set; get; }
+        }
+
+        public List<string> firstAidItemList = new List<string>
+        {
+            "544fb45d4bdc2dee738b4568", // Salewa
+            "5755356824597772cb798962", // AI-2
+            "590c657e86f77412b013051d", // Grizzly
+            "590c661e86f7741e566b646a", // Car
+            "590c678286f77426c9660122", // Ifak
+            "5e99711486f7744bfc4af328", // Sanitars
+            "60098ad7c2240c0fe85c570a"  // AFAK
         };
 
-        private static Dictionary<string, int> _originalFirstAidHPValues = new Dictionary<string, int>
+        public List<string> fieldMedicineItemList = new List<string>
         {
-            { "544fb45d4bdc2dee738b4568", 400 },   // Salewa
-            { "5755356824597772cb798962", 100 },   // AI-2
-            { "590c657e86f77412b013051d", 1800 },  // Grizzly
-            { "590c661e86f7741e566b646a", 220 },   // Car
-            { "590c678286f77426c9660122", 300 },   // Ifak
-            { "5e99711486f7744bfc4af328", 3000 },  // Sanitars
-            { "60098ad7c2240c0fe85c570a", 400 }    // AFAK
+            "544fb25a4bdc2dfb738b4567", // bandage
+            "5751a25924597722c463c472", // army bandage
+            "5e831507ea0a7c419c2f9bd9", // esmarch
+            "60098af40accd37ef2175f27", // CAT
+            "5e8488fa988a8701445df1e4", // calok-b
+            "544fb3364bdc2d34748b456a", // splint
+            "5af0454c86f7746bf20992e8"  // alu splint
         };
 
-        private static Dictionary<string, float> _originalFirstAidUseTimes = new Dictionary<string, float>
-        {
-            { "544fb45d4bdc2dee738b4568", 3f }, // Salewa
-            { "5755356824597772cb798962", 2f }, // AI-2
-            { "590c657e86f77412b013051d", 5f }, // Grizzly
-            { "590c661e86f7741e566b646a", 3f }, // Car
-            { "590c678286f77426c9660122", 3f }, // Ifak
-            { "5e99711486f7744bfc4af328", 2f }, // Sanitars
-            { "60098ad7c2240c0fe85c570a", 3f }  // AFAK
-        };
+        private Dictionary<string, MedKitValues> _originalMedKitValues = new Dictionary<string, MedKitValues>();
+        private Dictionary<string, HealthEffectValues> _originalHealthEffectValues = new Dictionary<string, HealthEffectValues>();
 
         private GameWorld gameWorld { get => Singleton<GameWorld>.Instance; }
 
         private Player player { get => gameWorld.MainPlayer; }
 
-        public static SkillManager playerSkillManager;
-        public static SkillManager ScavSkillManager;
+        public SkillManager _playerSkillManager;
+        public SkillManager _scavSkillManager;
 
         // Store the instance ID of the item and the level its bonus resource is set to.
         public Dictionary<string, int> firstAidInstanceIDs = new Dictionary<string, int>();
+
         public Dictionary<string, int> fieldMedicineInstanceIDs = new Dictionary<string, int>();
 
         // Store a dictionary of bodyparts to prevent the user from spam exploiting the leveling system.
         // Bodypart, Last time healed
         private Dictionary<EBodyPart, DateTime> _firstAidBodypartCahce = new Dictionary<EBodyPart, DateTime>();
+
         private Dictionary<EBodyPart, DateTime> _fieldMedicineBodyPartCache = new Dictionary<EBodyPart, DateTime>();
 
-        private float FaPmcSpeedBonus => playerSkillManager.FirstAid.IsEliteLevel ? 1f - (playerSkillManager.FirstAid.Level * 0.007f) - 0.15f : 1f - (playerSkillManager.FirstAid.Level * 0.007f);
-        private float FaScavSpeedBonus => ScavSkillManager.FirstAid.IsEliteLevel ? 1f - (ScavSkillManager.FirstAid.Level * 0.007f) - 0.15f : 1f - (ScavSkillManager.FirstAid.Level * 0.007f);
-        private int FaHpBonus => playerSkillManager.FirstAid.IsEliteLevel ? playerSkillManager.FirstAid.Level * 10 : playerSkillManager.FirstAid.Level * 5;
+        private float FaPmcSpeedBonus => _playerSkillManager.FirstAid.IsEliteLevel ? 1f - (_playerSkillManager.FirstAid.Level * 0.007f) - 0.15f : 1f - (_playerSkillManager.FirstAid.Level * 0.007f);
+        private float FaScavSpeedBonus => _scavSkillManager.FirstAid.IsEliteLevel ? 1f - (_scavSkillManager.FirstAid.Level * 0.007f) - 0.15f : 1f - (_scavSkillManager.FirstAid.Level * 0.007f);
+        private int FaHpBonus => _playerSkillManager.FirstAid.IsEliteLevel ? _playerSkillManager.FirstAid.Level * 10 : _playerSkillManager.FirstAid.Level * 5;
 
-        private float FmPmcSpeedBonus => playerSkillManager.FirstAid.IsEliteLevel ? 1f - (playerSkillManager.FirstAid.Level * 0.007f) - 0.15f : 1f - (playerSkillManager.FirstAid.Level * 0.007f);
-        private float FmScavSpeedBonus => ScavSkillManager.FirstAid.IsEliteLevel ? 1f - (ScavSkillManager.FirstAid.Level * 0.007f) - 0.15f : 1f - (ScavSkillManager.FirstAid.Level * 0.007f);
+        private float FmPmcSpeedBonus => _playerSkillManager.FirstAid.IsEliteLevel ? 1f - (_playerSkillManager.FirstAid.Level * 0.007f) - 0.15f : 1f - (_playerSkillManager.FirstAid.Level * 0.007f);
+        private float FmScavSpeedBonus => _scavSkillManager.FirstAid.IsEliteLevel ? 1f - (_scavSkillManager.FirstAid.Level * 0.007f) - 0.15f : 1f - (_scavSkillManager.FirstAid.Level * 0.007f);
 
         private void Awake()
         {
@@ -99,11 +91,11 @@ namespace SkillsExtended.Controllers
         private void Update()
         {
             // Set skill manager instance
-            if (playerSkillManager == null && Plugin.Session?.Profile?.Skills != null)
+            if (_playerSkillManager == null && Plugin.Session?.Profile?.Skills != null)
             {
-                playerSkillManager = Plugin.Session.Profile.Skills;
-                ScavSkillManager = Plugin.Session.ProfileOfPet.Skills;
-         
+                _playerSkillManager = Plugin.Session.Profile.Skills;
+                _scavSkillManager = Plugin.Session.ProfileOfPet.Skills;
+
                 Plugin.Log.LogDebug("Medical Component Initialized.");
             }
 
@@ -117,16 +109,16 @@ namespace SkillsExtended.Controllers
             {
                 if (player.Side == EPlayerSide.Bear || player.Side == EPlayerSide.Usec)
                 {
-                    playerSkillManager = player.Skills;
-                } 
+                    _playerSkillManager = player.Skills;
+                }
                 else if (player.Side == EPlayerSide.Savage)
                 {
-                    ScavSkillManager = player.Skills;
+                    _scavSkillManager = player.Skills;
                 }
             }
 
             // Dont continue if session is null
-            if (playerSkillManager == null) { return; }
+            if (_playerSkillManager == null) { return; }
 
             StaticManager.Instance.StartCoroutine(FirstAidUpdate());
         }
@@ -134,30 +126,20 @@ namespace SkillsExtended.Controllers
         public void ApplyFirstAidExp(EBodyPart bodypart)
         {
             float xpGain = 1.5f;
-            
+
             if (!CanGainXPForLimb(_firstAidBodypartCahce, bodypart)) { return; }
 
             if (player.Side == EPlayerSide.Usec || player.Side == EPlayerSide.Bear)
             {
-                playerSkillManager.FirstAid.SetCurrent(playerSkillManager.FirstAid.Current + xpGain, true);
+                _playerSkillManager.FirstAid.SetCurrent(_playerSkillManager.FirstAid.Current + xpGain, true);
 
-                if (playerSkillManager.FirstAid.LevelProgress >= playerSkillManager.FirstAid.LevelExp)
-                {
-                    playerSkillManager.FirstAid.SetLevel(playerSkillManager.FirstAid.Level + 1);
-                }
-
-                Plugin.Log.LogDebug($"Skill: {playerSkillManager.FirstAid.Id} Side: {player.Side} Gained: {xpGain} exp.");
+                Plugin.Log.LogDebug($"Skill: {_playerSkillManager.FirstAid.Id} Side: {player.Side} Gained: {xpGain} exp.");
             }
             else if (player.Side == EPlayerSide.Savage)
             {
-                ScavSkillManager.FirstAid.SetCurrent(ScavSkillManager.FirstAid.Current + xpGain, true);
+                _scavSkillManager.FirstAid.SetCurrent(_scavSkillManager.FirstAid.Current + xpGain, true);
 
-                if (ScavSkillManager.FirstAid.LevelProgress >= ScavSkillManager.FirstAid.LevelExp)
-                {
-                    ScavSkillManager.FirstAid.SetLevel(ScavSkillManager.FirstAid.Level + 1);
-                }
-
-                Plugin.Log.LogDebug($"Skill: {ScavSkillManager.FirstAid.Id} Side: {player.Side} Gained: {xpGain} exp.");
+                Plugin.Log.LogDebug($"Skill: {_scavSkillManager.FirstAid.Id} Side: {player.Side} Gained: {xpGain} exp.");
             }
             else
             {
@@ -174,38 +156,22 @@ namespace SkillsExtended.Controllers
 
             if (player.Side == EPlayerSide.Usec || player.Side == EPlayerSide.Bear)
             {
-                playerSkillManager.FieldMedicine.SetCurrent(playerSkillManager.FieldMedicine.Current + xpGain, true);
+                _playerSkillManager.FieldMedicine.SetCurrent(_playerSkillManager.FieldMedicine.Current + xpGain, true);
 
-                if (playerSkillManager.FieldMedicine.LevelProgress >= playerSkillManager.FieldMedicine.LevelExp)
-                {
-                    playerSkillManager.FieldMedicine.SetLevel(playerSkillManager.FieldMedicine.Level + 1);
-                }
-
-                //_fieldMedicineBodyPartCache.Add(bodypart, );
-
-                Plugin.Log.LogDebug($"Skill: {playerSkillManager.FieldMedicine.Id} Side: {player.Side} Gained: {xpGain} exp.");
+                Plugin.Log.LogDebug($"Skill: {_playerSkillManager.FieldMedicine.Id} Side: {player.Side} Gained: {xpGain} exp.");
             }
             else if (player.Side == EPlayerSide.Savage)
             {
-                ScavSkillManager.FieldMedicine.SetCurrent(ScavSkillManager.FieldMedicine.Current + xpGain, true);
+                _scavSkillManager.FieldMedicine.SetCurrent(_scavSkillManager.FieldMedicine.Current + xpGain, true);
 
-                if (ScavSkillManager.FieldMedicine.LevelProgress >= ScavSkillManager.FieldMedicine.LevelExp)
-                {
-                    ScavSkillManager.FieldMedicine.SetLevel(ScavSkillManager.FieldMedicine.Level + 1);
-                }
-
-                Plugin.Log.LogDebug($"Skill: {ScavSkillManager.FieldMedicine.Id} Side: {player.Side} Gained: {xpGain} exp.");
-            }
-            else
-            {
-                Plugin.Log.LogDebug($"No XP gain occured. Something went horribly wrong: Invalid Player side on field medicine.");
+                Plugin.Log.LogDebug($"Skill: {_scavSkillManager.FieldMedicine.Id} Side: {player.Side} Gained: {xpGain} exp.");
             }
         }
 
         private void ApplyFirstAidSpeedBonus(Item item)
         {
             float bonus = 0f;
-            
+
             if (firstAidInstanceIDs.ContainsKey(item.Id)) { return; }
 
             // If we're in the menu always use the PMC bonus
@@ -225,12 +191,25 @@ namespace SkillsExtended.Controllers
                     bonus = FaScavSpeedBonus;
                 }
             }
-        
+
             if (item is MedsClass meds)
             {
-                GInterface243 newGInterface = new GInterface243Impl
+                if (!_originalHealthEffectValues.ContainsKey(item.TemplateId))
                 {
-                    UseTime = _originalFirstAidUseTimes[meds.TemplateId] * bonus,
+                    var origValues = new HealthEffectValues();
+
+                    origValues.UseTime = meds.HealthEffectsComponent.UseTime;
+                    origValues.BodyPartTimeMults = meds.HealthEffectsComponent.BodyPartTimeMults;
+                    origValues.HealthEffects = meds.HealthEffectsComponent.HealthEffects;
+                    origValues.DamageEffects = meds.HealthEffectsComponent.DamageEffects;
+                    origValues.StimulatorBuffs = meds.HealthEffectsComponent.StimulatorBuffs;
+
+                    _originalHealthEffectValues.Add(item.TemplateId, origValues);
+                }
+
+                GInterface243 newGInterface = new HealthEffectValues
+                {
+                    UseTime = _originalHealthEffectValues[meds.TemplateId].UseTime * bonus,
                     BodyPartTimeMults = meds.HealthEffectsComponent.BodyPartTimeMults,
                     HealthEffects = meds.HealthEffectsComponent.HealthEffects,
                     DamageEffects = meds.HealthEffectsComponent.DamageEffects,
@@ -240,25 +219,36 @@ namespace SkillsExtended.Controllers
                 var healthEffectComp = AccessTools.Field(typeof(MedsClass), "HealthEffectsComponent").GetValue(meds);
                 AccessTools.Field(typeof(HealthEffectsComponent), "ginterface243_0").SetValue(healthEffectComp, newGInterface);
 
-                Plugin.Log.LogDebug($"First Aid: Set instance {item.Id} of type {item.TemplateId} to {_originalFirstAidUseTimes[meds.TemplateId] * bonus} seconds");
-            }        
+                Plugin.Log.LogDebug($"First Aid: Set instance {item.Id} of type {item.TemplateId} to {_originalHealthEffectValues[meds.TemplateId].UseTime * bonus} seconds");
+            }
         }
 
         private void ApplyFirstAidHPBonus(Item item)
         {
             if (firstAidInstanceIDs.ContainsKey(item.Id)) { return; }
 
-            if (item is MedsClass meds && meds.MedKitComponent.MaxHpResource != _originalFirstAidHPValues[meds.TemplateId] + FaHpBonus)
+            if (item is MedsClass meds)
             {
                 GInterface249 newInterface;
 
-                newInterface = new GInterface249Impl
+                // Add the original medkit template to the original dictionary
+                if (!_originalMedKitValues.ContainsKey(item.TemplateId))
                 {
-                    MaxHpResource = _originalFirstAidHPValues[meds.TemplateId] + FaHpBonus,
+                    var origValues = new MedKitValues();
+
+                    origValues.MaxHpResource = meds.MedKitComponent.MaxHpResource;
+                    origValues.HpResourceRate = meds.MedKitComponent.HpResourceRate;
+
+                    _originalMedKitValues.Add(item.TemplateId, origValues);
+                }
+
+                newInterface = new MedKitValues
+                {
+                    MaxHpResource = _originalMedKitValues[item.TemplateId].MaxHpResource + FaHpBonus,
                     HpResourceRate = meds.MedKitComponent.HpResourceRate
                 };
 
-                Plugin.Log.LogDebug($"First Aid: Set instance {item.Id} of type {item.TemplateId} to {_originalFirstAidHPValues[meds.TemplateId] + FaHpBonus} HP");
+                Plugin.Log.LogDebug($"First Aid: Set instance {item.Id} of type {item.TemplateId} to {_originalMedKitValues[meds.TemplateId].MaxHpResource + FaHpBonus} HP");
 
                 var currentResouce = meds.MedKitComponent.HpResource;
                 var currentMaxResouce = meds.MedKitComponent.MaxHpResource;
@@ -270,8 +260,8 @@ namespace SkillsExtended.Controllers
                 }
 
                 var medComp = AccessTools.Field(typeof(MedsClass), "MedKitComponent").GetValue(meds);
-                AccessTools.Field(typeof(MedKitComponent), "ginterface249_0").SetValue(medComp, newInterface);                         
-                AccessTools.Field(typeof(MedKitComponent), "ginterface249_0").SetValue(medComp, newInterface);         
+                AccessTools.Field(typeof(MedKitComponent), "ginterface249_0").SetValue(medComp, newInterface);
+                AccessTools.Field(typeof(MedKitComponent), "ginterface249_0").SetValue(medComp, newInterface);
             }
         }
 
@@ -297,9 +287,22 @@ namespace SkillsExtended.Controllers
 
             if (item is MedsClass meds)
             {
-                GInterface243 newGInterface = new GInterface243Impl
+                if (!_originalHealthEffectValues.ContainsKey(item.TemplateId))
                 {
-                    UseTime = originalFieldMedicineUseTimes[meds.TemplateId] * bonus,
+                    var origValues = new HealthEffectValues();
+
+                    origValues.UseTime = meds.HealthEffectsComponent.UseTime;
+                    origValues.BodyPartTimeMults = meds.HealthEffectsComponent.BodyPartTimeMults;
+                    origValues.HealthEffects = meds.HealthEffectsComponent.HealthEffects;
+                    origValues.DamageEffects = meds.HealthEffectsComponent.DamageEffects;
+                    origValues.StimulatorBuffs = meds.HealthEffectsComponent.StimulatorBuffs;
+
+                    _originalHealthEffectValues.Add(item.TemplateId, origValues);
+                }
+
+                GInterface243 newGInterface = new HealthEffectValues
+                {
+                    UseTime = _originalHealthEffectValues[meds.TemplateId].UseTime * bonus,
                     BodyPartTimeMults = meds.HealthEffectsComponent.BodyPartTimeMults,
                     HealthEffects = meds.HealthEffectsComponent.HealthEffects,
                     DamageEffects = meds.HealthEffectsComponent.DamageEffects,
@@ -309,8 +312,8 @@ namespace SkillsExtended.Controllers
                 var healthEffectComp = AccessTools.Field(typeof(MedsClass), "HealthEffectsComponent").GetValue(meds);
                 AccessTools.Field(typeof(HealthEffectsComponent), "ginterface243_0").SetValue(healthEffectComp, newGInterface);
 
-                Plugin.Log.LogDebug($"Field Medicine: Set instance {item.Id} of type {item.TemplateId} to {originalFieldMedicineUseTimes[meds.TemplateId] * bonus} seconds");
-            }    
+                Plugin.Log.LogDebug($"Field Medicine: Set instance {item.Id} of type {item.TemplateId} to {_originalHealthEffectValues[meds.TemplateId].UseTime * bonus} seconds");
+            }
         }
 
         private IEnumerator FirstAidUpdate()
@@ -324,13 +327,13 @@ namespace SkillsExtended.Controllers
                 {
                     int previouslySet = firstAidInstanceIDs[item.Id];
 
-                    if (previouslySet == playerSkillManager.FirstAid.Level) 
-                    { 
-                        continue; 
-                    }
-                    else 
+                    if (previouslySet == _playerSkillManager.FirstAid.Level)
                     {
-                        firstAidInstanceIDs.Remove(item.Id); 
+                        continue;
+                    }
+                    else
+                    {
+                        firstAidInstanceIDs.Remove(item.Id);
                     }
                 }
 
@@ -339,7 +342,7 @@ namespace SkillsExtended.Controllers
                 {
                     int previouslySet = fieldMedicineInstanceIDs[item.Id];
 
-                    if (previouslySet == playerSkillManager.FieldMedicine.Level)
+                    if (previouslySet == _playerSkillManager.FieldMedicine.Level)
                     {
                         continue;
                     }
@@ -350,20 +353,19 @@ namespace SkillsExtended.Controllers
                 }
 
                 // Apply first aid speed bonus to items
-                if (_originalFirstAidUseTimes.ContainsKey(item.TemplateId))
+                if (firstAidItemList.Contains(item.TemplateId))
                 {
                     ApplyFirstAidSpeedBonus(item);
                     ApplyFirstAidHPBonus(item);
-                    firstAidInstanceIDs.Add(item.Id, playerSkillManager.FirstAid.Level);
+                    firstAidInstanceIDs.Add(item.Id, _playerSkillManager.FirstAid.Level);
                 }
-                
+
                 // Apply Field medicine speed bonus to items
-                if (originalFieldMedicineUseTimes.ContainsKey(item.TemplateId))
+                if (fieldMedicineItemList.Contains(item.TemplateId))
                 {
                     ApplyFieldMedicineSpeedBonus(item);
-                    fieldMedicineInstanceIDs.Add(item.Id, playerSkillManager.FieldMedicine.Level);
+                    fieldMedicineInstanceIDs.Add(item.Id, _playerSkillManager.FieldMedicine.Level);
                 }
-                
             }
 
             yield break;
@@ -381,7 +383,7 @@ namespace SkillsExtended.Controllers
                 TimeSpan elapsed = DateTime.Now - dict[bodypart];
 
                 if (elapsed.TotalSeconds >= 60)
-                { 
+                {
                     dict.Remove(bodypart);
                     return true;
                 }
