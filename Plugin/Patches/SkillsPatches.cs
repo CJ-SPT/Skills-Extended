@@ -209,8 +209,8 @@ namespace SkillsExtended.Patches
                     {
                         Plugin.MedicalScript.fieldMedicineInstanceIDs.Clear();
                         Plugin.MedicalScript.firstAidInstanceIDs.Clear();
-                        Plugin.UsecARSystems.weaponInstanceIds.Clear();
-                        Utils.GetServerConfig();
+                        Plugin.WeaponsScript.weaponInstanceIds.Clear();
+                        Utils.CheckServerModExists();
                     }
                 }
             }

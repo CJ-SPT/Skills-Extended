@@ -25,7 +25,7 @@ namespace SkillsExtended
 
         internal static GameObject Hook;
         internal static MedicalBehavior MedicalScript;
-        internal static WeaponProficiencyBehaviors UsecARSystems;
+        internal static WeaponProficiencyBehaviors WeaponsScript;
 
         internal static ManualLogSource Log;
 
@@ -52,7 +52,7 @@ namespace SkillsExtended
             Hook = new GameObject("Skills Controller Object");
            
             MedicalScript = Hook.AddComponent<MedicalBehavior>();
-            UsecARSystems = Hook.AddComponent<WeaponProficiencyBehaviors>();
+            WeaponsScript = Hook.AddComponent<WeaponProficiencyBehaviors>();
 
             DontDestroyOnLoad(Hook);           
 

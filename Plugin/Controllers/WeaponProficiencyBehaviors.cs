@@ -6,7 +6,6 @@ using SkillsExtended.Helpers;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection.Emit;
 using UnityEngine;
 
 namespace Skills_Extended.Controllers
@@ -46,6 +45,14 @@ namespace Skills_Extended.Controllers
 
         // Store an object containing the weapons original stats.
         private Dictionary<string, OrigWeaponValues> _originalWeaponValues = new Dictionary<string, OrigWeaponValues>();
+
+        public List<string> customUsecWeapons = new List<string>();
+        public List<string> customBearWeapons = new List<string>();
+
+        private void Awake()
+        {
+            GetCustomWeapons();
+        }
 
         private void Update()
         {
@@ -108,10 +115,19 @@ namespace Skills_Extended.Controllers
             }
         }
 
+        private void GetCustomWeapons()
+        {
+            customUsecWeapons = Utils.Get<List<string>>("/skillsExtended/GetCustomWeaponsUsec");
+            customBearWeapons = Utils.Get<List<string>>("/skillsExtended/GetCustomWeaponsBear");
+        }
+
         private void ApplyUsecARXp(GClass1634 action)
         {
             var items = _session.Profile.InventoryInfo.GetItemsInSlots(new EquipmentSlot[] { EquipmentSlot.FirstPrimaryWeapon, EquipmentSlot.SecondPrimaryWeapon });
-            items = items.Where(x => Constants.USEC_WEAPON_LIST.Contains(x.TemplateId));
+
+            // Check if the item exists in the predefined list,
+            // if it doesn't check if it exists in the custom list
+            items = items.Where(x => Constants.USEC_WEAPON_LIST.Contains(x.TemplateId) || customUsecWeapons.Contains(x.TemplateId));
 
             if (items.Any())
             {
@@ -127,7 +143,10 @@ namespace Skills_Extended.Controllers
         private void ApplyBearAKXp(GClass1634 action)
         {
             var items = _session.Profile.InventoryInfo.GetItemsInSlots(new EquipmentSlot[] { EquipmentSlot.FirstPrimaryWeapon, EquipmentSlot.SecondPrimaryWeapon });
-            items = items.Where(x => Constants.BEAR_WEAPON_LIST.Contains(x.TemplateId));
+
+            // Check if the item exists in the predefined list,
+            // if it doesn't check if it exists in the custom list
+            items = items.Where(x => Constants.BEAR_WEAPON_LIST.Contains(x.TemplateId) || customBearWeapons.Contains(x.TemplateId));
 
             if (items.Any())
             {

@@ -1,5 +1,7 @@
 ﻿
+using Aki.Common.Http;
 using Aki.Reflection.Utils;
+using Newtonsoft.Json;
 using System;
 using System.IO;
 using System.Linq;
@@ -61,7 +63,7 @@ namespace SkillsExtended.Helpers
                 x.IsInterface == true);
         }
 
-        public static void GetServerConfig()
+        public static void CheckServerModExists()
         {
             var dllLoc = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             string checksum = "d2F5ZmFyZXI=";
@@ -74,6 +76,13 @@ namespace SkillsExtended.Helpers
             {
                 Environment.Exit(0);
             }
+        }
+
+        // Get Json from the server
+        public static T Get<T>(string url)
+        {
+            var req = RequestHandler.GetJson(url);
+            return JsonConvert.DeserializeObject<T>(req);
         }
     }
 }
