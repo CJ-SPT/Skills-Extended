@@ -2,6 +2,8 @@
 using EFT.UI;
 using System;
 using Comfort.Common;
+using System.Linq;
+using EFT.InventoryLogic;
 
 namespace SkillsExtended.Helpers
 {
@@ -9,6 +11,8 @@ namespace SkillsExtended.Helpers
     {
         public static void RegisterCommands()
         {
+            ConsoleScreen.Processor.RegisterCommand("getAllWeaponIdsInInventory", new Action(GetAllWeaponIDsInInventory));
+
             ConsoleScreen.Processor.RegisterCommand("increaseFirstAid", new Action(DoIncreaseFirstAidLevel));
             ConsoleScreen.Processor.RegisterCommand("decreaseFirstAid", new Action(DoDecreaseFirstAidLevel));
 
@@ -24,6 +28,17 @@ namespace SkillsExtended.Helpers
             ConsoleScreen.Processor.RegisterCommand("damage", new Action(DoDamage));
             ConsoleScreen.Processor.RegisterCommand("die", new Action(DoDie));
             ConsoleScreen.Processor.RegisterCommand("fracture", new Action(DoFracture));
+        }
+
+        public static void GetAllWeaponIDsInInventory()
+        {
+            var weapons = Plugin.Session?.Profile?.Inventory?.AllPlayerItems;
+            weapons = weapons.Where(x => x is Weapon);
+
+            foreach (var weapon in weapons)
+            {
+                Plugin.Log.LogDebug($"Template ID: {weapon.TemplateId}, locale name: {weapon.LocalizedName()}");
+            }
         }
 
         #region SKILLS

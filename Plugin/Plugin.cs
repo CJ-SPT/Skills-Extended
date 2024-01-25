@@ -14,7 +14,7 @@ using SkillsExtended.Patches;
 
 namespace SkillsExtended
 {
-    [BepInPlugin("com.dirtbikercj.SkillsExtended", "Skills Extended", "0.3.0")]
+    [BepInPlugin("com.dirtbikercj.SkillsExtended", "Skills Extended", "0.3.1")]
 
     public class Plugin : BaseUnityPlugin
     {

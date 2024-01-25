@@ -9,8 +9,8 @@ namespace SkillsExtended.Helpers
     public static class Constants
     {
 
-        public const float WEAPON_PROF_XP = 0.35f;
-        public const float ERGO_MOD = 0.003f;                  //Ergonomics
+        public const float WEAPON_PROF_XP = 1.05f;
+        public const float ERGO_MOD = 0.003f;                   //Ergonomics
         public const float ERGO_MOD_ELITE = 0.10f;
         public const float RECOIL_REDUCTION = 0.004f;           //Recoil bonus
         public const float RECOIL_REDUCTION_ELITE = 0.12f;
@@ -34,9 +34,8 @@ namespace SkillsExtended.Helpers
             "6184055050224f204c1da540", //SCAR-L
             "618428466ef05c2ce828f218", //SCAR-L FDE
             // CARBINES
-            "5c07c60e0db834002330051f", //ADAR
             "5f2a9575926fd9352339381f", //RFB
-            "5d43021ca4b9362eab4b5e25", //TX15
+            "5d43021ca4b9362eab4b5e25"  //TX15
         };
 
         public static readonly List<string> BEAR_WEAPON_LIST = new List<string>
@@ -69,6 +68,7 @@ namespace SkillsExtended.Helpers
             "5c501a4d2e221602b412b540", //VPO-101
             "59e6152586f77473dc057aa1", //VPO-136
             "59e6687d86f77411d949b251", //VPO-209
+            "5c07c60e0db834002330051f"  //ADAR
         };
     }
 }

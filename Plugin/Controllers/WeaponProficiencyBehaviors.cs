@@ -111,12 +111,13 @@ namespace Skills_Extended.Controllers
         private void ApplyUsecARXp(GClass1634 action)
         {
             var items = _session.Profile.InventoryInfo.GetItemsInSlots(new EquipmentSlot[] { EquipmentSlot.FirstPrimaryWeapon, EquipmentSlot.SecondPrimaryWeapon });
+            items = items.Where(x => Constants.USEC_WEAPON_LIST.Contains(x.TemplateId));
 
-            if (items.Any(x => Constants.USEC_WEAPON_LIST.Contains(x.TemplateId)))
+            if (items.Any())
             {
                 _skillManager.UsecArsystems.Current += Constants.WEAPON_PROF_XP;
 
-                Plugin.Log.LogDebug("USEC AR XP Gained.");
+                Plugin.Log.LogDebug($"USEC AR {Constants.WEAPON_PROF_XP} XP Gained.");
                 return;
             }
 
@@ -126,12 +127,13 @@ namespace Skills_Extended.Controllers
         private void ApplyBearAKXp(GClass1634 action)
         {
             var items = _session.Profile.InventoryInfo.GetItemsInSlots(new EquipmentSlot[] { EquipmentSlot.FirstPrimaryWeapon, EquipmentSlot.SecondPrimaryWeapon });
+            items = items.Where(x => Constants.BEAR_WEAPON_LIST.Contains(x.TemplateId));
 
-            if (items.Any(x => Constants.BEAR_WEAPON_LIST.Contains(x.TemplateId)))
+            if (items.Any())
             {
                 _skillManager.BearAksystems.Current += Constants.WEAPON_PROF_XP;
 
-                Plugin.Log.LogDebug("BEAR AK XP Gained.");
+                Plugin.Log.LogDebug($"BEAR AK {Constants.WEAPON_PROF_XP} XP Gained.");
                 return;
             }
 
