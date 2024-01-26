@@ -87,7 +87,7 @@ namespace SkillsExtended.Patches
 
                 if (Regex.IsMatch(text, firstAid))
                 {
-                    var firstAidSkill = Plugin.MedicalScript._playerSkillManager.FirstAid;
+                    var firstAidSkill = Plugin.Session.Profile.Skills.FirstAid;
 
                     float speedBonus = firstAidSkill.IsEliteLevel
                         ? (firstAidSkill.Level * MEDICAL_SPEED_BONUS) - MEDICAL_SPEED_BONUS_ELITE
@@ -108,14 +108,15 @@ namespace SkillsExtended.Patches
 
                 if (Regex.IsMatch(text, fieldMedicine))
                 {
-                    var speedBonus = Plugin.MedicalScript._playerSkillManager.FieldMedicine.Level * 0.007f;
+                    var fieldMedicineSkill = Plugin.Session.Profile.Skills.FieldMedicine;
 
-                    if (Plugin.MedicalScript._playerSkillManager.FirstAid.IsEliteLevel)
-                    {
-                        speedBonus += 0.15f;
-                    }
+                    float speedBonus = fieldMedicineSkill.IsEliteLevel
+                        ? (fieldMedicineSkill.Level * MEDICAL_SPEED_BONUS) - MEDICAL_SPEED_BONUS_ELITE
+                        : (fieldMedicineSkill.Level * MEDICAL_SPEED_BONUS);
 
-                    __instance.SetText($"Field Medicine increases your skill at applying wound dressings. \n\n Increases the speed of splints, bandages, and heavy bleed items 0.7% per level. \n\n Elite bonus: 15% " +
+                    __instance.SetText($"Field Medicine increases your skill at applying wound dressings. " +
+                        $"\n\n Increases the speed of splints, bandages, and heavy bleed items {MEDICAL_SPEED_BONUS * 100}% per level." +
+                        $"\n\n Elite bonus: {MEDICAL_SPEED_BONUS_ELITE * 100}% " +
                         $"\n\n Current speed bonus: <color=#54C1FFFF>{speedBonus * 100}%</color>");
                 }
 
@@ -123,28 +124,42 @@ namespace SkillsExtended.Patches
                 {
                     var usecSystems = Plugin.Session.Profile.Skills.UsecArsystems;
 
-                    var ergoBonus = usecSystems.IsEliteLevel ? usecSystems.Level * Constants.ERGO_MOD + Constants.ERGO_MOD_ELITE : usecSystems.Level * Constants.ERGO_MOD;
-                    var recoilReduction = usecSystems.IsEliteLevel ? usecSystems.Level * Constants.RECOIL_REDUCTION + Constants.RECOIL_REDUCTION_ELITE : usecSystems.Level * Constants.RECOIL_REDUCTION;
+                    float ergoBonus = usecSystems.IsEliteLevel 
+                        ? usecSystems.Level * Constants.ERGO_MOD + Constants.ERGO_MOD_ELITE 
+                        : usecSystems.Level * Constants.ERGO_MOD;
+                    
+                    float recoilReduction = usecSystems.IsEliteLevel 
+                        ? usecSystems.Level * Constants.RECOIL_REDUCTION + Constants.RECOIL_REDUCTION_ELITE 
+                        : usecSystems.Level * Constants.RECOIL_REDUCTION;
 
-                    __instance.SetText($"As a USEC PMC, you excel in the use of NATO assault rifles and carbines. \n\n" +
-                        $"Inceases ergonomics by {Constants.ERGO_MOD * 100}% per level on NATO assault rifles and carbines. \n {Constants.RECOIL_REDUCTION_ELITE * 100}% Elite bonus \n\n" +
-                        $"Reduces vertical and horizontal recoil by {Constants.RECOIL_REDUCTION * 100}% per level. \n {Constants.RECOIL_REDUCTION_ELITE * 100}% Elite bonus \n\n" +
-                        $"Current ergonomics bonus: <color=#54C1FFFF>{ergoBonus * 100}%</color>\n" +
-                        $"Current recoil bonuses: <color=#54C1FFFF>{recoilReduction * 100}%</color>");
+                    __instance.SetText($"As a USEC PMC, you excel in the use of NATO assault rifles and carbines." +
+                        $"\n\nInceases ergonomics by {ERGO_MOD * 100}% per level on NATO assault rifles and carbines. " +
+                        $"\n{RECOIL_REDUCTION_ELITE * 100}% Elite bonus" +
+                        $"\n\nReduces vertical and horizontal recoil by {RECOIL_REDUCTION * 100}% per level. " +
+                        $"\n{RECOIL_REDUCTION_ELITE * 100}% Elite bonus" +
+                        $"\nCurrent ergonomics bonus: <color=#54C1FFFF>{ergoBonus * 100}%</color>" +
+                        $"\nCurrent recoil bonuses: <color=#54C1FFFF>{recoilReduction * 100}%</color>");
                 }
 
                 if (Regex.IsMatch(text, bearAKSystems))
                 {
                     var bearSystems = Plugin.Session.Profile.Skills.BearAksystems;
 
-                    var ergoBonus = bearSystems.IsEliteLevel ? bearSystems.Level * Constants.ERGO_MOD + Constants.ERGO_MOD_ELITE : bearSystems.Level * Constants.ERGO_MOD;
-                    var recoilReduction = bearSystems.IsEliteLevel ? bearSystems.Level * Constants.RECOIL_REDUCTION + Constants.RECOIL_REDUCTION_ELITE : bearSystems.Level * Constants.RECOIL_REDUCTION;
+                    float ergoBonus = bearSystems.IsEliteLevel 
+                        ? bearSystems.Level * Constants.ERGO_MOD + Constants.ERGO_MOD_ELITE 
+                        : bearSystems.Level * ERGO_MOD;
+                    
+                    float recoilReduction = bearSystems.IsEliteLevel 
+                        ? bearSystems.Level * Constants.RECOIL_REDUCTION + Constants.RECOIL_REDUCTION_ELITE 
+                        : bearSystems.Level * RECOIL_REDUCTION;
 
-                    __instance.SetText($"As a BEAR PMC, you excel in the use of Russian assault rifles and carbines. \n\n" +
-                        $"Inceases ergonomics by {Constants.ERGO_MOD * 100}% per level on Russian assault rifles and carbines. \n {Constants.RECOIL_REDUCTION_ELITE * 100}% Elite bonus \n\n" +
-                        $"Reduces vertical and horizontal recoil by {Constants.RECOIL_REDUCTION * 100}% per level. \n {Constants.RECOIL_REDUCTION_ELITE * 100}% Elite bonus \n\n" +
-                        $"Current ergonomics bonus: <color=#54C1FFFF>{ergoBonus * 100}%</color>\n" +
-                        $"Current recoil bonuses: <color=#54C1FFFF>{recoilReduction * 100}%</color>");
+                    __instance.SetText($"As a BEAR PMC, you excel in the use of Russian assault rifles and carbines." +
+                        $"\n\nInceases ergonomics by {ERGO_MOD * 100}% per level on Russian assault rifles and carbines." +
+                        $"\n {RECOIL_REDUCTION_ELITE * 100}% Elite bonus" +
+                        $"\n\nReduces vertical and horizontal recoil by {RECOIL_REDUCTION * 100}% per level. " +
+                        $"\n {RECOIL_REDUCTION_ELITE * 100}% Elite bonus" +
+                        $"\n\nCurrent ergonomics bonus: <color=#54C1FFFF>{ergoBonus * 100}%</color>" +
+                        $"\nCurrent recoil bonuses: <color=#54C1FFFF>{recoilReduction * 100}%</color>");
                 }
             }
 
