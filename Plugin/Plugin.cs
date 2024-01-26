@@ -14,7 +14,7 @@ using SkillsExtended.Patches;
 
 namespace SkillsExtended
 {
-    [BepInPlugin("com.dirtbikercj.SkillsExtended", "Skills Extended", "0.3.1")]
+    [BepInPlugin("com.dirtbikercj.SkillsExtended", "Skills Extended", "0.3.2")]
 
     public class Plugin : BaseUnityPlugin
     {
@@ -44,8 +44,8 @@ namespace SkillsExtended
             new SimpleToolTipPatch().Enable();
             new SkillManagerConstructorPatch().Enable();
             new OnScreenChangePatch().Enable();
-            
-            new ItemAttributeDisplayPatch().Enable();
+
+            //new FinishQuestPatch().Enable();
 
             Log = Logger;
             

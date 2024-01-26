@@ -27,23 +27,48 @@ public static class Patcher
         return newEnum;
     }
 
-    private static void AddskillFields(ref AssemblyDefinition assembly)
+    private static void PatchNewBuffs(ref AssemblyDefinition assembly)
     {
-        TypeDefinition skillEnums = assembly.MainModule.GetType("EFT.ESkillId");
+        // New Buffs Enums
+        TypeDefinition buffEnums = assembly.MainModule.GetType("EFT.EBuffId");
+        TypeDefinition gClass1641 = skillsClass.NestedTypes.FirstOrDefault(t => t.Name == "GClass1641");
 
-        FieldDefinition bearAKSystems = CreateNewEnum(ref assembly, "BearAKSystems", "SkillsExtended", skillEnums, 1000);
-        FieldDefinition usecARSystems = CreateNewEnum(ref assembly, "UsecARSystems", "SkillsExtended", skillEnums, 1001);
+        FieldDefinition firstAidhealingSpeedEnum = CreateNewEnum(ref assembly, "FirstaidBuffHealingSpeed", "FirstaidBuffHealingSpeed", buffEnums, 1000);
+        FieldDefinition firstAidhealingSpeedEliteEnum = CreateNewEnum(ref assembly, "FirstaidBuffHealingSpeedElite", "FirstaidBuffHealingSpeedElite", buffEnums, 1001);
+        buffEnums.Fields.Add(firstAidhealingSpeedEnum);
+        buffEnums.Fields.Add(firstAidhealingSpeedEliteEnum);
 
-        skillEnums.Fields.Add(bearAKSystems);
-        skillEnums.Fields.Add(usecARSystems);
+        FieldDefinition firstAidmaxHpEnum = CreateNewEnum(ref assembly, "FirstaidBuffMaxHp", "FirstaidBuffMaxHp", buffEnums, 1002);
+        FieldDefinition firstAidmaxHpEliteEnum = CreateNewEnum(ref assembly, "FirstaidBuffMaxHpElite", "FirstaidBuffMaxHpElite", buffEnums, 1003);
+        buffEnums.Fields.Add(firstAidmaxHpEnum);
+        buffEnums.Fields.Add(firstAidmaxHpEliteEnum);
 
-        TypeDefinition GClass1635 = assembly.MainModule.GetType("GClass1635");
+        FieldDefinition fieldMedicineHealingSpeedEnum = CreateNewEnum(ref assembly, "FieldMedicineBuffSpeed", "FieldMedicineBuffSpeed", buffEnums, 1004);
+        FieldDefinition fieldMedicineHealingSpeedEliteEnum = CreateNewEnum(ref assembly, "FieldMedicineBuffSpeedElite", "FieldMedicineBuffSpeedElite", buffEnums, 1005);
+        buffEnums.Fields.Add(fieldMedicineHealingSpeedEnum);
+        buffEnums.Fields.Add(fieldMedicineHealingSpeedEliteEnum);
 
-        FieldDefinition bearVar = new FieldDefinition("BearAKSystems", FieldAttributes.Public, GClass1635);
-        FieldDefinition usecVar = new FieldDefinition("UsecARSystems", FieldAttributes.Public, GClass1635);
+        // New Buff Vars
 
-        skillsClass.Fields.Add(bearVar);
-        skillsClass.Fields.Add(usecVar);
+        FieldDefinition firstAidhealingSpeedBuffVar = new FieldDefinition("FirstaidBuffHealingSpeed", FieldAttributes.Public, gClass1641);
+        FieldDefinition firstAidhealingSpeedEliteBuffVar = new FieldDefinition("FirstaidBuffHealingSpeedElite", FieldAttributes.Public, gClass1641);
+        skillsClass.Fields.Add(firstAidhealingSpeedBuffVar);
+        skillsClass.Fields.Add(firstAidhealingSpeedEliteBuffVar);
+
+        FieldDefinition firstAidmaxHpBuffVar = new FieldDefinition("FirstaidBuffMaxHp", FieldAttributes.Public, gClass1641);
+        FieldDefinition firstAidmaxHpEliteBuffVar = new FieldDefinition("FirstaidBuffMaxHp", FieldAttributes.Public, gClass1641);    
+        skillsClass.Fields.Add(firstAidmaxHpBuffVar);
+        skillsClass.Fields.Add(firstAidmaxHpBuffVar);
+
+        FieldDefinition fieldMedicineHealingSpeedBuffVar = new FieldDefinition("FieldMedicineBuffSpeed", FieldAttributes.Public, gClass1641);
+        FieldDefinition fieldMedicineHealingSpeedEliteBuffVar = new FieldDefinition("FieldMedicineBuffSpeedElite", FieldAttributes.Public, gClass1641);
+        skillsClass.Fields.Add(fieldMedicineHealingSpeedBuffVar);
+        skillsClass.Fields.Add(fieldMedicineHealingSpeedEliteBuffVar);
+    }
+
+    private static void AddSkillFields(ref AssemblyDefinition assembly)
+    {
+        return;
     }
     
     public static void Patch(ref AssemblyDefinition assembly)
@@ -53,7 +78,8 @@ public static class Patcher
             //Set Global Vars
             skillsClass = assembly.MainModule.GetType("EFT.SkillManager");
 
-            AddskillFields(ref assembly);
+            AddSkillFields(ref assembly);
+            PatchNewBuffs(ref assembly);
 
             Logger.CreateLogSource("Skills Extended Prepatcher").LogInfo("Patching Complete!");
         } catch (Exception ex)

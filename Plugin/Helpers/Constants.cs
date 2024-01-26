@@ -4,12 +4,21 @@ namespace SkillsExtended.Helpers
 {
     public static class Constants
     {
-
-        public const float WEAPON_PROF_XP = 1.05f;
+        public const float WEAPON_PROF_XP = 1.05f;              //XP per hit
         public const float ERGO_MOD = 0.003f;                   //Ergonomics
-        public const float ERGO_MOD_ELITE = 0.10f;
-        public const float RECOIL_REDUCTION = 0.004f;           //Recoil bonus
-        public const float RECOIL_REDUCTION_ELITE = 0.12f;
+        public const float ERGO_MOD_ELITE = 0.10f;              //Ergonomics elite
+        public const float RECOIL_REDUCTION = 0.003f;           //Recoil bonus
+        public const float RECOIL_REDUCTION_ELITE = 0.09f;      //Recoil bonus elite
+
+        public const float MEDKIT_HP_BONUS = 0.01f;             //Medkit bonus
+        public const float MEDKIT_HP_BONUS_ELITE = 0.20f;       //Medkit bonus elite
+        public const float MEDICAL_SPEED_BONUS = 0.007f;
+        public const float MEDICAL_SPEED_BONUS_ELITE = 0.15f;
+
+        public const float RESOURCE_RED_BONUS = 0.003f;         //Bleed-Fracture Resource cost reduction
+        public const float RESOURCE_RED_BONUS_ELITE = 0.20f;    //Bleed-Fracture Resource cost reduction elite
+       
+
 
         public static readonly List<string> USEC_WEAPON_LIST = new List<string>
         {

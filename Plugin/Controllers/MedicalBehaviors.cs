@@ -10,6 +10,8 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+using static SkillsExtended.Helpers.Constants;
+
 namespace SkillsExtended.Controllers
 {
     public class MedicalBehavior : MonoBehaviour
@@ -76,12 +78,25 @@ namespace SkillsExtended.Controllers
 
         private Dictionary<EBodyPart, DateTime> _fieldMedicineBodyPartCache = new Dictionary<EBodyPart, DateTime>();
 
-        private float FaPmcSpeedBonus => _playerSkillManager.FirstAid.IsEliteLevel ? 1f - (_playerSkillManager.FirstAid.Level * 0.007f) - 0.15f : 1f - (_playerSkillManager.FirstAid.Level * 0.007f);
-        private float FaScavSpeedBonus => _scavSkillManager.FirstAid.IsEliteLevel ? 1f - (_scavSkillManager.FirstAid.Level * 0.007f) - 0.15f : 1f - (_scavSkillManager.FirstAid.Level * 0.007f);
-        private int FaHpBonus => _playerSkillManager.FirstAid.IsEliteLevel ? _playerSkillManager.FirstAid.Level * 10 : _playerSkillManager.FirstAid.Level * 5;
+        private float FaPmcSpeedBonus => _playerSkillManager.FirstAid.IsEliteLevel 
+            ? 1f - (_playerSkillManager.FirstAid.Level * MEDICAL_SPEED_BONUS) - MEDICAL_SPEED_BONUS_ELITE
+            : 1f - (_playerSkillManager.FirstAid.Level * MEDICAL_SPEED_BONUS);
 
-        private float FmPmcSpeedBonus => _playerSkillManager.FirstAid.IsEliteLevel ? 1f - (_playerSkillManager.FirstAid.Level * 0.007f) - 0.15f : 1f - (_playerSkillManager.FirstAid.Level * 0.007f);
-        private float FmScavSpeedBonus => _scavSkillManager.FirstAid.IsEliteLevel ? 1f - (_scavSkillManager.FirstAid.Level * 0.007f) - 0.15f : 1f - (_scavSkillManager.FirstAid.Level * 0.007f);
+        private float FaScavSpeedBonus => _scavSkillManager.FirstAid.IsEliteLevel 
+            ? 1f - (_scavSkillManager.FirstAid.Level * MEDICAL_SPEED_BONUS) - MEDICAL_SPEED_BONUS_ELITE
+            : 1f - (_scavSkillManager.FirstAid.Level * MEDICAL_SPEED_BONUS);
+
+        private float FaHpBonus => _playerSkillManager.FirstAid.IsEliteLevel 
+            ? _playerSkillManager.FirstAid.Level * MEDKIT_HP_BONUS + MEDKIT_HP_BONUS_ELITE 
+            : _playerSkillManager.FirstAid.Level * MEDKIT_HP_BONUS;
+
+        private float FmPmcSpeedBonus => _playerSkillManager.FirstAid.IsEliteLevel 
+            ? 1f - (_playerSkillManager.FirstAid.Level * MEDICAL_SPEED_BONUS) - MEDICAL_SPEED_BONUS_ELITE
+            : 1f - (_playerSkillManager.FirstAid.Level * MEDICAL_SPEED_BONUS);
+
+        private float FmScavSpeedBonus => _scavSkillManager.FirstAid.IsEliteLevel 
+            ? 1f - (_scavSkillManager.FirstAid.Level * MEDICAL_SPEED_BONUS) - MEDICAL_SPEED_BONUS_ELITE
+            : 1f - (_scavSkillManager.FirstAid.Level * MEDICAL_SPEED_BONUS);
 
         private void Awake()
         {
@@ -234,21 +249,27 @@ namespace SkillsExtended.Controllers
                 // Add the original medkit template to the original dictionary
                 if (!_originalMedKitValues.ContainsKey(item.TemplateId))
                 {
-                    var origValues = new MedKitValues();
+                    var origMedValues = new MedKitValues();
 
-                    origValues.MaxHpResource = meds.MedKitComponent.MaxHpResource;
-                    origValues.HpResourceRate = meds.MedKitComponent.HpResourceRate;
+                    origMedValues.MaxHpResource = meds.MedKitComponent.MaxHpResource;
+                    origMedValues.HpResourceRate = meds.MedKitComponent.HpResourceRate;
 
-                    _originalMedKitValues.Add(item.TemplateId, origValues);
+                    _originalMedKitValues.Add(item.TemplateId, origMedValues);
+                }
+
+                int maxHpResource = Mathf.FloorToInt(_originalMedKitValues[item.TemplateId].MaxHpResource * (1 + FaHpBonus));
+                if (meds.TemplateId == "590c657e86f77412b013051d")
+                {
+                    maxHpResource = Mathf.Clamp(maxHpResource, 1800, 2750);
                 }
 
                 newInterface = new MedKitValues
                 {
-                    MaxHpResource = _originalMedKitValues[item.TemplateId].MaxHpResource + FaHpBonus,
+                    MaxHpResource = maxHpResource,
                     HpResourceRate = meds.MedKitComponent.HpResourceRate
                 };
 
-                Plugin.Log.LogDebug($"First Aid: Set instance {item.Id} of type {item.TemplateId} to {_originalMedKitValues[meds.TemplateId].MaxHpResource + FaHpBonus} HP");
+                Plugin.Log.LogDebug($"First Aid: Set instance {item.Id} of type {item.TemplateId} to {newInterface.MaxHpResource} HP");
 
                 var currentResouce = meds.MedKitComponent.HpResource;
                 var currentMaxResouce = meds.MedKitComponent.MaxHpResource;

@@ -3,13 +3,14 @@ using EFT;
 using EFT.UI;
 using EFT.UI.Screens;
 using HarmonyLib;
-using SkillsExtended.Controllers;
 using SkillsExtended.Helpers;
 using System;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using TMPro;
 using static EFT.SkillManager;
+
+using static SkillsExtended.Helpers.Constants;
 
 namespace SkillsExtended.Patches
 {
@@ -62,6 +63,7 @@ namespace SkillsExtended.Patches
                 {
                     AccessTools.Field(Utils.GetSkillType(), "Locked").SetValue(__instance.FirstAid, false);
                     AccessTools.Field(Utils.GetSkillType(), "Locked").SetValue(__instance.FieldMedicine, false);
+                    AccessTools.Field(Utils.GetSkillType(), "Locked").SetValue(__instance.Taskperformance, false);
                 }
                 catch (Exception e)
                 {
@@ -85,18 +87,23 @@ namespace SkillsExtended.Patches
 
                 if (Regex.IsMatch(text, firstAid))
                 {
-                    var speedBonus = Plugin.MedicalScript._playerSkillManager.FirstAid.Level * 0.007f;
-                    var hpBonus = Plugin.MedicalScript._playerSkillManager.FirstAid.Level * 5f;
+                    var firstAidSkill = Plugin.MedicalScript._playerSkillManager.FirstAid;
 
-                    if (Plugin.MedicalScript._playerSkillManager.FirstAid.IsEliteLevel)
-                    {
-                        speedBonus += 0.15f;
-                        hpBonus = Plugin.MedicalScript._playerSkillManager.FirstAid.Level * 10f;
-                    }
+                    float speedBonus = firstAidSkill.IsEliteLevel
+                        ? (firstAidSkill.Level * MEDICAL_SPEED_BONUS) - MEDICAL_SPEED_BONUS_ELITE
+                        : (firstAidSkill.Level * MEDICAL_SPEED_BONUS);
+
+                    float hpBonus = firstAidSkill.IsEliteLevel
+                        ? firstAidSkill.Level* MEDKIT_HP_BONUS + MEDKIT_HP_BONUS_ELITE
+                        : firstAidSkill.Level* MEDKIT_HP_BONUS;
 
                     __instance.SetText($"First aid skills make use of first aid kits quicker and more effective." +
-                        $"\n\n Increases the speed of healing items by 0.7% per level. \n\n Elite bonus: 15% \n\n Increases the HP resource of medical items by 5 per level. \n\n Elite bonus: 10 per level." +
-                        $"\n\n Current speed bonus: <color=#54C1FFFF>{speedBonus * 100}%</color> \n\n Current bonus HP: <color=#54C1FFFF>{hpBonus}</color>");
+                        $"\n\n Increases the speed of healing items by {MEDICAL_SPEED_BONUS * 100}% per level. " +
+                        $"\n\n Elite bonus: {MEDICAL_SPEED_BONUS_ELITE * 100}% " +
+                        $"\n\n Increases the HP resource of medical items by {MEDKIT_HP_BONUS * 100}% per level." +
+                        $"\n\n Elite bonus: {MEDKIT_HP_BONUS_ELITE * 100}%." +
+                        $"\n\n Current speed bonus: <color=#54C1FFFF>{speedBonus * 100}%</color> " +
+                        $"\n\n Current bonus HP: <color=#54C1FFFF>{hpBonus * 100}%</color>");
                 }
 
                 if (Regex.IsMatch(text, fieldMedicine))
@@ -210,6 +217,7 @@ namespace SkillsExtended.Patches
                         Plugin.MedicalScript.fieldMedicineInstanceIDs.Clear();
                         Plugin.MedicalScript.firstAidInstanceIDs.Clear();
                         Plugin.WeaponsScript.weaponInstanceIds.Clear();
+                        Plugin.WeaponsScript.weaponUiInstanceIds.Clear();
                         Utils.CheckServerModExists();
                     }
                 }

@@ -43,6 +43,8 @@ namespace Skills_Extended.Controllers
 
         public Dictionary<string, int> weaponInstanceIds = new Dictionary<string, int>();
 
+        public List<string> weaponUiInstanceIds = new List<string>();
+
         // Store an object containing the weapons original stats.
         private Dictionary<string, OrigWeaponValues> _originalWeaponValues = new Dictionary<string, OrigWeaponValues>();
 
@@ -174,7 +176,7 @@ namespace Skills_Extended.Controllers
                         origVals.weaponUp = weap.Template.RecoilForceUp;
                         origVals.weaponBack = weap.Template.RecoilForceBack;
 
-                        Plugin.Log.LogDebug($"Orig ergo: {weap.Template.Ergonomics}, up {weap.Template.RecoilForceUp}, back {weap.Template.RecoilForceBack}");
+                        Plugin.Log.LogDebug($"original {weap.LocalizedName()} ergo: {weap.Template.Ergonomics}, up {weap.Template.RecoilForceUp}, back {weap.Template.RecoilForceBack}");
 
                         _originalWeaponValues.Add(item.TemplateId, origVals);
                     }
@@ -196,7 +198,7 @@ namespace Skills_Extended.Controllers
                     weap.Template.RecoilForceUp = _originalWeaponValues[item.TemplateId].weaponUp * (1 - recoilReduction); 
                     weap.Template.RecoilForceBack = _originalWeaponValues[item.TemplateId].weaponBack * (1 - recoilReduction);
 
-                    Plugin.Log.LogDebug($"New ergo: {weap.Template.Ergonomics}, up {weap.Template.RecoilForceUp}, back {weap.Template.RecoilForceBack}");
+                    Plugin.Log.LogDebug($"New {weap.LocalizedName()} ergo: {weap.Template.Ergonomics}, up {weap.Template.RecoilForceUp}, back {weap.Template.RecoilForceBack}");
 
                     weaponInstanceIds.Add(item.Id, level);
                 }
