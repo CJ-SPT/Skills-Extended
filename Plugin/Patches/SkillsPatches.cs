@@ -63,7 +63,6 @@ namespace SkillsExtended.Patches
                 {
                     AccessTools.Field(Utils.GetSkillType(), "Locked").SetValue(__instance.FirstAid, false);
                     AccessTools.Field(Utils.GetSkillType(), "Locked").SetValue(__instance.FieldMedicine, false);
-                    AccessTools.Field(Utils.GetSkillType(), "Locked").SetValue(__instance.Taskperformance, false);
                 }
                 catch (Exception e)
                 {
@@ -232,7 +231,6 @@ namespace SkillsExtended.Patches
                         Plugin.MedicalScript.fieldMedicineInstanceIDs.Clear();
                         Plugin.MedicalScript.firstAidInstanceIDs.Clear();
                         Plugin.WeaponsScript.weaponInstanceIds.Clear();
-                        Plugin.WeaponsScript.weaponUiInstanceIds.Clear();
                         Utils.CheckServerModExists();
                     }
                 }

@@ -11,6 +11,9 @@ using Skills_Extended.Controllers;
 using static SkillsExtended.Patches.SkillsPatches;
 using static SkillsExtended.Patches.SkillsPatches.SimpleToolTipPatch;
 using SkillsExtended.Patches;
+using System.Linq;
+using Comfort.Common;
+using EFT.UI;
 
 namespace SkillsExtended
 {
@@ -44,9 +47,7 @@ namespace SkillsExtended
             new SimpleToolTipPatch().Enable();
             new SkillManagerConstructorPatch().Enable();
             new OnScreenChangePatch().Enable();
-
-            //new FinishQuestPatch().Enable();
-
+         
             Log = Logger;
             
             Hook = new GameObject("Skills Controller Object");
