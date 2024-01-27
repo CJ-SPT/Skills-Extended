@@ -1,26 +1,35 @@
 ﻿using Aki.Reflection.Patching;
+using EFT;
 using EFT.HealthSystem;
 using EFT.InventoryLogic;
-using SkillsExtended.Controllers;
+using System.Linq;
 using System.Reflection;
 
 namespace SkillsExtended.Patches
 {
     internal class DoMedEffectPatch : ModulePatch
     {
-        protected override MethodBase GetTargetMethod() =>
-            typeof(ActiveHealthController).GetMethod("DoMedEffect");
+        protected override MethodBase GetTargetMethod()
+        {
+            return typeof(Player).GetMethods().First(m =>
+                m.Name == "SetInHands" && m.GetParameters()[0].Name == "meds");
+        }
 
         [PatchPrefix]
-        public static void Prefix(ref Item item, EBodyPart bodyPart)
+        public static void Prefix(Player __instance, MedsClass meds, EBodyPart bodyPart)
         {
             // Dont give xp for surgery
-            if (item.TemplateId == "5d02778e86f774203e7dedbe" || item.TemplateId == "5d02797c86f774203f38e30a")
+            if (meds.TemplateId == "5d02778e86f774203e7dedbe" || meds.TemplateId == "5d02797c86f774203f38e30a")
             {
                 return;
             }
 
-            if (Plugin.MedicalScript.fieldMedicineItemList.Contains(item.TemplateId))
+            if (!__instance.IsYourPlayer)
+            {
+                return;
+            }
+
+            if (Plugin.MedicalScript.fieldMedicineItemList.Contains(meds.TemplateId))
             {
                 Plugin.MedicalScript.ApplyFieldMedicineExp(bodyPart);
                 Plugin.Log.LogDebug("Field Medicine Effect");
