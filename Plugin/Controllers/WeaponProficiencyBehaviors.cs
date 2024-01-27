@@ -19,6 +19,8 @@ namespace Skills_Extended.Controllers
             public float weaponBack;
         }
 
+        public Dictionary<string, int> weaponInstanceIds = new Dictionary<string, int>();
+
         private SkillManager _skillManager;
 
         private ISession _session => Plugin.Session;
@@ -35,21 +37,21 @@ namespace Skills_Extended.Controllers
         
         private IEnumerable<Item> _bearWeapons => _session.Profile.Inventory.AllPlayerItems.Where(x => Constants.BEAR_WEAPON_LIST.Contains(x.TemplateId));
         
-        private float _ergoBonus => _skillManager.UsecArsystems.IsEliteLevel ? 
-            _usecARLevel * Constants.ERGO_MOD + Constants.ERGO_MOD_ELITE : _usecARLevel * Constants.ERGO_MOD;
+        private float _ergoBonus => _skillManager.UsecArsystems.IsEliteLevel 
+            ? _usecARLevel * Constants.ERGO_MOD + Constants.ERGO_MOD_ELITE 
+            : _usecARLevel * Constants.ERGO_MOD;
         
-        private float _recoilBonus => _skillManager.UsecArsystems.IsEliteLevel ? 
-            _usecARLevel * Constants.RECOIL_REDUCTION + Constants.RECOIL_REDUCTION_ELITE : _usecARLevel * Constants.RECOIL_REDUCTION;
-
-        public Dictionary<string, int> weaponInstanceIds = new Dictionary<string, int>();
-
-        public List<string> weaponUiInstanceIds = new List<string>();
+        private float _recoilBonus => _skillManager.UsecArsystems.IsEliteLevel 
+            ? _usecARLevel * Constants.RECOIL_REDUCTION + Constants.RECOIL_REDUCTION_ELITE 
+            : _usecARLevel * Constants.RECOIL_REDUCTION;
 
         // Store an object containing the weapons original stats.
         private Dictionary<string, OrigWeaponValues> _originalWeaponValues = new Dictionary<string, OrigWeaponValues>();
 
-        public List<string> customUsecWeapons = new List<string>();
-        public List<string> customBearWeapons = new List<string>();
+        private List<string> _customUsecWeapons = new List<string>();
+        private List<string> _customBearWeapons = new List<string>();
+
+        private bool _isSubscribed = false;
 
         private void Awake()
         {
@@ -77,50 +79,35 @@ namespace Skills_Extended.Controllers
 
         private void SetupSkillManager()
         {
-            // Set skill manager instance
-            if (Plugin.Session?.Profile?.Skills != null && _skillManager == null)
+            if (_skillManager == null)
             {
-                _skillManager = Plugin.Session.Profile.Skills;
+                _skillManager = Utils.SetActiveSkillManager();
+            }
+
+            if (_gameWorld && !_isSubscribed)
+            {     
+                if (_gameWorld.MainPlayer == null || _gameWorld?.MainPlayer?.Location == "hideout")
+                {
+                    return;
+                }
                 
-                if (Plugin.Session.Profile.Side == EPlayerSide.Usec || _skillManager.BearAksystems.IsEliteLevel)
+                if ((_gameWorld.MainPlayer.Side == EPlayerSide.Usec && !_skillManager.UsecArsystems.IsEliteLevel) 
+                    || (_skillManager.BearAksystems.IsEliteLevel && !_skillManager.UsecArsystems.IsEliteLevel))
                 {
-                    _skillManager.OnMasteringExperienceChanged += ApplyUsecARXp;
+                    _skillManager.OnMasteringExperienceChanged += ApplyUsecARXp;           
                     Plugin.Log.LogDebug("USEC AR XP ENABLED.");
                 }
 
-                if (Plugin.Session.Profile.Side == EPlayerSide.Bear || _skillManager.UsecArsystems.IsEliteLevel)
+                if ((_gameWorld.MainPlayer.Side == EPlayerSide.Bear && !_skillManager.BearAksystems.IsEliteLevel) 
+                    || (_skillManager.UsecArsystems.IsEliteLevel && !_skillManager.BearAksystems.IsEliteLevel))
                 {
                     _skillManager.OnMasteringExperienceChanged += ApplyBearAKXp;
                     Plugin.Log.LogDebug("BEAR AK XP ENABLED.");
                 }
-
-                Plugin.Log.LogDebug($"SkillManager is Session. Side: {Plugin.Session.Profile.Side} IsBearComplete: {_skillManager.BearAksystems.IsEliteLevel} IsUsecComplete {_skillManager.UsecArsystems.IsEliteLevel}");
+                
+                _isSubscribed = true;
+                return;
             }
-
-            if (_gameWorld?.MainPlayer != null && _skillManager == null)
-            {
-                _skillManager = _player.Skills;
-
-                if (Plugin.Session.Profile.Side == EPlayerSide.Usec || _skillManager.BearAksystems.IsEliteLevel)
-                {
-                    _skillManager.OnMasteringExperienceChanged += ApplyUsecARXp;
-                    Plugin.Log.LogDebug("USEC AR XP ENABLED.");
-                }
-
-                if (Plugin.Session.Profile.Side == EPlayerSide.Bear || _skillManager.UsecArsystems.IsEliteLevel)
-                {
-                    _skillManager.OnMasteringExperienceChanged += ApplyBearAKXp;
-                    Plugin.Log.LogDebug("BEAR AK XP ENABLED.");
-                }
-
-                Plugin.Log.LogDebug($"SkillManager is Player. Side: {Plugin.Session.Profile.Side} IsBearComplete: {_skillManager.BearAksystems.IsEliteLevel} IsUsecComplete {_skillManager.UsecArsystems.IsEliteLevel}");
-            }
-        }
-
-        private void GetCustomWeapons()
-        {
-            customUsecWeapons = Utils.Get<List<string>>("/skillsExtended/GetCustomWeaponsUsec");
-            customBearWeapons = Utils.Get<List<string>>("/skillsExtended/GetCustomWeaponsBear");
         }
 
         private void ApplyUsecARXp(GClass1634 action)
@@ -129,7 +116,7 @@ namespace Skills_Extended.Controllers
 
             // Check if the item exists in the predefined list,
             // if it doesn't check if it exists in the custom list
-            items = items.Where(x => Constants.USEC_WEAPON_LIST.Contains(x.TemplateId) || customUsecWeapons.Contains(x.TemplateId));
+            items = items.Where(x => Constants.USEC_WEAPON_LIST.Contains(x.TemplateId) || _customUsecWeapons.Contains(x.TemplateId));
 
             if (items.Any())
             {
@@ -148,7 +135,7 @@ namespace Skills_Extended.Controllers
 
             // Check if the item exists in the predefined list,
             // if it doesn't check if it exists in the custom list
-            items = items.Where(x => Constants.BEAR_WEAPON_LIST.Contains(x.TemplateId) || customBearWeapons.Contains(x.TemplateId));
+            //items = items.Where(x => Constants.BEAR_WEAPON_LIST.Contains(x.TemplateId) || _customBearWeapons.Contains(x.TemplateId));
 
             if (items.Any())
             {
@@ -205,6 +192,12 @@ namespace Skills_Extended.Controllers
             }
 
             yield break;
+        }
+
+        private void GetCustomWeapons()
+        {
+            _customUsecWeapons = Utils.Get<List<string>>("/skillsExtended/GetCustomWeaponsUsec");
+            _customBearWeapons = Utils.Get<List<string>>("/skillsExtended/GetCustomWeaponsBear");
         }
     }
 }

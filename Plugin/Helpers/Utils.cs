@@ -1,17 +1,22 @@
 ﻿
 using Aki.Common.Http;
 using Aki.Reflection.Utils;
+using Comfort.Common;
+using EFT;
 using Newtonsoft.Json;
 using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 
 namespace SkillsExtended.Helpers
 {
     public static class Utils
     {
+        #region Types
+
         // GClass 1633 (3.7.6)
         public static Type GetSkillBaseType()
         {
@@ -63,6 +68,8 @@ namespace SkillsExtended.Helpers
                 x.IsInterface == true);
         }
 
+        #endregion
+
         public static void CheckServerModExists()
         {
             var dllLoc = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -76,6 +83,23 @@ namespace SkillsExtended.Helpers
             {
                 Environment.Exit(0);
             }
+        }
+
+        // If the player is in the gameworld, use the main players skillmanager
+        public static SkillManager SetActiveSkillManager()
+        {
+            if (Singleton<GameWorld>.Instantiated)
+            {
+                Plugin.Log.LogDebug("Skill Manager is Player.");
+                return Singleton<GameWorld>.Instance.MainPlayer.Skills;
+            }
+            else if (Plugin.Session?.Profile?.Skills != null)
+            {
+                Plugin.Log.LogDebug("Skill Manager is Session.");
+                return Plugin.Session?.Profile?.Skills;
+            }
+
+            return null;
         }
 
         // Get Json from the server
