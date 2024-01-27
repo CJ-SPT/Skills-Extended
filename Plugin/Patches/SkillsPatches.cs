@@ -21,31 +21,42 @@ namespace SkillsExtended.Patches
 
         [PatchPostfix]
         public static void Postfix(SkillManager __instance, ref GClass1635[] ___DisplayList, ref GClass1635[] ___Skills,
-            ref GClass1635 ___UsecArsystems, ref GClass1635 ___BearAksystems)
+            ref GClass1635 ___UsecArsystems, ref GClass1635 ___BearAksystems, ref GClass1635 ___UsecTactics, ref GClass1635 ___BearRawpower)
         {
             int insertIndex = 12;
 
             ___UsecArsystems = new GClass1635(__instance, ESkillId.UsecArsystems, ESkillClass.Special, Array.Empty<GClass1647>(), Array.Empty<GClass1640>());
             ___BearAksystems = new GClass1635(__instance, ESkillId.BearAksystems, ESkillClass.Special, Array.Empty<GClass1647>(), Array.Empty<GClass1640>());
 
-            var newDisplayList = new GClass1635[___DisplayList.Length + 2];
+            ___UsecTactics = new GClass1635(__instance, ESkillId.UsecTactics, ESkillClass.Special, Array.Empty<GClass1647>(), Array.Empty<GClass1640>());
+            ___BearRawpower = new GClass1635(__instance, ESkillId.BearRawpower, ESkillClass.Special, Array.Empty<GClass1647>(), Array.Empty<GClass1640>());
+
+            var newDisplayList = new GClass1635[___DisplayList.Length + 4];
 
             Array.Copy(___DisplayList, newDisplayList, insertIndex);
 
             newDisplayList[12] = ___UsecArsystems;
             newDisplayList[12 + 1] = ___BearAksystems;
 
-            Array.Copy(___DisplayList, insertIndex, newDisplayList, insertIndex + 2, ___DisplayList.Length - insertIndex);
+            newDisplayList[12 + 2] = ___UsecTactics;
+            newDisplayList[12 + 3] = ___BearRawpower;
+
+            Array.Copy(___DisplayList, insertIndex, newDisplayList, insertIndex + 4, ___DisplayList.Length - insertIndex);
 
             ___DisplayList = newDisplayList;
 
-            Array.Resize(ref ___Skills, ___Skills.Length + 2);
+            Array.Resize(ref ___Skills, ___Skills.Length + 4);
 
             ___Skills[___Skills.Length - 1] = ___UsecArsystems;
             ___Skills[___Skills.Length - 2] = ___BearAksystems;
 
+            ___Skills[___Skills.Length - 3] = ___UsecTactics;
+            ___Skills[___Skills.Length - 4] = ___BearRawpower;
+
             AccessTools.Field(Utils.GetSkillType(), "Locked").SetValue(__instance.UsecArsystems, false);
             AccessTools.Field(Utils.GetSkillType(), "Locked").SetValue(__instance.BearAksystems, false);
+            AccessTools.Field(Utils.GetSkillType(), "Locked").SetValue(__instance.UsecTactics, false);
+            AccessTools.Field(Utils.GetSkillType(), "Locked").SetValue(__instance.BearRawpower, false);
         }
     }
 
@@ -61,6 +72,7 @@ namespace SkillsExtended.Patches
             {
                 AccessTools.Field(Utils.GetSkillType(), "Locked").SetValue(__instance.FirstAid, false);
                 AccessTools.Field(Utils.GetSkillType(), "Locked").SetValue(__instance.FieldMedicine, false);
+                AccessTools.Field(Utils.GetSkillType(), "Locked").SetValue(__instance.Lockpicking, false);
             }
             catch (Exception e)
             {
@@ -79,8 +91,12 @@ namespace SkillsExtended.Patches
         {
             string firstAid = @"\bFirstAidDescriptionPattern\b";
             string fieldMedicine = @"\bFieldMedicineDescriptionPattern\b";
+            
             string usecARSystems = @"\bUsecArsystemsDescription\b";
+            string usecTactics = @"\bUsecTacticsDescription\b";
+
             string bearAKSystems = @"\bBearAksystemsDescription\b";
+            string bearRawpower = @"\bBearRawpowerDescription\b";
 
             if (Regex.IsMatch(text, firstAid))
             {
@@ -94,13 +110,7 @@ namespace SkillsExtended.Patches
                     ? firstAidSkill.Level * MEDKIT_HP_BONUS + MEDKIT_HP_BONUS_ELITE
                     : firstAidSkill.Level * MEDKIT_HP_BONUS;
 
-                __instance.SetText($"First aid skills make use of first aid kits quicker and more effective." +
-                    $"\n\n Increases the speed of healing items by {MEDICAL_SPEED_BONUS * 100}% per level. " +
-                    $"\n\n Elite bonus: {MEDICAL_SPEED_BONUS_ELITE * 100}% " +
-                    $"\n\n Increases the HP resource of medical items by {MEDKIT_HP_BONUS * 100}% per level." +
-                    $"\n\n Elite bonus: {MEDKIT_HP_BONUS_ELITE * 100}%." +
-                    $"\n\n Current speed bonus: <color=#54C1FFFF>{speedBonus * 100}%</color> " +
-                    $"\n\n Current bonus HP: <color=#54C1FFFF>{hpBonus * 100}%</color>");
+                __instance.SetText(SkillDescriptions.FirstAidDescription(speedBonus, hpBonus));
             }
 
             if (Regex.IsMatch(text, fieldMedicine))
@@ -111,10 +121,7 @@ namespace SkillsExtended.Patches
                     ? (fieldMedicineSkill.Level * MEDICAL_SPEED_BONUS) - MEDICAL_SPEED_BONUS_ELITE
                     : (fieldMedicineSkill.Level * MEDICAL_SPEED_BONUS);
 
-                __instance.SetText($"Field Medicine increases your skill at applying wound dressings. " +
-                    $"\n\n Increases the speed of splints, bandages, and heavy bleed items {MEDICAL_SPEED_BONUS * 100}% per level." +
-                    $"\n\n Elite bonus: {MEDICAL_SPEED_BONUS_ELITE * 100}% " +
-                    $"\n\n Current speed bonus: <color=#54C1FFFF>{speedBonus * 100}%</color>");
+                __instance.SetText(SkillDescriptions.FieldMedicineDescription(speedBonus));
             }
 
             if (Regex.IsMatch(text, usecARSystems))
@@ -122,20 +129,14 @@ namespace SkillsExtended.Patches
                 var usecSystems = Plugin.Session.Profile.Skills.UsecArsystems;
 
                 float ergoBonus = usecSystems.IsEliteLevel
-                    ? usecSystems.Level * Constants.ERGO_MOD + Constants.ERGO_MOD_ELITE
-                    : usecSystems.Level * Constants.ERGO_MOD;
+                    ? usecSystems.Level * ERGO_MOD + ERGO_MOD_ELITE
+                    : usecSystems.Level * ERGO_MOD;
 
                 float recoilReduction = usecSystems.IsEliteLevel
-                    ? usecSystems.Level * Constants.RECOIL_REDUCTION + Constants.RECOIL_REDUCTION_ELITE
-                    : usecSystems.Level * Constants.RECOIL_REDUCTION;
+                    ? usecSystems.Level * RECOIL_REDUCTION + RECOIL_REDUCTION_ELITE
+                    : usecSystems.Level * RECOIL_REDUCTION;
 
-                __instance.SetText($"As a USEC PMC, you excel in the use of NATO assault rifles and carbines." +
-                    $"\n\nInceases ergonomics by {ERGO_MOD * 100}% per level on NATO assault rifles and carbines. " +
-                    $"\n{RECOIL_REDUCTION_ELITE * 100}% Elite bonus" +
-                    $"\n\nReduces vertical and horizontal recoil by {RECOIL_REDUCTION * 100}% per level. " +
-                    $"\n{RECOIL_REDUCTION_ELITE * 100}% Elite bonus" +
-                    $"\nCurrent ergonomics bonus: <color=#54C1FFFF>{ergoBonus * 100}%</color>" +
-                    $"\nCurrent recoil bonuses: <color=#54C1FFFF>{recoilReduction * 100}%</color>");
+                __instance.SetText(SkillDescriptions.UsecArSystemsDescription(ergoBonus, recoilReduction));
             }
 
             if (Regex.IsMatch(text, bearAKSystems))
@@ -143,20 +144,44 @@ namespace SkillsExtended.Patches
                 var bearSystems = Plugin.Session.Profile.Skills.BearAksystems;
 
                 float ergoBonus = bearSystems.IsEliteLevel
-                    ? bearSystems.Level * Constants.ERGO_MOD + Constants.ERGO_MOD_ELITE
+                    ? bearSystems.Level * ERGO_MOD + ERGO_MOD_ELITE
                     : bearSystems.Level * ERGO_MOD;
 
                 float recoilReduction = bearSystems.IsEliteLevel
-                    ? bearSystems.Level * Constants.RECOIL_REDUCTION + Constants.RECOIL_REDUCTION_ELITE
+                    ? bearSystems.Level * RECOIL_REDUCTION + RECOIL_REDUCTION_ELITE
                     : bearSystems.Level * RECOIL_REDUCTION;
 
-                __instance.SetText($"As a BEAR PMC, you excel in the use of Russian assault rifles and carbines." +
-                    $"\n\nInceases ergonomics by {ERGO_MOD * 100}% per level on Russian assault rifles and carbines." +
-                    $"\n {RECOIL_REDUCTION_ELITE * 100}% Elite bonus" +
-                    $"\n\nReduces vertical and horizontal recoil by {RECOIL_REDUCTION * 100}% per level. " +
-                    $"\n {RECOIL_REDUCTION_ELITE * 100}% Elite bonus" +
-                    $"\n\nCurrent ergonomics bonus: <color=#54C1FFFF>{ergoBonus * 100}%</color>" +
-                    $"\nCurrent recoil bonuses: <color=#54C1FFFF>{recoilReduction * 100}%</color>");
+                __instance.SetText(SkillDescriptions.BearAkSystemsDescription(ergoBonus, recoilReduction));
+            }
+
+            if (Regex.IsMatch(text, usecTactics))
+            {
+                var usecTacticsSkill = Plugin.Session.Profile.Skills.UsecTactics;
+
+                float inertiaReduction = usecTacticsSkill.IsEliteLevel
+                    ? usecTacticsSkill.Level * USEC_INERTIA_RED_BONUS + USEC_INERTIA_RED_BONUS_ELITE
+                    : usecTacticsSkill.Level * USEC_INERTIA_RED_BONUS;
+
+                float aimPunchReduction = usecTacticsSkill.IsEliteLevel
+                    ? usecTacticsSkill.Level * USEC_AIMPUNCH_RED_BONUS + USEC_AIMPUNCH_RED_BONUS_ELITE
+                    : usecTacticsSkill.Level * USEC_AIMPUNCH_RED_BONUS;
+
+                __instance.SetText(SkillDescriptions.UsecTacticsDescription(inertiaReduction, aimPunchReduction));
+            }
+
+            if (Regex.IsMatch(text, bearRawpower))
+            {
+                var bearRawpowerSkill = Plugin.Session.Profile.Skills.BearRawpower;
+
+                float hpBonus = bearRawpowerSkill.IsEliteLevel
+                    ? bearRawpowerSkill.Level * BEAR_POWER_HP_BONUS + BEAR_POWER_HP_BONUS_ELITE
+                    : bearRawpowerSkill.Level * BEAR_POWER_HP_BONUS;
+
+                float carryWeightBonus = bearRawpowerSkill.IsEliteLevel
+                    ? bearRawpowerSkill.Level * BEAR_POWER_CARRY_BONUS + BEAR_POWER_CARRY_BONUS_ELITE
+                    : bearRawpowerSkill.Level * BEAR_POWER_CARRY_BONUS;
+
+                __instance.SetText(SkillDescriptions.BearRawpowerDescription(hpBonus, carryWeightBonus));
             }
         }
     }
@@ -178,13 +203,29 @@ namespace SkillsExtended.Patches
                 return false;
             }
 
+            // Usec AR systems
             if (skill.Id == ESkillId.UsecArsystems && side == EPlayerSide.Bear && !skills.BearAksystems.IsEliteLevel)
             {
                 // Skip original method and dont show skill
                 return false;
             }
 
+            // Usec Tactics
+            if (skill.Id == ESkillId.UsecTactics && side == EPlayerSide.Bear)
+            {
+                // Skip original method and dont show skill
+                return false;
+            }
+
+            // Bear AK systems
             if (skill.Id == ESkillId.BearAksystems && side == EPlayerSide.Usec && !skills.UsecArsystems.IsEliteLevel)
+            {
+                // Skip original method and dont show skill
+                return false;
+            }
+
+            // Bear Raw Power
+            if (skill.Id == ESkillId.BearRawpower && side == EPlayerSide.Usec)
             {
                 // Skip original method and dont show skill
                 return false;
@@ -209,10 +250,22 @@ namespace SkillsExtended.Patches
                 name.text = "USEC rifle and carbine proficiency";
             }
 
+            if (skill.Id == ESkillId.UsecTactics)
+            {
+                TextMeshProUGUI name = (TextMeshProUGUI)AccessTools.Field(typeof(SkillPanel), "_name").GetValue(__instance);
+                name.text = "USEC Tactics";
+            }
+
             if (skill.Id == ESkillId.BearAksystems)
             {
                 TextMeshProUGUI name = (TextMeshProUGUI)AccessTools.Field(typeof(SkillPanel), "_name").GetValue(__instance);
                 name.text = "BEAR rifle and carbine proficiency";
+            }
+
+            if (skill.Id == ESkillId.BearRawpower)
+            {
+                TextMeshProUGUI name = (TextMeshProUGUI)AccessTools.Field(typeof(SkillPanel), "_name").GetValue(__instance);
+                name.text = "BEAR Raw Power";
             }
         }
     }

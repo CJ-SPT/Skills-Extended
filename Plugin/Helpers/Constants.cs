@@ -4,21 +4,29 @@ namespace SkillsExtended.Helpers
 {
     public static class Constants
     {
-        public const float WEAPON_PROF_XP = 1.05f;              //XP per hit
-        public const float ERGO_MOD = 0.003f;                   //Ergonomics
-        public const float ERGO_MOD_ELITE = 0.10f;              //Ergonomics elite
-        public const float RECOIL_REDUCTION = 0.003f;           //Recoil bonus
-        public const float RECOIL_REDUCTION_ELITE = 0.09f;      //Recoil bonus elite
+        public const float WEAPON_PROF_XP = 1.05f;                  //XP per hit
+        public const float ERGO_MOD = 0.003f;                       //Ergonomics
+        public const float ERGO_MOD_ELITE = 0.10f;                  //Ergonomics elite
+        public const float RECOIL_REDUCTION = 0.003f;               //Recoil bonus
+        public const float RECOIL_REDUCTION_ELITE = 0.09f;          //Recoil bonus elite
 
-        public const float MEDKIT_HP_BONUS = 0.01f;             //Medkit bonus
-        public const float MEDKIT_HP_BONUS_ELITE = 0.20f;       //Medkit bonus elite
+        public const float MEDKIT_HP_BONUS = 0.01f;                 //Medkit bonus
+        public const float MEDKIT_HP_BONUS_ELITE = 0.20f;           //Medkit bonus elite
         public const float MEDICAL_SPEED_BONUS = 0.007f;
         public const float MEDICAL_SPEED_BONUS_ELITE = 0.15f;
 
-        public const float RESOURCE_RED_BONUS = 0.003f;         //Bleed-Fracture Resource cost reduction
-        public const float RESOURCE_RED_BONUS_ELITE = 0.20f;    //Bleed-Fracture Resource cost reduction elite
-       
+        //public const float RESOURCE_RED_BONUS = 0.003f;           //Bleed-Fracture Resource cost reduction
+        //public const float RESOURCE_RED_BONUS_ELITE = 0.20f;      //Bleed-Fracture Resource cost reduction elite
 
+        public const float USEC_INERTIA_RED_BONUS = 0.002f;         //Usec tactics inertia reduction
+        public const float USEC_INERTIA_RED_BONUS_ELITE = 0.10f;    //Usec tactics inertia reduction elite
+        public const float USEC_AIMPUNCH_RED_BONUS = 0.002f;        //Usec tactics aimpunch reduction
+        public const float USEC_AIMPUNCH_RED_BONUS_ELITE = 0.05f;   //Usec tactics aimpunch reduction elite 
+
+        public const float BEAR_POWER_HP_BONUS = 0.001f;            //Bear power health bonus
+        public const float BEAR_POWER_HP_BONUS_ELITE = 0.05f;       //Bear power health bonus elite
+        public const float BEAR_POWER_CARRY_BONUS = 0.002f;         //Bear power carry weight bonus
+        public const float BEAR_POWER_CARRY_BONUS_ELITE = 0.06f;    //Bear power carry weight bonus elite
 
         public static readonly List<string> USEC_WEAPON_LIST = new List<string>
         {
