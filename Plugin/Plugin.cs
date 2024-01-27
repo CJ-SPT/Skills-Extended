@@ -7,18 +7,11 @@ using SkillsExtended.Controllers;
 using DrakiaXYZ.VersionChecker;
 using SkillsExtended.Helpers;
 using Skills_Extended.Controllers;
-
-using static SkillsExtended.Patches.SkillsPatches;
-using static SkillsExtended.Patches.SkillsPatches.SimpleToolTipPatch;
 using SkillsExtended.Patches;
-using System.Linq;
-using Comfort.Common;
-using EFT.UI;
 
 namespace SkillsExtended
 {
-    [BepInPlugin("com.dirtbikercj.SkillsExtended", "Skills Extended", "0.3.2")]
-
+    [BepInPlugin("com.dirtbikercj.SkillsExtended", "Skills Extended", "0.4.0")]
     public class Plugin : BaseUnityPlugin
     {
         public const int TarkovVersion = 26535;
