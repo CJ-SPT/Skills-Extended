@@ -55,8 +55,8 @@ namespace SkillsExtended.Patches
 
             AccessTools.Field(Utils.GetSkillType(), "Locked").SetValue(__instance.UsecArsystems, false);
             AccessTools.Field(Utils.GetSkillType(), "Locked").SetValue(__instance.BearAksystems, false);
-            AccessTools.Field(Utils.GetSkillType(), "Locked").SetValue(__instance.UsecTactics, false);
-            AccessTools.Field(Utils.GetSkillType(), "Locked").SetValue(__instance.BearRawpower, false);
+            AccessTools.Field(Utils.GetSkillType(), "Locked").SetValue(__instance.UsecTactics, true);
+            AccessTools.Field(Utils.GetSkillType(), "Locked").SetValue(__instance.BearRawpower, true);
         }
     }
 

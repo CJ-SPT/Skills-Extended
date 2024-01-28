@@ -16,6 +16,9 @@ namespace SkillsExtended.Helpers
             ConsoleScreen.Processor.RegisterCommand("increaseFirstAid", new Action(DoIncreaseFirstAidLevel));
             ConsoleScreen.Processor.RegisterCommand("decreaseFirstAid", new Action(DoDecreaseFirstAidLevel));
 
+            ConsoleScreen.Processor.RegisterCommand("increaseFieldMedicine", new Action(DoIncreaseFieldMedicineLevel));
+            ConsoleScreen.Processor.RegisterCommand("decreaseFieldMedicine", new Action(DoDecreaseFieldMedicineLevel));
+
             ConsoleScreen.Processor.RegisterCommand("increaseUsecAR", new Action(DoIncreaseUsecARLevel));
             ConsoleScreen.Processor.RegisterCommand("decreaseUsecAR", new Action(DoDecreaseUsecARLevel));
 
@@ -24,6 +27,12 @@ namespace SkillsExtended.Helpers
 
             ConsoleScreen.Processor.RegisterCommand("increaseFirstAidScav", new Action(DoIncreaseFirstAidLevelScav));
             ConsoleScreen.Processor.RegisterCommand("decreaseFirstAidScav", new Action(DoDecreaseFirstAidLevelScav));
+
+            ConsoleScreen.Processor.RegisterCommand("increaseBearRawPower", new Action(DoIncreaseBearRawPowerLevel));
+            ConsoleScreen.Processor.RegisterCommand("decreaseBearRawPower", new Action(DoDecreaseBearRawPowerLevel));
+
+            ConsoleScreen.Processor.RegisterCommand("increaseUsecTactics", new Action(DoIncreaseUsecTactics));
+            ConsoleScreen.Processor.RegisterCommand("decreaseUsecTactics", new Action(DoDecreaseUsecTactics));
 
             ConsoleScreen.Processor.RegisterCommand("damage", new Action(DoDamage));
             ConsoleScreen.Processor.RegisterCommand("die", new Action(DoDie));
@@ -59,6 +68,24 @@ namespace SkillsExtended.Helpers
             if (firstAid == null) { return; }
 
             firstAid.SetLevel(firstAid.Level - 1);
+        }
+
+        public static void DoIncreaseFieldMedicineLevel()
+        {
+            var fieldMedicine = Plugin.Session.Profile.Skills.FieldMedicine;
+
+            if (fieldMedicine == null) { return; }
+
+            fieldMedicine.SetLevel(fieldMedicine.Level + 1);
+        }
+
+        public static void DoDecreaseFieldMedicineLevel()
+        {
+            var fieldMedicine = Plugin.Session.Profile.Skills.FieldMedicine;
+
+            if (fieldMedicine == null) { return; }
+
+            fieldMedicine.SetLevel(fieldMedicine.Level - 1);
         }
 
         public static void DoIncreaseUsecARLevel()
@@ -114,6 +141,43 @@ namespace SkillsExtended.Helpers
 
             firstAid.SetLevel(firstAid.Level - 1);
         }
+
+        public static void DoIncreaseBearRawPowerLevel()
+        {
+            var bearPower = Plugin.Session.Profile.Skills.BearRawpower;
+
+            if (bearPower == null) { return; }
+
+            bearPower.SetLevel(bearPower.Level + 1);
+        }
+
+        public static void DoDecreaseBearRawPowerLevel()
+        {
+            var bearPower = Plugin.Session.Profile.Skills.BearRawpower;
+
+            if (bearPower == null) { return; }
+
+            bearPower.SetLevel(bearPower.Level - 1);
+        }
+
+        public static void DoIncreaseUsecTactics()
+        {
+            var usecTactics = Plugin.Session.Profile.Skills.UsecTactics;
+
+            if (usecTactics == null) { return; }
+
+            usecTactics.SetLevel(usecTactics.Level + 1);
+        }
+
+        public static void DoDecreaseUsecTactics()
+        {
+            var usecTactics = Plugin.Session.Profile.Skills.UsecTactics;
+
+            if (usecTactics == null) { return; }
+
+            usecTactics.SetLevel(usecTactics.Level - 1);
+        }
+
 
         #endregion
 

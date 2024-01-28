@@ -6,25 +6,28 @@ using Aki.Reflection.Utils;
 using SkillsExtended.Controllers;
 using DrakiaXYZ.VersionChecker;
 using SkillsExtended.Helpers;
-using Skills_Extended.Controllers;
 using SkillsExtended.Patches;
+using EFT;
+using Comfort.Common;
 
 namespace SkillsExtended
 {
-    [BepInPlugin("com.dirtbikercj.SkillsExtended", "Skills Extended", "0.4.0")]
+    [BepInPlugin("com.dirtbikercj.SkillsExtended", "Skills Extended", "0.3.3")]
     public class Plugin : BaseUnityPlugin
     {
         public const int TarkovVersion = 26535;
 
         public static ISession Session;
-        public static Profile SEProfile;
-
+        
         internal static GameObject Hook;
         internal static MedicalBehavior MedicalScript;
         internal static WeaponProficiencyBehaviors WeaponsScript;
+        internal static BearRawPowerBehavior BearPowerScript;
 
         internal static ManualLogSource Log;
 
+        // Initialze to true so we avoid a loop condition
+        private bool _setInRaid = true;
         private bool _warned = false;
 
         void Awake()
@@ -47,6 +50,7 @@ namespace SkillsExtended
            
             MedicalScript = Hook.AddComponent<MedicalBehavior>();
             WeaponsScript = Hook.AddComponent<WeaponProficiencyBehaviors>();
+            //BearPowerScript = Hook.AddComponent<BearRawPowerBehavior>();
 
             DontDestroyOnLoad(Hook);           
 
@@ -73,6 +77,6 @@ namespace SkillsExtended
 
                 Log.LogDebug("Session set");
             }
-        }
+        }      
     }
 }

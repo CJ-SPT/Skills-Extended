@@ -4,12 +4,11 @@ using Aki.Reflection.Utils;
 using Comfort.Common;
 using EFT;
 using Newtonsoft.Json;
+using SkillsExtended.Controllers;
 using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.InteropServices.WindowsRuntime;
-using UnityEngine;
 
 namespace SkillsExtended.Helpers
 {
@@ -88,15 +87,14 @@ namespace SkillsExtended.Helpers
         // If the player is in the gameworld, use the main players skillmanager
         public static SkillManager SetActiveSkillManager()
         {
-            if (Singleton<GameWorld>.Instantiated)
+            if (Singleton<GameWorld>.Instance?.MainPlayer != null)
             {
-                Plugin.Log.LogDebug("Skill Manager is Player.");
                 return Singleton<GameWorld>.Instance.MainPlayer.Skills;
             }
-            else if (Plugin.Session?.Profile?.Skills != null)
+            else if (Plugin.Session != null)
             {
-                Plugin.Log.LogDebug("Skill Manager is Session.");
-                return Plugin.Session?.Profile?.Skills;
+                WeaponProficiencyBehaviors.isSubscribed = false;
+                return ClientAppUtils.GetMainApp()?.GetClientBackEndSession()?.Profile?.Skills;              
             }
 
             return null;

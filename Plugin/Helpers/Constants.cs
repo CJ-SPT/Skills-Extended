@@ -27,6 +27,7 @@ namespace SkillsExtended.Helpers
         public const float BEAR_POWER_HP_BONUS_ELITE = 0.05f;       //Bear power health bonus elite
         public const float BEAR_POWER_CARRY_BONUS = 0.002f;         //Bear power carry weight bonus
         public const float BEAR_POWER_CARRY_BONUS_ELITE = 0.06f;    //Bear power carry weight bonus elite
+        public const double BEAR_POWER_UPDATE_TIME = 1d;            //Bear power XP cooldown time in seconds
 
         public static readonly List<string> USEC_WEAPON_LIST = new List<string>
         {
