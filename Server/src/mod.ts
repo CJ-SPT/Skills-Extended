@@ -6,6 +6,7 @@ import { DependencyContainer } from "tsyringe";
 import { IPostDBLoadMod } from "@spt-aki/models/external/IPostDBLoadMod";
 import { IPreAkiLoadMod } from "@spt-aki/models/external/IPreAkiLoadMod";
 import { LogTextColor } from "@spt-aki/models/spt/logging/LogTextColor";
+import { IPmcData } from "@spt-aki/models/eft/common/IPmcData";
 
 class SkillsPlus implements IPreAkiLoadMod, IPostDBLoadMod
 {
@@ -39,8 +40,32 @@ class SkillsPlus implements IPreAkiLoadMod, IPostDBLoadMod
         return JSON.stringify(data.BEAR_Rifle_Carbine_Skill);
     }
 
+    private loadSkills(profile: IPmcData): string
+    {
+        return JSON.stringify(profile.Skills.Common);
+    }
+
     private registerGetCustomWeaponRoutes(): void
     {
+        this.Instance.staticRouter.registerStaticRouter(
+            "GetSkills",
+            [
+                {
+                    url: "/skillsExtended/GetSkills",
+                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                    action: (url, info, sessionId, output) => 
+                    {
+                        const profile = this.Instance.profileHelper.getPmcProfile(sessionId);                       
+                        const json = this.loadSkills(profile);
+                        
+                        this.Instance.logger.log(`[${this.Instance.modName}] Skills requested by client`, LogTextColor.GREEN);
+                        return json;
+                    }
+                }
+            ],
+            ""
+        );
+
         this.Instance.staticRouter.registerStaticRouter(
             "GetCustomWeaponsUsec",
             [
