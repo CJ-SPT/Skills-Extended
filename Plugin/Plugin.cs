@@ -9,6 +9,7 @@ using SkillsExtended.Helpers;
 using SkillsExtended.Patches;
 using EFT;
 using Comfort.Common;
+using System.Collections.Generic;
 
 namespace SkillsExtended
 {
@@ -18,7 +19,8 @@ namespace SkillsExtended
         public const int TarkovVersion = 26535;
 
         public static ISession Session;
-        
+        public static List<SkillPacket> skillData;
+
         internal static GameObject Hook;
         internal static MedicalBehavior MedicalScript;
         internal static WeaponProficiencyBehaviors WeaponsScript;
@@ -43,14 +45,17 @@ namespace SkillsExtended
             new SimpleToolTipPatch().Enable();
             new SkillManagerConstructorPatch().Enable();
             new OnScreenChangePatch().Enable();
-         
+            new HealthParameterShowPatch().Enable();
+
+            skillData = Utils.Get<List<SkillPacket>>("/skillsExtended/GetSkills");
+
             Log = Logger;
             
             Hook = new GameObject("Skills Controller Object");
            
             MedicalScript = Hook.AddComponent<MedicalBehavior>();
             WeaponsScript = Hook.AddComponent<WeaponProficiencyBehaviors>();
-            //BearPowerScript = Hook.AddComponent<BearRawPowerBehavior>();
+            BearPowerScript = Hook.AddComponent<BearRawPowerBehavior>();
 
             DontDestroyOnLoad(Hook);           
 

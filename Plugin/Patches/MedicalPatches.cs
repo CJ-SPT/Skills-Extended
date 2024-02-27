@@ -1,7 +1,5 @@
 ﻿using Aki.Reflection.Patching;
 using EFT;
-using EFT.HealthSystem;
-using EFT.InventoryLogic;
 using System.Linq;
 using System.Reflection;
 
