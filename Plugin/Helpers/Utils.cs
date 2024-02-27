@@ -16,6 +16,15 @@ namespace SkillsExtended.Helpers
     {
         #region Types
 
+        // GClass 1263 (3.7.6)
+        public static Type GetStaminaType()
+        {
+            return PatchConstants.EftTypes.Single(x =>
+                x.GetField("Capacity") != null &&
+                x.IsSealed &&
+                x.IsNested);
+        }
+
         // GClass 1633 (3.7.6)
         public static Type GetSkillBaseType()
         {
@@ -47,6 +56,17 @@ namespace SkillsExtended.Helpers
                 x.GetField("HidenForPlayers") != null &&
                 x.GetField("EliteRuleFunc") != null &&
                 x.IsAbstract == true);
+        }
+
+        // CLASS2850 (3.7.6)
+        public static Type GetWeightPanelType()
+        {
+            return PatchConstants.EftTypes.Single(x =>
+            x.IsSealed &&
+            x.IsNested &&
+            x.GetField("skills") != null &&
+            x.GetField("healthParametersPanel_0") != null &&
+            x.GetMethods().Length == 4);
         }
 
         // GInterface249 (3.7.6)
@@ -106,5 +126,13 @@ namespace SkillsExtended.Helpers
             var req = RequestHandler.GetJson(url);
             return JsonConvert.DeserializeObject<T>(req);
         }
+    }
+
+    public class SkillPacket
+    {
+        public string Id;
+        public float Progress;
+        public float PointsErnedDuringSession;
+        public float LastAccess;
     }
 }
