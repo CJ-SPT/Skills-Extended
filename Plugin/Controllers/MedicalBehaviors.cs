@@ -36,28 +36,6 @@ namespace SkillsExtended.Controllers
             public string StimulatorBuffs { set; get; }
         }
 
-        public List<string> firstAidItemList = new List<string>
-        {
-            "544fb45d4bdc2dee738b4568", // Salewa
-            "5755356824597772cb798962", // AI-2
-            "590c657e86f77412b013051d", // Grizzly
-            "590c661e86f7741e566b646a", // Car
-            "590c678286f77426c9660122", // Ifak
-            "5e99711486f7744bfc4af328", // Sanitars
-            "60098ad7c2240c0fe85c570a"  // AFAK
-        };
-
-        public List<string> fieldMedicineItemList = new List<string>
-        {
-            "544fb25a4bdc2dfb738b4567", // bandage
-            "5751a25924597722c463c472", // army bandage
-            "5e831507ea0a7c419c2f9bd9", // esmarch
-            "60098af40accd37ef2175f27", // CAT
-            "5e8488fa988a8701445df1e4", // calok-b
-            "544fb3364bdc2d34748b456a", // splint
-            "5af0454c86f7746bf20992e8"  // alu splint
-        };
-
         private Dictionary<string, MedKitValues> _originalMedKitValues = new Dictionary<string, MedKitValues>();
         private Dictionary<string, HealthEffectValues> _originalHealthEffectValues = new Dictionary<string, HealthEffectValues>();
 
@@ -292,7 +270,7 @@ namespace SkillsExtended.Controllers
                 }
 
                 // Apply first aid speed bonus to items
-                if (firstAidItemList.Contains(item.TemplateId))
+                if (FIELD_MEDICINE_ITEM_LIST.Contains(item.TemplateId))
                 {
                     ApplyFirstAidSpeedBonus(item);
                     ApplyFirstAidHPBonus(item);
@@ -300,7 +278,7 @@ namespace SkillsExtended.Controllers
                 }
 
                 // Apply Field medicine speed bonus to items
-                if (fieldMedicineItemList.Contains(item.TemplateId))
+                if (FIELD_MEDICINE_ITEM_LIST.Contains(item.TemplateId))
                 {
                     ApplyFieldMedicineSpeedBonus(item);
                     fieldMedicineInstanceIDs.Add(item.Id, _skillManager.FieldMedicine.Level);

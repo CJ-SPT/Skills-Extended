@@ -13,7 +13,7 @@ using System.Collections.Generic;
 
 namespace SkillsExtended
 {
-    [BepInPlugin("com.dirtbikercj.SkillsExtended", "Skills Extended", "0.3.4")]
+    [BepInPlugin("com.dirtbikercj.SkillsExtended", "Skills Extended", "0.3.5")]
     public class Plugin : BaseUnityPlugin
     {
         public const int TarkovVersion = 26535;
@@ -46,7 +46,7 @@ namespace SkillsExtended
             new SkillManagerConstructorPatch().Enable();
             new OnScreenChangePatch().Enable();
 
-            skillData = Utils.Get<List<SkillPacket>>("/skillsExtended/GetSkills");
+            //skillData = Utils.Get<List<SkillPacket>>("/skillsExtended/GetSkills");
 
             SEConfig.InitializeConfig(Config);
 
@@ -56,7 +56,7 @@ namespace SkillsExtended
            
             MedicalScript = Hook.AddComponent<MedicalBehavior>();
             WeaponsScript = Hook.AddComponent<WeaponProficiencyBehaviors>();
-            BearPowerScript = Hook.AddComponent<BearRawPowerBehavior>();
+            //BearPowerScript = Hook.AddComponent<BearRawPowerBehavior>();
 
             DontDestroyOnLoad(Hook);           
 
@@ -67,16 +67,6 @@ namespace SkillsExtended
 
         void Update()
         {
-
-            #if BETA
-            if (!_warned && PreloaderUI.Instance != null)
-            {
-                PreloaderUI.Instance.ShowErrorScreen("Skills Extended", "Skills Extended: This is a BETA build. Report all bugs in the thread, or on the website.");
-                Log.LogDebug("User was warned.");
-                _warned = true;
-            }
-            #endif
-
             if (Session == null && ClientAppUtils.GetMainApp().GetClientBackEndSession() != null)
             {
                 Session = ClientAppUtils.GetMainApp().GetClientBackEndSession();

@@ -3,6 +3,7 @@ using EFT;
 using EFT.InventoryLogic;
 using EFT.UI;
 using HarmonyLib;
+using SkillsExtended.Helpers;
 using System.Linq;
 using System.Reflection;
 
@@ -30,14 +31,14 @@ namespace SkillsExtended.Patches
                 return;
             }
 
-            if (Plugin.MedicalScript.fieldMedicineItemList.Contains(meds.TemplateId))
+            if (Constants.FIELD_MEDICINE_ITEM_LIST.Contains(meds.TemplateId))
             {
                 Plugin.MedicalScript.ApplyFieldMedicineExp(bodyPart);
                 Plugin.Log.LogDebug("Field Medicine Effect");
                 return;
             }
 
-            if (Plugin.MedicalScript.firstAidItemList.Contains(meds.TemplateId))
+            if (Constants.FIRST_AID_ITEM_LIST.Contains(meds.TemplateId))
             {
                 Plugin.MedicalScript.ApplyFirstAidExp(bodyPart);
             }       
@@ -65,14 +66,14 @@ namespace SkillsExtended.Patches
                 return;
             }
 
-            if (Plugin.MedicalScript.fieldMedicineItemList.Contains(item.TemplateId))
+            if (Constants.FIELD_MEDICINE_ITEM_LIST.Contains(item.TemplateId))
             {
                 Plugin.MedicalScript.ApplyFieldMedicineExp(EBodyPart.Common);
                 Plugin.Log.LogDebug("Field Medicine Effect");
                 return;
             }
 
-            if (Plugin.MedicalScript.firstAidItemList.Contains(item.TemplateId))
+            if (Constants.FIRST_AID_ITEM_LIST.Contains(item.TemplateId))
             {
                 Plugin.MedicalScript.ApplyFirstAidExp(EBodyPart.Common);
             }
