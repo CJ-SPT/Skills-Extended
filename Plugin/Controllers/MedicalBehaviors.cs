@@ -93,6 +93,7 @@ namespace SkillsExtended.Controllers
         private void Awake()
         {
             new DoMedEffectPatch().Enable();
+            new SetItemInHands().Enable();
         }
 
         private void Update()
@@ -320,13 +321,13 @@ namespace SkillsExtended.Controllers
             {
                 TimeSpan elapsed = DateTime.Now - dict[bodypart];
 
-                if (elapsed.TotalSeconds >= 60)
+                if (elapsed.TotalSeconds >= SEConfig.medicalSkillCoolDownTime.Value)
                 {
                     dict.Remove(bodypart);
                     return true;
                 }
 
-                Plugin.Log.LogDebug($"Time until next available xp: {60 - elapsed.TotalSeconds} seconds");
+                Plugin.Log.LogDebug($"Time until next available xp: {SEConfig.medicalSkillCoolDownTime.Value - elapsed.TotalSeconds} seconds");
                 return false;
             }
         }

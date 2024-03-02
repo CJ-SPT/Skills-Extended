@@ -1,5 +1,8 @@
 ﻿using Aki.Reflection.Patching;
 using EFT;
+using EFT.InventoryLogic;
+using EFT.UI;
+using HarmonyLib;
 using System.Linq;
 using System.Reflection;
 
@@ -35,6 +38,38 @@ namespace SkillsExtended.Patches
             }
 
             Plugin.MedicalScript.ApplyFirstAidExp(bodyPart);
+        }
+    }
+
+    internal class SetItemInHands : ModulePatch
+    {
+        protected override MethodBase GetTargetMethod()
+        {
+            return typeof(Player).GetMethod("TryProceed", BindingFlags.NonPublic | BindingFlags.Instance);
+        }
+
+        [PatchPostfix]
+        public static void Postfix(Player __instance, Item item)
+        {
+            // Dont give xp for surgery
+            if (item.TemplateId == "5d02778e86f774203e7dedbe" || item.TemplateId == "5d02797c86f774203f38e30a")
+            {
+                return;
+            }
+
+            if (!__instance.IsYourPlayer)
+            {
+                return;
+            }
+
+            if (Plugin.MedicalScript.fieldMedicineItemList.Contains(item.TemplateId))
+            {
+                Plugin.MedicalScript.ApplyFieldMedicineExp(EBodyPart.Common);
+                Plugin.Log.LogDebug("Field Medicine Effect");
+                return;
+            }
+
+            Plugin.MedicalScript.ApplyFirstAidExp(EBodyPart.Common);
         }
     }
 }
