@@ -37,7 +37,10 @@ namespace SkillsExtended.Patches
                 return;
             }
 
-            Plugin.MedicalScript.ApplyFirstAidExp(bodyPart);
+            if (Plugin.MedicalScript.firstAidItemList.Contains(meds.TemplateId))
+            {
+                Plugin.MedicalScript.ApplyFirstAidExp(bodyPart);
+            }       
         }
     }
 
@@ -69,7 +72,10 @@ namespace SkillsExtended.Patches
                 return;
             }
 
-            Plugin.MedicalScript.ApplyFirstAidExp(EBodyPart.Common);
+            if (Plugin.MedicalScript.firstAidItemList.Contains(item.TemplateId))
+            {
+                Plugin.MedicalScript.ApplyFirstAidExp(EBodyPart.Common);
+            }
         }
     }
 }
