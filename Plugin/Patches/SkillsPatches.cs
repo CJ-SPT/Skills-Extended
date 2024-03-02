@@ -72,7 +72,6 @@ namespace SkillsExtended.Patches
             {
                 AccessTools.Field(Utils.GetSkillType(), "Locked").SetValue(__instance.FirstAid, false);
                 AccessTools.Field(Utils.GetSkillType(), "Locked").SetValue(__instance.FieldMedicine, false);
-                AccessTools.Field(Utils.GetSkillType(), "Locked").SetValue(__instance.Lockpicking, false);
             }
             catch (Exception e)
             {
@@ -206,30 +205,44 @@ namespace SkillsExtended.Patches
             // Usec AR systems
             if (skill.Id == ESkillId.UsecArsystems && side == EPlayerSide.Bear && !skills.BearAksystems.IsEliteLevel)
             {
+                if (SEConfig.disableEliteRequirement.Value)
+                {
+                    return true;
+                }
+
                 // Skip original method and dont show skill
                 return false;
             }
 
+            /*
             // Usec Tactics
             if (skill.Id == ESkillId.UsecTactics && side == EPlayerSide.Bear)
             {
                 // Skip original method and dont show skill
                 return false;
             }
+            */
 
             // Bear AK systems
             if (skill.Id == ESkillId.BearAksystems && side == EPlayerSide.Usec && !skills.UsecArsystems.IsEliteLevel)
             {
+                if (SEConfig.disableEliteRequirement.Value)
+                {
+                    return true;
+                }
+
                 // Skip original method and dont show skill
                 return false;
             }
 
+            /*
             // Bear Raw Power
             if (skill.Id == ESkillId.BearRawpower && side == EPlayerSide.Usec)
             {
                 // Skip original method and dont show skill
                 return false;
             }
+            */
 
             // Show the skill
             return true;

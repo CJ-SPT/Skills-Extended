@@ -96,14 +96,16 @@ namespace SkillsExtended.Controllers
                 }
                 
                 if ((_gameWorld.MainPlayer.Side == EPlayerSide.Usec && !_skillManager.UsecArsystems.IsEliteLevel) 
-                    || (_skillManager.BearAksystems.IsEliteLevel && !_skillManager.UsecArsystems.IsEliteLevel))
+                    || (_skillManager.BearAksystems.IsEliteLevel && !_skillManager.UsecArsystems.IsEliteLevel)
+                    || SEConfig.disableEliteRequirement.Value)
                 {
                     _skillManager.OnMasteringExperienceChanged += ApplyUsecARXp;           
                     Plugin.Log.LogDebug("USEC AR XP ENABLED.");
                 }
 
                 if ((_gameWorld.MainPlayer.Side == EPlayerSide.Bear && !_skillManager.BearAksystems.IsEliteLevel) 
-                    || (_skillManager.UsecArsystems.IsEliteLevel && !_skillManager.BearAksystems.IsEliteLevel))
+                    || (_skillManager.UsecArsystems.IsEliteLevel && !_skillManager.BearAksystems.IsEliteLevel)
+                    || SEConfig.disableEliteRequirement.Value)
                 {
                     _skillManager.OnMasteringExperienceChanged += ApplyBearAKXp;
                     Plugin.Log.LogDebug("BEAR AK XP ENABLED.");
@@ -121,9 +123,9 @@ namespace SkillsExtended.Controllers
            
             if (items)
             {
-                _skillManager.UsecArsystems.Current += Constants.WEAPON_PROF_XP;
+                _skillManager.UsecArsystems.Current += Constants.WEAPON_PROF_XP * SEConfig.usecWeaponSpeedMult.Value;
 
-                Plugin.Log.LogDebug($"USEC AR {Constants.WEAPON_PROF_XP} XP Gained.");
+                Plugin.Log.LogDebug($"USEC AR {Constants.WEAPON_PROF_XP * SEConfig.usecWeaponSpeedMult.Value} XP Gained.");
                 return;
             }
             
@@ -137,9 +139,9 @@ namespace SkillsExtended.Controllers
 
             if (items)
             {
-                _skillManager.BearAksystems.Current += Constants.WEAPON_PROF_XP;
+                _skillManager.BearAksystems.Current += Constants.WEAPON_PROF_XP * SEConfig.bearWeaponSpeedMult.Value;
 
-                Plugin.Log.LogDebug($"BEAR AK {Constants.WEAPON_PROF_XP} XP Gained.");
+                Plugin.Log.LogDebug($"BEAR AK {Constants.WEAPON_PROF_XP * SEConfig.bearWeaponSpeedMult.Value} XP Gained.");
                 return;
             }
 

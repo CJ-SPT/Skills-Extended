@@ -115,9 +115,9 @@ namespace SkillsExtended.Controllers
 
             if (!CanGainXPForLimb(_firstAidBodypartCahce, bodypart)) { return; }
 
-            _skillManager.FirstAid.SetCurrent(_skillManager.FirstAid.Current + xpGain, true);
+            _skillManager.FirstAid.SetCurrent(_skillManager.FirstAid.Current + (xpGain * SEConfig.firstAidSpeedMult.Value), true);
 
-            Plugin.Log.LogDebug($"Skill: {_skillManager.FirstAid.Id} Side: {player.Side} Gained: {xpGain} exp.");
+            Plugin.Log.LogDebug($"Skill: {_skillManager.FirstAid.Id} Side: {player.Side} Gained: {xpGain * SEConfig.firstAidSpeedMult.Value} exp.");
         }
 
         public void ApplyFieldMedicineExp(EBodyPart bodypart)
@@ -127,9 +127,9 @@ namespace SkillsExtended.Controllers
             // If we recently healed this limb, return
             if (!CanGainXPForLimb(_fieldMedicineBodyPartCache, bodypart)) { return; }
 
-            _skillManager.FieldMedicine.SetCurrent(_skillManager.FieldMedicine.Current + xpGain, true);
+            _skillManager.FieldMedicine.SetCurrent(_skillManager.FieldMedicine.Current + (xpGain * SEConfig.fieldMedicineSpeedMult.Value), true);
 
-            Plugin.Log.LogDebug($"Skill: {_skillManager.FieldMedicine.Id} Side: {player.Side} Gained: {xpGain} exp.");
+            Plugin.Log.LogDebug($"Skill: {_skillManager.FieldMedicine.Id} Side: {player.Side} Gained: {xpGain * SEConfig.fieldMedicineSpeedMult.Value} exp.");
         }
 
         private void ApplyFirstAidSpeedBonus(Item item)
