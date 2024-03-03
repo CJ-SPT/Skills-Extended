@@ -13,7 +13,7 @@ using System.Collections.Generic;
 
 namespace SkillsExtended
 {
-    [BepInPlugin("com.dirtbikercj.SkillsExtended", "Skills Extended", "0.3.5")]
+    [BepInPlugin("com.dirtbikercj.SkillsExtended", "Skills Extended", "0.3.6")]
     public class Plugin : BaseUnityPlugin
     {
         public const int TarkovVersion = 26535;
@@ -45,13 +45,16 @@ namespace SkillsExtended
             new SimpleToolTipPatch().Enable();
             new SkillManagerConstructorPatch().Enable();
             new OnScreenChangePatch().Enable();
+            //new OnGameStartedPatch().Enable();
+
+            //SetInteractionTypes();
 
             //skillData = Utils.Get<List<SkillPacket>>("/skillsExtended/GetSkills");
 
             SEConfig.InitializeConfig(Config);
 
             Log = Logger;
-            
+
             Hook = new GameObject("Skills Controller Object");
            
             MedicalScript = Hook.AddComponent<MedicalBehavior>();
@@ -73,6 +76,13 @@ namespace SkillsExtended
 
                 Log.LogDebug("Session set");
             }
-        }      
+        }
+        
+        void SetInteractionTypes()
+        {
+            WorldInteractionUtils.targetType = Utils.GetContextMenuTargetType();
+            WorldInteractionUtils.returnType = Utils.GetContextMenuReturnType();
+            WorldInteractionUtils.actionType = Utils.GetContextMenuActionType();
+        }
     }
 }

@@ -85,7 +85,7 @@ namespace SkillsExtended.Controllers
             // Dont continue if skill manager is null
             //if (_skillManager == null) { return; }
 
-            StaticManager.Instance.StartCoroutine(FirstAidUpdate());
+            StaticManager.Instance.StartCoroutine(MedicalItemUpdate());
         }
 
         public void ApplyFirstAidExp(EBodyPart bodypart)
@@ -192,7 +192,6 @@ namespace SkillsExtended.Controllers
 
                 var medComp = AccessTools.Field(typeof(MedsClass), "MedKitComponent").GetValue(meds);
                 AccessTools.Field(typeof(MedKitComponent), "ginterface249_0").SetValue(medComp, newInterface);
-                AccessTools.Field(typeof(MedKitComponent), "ginterface249_0").SetValue(medComp, newInterface);
             }
         }
 
@@ -231,7 +230,7 @@ namespace SkillsExtended.Controllers
             }
         }
 
-        private IEnumerator FirstAidUpdate()
+        private IEnumerator MedicalItemUpdate()
         {
             var items = Plugin.Session?.Profile?.Inventory?.AllPlayerItems?.Where(x => x is MedsClass);
 
@@ -270,7 +269,7 @@ namespace SkillsExtended.Controllers
                 }
 
                 // Apply first aid speed bonus to items
-                if (FIELD_MEDICINE_ITEM_LIST.Contains(item.TemplateId))
+                if (FIRST_AID_ITEM_LIST.Contains(item.TemplateId))
                 {
                     ApplyFirstAidSpeedBonus(item);
                     ApplyFirstAidHPBonus(item);
