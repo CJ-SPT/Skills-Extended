@@ -564,3 +564,9 @@ FodyWeavers.xsd
 /Server/build/user/mods/SkillsExtended/package.json
 /Server/build/user/mods/SkillsExtended/src/InstanceManager.ts
 /Server/build/user/mods/SkillsExtended/src/mod.ts
+/Plugin/Dependencies/aki-core.dll
+/Plugin/Dependencies/aki-custom.dll
+/Plugin/Dependencies/aki-debugging.dll
+/Plugin/Dependencies/aki-singleplayer.dll
+/Plugin/Dependencies/ConfigurationManager.dll
+/Plugin/Dependencies/Microsoft.CSharp.dll
