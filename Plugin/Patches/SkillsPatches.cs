@@ -1,10 +1,12 @@
 ﻿using Aki.Reflection.Patching;
+using Aki.Reflection.Utils;
 using EFT;
 using EFT.UI;
 using EFT.UI.Screens;
 using HarmonyLib;
 using SkillsExtended.Helpers;
 using System;
+using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using TMPro;
@@ -20,18 +22,18 @@ namespace SkillsExtended.Patches
             typeof(SkillManager).GetConstructor(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null, new Type[] { typeof(EPlayerSide) }, null);
 
         [PatchPostfix]
-        public static void Postfix(SkillManager __instance, ref GClass1635[] ___DisplayList, ref GClass1635[] ___Skills,
-            ref GClass1635 ___UsecArsystems, ref GClass1635 ___BearAksystems, ref GClass1635 ___UsecTactics, ref GClass1635 ___BearRawpower)
+        public static void Postfix(SkillManager __instance, ref SkillClass[] ___DisplayList, ref SkillClass[] ___Skills,
+            ref SkillClass ___UsecArsystems, ref SkillClass ___BearAksystems, ref SkillClass ___UsecTactics, ref SkillClass ___BearRawpower)
         {
             int insertIndex = 12;
 
-            ___UsecArsystems = new GClass1635(__instance, ESkillId.UsecArsystems, ESkillClass.Special, Array.Empty<GClass1647>(), Array.Empty<GClass1640>());
-            ___BearAksystems = new GClass1635(__instance, ESkillId.BearAksystems, ESkillClass.Special, Array.Empty<GClass1647>(), Array.Empty<GClass1640>());
+            ___UsecArsystems = new SkillClass(__instance, ESkillId.UsecArsystems, ESkillClass.Special, Array.Empty<GClass1780>(), Array.Empty<GClass1773>());
+            ___BearAksystems = new SkillClass(__instance, ESkillId.BearAksystems, ESkillClass.Special, Array.Empty<GClass1780>(), Array.Empty<GClass1773>());
 
-            ___UsecTactics = new GClass1635(__instance, ESkillId.UsecTactics, ESkillClass.Special, Array.Empty<GClass1647>(), Array.Empty<GClass1640>());
-            ___BearRawpower = new GClass1635(__instance, ESkillId.BearRawpower, ESkillClass.Special, Array.Empty<GClass1647>(), Array.Empty<GClass1640>());
+            ___UsecTactics = new SkillClass(__instance, ESkillId.UsecTactics, ESkillClass.Special, Array.Empty<GClass1780>(), Array.Empty<GClass1773>());
+            ___BearRawpower = new SkillClass(__instance, ESkillId.BearRawpower, ESkillClass.Special, Array.Empty<GClass1780>(), Array.Empty<GClass1773>());
 
-            var newDisplayList = new GClass1635[___DisplayList.Length + 4];
+            var newDisplayList = new SkillClass[___DisplayList.Length + 4];
 
             Array.Copy(___DisplayList, newDisplayList, insertIndex);
 
@@ -53,25 +55,25 @@ namespace SkillsExtended.Patches
             ___Skills[___Skills.Length - 3] = ___UsecTactics;
             ___Skills[___Skills.Length - 4] = ___BearRawpower;
 
-            AccessTools.Field(Utils.GetSkillType(), "Locked").SetValue(__instance.UsecArsystems, false);
-            AccessTools.Field(Utils.GetSkillType(), "Locked").SetValue(__instance.BearAksystems, false);
-            AccessTools.Field(Utils.GetSkillType(), "Locked").SetValue(__instance.UsecTactics, true);
-            AccessTools.Field(Utils.GetSkillType(), "Locked").SetValue(__instance.BearRawpower, true);
+            AccessTools.Field(typeof(SkillClass), "Locked").SetValue(__instance.UsecArsystems, false);
+            AccessTools.Field(typeof(SkillClass), "Locked").SetValue(__instance.BearAksystems, false);
+            AccessTools.Field(typeof(SkillClass), "Locked").SetValue(__instance.UsecTactics, true);
+            AccessTools.Field(typeof(SkillClass), "Locked").SetValue(__instance.BearRawpower, true);
         }
     }
 
     internal class EnableSkillsPatch : ModulePatch
     {
         protected override MethodBase GetTargetMethod() =>
-            typeof(SkillManager).GetMethod("method_3", BindingFlags.NonPublic | BindingFlags.Instance);
+            typeof(SkillManager).GetMethod("method_3", BindingFlags.Public | BindingFlags.Instance);
 
         [PatchPostfix]
         public static void Postfix(SkillManager __instance)
         {
             try
             {
-                AccessTools.Field(Utils.GetSkillType(), "Locked").SetValue(__instance.FirstAid, false);
-                AccessTools.Field(Utils.GetSkillType(), "Locked").SetValue(__instance.FieldMedicine, false);
+                AccessTools.Field(typeof(SkillClass), "Locked").SetValue(__instance.FirstAid, false);
+                AccessTools.Field(typeof(SkillClass), "Locked").SetValue(__instance.FieldMedicine, false);
             }
             catch (Exception e)
             {
@@ -83,7 +85,7 @@ namespace SkillsExtended.Patches
     internal class SimpleToolTipPatch : ModulePatch
     {
         protected override MethodBase GetTargetMethod() =>
-            typeof(SimpleTooltip).GetMethod("Show");
+            typeof(SimpleTooltip).GetMethods().SingleCustom(x => x.Name == "Show" && x.GetParameters().Length == 5);
 
         [PatchPostfix]
         public static void Postfix(SimpleTooltip __instance, ref string text)
@@ -191,7 +193,7 @@ namespace SkillsExtended.Patches
             typeof(SkillPanel).GetMethod("Show", BindingFlags.Public | BindingFlags.Instance);
 
         [PatchPrefix]
-        public static bool Prefix(GClass1635 skill)
+        public static bool Prefix(SkillClass skill)
         {
             var skills = Plugin.Session.Profile.Skills;
             var side = Plugin.Session.Profile.Side;
@@ -255,7 +257,7 @@ namespace SkillsExtended.Patches
             typeof(SkillPanel).GetMethod("Show", BindingFlags.Public | BindingFlags.Instance);
 
         [PatchPostfix]
-        public static void Postfix(SkillPanel __instance, GClass1635 skill)
+        public static void Postfix(SkillPanel __instance, SkillClass skill)
         {
             if (skill.Id == ESkillId.UsecArsystems)
             {

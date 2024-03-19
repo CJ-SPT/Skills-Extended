@@ -4,6 +4,7 @@ using System;
 using Comfort.Common;
 using System.Linq;
 using EFT.InventoryLogic;
+using System.Collections.Generic;
 
 namespace SkillsExtended.Helpers
 {
@@ -41,7 +42,7 @@ namespace SkillsExtended.Helpers
 
         public static void GetAllWeaponIDsInInventory()
         {
-            var weapons = Plugin.Session?.Profile?.Inventory?.AllPlayerItems;
+            var weapons = Plugin.Session?.Profile?.Inventory?.AllRealPlayerItems;
             weapons = weapons.Where(x => x is Weapon);
 
             foreach (var weapon in weapons)

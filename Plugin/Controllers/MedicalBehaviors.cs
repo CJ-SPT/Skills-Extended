@@ -17,21 +17,21 @@ namespace SkillsExtended.Controllers
 {
     public class MedicalBehavior : MonoBehaviour
     {
-        public sealed class MedKitValues : GInterface249
+        public sealed class MedKitValues : IMedkitResource
         {
             public int MaxHpResource { set; get; }
             public float HpResourceRate { set; get; }
         }
 
-        public sealed class HealthEffectValues : GInterface243
+        public sealed class HealthEffectValues : IHealthEffect
         {
             public float UseTime { set; get; }
 
             public KeyValuePair<EBodyPart, float>[] BodyPartTimeMults { set; get; }
 
-            public Dictionary<EHealthFactorType, GClass1146> HealthEffects { set; get; }
+            public Dictionary<EHealthFactorType, GClass1236> HealthEffects { set; get; }
 
-            public Dictionary<EDamageEffectType, GClass1145> DamageEffects { set; get; }
+            public Dictionary<EDamageEffectType, GClass1235> DamageEffects { set; get; }
 
             public string StimulatorBuffs { set; get; }
         }
@@ -132,7 +132,7 @@ namespace SkillsExtended.Controllers
                     _originalHealthEffectValues.Add(item.TemplateId, origValues);
                 }
 
-                GInterface243 newGInterface = new HealthEffectValues
+                IHealthEffect newGInterface = new HealthEffectValues
                 {
                     UseTime = _originalHealthEffectValues[meds.TemplateId].UseTime * bonus,
                     BodyPartTimeMults = meds.HealthEffectsComponent.BodyPartTimeMults,
@@ -142,7 +142,7 @@ namespace SkillsExtended.Controllers
                 };
 
                 var healthEffectComp = AccessTools.Field(typeof(MedsClass), "HealthEffectsComponent").GetValue(meds);
-                AccessTools.Field(typeof(HealthEffectsComponent), "ginterface243_0").SetValue(healthEffectComp, newGInterface);
+                AccessTools.Field(typeof(HealthEffectsComponent), "ginterface292_0").SetValue(healthEffectComp, newGInterface);
 
                 Plugin.Log.LogDebug($"First Aid: Set instance {item.Id} of type {item.TemplateId} to {_originalHealthEffectValues[meds.TemplateId].UseTime * bonus} seconds");
             }
@@ -154,7 +154,7 @@ namespace SkillsExtended.Controllers
 
             if (item is MedsClass meds)
             {
-                GInterface249 newInterface;
+                IMedkitResource medKitInterface;
 
                 // Add the original medkit template to the original dictionary
                 if (!_originalMedKitValues.ContainsKey(item.TemplateId))
@@ -173,13 +173,13 @@ namespace SkillsExtended.Controllers
                     maxHpResource = Mathf.Clamp(maxHpResource, 1800, 2750);
                 }
 
-                newInterface = new MedKitValues
+                medKitInterface = new MedKitValues
                 {
                     MaxHpResource = maxHpResource,
                     HpResourceRate = meds.MedKitComponent.HpResourceRate
                 };
 
-                Plugin.Log.LogDebug($"First Aid: Set instance {item.Id} of type {item.TemplateId} to {newInterface.MaxHpResource} HP");
+                Plugin.Log.LogDebug($"First Aid: Set instance {item.Id} of type {item.TemplateId} to {medKitInterface.MaxHpResource} HP");
 
                 var currentResouce = meds.MedKitComponent.HpResource;
                 var currentMaxResouce = meds.MedKitComponent.MaxHpResource;
@@ -187,11 +187,11 @@ namespace SkillsExtended.Controllers
                 // Only change the current resource if the item is unused.
                 if (currentResouce == currentMaxResouce)
                 {
-                    meds.MedKitComponent.HpResource = newInterface.MaxHpResource;
+                    meds.MedKitComponent.HpResource = medKitInterface.MaxHpResource;
                 }
 
                 var medComp = AccessTools.Field(typeof(MedsClass), "MedKitComponent").GetValue(meds);
-                AccessTools.Field(typeof(MedKitComponent), "ginterface249_0").SetValue(medComp, newInterface);
+                AccessTools.Field(typeof(MedKitComponent), "ginterface298_0").SetValue(medComp, medKitInterface);
             }
         }
 
@@ -214,7 +214,7 @@ namespace SkillsExtended.Controllers
                     _originalHealthEffectValues.Add(item.TemplateId, origValues);
                 }
 
-                GInterface243 newGInterface = new HealthEffectValues
+                IHealthEffect newGInterface = new HealthEffectValues
                 {
                     UseTime = _originalHealthEffectValues[meds.TemplateId].UseTime * bonus,
                     BodyPartTimeMults = meds.HealthEffectsComponent.BodyPartTimeMults,
@@ -232,7 +232,7 @@ namespace SkillsExtended.Controllers
 
         private IEnumerator MedicalItemUpdate()
         {
-            var items = Plugin.Session?.Profile?.Inventory?.AllPlayerItems?.Where(x => x is MedsClass);
+            var items = Plugin.Session?.Profile?.Inventory?.AllRealPlayerItems?.Where(x => x is MedsClass);
 
             if (items == null) { yield break; }
 

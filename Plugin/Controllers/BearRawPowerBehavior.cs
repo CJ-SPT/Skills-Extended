@@ -29,7 +29,7 @@ namespace SkillsExtended.Controllers
                 ? _skillManager.BearRawpower.Level * BEAR_POWER_CARRY_BONUS + BEAR_POWER_CARRY_BONUS_ELITE
                 : _skillManager.BearRawpower.Level * BEAR_POWER_CARRY_BONUS;
 
-        private Dictionary<EBodyPart, Profile.GClass1622.GClass1624> _origHealthVals = new Dictionary<EBodyPart, Profile.GClass1622.GClass1624>();
+        private Dictionary<EBodyPart, Profile.GClass1756.GClass1758> _origHealthVals = new Dictionary<EBodyPart, Profile.GClass1756.GClass1758>();
 
         private DateTime _lastXpTime = DateTime.Now;
 
@@ -90,7 +90,7 @@ namespace SkillsExtended.Controllers
 
             foreach (var bodyPart in bodyParts)
             {
-                bodyPart.Deconstruct(out EBodyPart key, out Profile.GClass1622.GClass1624 value);
+                bodyPart.Deconstruct(out EBodyPart key, out Profile.GClass1756.GClass1758 value);
 
                 if (!_origHealthVals.ContainsKey(key))
                 {

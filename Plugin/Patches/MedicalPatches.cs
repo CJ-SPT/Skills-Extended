@@ -49,7 +49,7 @@ namespace SkillsExtended.Patches
     {
         protected override MethodBase GetTargetMethod()
         {
-            return typeof(Player).GetMethod("TryProceed", BindingFlags.NonPublic | BindingFlags.Instance);
+            return typeof(Player).GetMethod("TryProceed", BindingFlags.Public | BindingFlags.Instance);
         }
 
         [PatchPostfix]

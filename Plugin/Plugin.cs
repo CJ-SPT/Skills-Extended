@@ -10,16 +10,16 @@ using SkillsExtended.Patches;
 using EFT;
 using Comfort.Common;
 using System.Collections.Generic;
+using EFT.UI;
 
 namespace SkillsExtended
 {
-    [BepInPlugin("com.dirtbikercj.SkillsExtended", "Skills Extended", "0.3.6")]
+    [BepInPlugin("com.dirtbikercj.SkillsExtended", "Skills Extended", "0.5.0")]
     public class Plugin : BaseUnityPlugin
     {
-        public const int TarkovVersion = 26535;
+        public const int TarkovVersion = 29197;
 
         public static ISession Session;
-        public static List<SkillPacket> skillData;
 
         internal static GameObject Hook;
         internal static MedicalBehavior MedicalScript;
@@ -27,10 +27,6 @@ namespace SkillsExtended
         internal static BearRawPowerBehavior BearPowerScript;
 
         internal static ManualLogSource Log;
-
-        // Initialze to true so we avoid a loop condition
-        private bool _setInRaid = true;
-        private bool _warned = false;
 
         void Awake()
         {
@@ -45,11 +41,7 @@ namespace SkillsExtended
             new SimpleToolTipPatch().Enable();
             new SkillManagerConstructorPatch().Enable();
             new OnScreenChangePatch().Enable();
-            //new OnGameStartedPatch().Enable();
-
-            //SetInteractionTypes();
-
-            //skillData = Utils.Get<List<SkillPacket>>("/skillsExtended/GetSkills");
+            new OnGameStartedPatch().Enable();
 
             SEConfig.InitializeConfig(Config);
 
@@ -68,6 +60,11 @@ namespace SkillsExtended
 #endif
         }
 
+        void Start()
+        {
+            Utils.GetKeysFromServer();
+        }
+
         void Update()
         {
             if (Session == null && ClientAppUtils.GetMainApp().GetClientBackEndSession() != null)
@@ -76,13 +73,6 @@ namespace SkillsExtended
 
                 Log.LogDebug("Session set");
             }
-        }
-        
-        void SetInteractionTypes()
-        {
-            WorldInteractionUtils.targetType = Utils.GetContextMenuTargetType();
-            WorldInteractionUtils.returnType = Utils.GetContextMenuReturnType();
-            WorldInteractionUtils.actionType = Utils.GetContextMenuActionType();
         }
     }
 }

@@ -54,10 +54,10 @@ namespace SkillsExtended.Controllers
         private List<string> _customUsecWeapons = new List<string>();
         private List<string> _customBearWeapons = new List<string>();
 
-        private IEnumerable<Item> _usecWeapons => _session.Profile.Inventory.AllPlayerItems
+        private IEnumerable<Item> _usecWeapons => _session.Profile.Inventory.AllRealPlayerItems
             .Where(x => Constants.USEC_WEAPON_LIST.Contains(x.TemplateId) || _customUsecWeapons.Contains(x.TemplateId));
 
-        private IEnumerable<Item> _bearWeapons => _session.Profile.Inventory.AllPlayerItems
+        private IEnumerable<Item> _bearWeapons => _session.Profile.Inventory.AllRealPlayerItems
             .Where(x => Constants.BEAR_WEAPON_LIST.Contains(x.TemplateId) || _customBearWeapons.Contains(x.TemplateId));
 
         public static bool isSubscribed = false;
@@ -116,7 +116,7 @@ namespace SkillsExtended.Controllers
             }
         }
 
-        private void ApplyUsecARXp(GClass1634 action)
+        private void ApplyUsecARXp(MasterSkillClass action)
         {
             var items = _session.Profile.InventoryInfo.GetItemsInSlots(new EquipmentSlot[] { EquipmentSlot.FirstPrimaryWeapon, EquipmentSlot.SecondPrimaryWeapon })
                 .Where(x => x != null && (Constants.USEC_WEAPON_LIST.Contains(x.TemplateId) || _customUsecWeapons.Contains(x.TemplateId))).Any();
@@ -132,7 +132,7 @@ namespace SkillsExtended.Controllers
             Plugin.Log.LogDebug("Invalid weapon for XP");
         }
 
-        private void ApplyBearAKXp(GClass1634 action)
+        private void ApplyBearAKXp(MasterSkillClass action)
         {
             var items = _session.Profile.InventoryInfo.GetItemsInSlots(new EquipmentSlot[] { EquipmentSlot.FirstPrimaryWeapon, EquipmentSlot.SecondPrimaryWeapon })
                 .Where(x => x != null && (Constants.BEAR_WEAPON_LIST.Contains(x.TemplateId) || _customBearWeapons.Contains(x.TemplateId))).Any();

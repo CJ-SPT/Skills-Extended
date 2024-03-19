@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using SkillsExtended.Models;
+using System.Collections.Generic;
 
 namespace SkillsExtended.Helpers
 {
@@ -28,6 +29,9 @@ namespace SkillsExtended.Helpers
         public const float BEAR_POWER_CARRY_BONUS = 0.002f;         //Bear power carry weight bonus
         public const float BEAR_POWER_CARRY_BONUS_ELITE = 0.06f;    //Bear power carry weight bonus elite
         public const double BEAR_POWER_UPDATE_TIME = 1d;            //Bear power XP cooldown time in seconds
+
+        // Contains key information
+        public static KeysResponse Keys = new KeysResponse();
 
         public static readonly List<string> FIRST_AID_ITEM_LIST = new List<string>
         {

@@ -5,7 +5,9 @@ using Comfort.Common;
 using EFT;
 using Newtonsoft.Json;
 using SkillsExtended.Controllers;
+using SkillsExtended.Models;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -16,7 +18,7 @@ namespace SkillsExtended.Helpers
     {
         #region Types
 
-        // GClass 1263 (3.7.6)
+        // GClass1263 (3.7.6)
         public static Type GetStaminaType()
         {
             return PatchConstants.EftTypes.Single(x =>
@@ -25,31 +27,14 @@ namespace SkillsExtended.Helpers
                 x.IsNested);
         }
 
-        // GClass 1633 (3.7.6)
+        // GClass1633 (3.7.6)
         public static Type GetSkillBaseType()
         {
             return PatchConstants.EftTypes.Single(x =>
                 x.GetField("MAX_LEVEL_W_BUFF") != null);
         }
 
-        // GClass 1635 (3.7.6)
-        public static Type GetSkillType()
-        {
-            return PatchConstants.EftTypes.Single(x =>
-                x.GetField("DEFAULT_EXP_LEVEL") != null &&
-                x.GetField("MAX_LEVEL") != null &&
-                x.GetMethod("CalculateExpOnFirstLevels") != null);
-        }
-
-        // GClass 1637 (3.7.6)
-        public static Type GetWeaponSkillType()
-        {
-            return PatchConstants.EftTypes.Single(x =>
-                x.GetField("WeaponBaseType") != null &&
-                x.GetMethod("IsAssignableFrom") != null);
-        }
-
-        // GClass 1640 (3.7.6)
+        // GClass1640 (3.7.6)
         public static Type GetBuffType()
         {
             return PatchConstants.EftTypes.Single(x =>
@@ -67,24 +52,6 @@ namespace SkillsExtended.Helpers
             x.GetField("skills") != null &&
             x.GetField("healthParametersPanel_0") != null &&
             x.GetMethods().Length == 4);
-        }
-
-        // GInterface249 (3.7.6)
-        public static Type GetMedkitHPInterface()
-        {
-            return PatchConstants.EftTypes.Single(x =>
-                x.GetProperty("MaxHpResource") != null &&
-                x.GetProperty("HpResourceRate") != null &&
-                x.IsInterface == true);
-        }
-
-        // GInterface243 (3.7.6)
-        public static Type GetHealthEffectInterface()
-        {
-            return PatchConstants.EftTypes.Single(x =>
-                x.GetProperty("UseTime") != null &&
-                x.GetProperty("HealthEffects") != null &&
-                x.IsInterface == true);
         }
 
         #endregion
@@ -120,19 +87,22 @@ namespace SkillsExtended.Helpers
             return null;
         }
 
+        public static void GetKeysFromServer()
+        {
+            Constants.Keys = Get<KeysResponse>("/skillsExtended/GetKeys");
+        }
+
         // Get Json from the server
         public static T Get<T>(string url)
         {
             var req = RequestHandler.GetJson(url);
+
+            if (string.IsNullOrEmpty(req))
+            {
+                throw new InvalidOperationException("The response from the server is null or empty.");
+            }
+
             return JsonConvert.DeserializeObject<T>(req);
         }
-    }
-
-    public class SkillPacket
-    {
-        public string Id;
-        public float Progress;
-        public float PointsErnedDuringSession;
-        public float LastAccess;
     }
 }
