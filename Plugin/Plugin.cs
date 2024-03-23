@@ -41,7 +41,7 @@ namespace SkillsExtended
             new SimpleToolTipPatch().Enable();
             new SkillManagerConstructorPatch().Enable();
             new OnScreenChangePatch().Enable();
-            new OnGameStartedPatch().Enable();
+            //new GetActionsClassPatch().Enable();
 
             SEConfig.InitializeConfig(Config);
 
@@ -62,7 +62,7 @@ namespace SkillsExtended
 
         void Start()
         {
-            Utils.GetKeysFromServer();
+            //Utils.GetKeysFromServer();
         }
 
         void Update()

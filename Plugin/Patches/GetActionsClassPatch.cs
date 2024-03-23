@@ -6,7 +6,7 @@ using System.Reflection;
 
 namespace SkillsExtended.Patches
 {
-    internal class OnGameStartedPatch : ModulePatch
+    internal class GetActionsClassPatch : ModulePatch
     {
         protected override MethodBase GetTargetMethod() =>
             typeof(GetActionsClass).GetMethod("smethod_3", BindingFlags.Public | BindingFlags.Static);

@@ -47,7 +47,7 @@ class SkillsPlus implements IPreAkiLoadMod, IPostDBLoadMod
 
         this.setLocales();
 
-        //this.CloneKeysToBlanks();
+        this.CloneKeysToBlanks();
 
         this.locale = this.Instance.database.locales.global;
     }
