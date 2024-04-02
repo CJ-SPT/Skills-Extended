@@ -16,46 +16,6 @@ namespace SkillsExtended.Helpers
 {
     public static class Utils
     {
-        #region Types
-
-        // GClass1263 (3.7.6)
-        public static Type GetStaminaType()
-        {
-            return PatchConstants.EftTypes.Single(x =>
-                x.GetField("Capacity") != null &&
-                x.IsSealed &&
-                x.IsNested);
-        }
-
-        // GClass1633 (3.7.6)
-        public static Type GetSkillBaseType()
-        {
-            return PatchConstants.EftTypes.Single(x =>
-                x.GetField("MAX_LEVEL_W_BUFF") != null);
-        }
-
-        // GClass1640 (3.7.6)
-        public static Type GetBuffType()
-        {
-            return PatchConstants.EftTypes.Single(x =>
-                x.GetField("HidenForPlayers") != null &&
-                x.GetField("EliteRuleFunc") != null &&
-                x.IsAbstract == true);
-        }
-
-        // CLASS2850 (3.7.6)
-        public static Type GetWeightPanelType()
-        {
-            return PatchConstants.EftTypes.Single(x =>
-            x.IsSealed &&
-            x.IsNested &&
-            x.GetField("skills") != null &&
-            x.GetField("healthParametersPanel_0") != null &&
-            x.GetMethods().Length == 4);
-        }
-
-        #endregion
-
         public static void CheckServerModExists()
         {
             var dllLoc = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
