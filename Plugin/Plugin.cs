@@ -1,20 +1,16 @@
-﻿using System;
+﻿using Aki.Reflection.Utils;
 using BepInEx;
-using UnityEngine;
 using BepInEx.Logging;
-using Aki.Reflection.Utils;
-using SkillsExtended.Controllers;
 using DrakiaXYZ.VersionChecker;
+using SkillsExtended.Controllers;
 using SkillsExtended.Helpers;
 using SkillsExtended.Patches;
-using EFT;
-using Comfort.Common;
-using System.Collections.Generic;
-using EFT.UI;
+using System;
+using UnityEngine;
 
 namespace SkillsExtended
 {
-    [BepInPlugin("com.dirtbikercj.SkillsExtended", "Skills Extended", "0.4.1")]
+    [BepInPlugin("com.dirtbikercj.SkillsExtended", "Skills Extended", "0.4.2")]
     public class Plugin : BaseUnityPlugin
     {
         public const int TarkovVersion = 29197;
@@ -28,7 +24,7 @@ namespace SkillsExtended
 
         internal static ManualLogSource Log;
 
-        void Awake()
+        private void Awake()
         {
             if (!VersionChecker.CheckEftVersion(Logger, Info, Config))
             {
@@ -41,31 +37,33 @@ namespace SkillsExtended
             new SimpleToolTipPatch().Enable();
             new SkillManagerConstructorPatch().Enable();
             new OnScreenChangePatch().Enable();
-            //new GetActionsClassPatch().Enable();
+            new GetActionsClassPatch().Enable();
 
             SEConfig.InitializeConfig(Config);
 
             Log = Logger;
 
             Hook = new GameObject("Skills Controller Object");
-           
+
             MedicalScript = Hook.AddComponent<MedicalBehavior>();
             WeaponsScript = Hook.AddComponent<WeaponProficiencyBehaviors>();
             //BearPowerScript = Hook.AddComponent<BearRawPowerBehavior>();
 
-            DontDestroyOnLoad(Hook);           
+            DontDestroyOnLoad(Hook);
 
 #if DEBUG
+            new LocationSceneAwakePatch().Enable();
+            //new AnimationEventInitClassPatch().Enable();
             ConsoleCommands.RegisterCommands();
 #endif
         }
 
-        void Start()
+        private void Start()
         {
-            //Utils.GetKeysFromServer();
+            Utils.GetKeysFromServer();
         }
 
-        void Update()
+        private void Update()
         {
             if (Session == null && ClientAppUtils.GetMainApp().GetClientBackEndSession() != null)
             {

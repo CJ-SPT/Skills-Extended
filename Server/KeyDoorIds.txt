@@ -1,0 +1,44 @@
+FACTORY:
+
+Door ID: 00094 KeyID: 5448ba0b4bdc2d02308b456c Key Name: Factory emergency exit key
+Door ID: 00095 KeyID: 5448ba0b4bdc2d02308b456c Key Name: Factory emergency exit key
+Door ID: 00115 KeyID: 593858c486f774253a24cb52 Key Name: Pumping station back door key
+Door ID: 00120 KeyID: 57a349b2245977762b199ec7 Key Name: Pumping station front door key
+Door ID: 00126 KeyID: 5448ba0b4bdc2d02308b456c Key Name: Factory emergency exit key
+Door ID: 00133 KeyID: 5448ba0b4bdc2d02308b456c Key Name: Factory emergency exit key
+
+CUSTOMS:
+
+Door ID: custom_Tamozhnya_00000 KeyID: 5780d0532459777a5108b9a2 Key Name: Tarcone Director's office key
+Door ID: custom_TrailerPark_00000 KeyID: 5913611c86f77479e0084092 Key Name: Trailer park portable cabin key
+Door ID: custom_TrailerPark_00001 KeyID: 5780d07a2459777de4559324 Key Name: Portable cabin key
+Door ID: custom_factoryStorageZone_00000 KeyID: 5448ba0b4bdc2d02308b456c Key Name: Factory emergency exit key
+Door ID: custom_factoryStorageZone_00003 KeyID: 5448ba0b4bdc2d02308b456c Key Name: Factory emergency exit key
+Door ID: custom_factoryStorageZone_00004 KeyID: 593962ca86f774068014d9af Key Name: Unknown key
+Door ID: custom_Obshezhitie_00014 KeyID: 59136f6f86f774447a1ed173 Key Name: Folding car key
+Door ID: custom_Obshezhitie_1_indoor_00003 KeyID: 59136a4486f774447a1ed172 Key Name: Dorm guard desk key
+Door ID: custom_Obshezhitie_1_indoor_00004 KeyID: 591382d986f774465a6413a7 Key Name: Dorm room 105 key
+Door ID: custom_Obshezhitie_1_indoor_00009 KeyID: 591383f186f7744a4c5edcf3 Key Name: Dorm room 104 key
+Door ID: custom_Obshezhitie_1_indoor_00010 KeyID: 59136e1e86f774432f15d133 Key Name: Dorm room 110 key
+Door ID: custom_Obshezhitie_1_indoor_00012 KeyID: 59387a4986f77401cc236e62 Key Name: Dorm room 114 key
+Door ID: custom_Obshezhitie_1_indoor_00028 KeyID: 5938603e86f77435642354f4 Key Name: Dorm room 206 key
+Door ID: custom_Obshezhitie_2_indoor_00008 KeyID: 5938994586f774523a425196 Key Name: Dorm room 103 key
+Door ID: custom_Obshezhitie_2_indoor_00012 KeyID: 5914578086f774123569ffa4 Key Name: Dorm room 108 key
+Door ID: custom_Obshezhitie_2_indoor_00020 KeyID: 5672c92d4bdc2d180f8b4567 Key Name: Dorm room 118 key
+Door ID: custom_Obshezhitie_2_indoor_00026 KeyID: 5938504186f7740991483f30 Key Name: Dorm room 203 key
+Door ID: custom_Obshezhitie_2_indoor_00028 KeyID: 5780cf942459777df90dcb72 Key Name: Dorm room 214 key
+Door ID: custom_Obshezhitie_2_indoor_00029 KeyID: 5780cfa52459777dfb276eb1 Key Name: Dorm room 220 key
+Door ID: custom_Obshezhitie_2_indoor_00030 KeyID: 5780cf9e2459777df90dcb73 Key Name: Dorm room 218 key
+Door ID: custom_Obshezhitie_2_indoor_00037 KeyID: 59148c8a86f774197930e983 Key Name: Dorm room 204 key
+Door ID: custom_Obshezhitie_2_indoor_00039 KeyID: 593aa4be86f77457f56379f8 Key Name: Dorm room 303 key
+Door ID: custom_Obshezhitie_2_indoor_00043 KeyID: 5780cf7f2459777de4559322 Key Name: Dorm room 314 marked key
+Door ID: custom_Obshezhitie_2_indoor_00046 KeyID: 5780cda02459777b272ede61 Key Name: Dorm room 306 key
+Door ID: custom_Obshezhitie_2_indoor_00048 KeyID: 5780cf692459777de4559321 Key Name: Dorm room 315 key
+Door ID: custom_Obshezhitie_2_indoor_00049 KeyID: 5780cf722459777a5108b9a1 Key Name: Dorm room 308 key
+Door ID: custom_AZS_00002 KeyID: 5913877a86f774432f15d444 Key Name: Gas station storage room key
+Door ID: custom_AZS_00004 KeyID: 5780d0652459777df90dcb74 Key Name: Gas station office key
+Door ID: custom_mazuto_00010 KeyID: 5da743f586f7744014504f72 Key Name: USEC stash key
+Door ID: custom_mazuto_00011 KeyID: 5da743f586f7744014504f72 Key Name: USEC stash key
+Door ID: custom_multiScene_00003 KeyID: 5937ee6486f77408994ba448 Key Name: Machinery key
+Door ID: Custom_Construction_Factory_00000 KeyID: 5448ba0b4bdc2d02308b456c Key Name: Factory emergency exit key
+Door ID: Custom_Expansion_00000 KeyID: 5938144586f77473c2087145 Key Name: Portable bunkhouse key

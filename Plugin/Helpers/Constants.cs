@@ -22,13 +22,20 @@ namespace SkillsExtended.Helpers
         public const float USEC_INERTIA_RED_BONUS = 0.002f;         //Usec tactics inertia reduction
         public const float USEC_INERTIA_RED_BONUS_ELITE = 0.10f;    //Usec tactics inertia reduction elite
         public const float USEC_AIMPUNCH_RED_BONUS = 0.002f;        //Usec tactics aimpunch reduction
-        public const float USEC_AIMPUNCH_RED_BONUS_ELITE = 0.05f;   //Usec tactics aimpunch reduction elite 
+        public const float USEC_AIMPUNCH_RED_BONUS_ELITE = 0.05f;   //Usec tactics aimpunch reduction elite
 
         public const float BEAR_POWER_HP_BONUS = 0.001f;            //Bear power health bonus
         public const float BEAR_POWER_HP_BONUS_ELITE = 0.05f;       //Bear power health bonus elite
         public const float BEAR_POWER_CARRY_BONUS = 0.002f;         //Bear power carry weight bonus
         public const float BEAR_POWER_CARRY_BONUS_ELITE = 0.06f;    //Bear power carry weight bonus elite
         public const double BEAR_POWER_UPDATE_TIME = 1d;            //Bear power XP cooldown time in seconds
+
+        public const float LP_BASE_PICK_TIME = 15f;                 //Base time to lockpick a door
+        public const float LP_PICK_TIME_RED = 0.005f;               //Time bonus per level
+        public const float LP_PICK_TIME_RED_ELITE = 0.10f;          //Time bonus per level elite
+        public const float LP_BASE_CHANCE = 0.10f;                  //Base chance to successfully lock pick a door
+        public const float LP_CHANCE_BONUS = 0.005f;                //Chance per level gain to successfully lock pick a door
+        public const float LP_CHANCE_BONUS_ELITE = 0.10f;           //Elite chance bonus to successfully lock pick a door
 
         // Contains key information
         public static KeysResponse Keys = new KeysResponse();

@@ -47,7 +47,7 @@ class SkillsPlus implements IPreAkiLoadMod, IPostDBLoadMod
 
         this.setLocales();
 
-        //this.CloneKeysToBlanks();
+        this.CloneKeysToBlanks();
 
         this.locale = this.Instance.database.locales.global;
     }
@@ -155,16 +155,16 @@ class SkillsPlus implements IPreAkiLoadMod, IPostDBLoadMod
             },
 
             parentId: "543be5e94bdc2df1348b4568",
-            newId: "Industrial_Blank_Key",
+            newId: "LOCKPICK_PLACEHOLDER",
             fleaPriceRoubles: 120000,
             handbookPriceRoubles: 100000,
             handbookParentId: "5b47574386f77428ca22b342",
 
             locales: {
                 en: {
-                    name: "Industrial key blank",
-                    shortName: "Industrial Key blank",
-                    description: "An industrial blank key used for bump picking locks"
+                    name: "LOCKPICK_PLACEHOLDER",
+                    shortName: "LOCKPICK_PLACEHOLDER",
+                    description: "A placeholder for the lockpick to be implemented later."
                 }
             }
         }
@@ -174,18 +174,18 @@ class SkillsPlus implements IPreAkiLoadMod, IPostDBLoadMod
         const mechanic = this.Instance.database.traders[TraderIDs.Mechanic];
 
         mechanic.assort.items.push({
-            _id: "Industrial_Blank_Key",
-            _tpl: "Industrial_Blank_Key",
+            _id: "LOCKPICK_PLACEHOLDER",
+            _tpl: "LOCKPICK_PLACEHOLDER",
             parentId: "hideout",
             slotId: "hideout",
             upd:
             {
                 UnlimitedCount: false,
-                StackObjectsCount: 2
+                StackObjectsCount: 200
             }
         });
 
-        mechanic.assort.barter_scheme.Industrial_Blank_Key = [
+        mechanic.assort.barter_scheme["LOCKPICK_PLACEHOLDER"] = [
             [
                 {
                     count: 100000,
@@ -194,7 +194,7 @@ class SkillsPlus implements IPreAkiLoadMod, IPostDBLoadMod
             ]
         ];
         
-        mechanic.assort.loyal_level_items.Industrial_Blank_Key = 2;
+        mechanic.assort.loyal_level_items["LOCKPICK_PLACEHOLDER"] = 2;
     }
 }
 

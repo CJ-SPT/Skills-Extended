@@ -6,7 +6,6 @@ using EFT.UI.Screens;
 using HarmonyLib;
 using SkillsExtended.Helpers;
 using System;
-using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using TMPro;
@@ -74,6 +73,7 @@ namespace SkillsExtended.Patches
             {
                 AccessTools.Field(typeof(SkillClass), "Locked").SetValue(__instance.FirstAid, false);
                 AccessTools.Field(typeof(SkillClass), "Locked").SetValue(__instance.FieldMedicine, false);
+                AccessTools.Field(typeof(SkillClass), "Locked").SetValue(__instance.Lockpicking, false);
             }
             catch (Exception e)
             {
@@ -92,7 +92,7 @@ namespace SkillsExtended.Patches
         {
             string firstAid = @"\bFirstAidDescriptionPattern\b";
             string fieldMedicine = @"\bFieldMedicineDescriptionPattern\b";
-            
+
             string usecARSystems = @"\bUsecArsystemsDescription\b";
             string usecTactics = @"\bUsecTacticsDescription\b";
 
