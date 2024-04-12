@@ -148,13 +148,12 @@ class SkillsPlus implements IPreAkiLoadMod, IPostDBLoadMod
     private cloneIndustrialKeyToBlank()
     {
         const blankKey: NewItemFromCloneDetails = {
-            itemTplToClone: "5448ba0b4bdc2d02308b456c",
+            itemTplToClone: "544fb5454bdc2df8738b456a",
             overrideProperties: {
-                MaximumNumberOfUsage: 5,
                 CanSellOnRagfair: false
             },
 
-            parentId: "543be5e94bdc2df1348b4568",
+            parentId: "5447e0e74bdc2d3c308b4567",
             newId: "LOCKPICK_PLACEHOLDER",
             fleaPriceRoubles: 120000,
             handbookPriceRoubles: 100000,
