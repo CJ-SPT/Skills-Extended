@@ -47,7 +47,7 @@ namespace SkillsExtended.Helpers
             ActionsTypesClass action = new ActionsTypesClass();
 
             action.Name = "Pick lock";
-            action.Disabled = !interactiveObject.Operatable; // TODO: Disable if LP level is not high enough for this door
+            action.Disabled = !interactiveObject.Operatable && !LockPickingHelpers.IsLockPickInInventory(); // TODO: Disable if LP level is not high enough for this door
 
             Interaction keyInfoAction = new Interaction(interactiveObject, owner);
 

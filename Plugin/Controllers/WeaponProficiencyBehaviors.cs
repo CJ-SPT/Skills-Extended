@@ -2,6 +2,7 @@
 using EFT;
 using EFT.InventoryLogic;
 using SkillsExtended.Helpers;
+using SkillsExtended.Models;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,26 +28,27 @@ namespace SkillsExtended.Controllers
         private GameWorld _gameWorld { get => Singleton<GameWorld>.Instance; }
 
         private int _usecARLevel => _session.Profile.Skills.UsecArsystems.Level;
-        
+
         private int _bearAKLevel => _session.Profile.Skills.BearAksystems.Level;
-        
-       
-        
-        private float _ergoBonusUsec => _skillManager.UsecArsystems.IsEliteLevel 
-            ? _usecARLevel * Constants.ERGO_MOD + Constants.ERGO_MOD_ELITE 
-            : _usecARLevel * Constants.ERGO_MOD;
-        
-        private float _recoilBonusUsec => _skillManager.UsecArsystems.IsEliteLevel 
-            ? _usecARLevel * Constants.RECOIL_REDUCTION + Constants.RECOIL_REDUCTION_ELITE 
-            : _usecARLevel * Constants.RECOIL_REDUCTION;
+
+        private WeaponSkillData _usecSkillData => Constants.SkillData.UsecRifleSkill;
+        private WeaponSkillData _bearSkillData => Constants.SkillData.BearRifleSkill;
+
+        private float _ergoBonusUsec => _skillManager.UsecArsystems.IsEliteLevel
+            ? _usecARLevel * _usecSkillData.ErgoMod + _usecSkillData.ErgoModElite
+            : _usecARLevel * _usecSkillData.ErgoMod;
+
+        private float _recoilBonusUsec => _skillManager.UsecArsystems.IsEliteLevel
+            ? _usecARLevel * _usecSkillData.RecoilReduction + _usecSkillData.RecoilReductionElite
+            : _usecARLevel * _usecSkillData.RecoilReduction;
 
         private float _ergoBonusBear => _skillManager.BearAksystems.IsEliteLevel
-            ? _bearAKLevel * Constants.ERGO_MOD + Constants.ERGO_MOD_ELITE
-            : _bearAKLevel * Constants.ERGO_MOD;
+            ? _bearAKLevel * _bearSkillData.ErgoMod + _bearSkillData.ErgoModElite
+            : _bearAKLevel * _bearSkillData.ErgoMod;
 
         private float _recoilBonusBear => _skillManager.BearAksystems.IsEliteLevel
-            ? _bearAKLevel * Constants.RECOIL_REDUCTION + Constants.RECOIL_REDUCTION_ELITE
-            : _bearAKLevel * Constants.RECOIL_REDUCTION;
+            ? _bearAKLevel * _bearSkillData.RecoilReduction + _bearSkillData.RecoilReductionElite
+            : _bearAKLevel * _bearSkillData.RecoilReduction;
 
         // Store an object containing the weapons original stats.
         private Dictionary<string, OrigWeaponValues> _originalWeaponValues = new Dictionary<string, OrigWeaponValues>();
@@ -75,7 +77,7 @@ namespace SkillsExtended.Controllers
 
             // Only run this behavior if we are USEC, or the player has completed the BEAR skill
             if (Plugin.Session?.Profile?.Side == EPlayerSide.Usec || _skillManager.BearAksystems.IsEliteLevel)
-            { 
+            {
                 StaticManager.Instance.StartCoroutine(UpdateWeapons(_usecWeapons, _ergoBonusUsec, _recoilBonusUsec, _usecARLevel));
             }
 
@@ -89,28 +91,28 @@ namespace SkillsExtended.Controllers
         private void SetupSkillManager()
         {
             if (_gameWorld && !isSubscribed)
-            {     
+            {
                 if (_gameWorld.MainPlayer == null || _gameWorld?.MainPlayer?.Location == "hideout")
                 {
                     return;
                 }
-                
-                if ((_gameWorld.MainPlayer.Side == EPlayerSide.Usec && !_skillManager.UsecArsystems.IsEliteLevel) 
+
+                if ((_gameWorld.MainPlayer.Side == EPlayerSide.Usec && !_skillManager.UsecArsystems.IsEliteLevel)
                     || (_skillManager.BearAksystems.IsEliteLevel && !_skillManager.UsecArsystems.IsEliteLevel)
                     || SEConfig.disableEliteRequirement.Value)
                 {
-                    _skillManager.OnMasteringExperienceChanged += ApplyUsecARXp;           
+                    _skillManager.OnMasteringExperienceChanged += ApplyUsecARXp;
                     Plugin.Log.LogDebug("USEC AR XP ENABLED.");
                 }
 
-                if ((_gameWorld.MainPlayer.Side == EPlayerSide.Bear && !_skillManager.BearAksystems.IsEliteLevel) 
+                if ((_gameWorld.MainPlayer.Side == EPlayerSide.Bear && !_skillManager.BearAksystems.IsEliteLevel)
                     || (_skillManager.UsecArsystems.IsEliteLevel && !_skillManager.BearAksystems.IsEliteLevel)
                     || SEConfig.disableEliteRequirement.Value)
                 {
                     _skillManager.OnMasteringExperienceChanged += ApplyBearAKXp;
                     Plugin.Log.LogDebug("BEAR AK XP ENABLED.");
                 }
-                
+
                 isSubscribed = true;
                 return;
             }
@@ -120,15 +122,15 @@ namespace SkillsExtended.Controllers
         {
             var items = _session.Profile.InventoryInfo.GetItemsInSlots(new EquipmentSlot[] { EquipmentSlot.FirstPrimaryWeapon, EquipmentSlot.SecondPrimaryWeapon })
                 .Where(x => x != null && (Constants.USEC_WEAPON_LIST.Contains(x.TemplateId) || _customUsecWeapons.Contains(x.TemplateId))).Any();
-           
+
             if (items)
             {
-                _skillManager.UsecArsystems.Current += Constants.WEAPON_PROF_XP * SEConfig.usecWeaponSpeedMult.Value;
+                _skillManager.UsecArsystems.Current += _usecSkillData.WeaponProfXp * SEConfig.usecWeaponSpeedMult.Value;
 
-                Plugin.Log.LogDebug($"USEC AR {Constants.WEAPON_PROF_XP * SEConfig.usecWeaponSpeedMult.Value} XP Gained.");
+                Plugin.Log.LogDebug($"USEC AR {_usecSkillData.WeaponProfXp * SEConfig.usecWeaponSpeedMult.Value} XP Gained.");
                 return;
             }
-            
+
             Plugin.Log.LogDebug("Invalid weapon for XP");
         }
 
@@ -139,9 +141,9 @@ namespace SkillsExtended.Controllers
 
             if (items)
             {
-                _skillManager.BearAksystems.Current += Constants.WEAPON_PROF_XP * SEConfig.bearWeaponSpeedMult.Value;
+                _skillManager.BearAksystems.Current += _bearSkillData.WeaponProfXp * SEConfig.bearWeaponSpeedMult.Value;
 
-                Plugin.Log.LogDebug($"BEAR AK {Constants.WEAPON_PROF_XP * SEConfig.bearWeaponSpeedMult.Value} XP Gained.");
+                Plugin.Log.LogDebug($"BEAR AK {_bearSkillData.WeaponProfXp * SEConfig.bearWeaponSpeedMult.Value} XP Gained.");
                 return;
             }
 
@@ -149,7 +151,7 @@ namespace SkillsExtended.Controllers
         }
 
         private IEnumerator UpdateWeapons(IEnumerable<Item> items, float ergoBonus, float recoilReduction, int level)
-        { 
+        {
             foreach (var item in items)
             {
                 if (item is Weapon weap)
@@ -180,9 +182,9 @@ namespace SkillsExtended.Controllers
                             weaponInstanceIds.Remove(item.Id);
                         }
                     }
-       
+
                     weap.Template.Ergonomics = _originalWeaponValues[item.TemplateId].ergo * (1 + ergoBonus);
-                    weap.Template.RecoilForceUp = _originalWeaponValues[item.TemplateId].weaponUp * (1 - recoilReduction); 
+                    weap.Template.RecoilForceUp = _originalWeaponValues[item.TemplateId].weaponUp * (1 - recoilReduction);
                     weap.Template.RecoilForceBack = _originalWeaponValues[item.TemplateId].weaponBack * (1 - recoilReduction);
 
                     Plugin.Log.LogDebug($"New {weap.LocalizedName()} ergo: {weap.Template.Ergonomics}, up {weap.Template.RecoilForceUp}, back {weap.Template.RecoilForceBack}");

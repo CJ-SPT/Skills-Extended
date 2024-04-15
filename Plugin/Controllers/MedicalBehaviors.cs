@@ -4,14 +4,13 @@ using EFT.HealthSystem;
 using EFT.InventoryLogic;
 using HarmonyLib;
 using SkillsExtended.Helpers;
+using SkillsExtended.Models;
 using SkillsExtended.Patches;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-
-using static SkillsExtended.Helpers.Constants;
 
 namespace SkillsExtended.Controllers
 {
@@ -45,28 +44,30 @@ namespace SkillsExtended.Controllers
 
         private SkillManager _skillManager => Utils.SetActiveSkillManager();
 
+        private MedicalSkillData _skillData => Constants.SkillData.MedicalSkills;
+
         // Store the instance ID of the item and the level its bonus resource is set to.
         public Dictionary<string, int> firstAidInstanceIDs = new Dictionary<string, int>();
 
         public Dictionary<string, int> fieldMedicineInstanceIDs = new Dictionary<string, int>();
 
-        // Store a dictionary of bodyparts to prevent the user from spam exploiting the leveling system.
-        // Bodypart, Last time healed
+        // Store a dictionary of bodyparts to prevent the user from spam exploiting the leveling
+        // system. Bodypart, Last time healed
         private Dictionary<EBodyPart, DateTime> _firstAidBodypartCahce = new Dictionary<EBodyPart, DateTime>();
 
         private Dictionary<EBodyPart, DateTime> _fieldMedicineBodyPartCache = new Dictionary<EBodyPart, DateTime>();
 
-        private float FaPmcSpeedBonus => _skillManager.FirstAid.IsEliteLevel 
-            ? 1f - (_skillManager.FirstAid.Level * MEDICAL_SPEED_BONUS) - MEDICAL_SPEED_BONUS_ELITE
-            : 1f - (_skillManager.FirstAid.Level * MEDICAL_SPEED_BONUS);
+        private float FaPmcSpeedBonus => _skillManager.FirstAid.IsEliteLevel
+            ? 1f - (_skillManager.FirstAid.Level * _skillData.MedicalSpeedBonus) - _skillData.MedicalSpeedBonusElite
+            : 1f - (_skillManager.FirstAid.Level * _skillData.MedicalSpeedBonus);
 
-        private float FaHpBonus => _skillManager.FirstAid.IsEliteLevel 
-            ? _skillManager.FirstAid.Level * MEDKIT_HP_BONUS + MEDKIT_HP_BONUS_ELITE 
-            : _skillManager.FirstAid.Level * MEDKIT_HP_BONUS;
+        private float FaHpBonus => _skillManager.FirstAid.IsEliteLevel
+            ? _skillManager.FirstAid.Level * _skillData.MedkitHpBonus + _skillData.MedkitHpBonusElite
+            : _skillManager.FirstAid.Level * _skillData.MedkitHpBonus;
 
-        private float FmPmcSpeedBonus => _skillManager.FirstAid.IsEliteLevel 
-            ? 1f - (_skillManager.FirstAid.Level * MEDICAL_SPEED_BONUS) - MEDICAL_SPEED_BONUS_ELITE
-            : 1f - (_skillManager.FirstAid.Level * MEDICAL_SPEED_BONUS);
+        private float FmPmcSpeedBonus => _skillManager.FirstAid.IsEliteLevel
+            ? 1f - (_skillManager.FirstAid.Level * _skillData.MedicalSpeedBonus) - _skillData.MedicalSpeedBonusElite
+            : 1f - (_skillManager.FirstAid.Level * _skillData.MedicalSpeedBonus);
 
         private void Awake()
         {
@@ -269,7 +270,7 @@ namespace SkillsExtended.Controllers
                 }
 
                 // Apply first aid speed bonus to items
-                if (FIRST_AID_ITEM_LIST.Contains(item.TemplateId))
+                if (Constants.FIRST_AID_ITEM_LIST.Contains(item.TemplateId))
                 {
                     ApplyFirstAidSpeedBonus(item);
                     ApplyFirstAidHPBonus(item);
@@ -277,7 +278,7 @@ namespace SkillsExtended.Controllers
                 }
 
                 // Apply Field medicine speed bonus to items
-                if (FIELD_MEDICINE_ITEM_LIST.Contains(item.TemplateId))
+                if (Constants.FIELD_MEDICINE_ITEM_LIST.Contains(item.TemplateId))
                 {
                     ApplyFieldMedicineSpeedBonus(item);
                     fieldMedicineInstanceIDs.Add(item.Id, _skillManager.FieldMedicine.Level);

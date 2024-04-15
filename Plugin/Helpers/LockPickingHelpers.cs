@@ -2,7 +2,9 @@
 using Comfort.Common;
 using EFT;
 using EFT.Interactive;
+using EFT.InventoryLogic;
 using HarmonyLib;
+using SkillsExtended.Models;
 using System;
 using System.Linq;
 
@@ -13,8 +15,16 @@ namespace SkillsExtended.Helpers
         private static SkillManager _skills => Utils.SetActiveSkillManager();
         private static Player _player => Singleton<GameWorld>.Instance.MainPlayer;
 
+        private static LockPickingData _lockPicking => Constants.SkillData.LockPickingSkill;
+
         public static void PickLock(WorldInteractiveObject interactiveObject, GamePlayerOwner owner)
         {
+            if (!IsLockPickInInventory())
+            {
+                owner.DisplayPreloaderUiNotification("You must have a lock pick in your inventory to pick a lock...");
+                return;
+            }
+
             // Only allow lockpicking if the player is stationary
             if (GetIdleStateType().IsAssignableFrom(owner.Player.CurrentState.GetType()))
             {
@@ -38,16 +48,6 @@ namespace SkillsExtended.Helpers
             }
         }
 
-        public static float CalculateChanceForSuccess()
-        {
-            int level = _skills.Lockpicking.Level;
-            bool isElite = _skills.Lockpicking.IsEliteLevel;
-
-            return isElite
-                ? (Constants.LP_BASE_CHANCE + (level * Constants.LP_CHANCE_BONUS) + Constants.LP_CHANCE_BONUS_ELITE) * 100f
-                : (Constants.LP_BASE_CHANCE + (level * Constants.LP_CHANCE_BONUS)) * 100f;
-        }
-
         public static float CalculateChanceForFailure()
         {
             return 0f;
@@ -59,17 +59,17 @@ namespace SkillsExtended.Helpers
             bool isElite = _skills.Lockpicking.IsEliteLevel;
 
             return isElite
-                ? (Constants.LP_BASE_PICK_TIME * (1 - (level * Constants.LP_PICK_TIME_RED) - Constants.LP_CHANCE_BONUS_ELITE))
-                : (Constants.LP_BASE_PICK_TIME * (1 - (level * Constants.LP_PICK_TIME_RED)));
+                ? (_lockPicking.BasePickTime * (1 - (level * _lockPicking.PickTimeReduction) - _lockPicking.PickTimeReductionElite))
+                : (_lockPicking.BasePickTime * (1 - (level * _lockPicking.PickTimeReduction)));
         }
 
         public static void ApplyLockPickExperience()
         {
         }
 
-        public static bool IsLockPickInInventory(string Id)
+        public static bool IsLockPickInInventory()
         {
-            return Plugin.Session.Profile.Inventory.EquippedInSlotsTemplateIds.Where(x => x == Id).Any();
+            return Plugin.Session.Profile.Inventory.GetPlayerItems(EPlayerItems.Equipment).Where(x => x.TemplateId == "LOCKPICK_PLACEHOLDER").Any();
         }
 
         private static Type GetIdleStateType()
@@ -86,13 +86,21 @@ namespace SkillsExtended.Helpers
         public GamePlayerOwner Owner;
         public WorldInteractiveObject InteractiveObject;
 
+        private static SkillManager _skills => Utils.SetActiveSkillManager();
+
+        private static LockPickingData _lockPicking => Constants.SkillData.LockPickingSkill;
+
         public void PickLockAction(bool successful)
         {
-            float chanceForSuccess = LockPickingHelpers.CalculateChanceForSuccess();
+            float chanceForSuccess = CalculateChanceForSuccess();
+            float difficulty = UnityEngine.Random.Range(0f, 100f);
+
+            Plugin.Log.LogDebug($"Chance rolled: {chanceForSuccess} Difficulty rolled: {difficulty}");
 
             if (successful)
             {
-                if (chanceForSuccess > UnityEngine.Random.Range(0f, 100f))
+                // Random.Range() is placeholder for now
+                if (chanceForSuccess > difficulty)
                 {
                     AccessTools.Method(typeof(WorldInteractiveObject), "Unlock").Invoke(InteractiveObject, null);
                     LockPickingHelpers.ApplyLockPickExperience();
@@ -111,6 +119,16 @@ namespace SkillsExtended.Helpers
             {
                 Owner.CloseObjectivesPanel();
             }
+        }
+
+        private float CalculateChanceForSuccess()
+        {
+            int level = _skills.Lockpicking.Level;
+            bool isElite = _skills.Lockpicking.IsEliteLevel;
+
+            return isElite
+                ? (_lockPicking.BasePickChance + (level * _lockPicking.BonusChancePerLevel) + _lockPicking.BonusChancePerLevelElite) * 100f
+                : (_lockPicking.BasePickChance + (level * _lockPicking.BonusChancePerLevel)) * 100f;
         }
     }
 }

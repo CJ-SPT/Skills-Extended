@@ -5,13 +5,12 @@ using EFT.UI;
 using EFT.UI.Screens;
 using HarmonyLib;
 using SkillsExtended.Helpers;
+using SkillsExtended.Models;
 using System;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using TMPro;
 using static EFT.SkillManager;
-
-using static SkillsExtended.Helpers.Constants;
 
 namespace SkillsExtended.Patches
 {
@@ -87,6 +86,8 @@ namespace SkillsExtended.Patches
         protected override MethodBase GetTargetMethod() =>
             typeof(SimpleTooltip).GetMethods().SingleCustom(x => x.Name == "Show" && x.GetParameters().Length == 5);
 
+        private static SkillDataResponse _skillData => Constants.SkillData;
+
         [PatchPostfix]
         public static void Postfix(SimpleTooltip __instance, ref string text)
         {
@@ -104,12 +105,12 @@ namespace SkillsExtended.Patches
                 var firstAidSkill = Plugin.Session.Profile.Skills.FirstAid;
 
                 float speedBonus = firstAidSkill.IsEliteLevel
-                    ? (firstAidSkill.Level * MEDICAL_SPEED_BONUS) - MEDICAL_SPEED_BONUS_ELITE
-                    : (firstAidSkill.Level * MEDICAL_SPEED_BONUS);
+                    ? (firstAidSkill.Level * _skillData.MedicalSkills.MedicalSpeedBonus) - _skillData.MedicalSkills.MedicalSpeedBonusElite
+                    : (firstAidSkill.Level * _skillData.MedicalSkills.MedicalSpeedBonus);
 
                 float hpBonus = firstAidSkill.IsEliteLevel
-                    ? firstAidSkill.Level * MEDKIT_HP_BONUS + MEDKIT_HP_BONUS_ELITE
-                    : firstAidSkill.Level * MEDKIT_HP_BONUS;
+                    ? firstAidSkill.Level * _skillData.MedicalSkills.MedkitHpBonus + _skillData.MedicalSkills.MedkitHpBonusElite
+                    : firstAidSkill.Level * _skillData.MedicalSkills.MedkitHpBonus;
 
                 __instance.SetText(SkillDescriptions.FirstAidDescription(speedBonus, hpBonus));
             }
@@ -119,8 +120,8 @@ namespace SkillsExtended.Patches
                 var fieldMedicineSkill = Plugin.Session.Profile.Skills.FieldMedicine;
 
                 float speedBonus = fieldMedicineSkill.IsEliteLevel
-                    ? (fieldMedicineSkill.Level * MEDICAL_SPEED_BONUS) - MEDICAL_SPEED_BONUS_ELITE
-                    : (fieldMedicineSkill.Level * MEDICAL_SPEED_BONUS);
+                    ? (fieldMedicineSkill.Level * _skillData.MedicalSkills.MedicalSpeedBonus) - _skillData.MedicalSkills.MedicalSpeedBonusElite
+                    : (fieldMedicineSkill.Level * _skillData.MedicalSkills.MedicalSpeedBonus);
 
                 __instance.SetText(SkillDescriptions.FieldMedicineDescription(speedBonus));
             }
@@ -130,12 +131,12 @@ namespace SkillsExtended.Patches
                 var usecSystems = Plugin.Session.Profile.Skills.UsecArsystems;
 
                 float ergoBonus = usecSystems.IsEliteLevel
-                    ? usecSystems.Level * ERGO_MOD + ERGO_MOD_ELITE
-                    : usecSystems.Level * ERGO_MOD;
+                    ? usecSystems.Level * _skillData.UsecRifleSkill.ErgoMod + _skillData.UsecRifleSkill.ErgoModElite
+                    : usecSystems.Level * _skillData.UsecRifleSkill.ErgoMod;
 
                 float recoilReduction = usecSystems.IsEliteLevel
-                    ? usecSystems.Level * RECOIL_REDUCTION + RECOIL_REDUCTION_ELITE
-                    : usecSystems.Level * RECOIL_REDUCTION;
+                    ? usecSystems.Level * _skillData.UsecRifleSkill.RecoilReduction + _skillData.UsecRifleSkill.RecoilReductionElite
+                    : usecSystems.Level * _skillData.UsecRifleSkill.RecoilReduction;
 
                 __instance.SetText(SkillDescriptions.UsecArSystemsDescription(ergoBonus, recoilReduction));
             }
@@ -145,16 +146,16 @@ namespace SkillsExtended.Patches
                 var bearSystems = Plugin.Session.Profile.Skills.BearAksystems;
 
                 float ergoBonus = bearSystems.IsEliteLevel
-                    ? bearSystems.Level * ERGO_MOD + ERGO_MOD_ELITE
-                    : bearSystems.Level * ERGO_MOD;
+                    ? bearSystems.Level * _skillData.BearRifleSkill.ErgoMod + _skillData.BearRifleSkill.ErgoModElite
+                    : bearSystems.Level * _skillData.BearRifleSkill.ErgoMod;
 
                 float recoilReduction = bearSystems.IsEliteLevel
-                    ? bearSystems.Level * RECOIL_REDUCTION + RECOIL_REDUCTION_ELITE
-                    : bearSystems.Level * RECOIL_REDUCTION;
+                    ? bearSystems.Level * _skillData.BearRifleSkill.RecoilReduction + _skillData.BearRifleSkill.RecoilReductionElite
+                    : bearSystems.Level * _skillData.BearRifleSkill.RecoilReduction;
 
                 __instance.SetText(SkillDescriptions.BearAkSystemsDescription(ergoBonus, recoilReduction));
             }
-
+            /*
             if (Regex.IsMatch(text, usecTactics))
             {
                 var usecTacticsSkill = Plugin.Session.Profile.Skills.UsecTactics;
@@ -183,7 +184,7 @@ namespace SkillsExtended.Patches
                     : bearRawpowerSkill.Level * BEAR_POWER_CARRY_BONUS;
 
                 __instance.SetText(SkillDescriptions.BearRawpowerDescription(hpBonus, carryWeightBonus));
-            }
+            }*/
         }
     }
 

@@ -4,13 +4,14 @@ using BepInEx.Logging;
 using DrakiaXYZ.VersionChecker;
 using SkillsExtended.Controllers;
 using SkillsExtended.Helpers;
+using SkillsExtended.Models;
 using SkillsExtended.Patches;
 using System;
 using UnityEngine;
 
 namespace SkillsExtended
 {
-    [BepInPlugin("com.dirtbikercj.SkillsExtended", "Skills Extended", "0.4.2")]
+    [BepInPlugin("com.dirtbikercj.SkillsExtended", "Skills Extended", "0.5.0")]
     public class Plugin : BaseUnityPlugin
     {
         public const int TarkovVersion = 29197;
@@ -60,7 +61,8 @@ namespace SkillsExtended
 
         private void Start()
         {
-            Utils.GetKeysFromServer();
+            Constants.Keys = Utils.Get<KeysResponse>("/skillsExtended/GetKeys");
+            Constants.SkillData = Utils.Get<SkillDataResponse>("/skillsExtended/GetSkillsConfig");
         }
 
         private void Update()

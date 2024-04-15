@@ -2,7 +2,7 @@
 
 import { InstanceManager } from "./InstanceManager";
 import * as customWeapons from "../config/CustomWeapons.json";
-import * as blankKeyMapping from "../config/KeyBlankMapping.json";
+import * as SkillsConfig from "../config/SkillsConfig.json"
 
 import type { DependencyContainer } from "tsyringe";
 import type { IPostDBLoadMod } from "@spt-aki/models/external/IPostDBLoadMod";
@@ -11,6 +11,7 @@ import { LogTextColor } from "@spt-aki/models/spt/logging/LogTextColor";
 import type { CustomItemService } from "@spt-aki/services/mod/CustomItemService";
 import type { NewItemFromCloneDetails } from "@spt-aki/models/spt/mod/NewItemDetails";
 import type { IKeys } from "./Models/IKeys";
+import { ISkillData } from "./Models/ISkillData";
 
 enum TraderIDs {
     Mechanic = "5a7c2eca46aef81a7ca2145d",
@@ -73,26 +74,42 @@ class SkillsPlus implements IPreAkiLoadMod, IPostDBLoadMod
         const items = this.Instance.database.templates.items;
 
         const keys: IKeys = {
-            keyLocale: {},
-            keyBlankMapping: {}
+            keyLocale: {}
         }
 
         for (const item in items)
         {
-            if (items[item]._parent === "5c99f98d86f7745c314214b3" || items[item]._parent === "5c164d2286f774194c5e69fa")
+            if (items[item]._parent === "5c99f98d86f7745c314214b3" 
+             || items[item]._parent === "5c164d2286f774194c5e69fa"
+             || items[item]._parent === "543be5e94bdc2df1348b4568")
             {
                 keys.keyLocale[item] = this.locale.en[`${items[item]._id} Name`];
                 this.Instance.logger.logWithColor(this.locale.en[`${items[item]._id} Name`], LogTextColor.GREEN);
             }
         }
 
-        keys.keyBlankMapping = blankKeyMapping;
-
         return JSON.stringify(keys);
     }
 
     private registerRoutes(): void
     {
+        this.Instance.staticRouter.registerStaticRouter(
+            "GetSkillsConfig",
+            [
+                {
+                    url: "/skillsExtended/GetSkillsConfig",
+                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                    action: (url, info, sessionId, output) => 
+                    {                     
+                        const SkillConfig = SkillsConfig;
+
+                        return JSON.stringify(SkillConfig);
+                    }
+                }
+            ],
+            ""
+        );
+
         this.Instance.staticRouter.registerStaticRouter(
             "GetKeys",
             [

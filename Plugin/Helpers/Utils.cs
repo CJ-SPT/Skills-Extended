@@ -1,5 +1,4 @@
-﻿
-using Aki.Common.Http;
+﻿using Aki.Common.Http;
 using Aki.Reflection.Utils;
 using Comfort.Common;
 using EFT;
@@ -7,9 +6,7 @@ using Newtonsoft.Json;
 using SkillsExtended.Controllers;
 using SkillsExtended.Models;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 
 namespace SkillsExtended.Helpers
@@ -41,7 +38,7 @@ namespace SkillsExtended.Helpers
             else if (Plugin.Session != null)
             {
                 WeaponProficiencyBehaviors.isSubscribed = false;
-                return ClientAppUtils.GetMainApp()?.GetClientBackEndSession()?.Profile?.Skills;              
+                return ClientAppUtils.GetMainApp()?.GetClientBackEndSession()?.Profile?.Skills;
             }
 
             return null;
