@@ -1,5 +1,4 @@
 ﻿using EFT;
-using EFT.HealthSystem;
 using EFT.InventoryLogic;
 using HarmonyLib;
 using SkillsExtended.Helpers;
@@ -14,19 +13,6 @@ namespace SkillsExtended.Controllers
 {
     internal class FieldMedicineBehavior : MonoBehaviour
     {
-        public sealed class HealthEffectValues : IHealthEffect
-        {
-            public float UseTime { set; get; }
-
-            public KeyValuePair<EBodyPart, float>[] BodyPartTimeMults { set; get; }
-
-            public Dictionary<EHealthFactorType, GClass1236> HealthEffects { set; get; }
-
-            public Dictionary<EDamageEffectType, GClass1235> DamageEffects { set; get; }
-
-            public string StimulatorBuffs { set; get; }
-        }
-
         private SkillManager _skillManager => Utils.SetActiveSkillManager();
 
         private MedicalSkillData _skillData => Constants.SkillData.MedicalSkills;
