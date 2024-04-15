@@ -1,12 +1,16 @@
 ﻿using Aki.Reflection.Utils;
 using BepInEx;
 using BepInEx.Logging;
+using Comfort.Common;
 using DrakiaXYZ.VersionChecker;
+using EFT;
+using EFT.InventoryLogic;
 using SkillsExtended.Controllers;
 using SkillsExtended.Helpers;
 using SkillsExtended.Models;
 using SkillsExtended.Patches;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace SkillsExtended
@@ -18,8 +22,13 @@ namespace SkillsExtended
 
         public static ISession Session;
 
+        public static GameWorld GameWorld => Singleton<GameWorld>.Instance;
+        public static Player Player => Singleton<GameWorld>.Instance.MainPlayer;
+        public static IEnumerable<Item> Items => Session?.Profile?.Inventory?.AllRealPlayerItems;
+
         internal static GameObject Hook;
-        internal static MedicalBehavior MedicalScript;
+        internal static FirstAidBehavior FirstAidScript;
+        internal static FieldMedicineBehavior FieldMedicineScript;
         internal static WeaponProficiencyBehaviors WeaponsScript;
         internal static BearRawPowerBehavior BearPowerScript;
 
@@ -39,6 +48,8 @@ namespace SkillsExtended
             new SkillManagerConstructorPatch().Enable();
             new OnScreenChangePatch().Enable();
             new GetActionsClassPatch().Enable();
+            new DoMedEffectPatch().Enable();
+            new SetItemInHands().Enable();
 
             SEConfig.InitializeConfig(Config);
 
@@ -46,7 +57,8 @@ namespace SkillsExtended
 
             Hook = new GameObject("Skills Controller Object");
 
-            MedicalScript = Hook.AddComponent<MedicalBehavior>();
+            FirstAidScript = Hook.AddComponent<FirstAidBehavior>();
+            FieldMedicineScript = Hook.AddComponent<FieldMedicineBehavior>();
             WeaponsScript = Hook.AddComponent<WeaponProficiencyBehaviors>();
             //BearPowerScript = Hook.AddComponent<BearRawPowerBehavior>();
 

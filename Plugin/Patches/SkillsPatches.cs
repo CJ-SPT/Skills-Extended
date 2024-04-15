@@ -271,7 +271,7 @@ namespace SkillsExtended.Patches
                 TextMeshProUGUI name = (TextMeshProUGUI)AccessTools.Field(typeof(SkillPanel), "_name").GetValue(__instance);
                 name.text = "USEC Tactics";
             }
-
+            /*
             if (skill.Id == ESkillId.BearAksystems)
             {
                 TextMeshProUGUI name = (TextMeshProUGUI)AccessTools.Field(typeof(SkillPanel), "_name").GetValue(__instance);
@@ -282,7 +282,7 @@ namespace SkillsExtended.Patches
             {
                 TextMeshProUGUI name = (TextMeshProUGUI)AccessTools.Field(typeof(SkillPanel), "_name").GetValue(__instance);
                 name.text = "BEAR Raw Power";
-            }
+            }*/
         }
     }
 
@@ -296,8 +296,8 @@ namespace SkillsExtended.Patches
         {
             if (eftScreenType == EEftScreenType.Inventory)
             {
-                Plugin.MedicalScript.fieldMedicineInstanceIDs.Clear();
-                Plugin.MedicalScript.firstAidInstanceIDs.Clear();
+                Plugin.FieldMedicineScript.fieldMedicineInstanceIDs.Clear();
+                Plugin.FirstAidScript.firstAidInstanceIDs.Clear();
                 Plugin.WeaponsScript.weaponInstanceIds.Clear();
                 Utils.CheckServerModExists();
             }

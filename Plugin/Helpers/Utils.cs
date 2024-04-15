@@ -4,8 +4,8 @@ using Comfort.Common;
 using EFT;
 using Newtonsoft.Json;
 using SkillsExtended.Controllers;
-using SkillsExtended.Models;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 
@@ -44,11 +44,6 @@ namespace SkillsExtended.Helpers
             return null;
         }
 
-        public static void GetKeysFromServer()
-        {
-            Constants.Keys = Get<KeysResponse>("/skillsExtended/GetKeys");
-        }
-
         // Get Json from the server
         public static T Get<T>(string url)
         {
@@ -60,6 +55,28 @@ namespace SkillsExtended.Helpers
             }
 
             return JsonConvert.DeserializeObject<T>(req);
+        }
+
+        public static bool CanGainXPForLimb(Dictionary<EBodyPart, DateTime> dict, EBodyPart bodypart)
+        {
+            if (!dict.ContainsKey(bodypart))
+            {
+                dict.Add(bodypart, DateTime.Now);
+                return true;
+            }
+            else
+            {
+                TimeSpan elapsed = DateTime.Now - dict[bodypart];
+
+                if (elapsed.TotalSeconds >= SEConfig.medicalSkillCoolDownTime.Value)
+                {
+                    dict.Remove(bodypart);
+                    return true;
+                }
+
+                Plugin.Log.LogDebug($"Time until next available xp: {SEConfig.medicalSkillCoolDownTime.Value - elapsed.TotalSeconds} seconds");
+                return false;
+            }
         }
     }
 }
