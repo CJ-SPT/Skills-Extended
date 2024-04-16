@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace SkillsExtended.Models
 {
@@ -11,6 +12,10 @@ namespace SkillsExtended.Models
         public WeaponSkillData BearRifleSkill;
 
         public LockPickingData LockPickingSkill;
+
+        public UsecTacticsData UsecTacticsSkill;
+
+        public BearRawPowerData BearRawPowerSkill;
     }
 
     public struct MedicalSkillData
@@ -65,5 +70,44 @@ namespace SkillsExtended.Models
 
         [JsonProperty("BONUS_CHANCE_PER_LEVEL_ELITE")]
         public float BonusChancePerLevelElite;
+
+        [JsonProperty("DOOR_PICK_LEVELS")]
+        public DoorPickLevels DoorPickLevels;
+    }
+
+    // DoorId : level to pick the lock
+    public struct DoorPickLevels
+    {
+        public Dictionary<string, int> Factory;
+        public Dictionary<string, int> Woods;
+        public Dictionary<string, int> Customs;
+        public Dictionary<string, int> Interchange;
+        public Dictionary<string, int> Reserve;
+        public Dictionary<string, int> Shoreline;
+        public Dictionary<string, int> Labs;
+        public Dictionary<string, int> Lighthouse;
+        public Dictionary<string, int> Streets;
+        public Dictionary<string, int> GroundZero;
+    }
+
+    public struct UsecTacticsData
+    {
+        [JsonProperty("USEC_INERTIA_RED_BONUS")]
+        public float InertiaRedBonus;
+
+        [JsonProperty("USEC_INERTIA_RED_BONUS_ELITE")]
+        public float InertiaRedBonusElite;
+    }
+
+    public struct BearRawPowerData
+    {
+        [JsonProperty("BEAR_POWER_HP_BONUS")]
+        public float HPBonus;
+
+        [JsonProperty("BEAR_POWER_HP_BONUS_ELITE")]
+        public float HPBonusElite;
+
+        [JsonProperty("BEAR_POWER_UPDATE_TIME")]
+        public double UpdateTime;
     }
 }

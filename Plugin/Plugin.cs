@@ -60,7 +60,7 @@ namespace SkillsExtended
             FirstAidScript = Hook.AddComponent<FirstAidBehavior>();
             FieldMedicineScript = Hook.AddComponent<FieldMedicineBehavior>();
             WeaponsScript = Hook.AddComponent<WeaponProficiencyBehaviors>();
-            //BearPowerScript = Hook.AddComponent<BearRawPowerBehavior>();
+            BearPowerScript = Hook.AddComponent<BearRawPowerBehavior>();
 
             DontDestroyOnLoad(Hook);
 

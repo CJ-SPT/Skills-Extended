@@ -5,20 +5,6 @@ namespace SkillsExtended.Helpers
 {
     public static class Constants
     {
-        //public const float RESOURCE_RED_BONUS = 0.003f;           //Bleed-Fracture Resource cost reduction
-        //public const float RESOURCE_RED_BONUS_ELITE = 0.20f;      //Bleed-Fracture Resource cost reduction elite
-
-        public const float USEC_INERTIA_RED_BONUS = 0.002f;         //Usec tactics inertia reduction
-        public const float USEC_INERTIA_RED_BONUS_ELITE = 0.10f;    //Usec tactics inertia reduction elite
-        public const float USEC_AIMPUNCH_RED_BONUS = 0.002f;        //Usec tactics aimpunch reduction
-        public const float USEC_AIMPUNCH_RED_BONUS_ELITE = 0.05f;   //Usec tactics aimpunch reduction elite
-
-        public const float BEAR_POWER_HP_BONUS = 0.001f;            //Bear power health bonus
-        public const float BEAR_POWER_HP_BONUS_ELITE = 0.05f;       //Bear power health bonus elite
-        public const float BEAR_POWER_CARRY_BONUS = 0.002f;         //Bear power carry weight bonus
-        public const float BEAR_POWER_CARRY_BONUS_ELITE = 0.06f;    //Bear power carry weight bonus elite
-        public const double BEAR_POWER_UPDATE_TIME = 1d;            //Bear power XP cooldown time in seconds
-
         // Contains key information
         public static KeysResponse Keys = new KeysResponse();
 

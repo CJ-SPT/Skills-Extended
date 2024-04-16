@@ -25,6 +25,52 @@
         "PICK_TIME_REDUCTION_ELITE": 0.10,
         "BASE_PICK_CHANCE": 0.10,
         "BONUS_CHANCE_PER_LEVEL": 0.005,
-        "BONUS_CHANCE_PER_LEVEL_ELITE": 0.10
+        "BONUS_CHANCE_PER_LEVEL_ELITE": 0.10,
+        "DOOR_PICK_LEVELS": {
+            "Factory": {
+                "00094": 5,
+                "00095": 5,
+                "00115": 0,
+                "00120": 0, 
+                "00126": 5,
+                "00133": 5
+            },
+            "Woods": {
+
+            },
+            "Customs": {
+
+            },
+            "Interchange": {
+
+            },
+            "Reserve": {
+
+            },
+            "Shoreline": {
+
+            },
+            "Labs": {
+
+            },
+            "Lighthouse": {
+
+            },
+            "Streets": {
+
+            },
+            "GroundZero": {
+
+            }
+        }
+    },
+    "UsecTactics": {
+        "USEC_INERTIA_RED_BONUS": 0.002,
+        "USEC_INERTIA_RED_BONUS_ELITE": 0.10
+    },
+    "BearRawPower": {
+        "BEAR_POWER_HP_BONUS": 0.001,
+        "BEAR_POWER_HP_BONUS_ELITE": 0.05,
+        "BEAR_POWER_UPDATE_TIME": 1
     }
 }

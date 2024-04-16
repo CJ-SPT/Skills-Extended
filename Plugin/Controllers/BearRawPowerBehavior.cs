@@ -1,13 +1,8 @@
 ﻿using Comfort.Common;
 using EFT;
-using EFT.InventoryLogic;
-using HarmonyLib;
 using SkillsExtended.Helpers;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 using static SkillsExtended.Helpers.Constants;
 
@@ -22,12 +17,8 @@ namespace SkillsExtended.Controllers
         private SkillManager _skillManager => Utils.SetActiveSkillManager();
 
         private float _hpBonus => _skillManager.BearRawpower.IsEliteLevel
-                ? _skillManager.BearRawpower.Level * BEAR_POWER_HP_BONUS + BEAR_POWER_HP_BONUS_ELITE
-                : _skillManager.BearRawpower.Level * BEAR_POWER_HP_BONUS;
-
-        private float _carryWeightBonus => _skillManager.BearRawpower.IsEliteLevel
-                ? _skillManager.BearRawpower.Level * BEAR_POWER_CARRY_BONUS + BEAR_POWER_CARRY_BONUS_ELITE
-                : _skillManager.BearRawpower.Level * BEAR_POWER_CARRY_BONUS;
+                ? _skillManager.BearRawpower.Level * SkillData.BearRawPowerSkill.HPBonus + SkillData.BearRawPowerSkill.HPBonusElite
+                : _skillManager.BearRawpower.Level * SkillData.BearRawPowerSkill.HPBonus;
 
         private Dictionary<EBodyPart, Profile.GClass1756.GClass1758> _origHealthVals = new Dictionary<EBodyPart, Profile.GClass1756.GClass1758>();
 
@@ -38,7 +29,6 @@ namespace SkillsExtended.Controllers
 
         private void Awake()
         {
-
         }
 
         private void Update()
@@ -50,7 +40,6 @@ namespace SkillsExtended.Controllers
             if (Singleton<GameWorld>.Instance?.MainPlayer == null) { return; }
 
             ApplyXp();
-            ApplyWeightBonus();
         }
 
         private void ApplyXp()
@@ -71,7 +60,7 @@ namespace SkillsExtended.Controllers
         {
             TimeSpan elapsed = DateTime.Now - _lastXpTime;
 
-            if (elapsed.TotalSeconds >= BEAR_POWER_UPDATE_TIME)
+            if (elapsed.TotalSeconds >= SkillData.BearRawPowerSkill.UpdateTime)
             {
                 _lastXpTime = DateTime.Now;
                 return true;
@@ -105,30 +94,6 @@ namespace SkillsExtended.Controllers
                 {
                     value.Health.Current = bonusHp;
                 }
-            }
-
-            _lastHealthAppliedLevel = _skillManager.BearRawpower.Level;
-        }
-
-        private void ApplyWeightBonus()
-        {
-            if (_lastWeightAppliedLevel == _skillManager.BearRawpower.Level) { return; }
-
-            if (!Singleton<BackendConfigClass>.Instantiated) { return; }
-
-            BackendConfigSettingsClass bcs = Singleton<BackendConfigSettingsClass>.Instance;
-
-            bcs.Stamina.BaseOverweightLimits = new Vector2(26f * (1f + _carryWeightBonus), 67f * (1 + _carryWeightBonus));
-            bcs.Stamina.WalkOverweightLimits = new Vector2(26f * (1f + _carryWeightBonus), 67f * (1 + _carryWeightBonus));
-            bcs.Stamina.WalkSpeedOverweightLimits = new Vector2(45f * (1f + _carryWeightBonus), 75f * (1 + _carryWeightBonus));
-            bcs.Stamina.SprintOverweightLimits = new Vector2(26f * (1f + _carryWeightBonus), 63f * (1 + _carryWeightBonus));
-
-            if (Singleton<GameWorld>.Instance.MainPlayer != null)
-            {
-                _player.Physical.BaseOverweightLimits = new Vector2(26f * (1f + _carryWeightBonus), 67f * (1 + _carryWeightBonus));
-                _player.Physical.WalkOverweightLimits = new Vector2(26f * (1f +_carryWeightBonus), 67f * (1 + _carryWeightBonus));
-                _player.Physical.WalkSpeedOverweightLimits = new Vector2(45f * (1f + _carryWeightBonus), 75f * (1 + _carryWeightBonus));
-                _player.Physical.SprintOverweightLimits = new Vector2(26f * (1f + _carryWeightBonus), 63f * (1 + _carryWeightBonus));
             }
 
             _lastHealthAppliedLevel = _skillManager.BearRawpower.Level;
