@@ -47,24 +47,24 @@ namespace SkillsExtended.Helpers
             ActionsTypesClass action = new()
             {
                 Name = "Pick lock",
-                Disabled = !interactiveObject.Operatable && !LockPickingHelpers.IsLockPickInInventory() // TODO: Disable if LP level is not high enough for this door
+                Disabled = !interactiveObject.Operatable && !LockPickingHelpers.IsLockPickInInventory()
             };
 
-            Interaction keyInfoAction = new(interactiveObject, owner);
+            LockPickingInteraction keyInfoAction = new(interactiveObject, owner);
 
             action.Action = new Action(keyInfoAction.TryPickLock);
             actionReturn.Actions.Add(action);
         }
 
-        public sealed class Interaction
+        public sealed class LockPickingInteraction
         {
             public GamePlayerOwner owner;
             public WorldInteractiveObject interactiveObject;
 
-            public Interaction()
+            public LockPickingInteraction()
             { }
 
-            public Interaction(WorldInteractiveObject interactiveObject, GamePlayerOwner owner)
+            public LockPickingInteraction(WorldInteractiveObject interactiveObject, GamePlayerOwner owner)
             {
                 this.interactiveObject = interactiveObject ?? throw new ArgumentNullException("Interactive Object is Null...");
                 this.owner = owner ?? throw new ArgumentNullException("Owner is null...");
@@ -75,6 +75,13 @@ namespace SkillsExtended.Helpers
                 if (Plugin.Keys.KeyLocale.ContainsKey(interactiveObject.KeyId))
                 {
                     NotificationManagerClass.DisplayMessageNotification($"Key for door is {Plugin.Keys.KeyLocale[interactiveObject.KeyId]}");
+                }
+
+                int level = LockPickingHelpers.GetLevelForDoor(owner.Player.Location, interactiveObject.Id);
+
+                if (owner.Player.Skills.Lockpicking.Level < level)
+                {
+                    owner.DisplayPreloaderUiNotification("This lock is hard for your level...");
                 }
 
                 LockPickingHelpers.PickLock(interactiveObject, owner);

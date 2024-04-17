@@ -74,8 +74,8 @@ namespace SkillsExtended.Models
         [JsonProperty("ENABLED")]
         public bool Enabled;
 
-        [JsonProperty("BASE_PICK_TIME")]
-        public float BasePickTime;
+        [JsonProperty("PICK_BASE_TIME")]
+        public float PickBaseTime;
 
         [JsonProperty("PICK_TIME_REDUCTION")]
         public float PickTimeReduction;
@@ -83,14 +83,14 @@ namespace SkillsExtended.Models
         [JsonProperty("PICK_TIME_REDUCTION_ELITE")]
         public float PickTimeReductionElite;
 
-        [JsonProperty("BASE_PICK_CHANCE")]
-        public float BasePickChance;
+        [JsonProperty("PICK_BASE_SUCCESS_CHANCE")]
+        public float PickBaseSuccessChance;
 
-        [JsonProperty("BONUS_CHANCE_PER_LEVEL")]
-        public float BonusChancePerLevel;
+        [JsonProperty("PICK_BASE_DIFFICULTY_MOD")]
+        public float PickBaseDifficultyMod;
 
-        [JsonProperty("BONUS_CHANCE_PER_LEVEL_ELITE")]
-        public float BonusChancePerLevelElite;
+        [JsonProperty("XP_TABLE")]
+        public Dictionary<string, float> XpTable;
 
         [JsonProperty("DOOR_PICK_LEVELS")]
         public DoorPickLevels DoorPickLevels;

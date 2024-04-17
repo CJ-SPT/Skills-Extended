@@ -31,12 +31,13 @@ export interface IWeaponSkillData
 
 export interface ILockPickingData
 {
+    ENABLED: boolean;
     BASE_PICK_TIME: number;
     PICK_TIME_REDUCTION: number;
     PICK_TIME_REDUCTION_ELITE: number;
-    BASE_PICK_CHANCE: number;
-    BONUS_CHANCE_PER_LEVEL: number;
-    BONUS_CHANCE_PER_LEVEL_ELITE: number;
+    PICK_BASE_SUCCESS_CHANCE: number;
+    PICK_BASE_DIFFICULTY_MOD: number;
+    XP_TABLE: Record<string, number>;
     DOOR_PICK_LEVELS: IDoorPickLevels;
 }
 

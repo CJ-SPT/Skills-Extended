@@ -92,12 +92,19 @@
     },
     "LockPickingSkill": {
         "ENABLED": true,
-        "BASE_PICK_TIME": 15,
+        "PICK_BASE_TIME": 15,
         "PICK_TIME_REDUCTION": 0.005,
         "PICK_TIME_REDUCTION_ELITE": 0.10,
-        "BASE_PICK_CHANCE": 0.10,
-        "BONUS_CHANCE_PER_LEVEL": 0.005,
-        "BONUS_CHANCE_PER_LEVEL_ELITE": 0.10,
+        "PICK_BASE_SUCCESS_CHANCE": 50,
+        "PICK_BASE_DIFFICULTY_MOD": 8,
+        "XP_TABLE": {
+            "0": 0.6,
+            "5": 0.88,
+            "10": 1,
+            "15": 1.25,
+            "20": 1.50,
+            "25": 1.75
+        },
         "DOOR_PICK_LEVELS": {
             "Factory": {
                 "00094": 5,
