@@ -55,8 +55,8 @@ namespace SkillsExtended.Patches
 
             AccessTools.Field(typeof(SkillClass), "Locked").SetValue(__instance.UsecArsystems, false);
             AccessTools.Field(typeof(SkillClass), "Locked").SetValue(__instance.BearAksystems, false);
-            AccessTools.Field(typeof(SkillClass), "Locked").SetValue(__instance.UsecTactics, true);
-            AccessTools.Field(typeof(SkillClass), "Locked").SetValue(__instance.BearRawpower, true);
+            AccessTools.Field(typeof(SkillClass), "Locked").SetValue(__instance.UsecTactics, false);
+            AccessTools.Field(typeof(SkillClass), "Locked").SetValue(__instance.BearRawpower, false);
         }
     }
 
@@ -155,20 +155,16 @@ namespace SkillsExtended.Patches
 
                 __instance.SetText(SkillDescriptions.BearAkSystemsDescription(ergoBonus, recoilReduction));
             }
-            /*
+
             if (Regex.IsMatch(text, usecTactics))
             {
                 var usecTacticsSkill = Plugin.Session.Profile.Skills.UsecTactics;
 
                 float inertiaReduction = usecTacticsSkill.IsEliteLevel
-                    ? usecTacticsSkill.Level * USEC_INERTIA_RED_BONUS + USEC_INERTIA_RED_BONUS_ELITE
-                    : usecTacticsSkill.Level * USEC_INERTIA_RED_BONUS;
+                    ? usecTacticsSkill.Level * _skillData.UsecTacticsSkill.InertiaRedBonus + _skillData.UsecTacticsSkill.InertiaRedBonusElite
+                    : usecTacticsSkill.Level * _skillData.UsecTacticsSkill.InertiaRedBonus;
 
-                float aimPunchReduction = usecTacticsSkill.IsEliteLevel
-                    ? usecTacticsSkill.Level * USEC_AIMPUNCH_RED_BONUS + USEC_AIMPUNCH_RED_BONUS_ELITE
-                    : usecTacticsSkill.Level * USEC_AIMPUNCH_RED_BONUS;
-
-                __instance.SetText(SkillDescriptions.UsecTacticsDescription(inertiaReduction, aimPunchReduction));
+                __instance.SetText(SkillDescriptions.UsecTacticsDescription(inertiaReduction));
             }
 
             if (Regex.IsMatch(text, bearRawpower))
@@ -176,15 +172,11 @@ namespace SkillsExtended.Patches
                 var bearRawpowerSkill = Plugin.Session.Profile.Skills.BearRawpower;
 
                 float hpBonus = bearRawpowerSkill.IsEliteLevel
-                    ? bearRawpowerSkill.Level * BEAR_POWER_HP_BONUS + BEAR_POWER_HP_BONUS_ELITE
-                    : bearRawpowerSkill.Level * BEAR_POWER_HP_BONUS;
+                    ? bearRawpowerSkill.Level * _skillData.BearRawPowerSkill.HPBonus + _skillData.BearRawPowerSkill.HPBonusElite
+                    : bearRawpowerSkill.Level * _skillData.BearRawPowerSkill.HPBonus;
 
-                float carryWeightBonus = bearRawpowerSkill.IsEliteLevel
-                    ? bearRawpowerSkill.Level * BEAR_POWER_CARRY_BONUS + BEAR_POWER_CARRY_BONUS_ELITE
-                    : bearRawpowerSkill.Level * BEAR_POWER_CARRY_BONUS;
-
-                __instance.SetText(SkillDescriptions.BearRawpowerDescription(hpBonus, carryWeightBonus));
-            }*/
+                __instance.SetText(SkillDescriptions.BearRawpowerDescription(hpBonus));
+            }
         }
     }
 
@@ -217,14 +209,12 @@ namespace SkillsExtended.Patches
                 return false;
             }
 
-            /*
             // Usec Tactics
             if (skill.Id == ESkillId.UsecTactics && side == EPlayerSide.Bear)
             {
                 // Skip original method and dont show skill
                 return false;
             }
-            */
 
             // Bear AK systems
             if (skill.Id == ESkillId.BearAksystems && side == EPlayerSide.Usec && !skills.UsecArsystems.IsEliteLevel)
@@ -238,14 +228,12 @@ namespace SkillsExtended.Patches
                 return false;
             }
 
-            /*
             // Bear Raw Power
             if (skill.Id == ESkillId.BearRawpower && side == EPlayerSide.Usec)
             {
                 // Skip original method and dont show skill
                 return false;
             }
-            */
 
             // Show the skill
             return true;
@@ -271,7 +259,7 @@ namespace SkillsExtended.Patches
                 TextMeshProUGUI name = (TextMeshProUGUI)AccessTools.Field(typeof(SkillPanel), "_name").GetValue(__instance);
                 name.text = "USEC Tactics";
             }
-            /*
+
             if (skill.Id == ESkillId.BearAksystems)
             {
                 TextMeshProUGUI name = (TextMeshProUGUI)AccessTools.Field(typeof(SkillPanel), "_name").GetValue(__instance);
@@ -282,7 +270,7 @@ namespace SkillsExtended.Patches
             {
                 TextMeshProUGUI name = (TextMeshProUGUI)AccessTools.Field(typeof(SkillPanel), "_name").GetValue(__instance);
                 name.text = "BEAR Raw Power";
-            }*/
+            }
         }
     }
 
