@@ -11,24 +11,22 @@ using UnityEngine;
 
 namespace SkillsExtended.Controllers
 {
-    public class FirstAidBehavior : MonoBehaviour
+    public class FirstAidBehaviour : MonoBehaviour
     {
-        private Dictionary<string, MedKitValues> _originalMedKitValues = new Dictionary<string, MedKitValues>();
+        private Dictionary<string, MedKitValues> _originalMedKitValues = [];
 
-        private SkillManager _skillManager => Utils.SetActiveSkillManager();
+        private SkillManager _skillManager => Utils.GetActiveSkillManager();
 
         private MedicalSkillData _skillData => Plugin.SkillData.MedicalSkills;
 
         // Store the instance ID of the item and the level its bonus resource is set to.
-        public Dictionary<string, int> firstAidInstanceIDs = new Dictionary<string, int>();
+        public Dictionary<string, int> firstAidInstanceIDs = [];
 
         // Store a dictionary of bodyparts to prevent the user from spam exploiting the leveling
         // system. Bodypart, Last time healed
-        private Dictionary<EBodyPart, DateTime> _firstAidBodypartCahce
-            = new Dictionary<EBodyPart, DateTime>();
+        private Dictionary<EBodyPart, DateTime> _firstAidBodypartCahce = [];
 
-        private Dictionary<string, HealthEffectValues> _originalHealthEffectValues
-            = new Dictionary<string, HealthEffectValues>();
+        private Dictionary<string, HealthEffectValues> _originalHealthEffectValues = [];
 
         private float FaPmcSpeedBonus => _skillManager.FirstAid.IsEliteLevel
             ? 1f - (_skillManager.FirstAid.Level * _skillData.MedicalSpeedBonus) - _skillData.MedicalSpeedBonusElite
@@ -74,13 +72,14 @@ namespace SkillsExtended.Controllers
             {
                 if (!_originalHealthEffectValues.ContainsKey(item.TemplateId))
                 {
-                    var origValues = new HealthEffectValues();
-
-                    origValues.UseTime = meds.HealthEffectsComponent.UseTime;
-                    origValues.BodyPartTimeMults = meds.HealthEffectsComponent.BodyPartTimeMults;
-                    origValues.HealthEffects = meds.HealthEffectsComponent.HealthEffects;
-                    origValues.DamageEffects = meds.HealthEffectsComponent.DamageEffects;
-                    origValues.StimulatorBuffs = meds.HealthEffectsComponent.StimulatorBuffs;
+                    var origValues = new HealthEffectValues
+                    {
+                        UseTime = meds.HealthEffectsComponent.UseTime,
+                        BodyPartTimeMults = meds.HealthEffectsComponent.BodyPartTimeMults,
+                        HealthEffects = meds.HealthEffectsComponent.HealthEffects,
+                        DamageEffects = meds.HealthEffectsComponent.DamageEffects,
+                        StimulatorBuffs = meds.HealthEffectsComponent.StimulatorBuffs
+                    };
 
                     _originalHealthEffectValues.Add(item.TemplateId, origValues);
                 }
@@ -112,10 +111,11 @@ namespace SkillsExtended.Controllers
                 // Add the original medkit template to the original dictionary
                 if (!_originalMedKitValues.ContainsKey(item.TemplateId))
                 {
-                    var origMedValues = new MedKitValues();
-
-                    origMedValues.MaxHpResource = meds.MedKitComponent.MaxHpResource;
-                    origMedValues.HpResourceRate = meds.MedKitComponent.HpResourceRate;
+                    var origMedValues = new MedKitValues
+                    {
+                        MaxHpResource = meds.MedKitComponent.MaxHpResource,
+                        HpResourceRate = meds.MedKitComponent.HpResourceRate
+                    };
 
                     _originalMedKitValues.Add(item.TemplateId, origMedValues);
                 }

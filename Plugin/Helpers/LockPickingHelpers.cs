@@ -12,7 +12,7 @@ namespace SkillsExtended.Helpers
 {
     internal static class LockPickingHelpers
     {
-        private static SkillManager _skills => Utils.SetActiveSkillManager();
+        private static SkillManager _skills => Utils.GetActiveSkillManager();
         private static Player _player => Singleton<GameWorld>.Instance.MainPlayer;
 
         private static LockPickingData _lockPicking => Plugin.SkillData.LockPickingSkill;
@@ -33,13 +33,13 @@ namespace SkillsExtended.Helpers
 
                 owner.ShowObjectivesPanel("Picking lock {0:F1}", lpTime);
 
-                LockPickActionHandler handler = new LockPickActionHandler()
+                LockPickActionHandler handler = new()
                 {
                     Owner = owner,
                     InteractiveObject = interactiveObject,
                 };
 
-                Action<bool> action = new Action<bool>(handler.PickLockAction);
+                Action<bool> action = new(handler.PickLockAction);
                 currentManagedState.Plant(true, false, lpTime, action);
             }
             else
@@ -86,7 +86,7 @@ namespace SkillsExtended.Helpers
         public GamePlayerOwner Owner;
         public WorldInteractiveObject InteractiveObject;
 
-        private static SkillManager _skills => Utils.SetActiveSkillManager();
+        private static SkillManager _skills => Utils.GetActiveSkillManager();
 
         private static LockPickingData _lockPicking => Plugin.SkillData.LockPickingSkill;
 

@@ -20,6 +20,12 @@ namespace SkillsExtended.Models
 
     public struct MedicalSkillData
     {
+        [JsonProperty("ENABLE_FIELD_MEDICINE")]
+        public bool EnableFieldMedicine;
+
+        [JsonProperty("ENABLE_FIRST_AID")]
+        public bool EnableFirstAid;
+
         [JsonProperty("MEDKIT_HP_BONUS")]
         public float MedkitHpBonus;
 
@@ -41,6 +47,9 @@ namespace SkillsExtended.Models
 
     public struct WeaponSkillData
     {
+        [JsonProperty("ENABLED")]
+        public bool Enabled;
+
         [JsonProperty("WEAPON_PROF_XP")]
         public float WeaponProfXp;
 
@@ -62,6 +71,9 @@ namespace SkillsExtended.Models
 
     public struct LockPickingData
     {
+        [JsonProperty("ENABLED")]
+        public bool Enabled;
+
         [JsonProperty("BASE_PICK_TIME")]
         public float BasePickTime;
 
@@ -101,6 +113,9 @@ namespace SkillsExtended.Models
 
     public struct UsecTacticsData
     {
+        [JsonProperty("ENABLED")]
+        public bool Enabled;
+
         [JsonProperty("USEC_INERTIA_RED_BONUS")]
         public float InertiaRedBonus;
 
@@ -110,6 +125,9 @@ namespace SkillsExtended.Models
 
     public struct BearRawPowerData
     {
+        [JsonProperty("ENABLED")]
+        public bool Enabled;
+
         [JsonProperty("BEAR_POWER_HP_BONUS")]
         public float HPBonus;
 

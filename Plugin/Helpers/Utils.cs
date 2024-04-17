@@ -29,7 +29,7 @@ namespace SkillsExtended.Helpers
         }
 
         // If the player is in the gameworld, use the main players skillmanager
-        public static SkillManager SetActiveSkillManager()
+        public static SkillManager GetActiveSkillManager()
         {
             if (Singleton<GameWorld>.Instance?.MainPlayer != null)
             {
@@ -37,7 +37,7 @@ namespace SkillsExtended.Helpers
             }
             else if (Plugin.Session != null)
             {
-                WeaponProficiencyBehaviors.isSubscribed = false;
+                UsecRifleBehaviour.isSubscribed = false;
                 return ClientAppUtils.GetMainApp()?.GetClientBackEndSession()?.Profile?.Skills;
             }
 

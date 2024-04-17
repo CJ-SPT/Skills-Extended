@@ -44,12 +44,13 @@ namespace SkillsExtended.Helpers
                 return;
             }
 
-            ActionsTypesClass action = new ActionsTypesClass();
+            ActionsTypesClass action = new()
+            {
+                Name = "Pick lock",
+                Disabled = !interactiveObject.Operatable && !LockPickingHelpers.IsLockPickInInventory() // TODO: Disable if LP level is not high enough for this door
+            };
 
-            action.Name = "Pick lock";
-            action.Disabled = !interactiveObject.Operatable && !LockPickingHelpers.IsLockPickInInventory(); // TODO: Disable if LP level is not high enough for this door
-
-            Interaction keyInfoAction = new Interaction(interactiveObject, owner);
+            Interaction keyInfoAction = new(interactiveObject, owner);
 
             action.Action = new Action(keyInfoAction.TryPickLock);
             actionReturn.Actions.Add(action);
@@ -65,18 +66,8 @@ namespace SkillsExtended.Helpers
 
             public Interaction(WorldInteractiveObject interactiveObject, GamePlayerOwner owner)
             {
-                if (interactiveObject == null)
-                {
-                    throw new ArgumentNullException("Interactive Object is Null...");
-                }
-
-                if (owner == null)
-                {
-                    throw new ArgumentNullException("Owner is null...");
-                }
-
-                this.interactiveObject = interactiveObject;
-                this.owner = owner;
+                this.interactiveObject = interactiveObject ?? throw new ArgumentNullException("Interactive Object is Null...");
+                this.owner = owner ?? throw new ArgumentNullException("Owner is null...");
             }
 
             public void TryPickLock()

@@ -33,9 +33,11 @@ namespace SkillsExtended
         public static SkillDataResponse SkillData;
 
         internal static GameObject Hook;
-        internal static FirstAidBehavior FirstAidScript;
-        internal static FieldMedicineBehavior FieldMedicineScript;
-        internal static WeaponProficiencyBehaviors WeaponsScript;
+
+        internal static FirstAidBehaviour FirstAidScript;
+        internal static FieldMedicineBehaviour FieldMedicineScript;
+        internal static UsecRifleBehaviour UsecRifleScript;
+        internal static BearRifleBehaviour BearRifleScript;
         internal static BearRawPowerBehavior BearPowerScript;
 
         internal static ManualLogSource Log;
@@ -62,17 +64,10 @@ namespace SkillsExtended
             Log = Logger;
 
             Hook = new GameObject("Skills Controller Object");
-
-            FirstAidScript = Hook.AddComponent<FirstAidBehavior>();
-            FieldMedicineScript = Hook.AddComponent<FieldMedicineBehavior>();
-            WeaponsScript = Hook.AddComponent<WeaponProficiencyBehaviors>();
-            BearPowerScript = Hook.AddComponent<BearRawPowerBehavior>();
-
             DontDestroyOnLoad(Hook);
 
 #if DEBUG
             new LocationSceneAwakePatch().Enable();
-            //new AnimationEventInitClassPatch().Enable();
             ConsoleCommands.RegisterCommands();
 #endif
         }
@@ -81,6 +76,36 @@ namespace SkillsExtended
         {
             Keys = Utils.Get<KeysResponse>("/skillsExtended/GetKeys");
             SkillData = Utils.Get<SkillDataResponse>("/skillsExtended/GetSkillsConfig");
+
+            if (SkillData.MedicalSkills.EnableFirstAid)
+            {
+                FirstAidScript = Hook.AddComponent<FirstAidBehaviour>();
+            }
+
+            if (SkillData.MedicalSkills.EnableFieldMedicine)
+            {
+                FieldMedicineScript = Hook.AddComponent<FieldMedicineBehaviour>();
+            }
+
+            if (SkillData.UsecRifleSkill.Enabled)
+            {
+                UsecRifleScript = Hook.AddComponent<UsecRifleBehaviour>();
+            }
+
+            if (SkillData.UsecTacticsSkill.Enabled)
+            {
+                // TODO
+            }
+
+            if (SkillData.BearRifleSkill.Enabled)
+            {
+                BearRifleScript = Hook.AddComponent<BearRifleBehaviour>();
+            }
+
+            if (SkillData.BearRawPowerSkill.Enabled)
+            {
+                BearPowerScript = Hook.AddComponent<BearRawPowerBehavior>();
+            }
         }
 
         private void Update()

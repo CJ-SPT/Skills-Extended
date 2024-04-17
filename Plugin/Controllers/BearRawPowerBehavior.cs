@@ -13,13 +13,13 @@ namespace SkillsExtended.Controllers
 
         private Player _player { get => _gameWorld.MainPlayer; }
 
-        private SkillManager _skillManager => Utils.SetActiveSkillManager();
+        private SkillManager _skillManager => Utils.GetActiveSkillManager();
 
         private float _hpBonus => _skillManager.BearRawpower.IsEliteLevel
                 ? _skillManager.BearRawpower.Level * Plugin.SkillData.BearRawPowerSkill.HPBonus + Plugin.SkillData.BearRawPowerSkill.HPBonusElite
                 : _skillManager.BearRawpower.Level * Plugin.SkillData.BearRawPowerSkill.HPBonus;
 
-        private Dictionary<EBodyPart, Profile.GClass1756.GClass1758> _origHealthVals = new Dictionary<EBodyPart, Profile.GClass1756.GClass1758>();
+        private Dictionary<EBodyPart, Profile.GClass1756.GClass1758> _origHealthVals = [];
 
         private DateTime _lastXpTime = DateTime.Now;
 

@@ -10,29 +10,19 @@ using UnityEngine;
 
 namespace SkillsExtended.Controllers
 {
-    public class WeaponProficiencyBehaviors : MonoBehaviour
+    public class UsecRifleBehaviour : MonoBehaviour
     {
-        private class OrigWeaponValues
-        {
-            public float ergo;
-            public float weaponUp;
-            public float weaponBack;
-        }
+        public Dictionary<string, int> weaponInstanceIds = [];
 
-        public Dictionary<string, int> weaponInstanceIds = new Dictionary<string, int>();
-
-        private SkillManager _skillManager => Utils.SetActiveSkillManager();
+        private SkillManager _skillManager => Utils.GetActiveSkillManager();
 
         private ISession _session => Plugin.Session;
 
-        private GameWorld _gameWorld { get => Singleton<GameWorld>.Instance; }
+        private GameWorld _gameWorld => Singleton<GameWorld>.Instance;
 
         private int _usecARLevel => _session.Profile.Skills.UsecArsystems.Level;
 
-        private int _bearAKLevel => _session.Profile.Skills.BearAksystems.Level;
-
         private WeaponSkillData _usecSkillData => Plugin.SkillData.UsecRifleSkill;
-        private WeaponSkillData _bearSkillData => Plugin.SkillData.BearRifleSkill;
 
         private float _ergoBonusUsec => _skillManager.UsecArsystems.IsEliteLevel
             ? _usecARLevel * _usecSkillData.ErgoMod + _usecSkillData.ErgoModElite
@@ -42,25 +32,11 @@ namespace SkillsExtended.Controllers
             ? _usecARLevel * _usecSkillData.RecoilReduction + _usecSkillData.RecoilReductionElite
             : _usecARLevel * _usecSkillData.RecoilReduction;
 
-        private float _ergoBonusBear => _skillManager.BearAksystems.IsEliteLevel
-            ? _bearAKLevel * _bearSkillData.ErgoMod + _bearSkillData.ErgoModElite
-            : _bearAKLevel * _bearSkillData.ErgoMod;
-
-        private float _recoilBonusBear => _skillManager.BearAksystems.IsEliteLevel
-            ? _bearAKLevel * _bearSkillData.RecoilReduction + _bearSkillData.RecoilReductionElite
-            : _bearAKLevel * _bearSkillData.RecoilReduction;
-
         // Store an object containing the weapons original stats.
-        private Dictionary<string, OrigWeaponValues> _originalWeaponValues = new Dictionary<string, OrigWeaponValues>();
-
-        private List<string> _customUsecWeapons = new List<string>();
-        private List<string> _customBearWeapons = new List<string>();
+        private Dictionary<string, OrigWeaponValues> _originalWeaponValues = [];
 
         private IEnumerable<Item> _usecWeapons => _session.Profile.Inventory.AllRealPlayerItems
             .Where(x => _usecSkillData.Weapons.Contains(x.TemplateId));
-
-        private IEnumerable<Item> _bearWeapons => _session.Profile.Inventory.AllRealPlayerItems
-            .Where(x => _bearSkillData.Weapons.Contains(x.TemplateId));
 
         public static bool isSubscribed = false;
 
@@ -74,12 +50,6 @@ namespace SkillsExtended.Controllers
             if (Plugin.Session?.Profile?.Side == EPlayerSide.Usec || _skillManager.BearAksystems.IsEliteLevel)
             {
                 StaticManager.Instance.StartCoroutine(UpdateWeapons(_usecWeapons, _ergoBonusUsec, _recoilBonusUsec, _usecARLevel));
-            }
-
-            // Only run this behavior if we are BEAR, or the player has completed the USEC skill
-            if (Plugin.Session?.Profile?.Side == EPlayerSide.Bear || _skillManager.UsecArsystems.IsEliteLevel)
-            {
-                StaticManager.Instance.StartCoroutine(UpdateWeapons(_bearWeapons, _ergoBonusBear, _recoilBonusBear, _bearAKLevel));
             }
         }
 
@@ -100,14 +70,6 @@ namespace SkillsExtended.Controllers
                     Plugin.Log.LogDebug("USEC AR XP ENABLED.");
                 }
 
-                if ((_gameWorld.MainPlayer.Side == EPlayerSide.Bear && !_skillManager.BearAksystems.IsEliteLevel)
-                    || (_skillManager.UsecArsystems.IsEliteLevel && !_skillManager.BearAksystems.IsEliteLevel)
-                    || SEConfig.disableEliteRequirement.Value)
-                {
-                    _skillManager.OnMasteringExperienceChanged += ApplyBearAKXp;
-                    Plugin.Log.LogDebug("BEAR AK XP ENABLED.");
-                }
-
                 isSubscribed = true;
                 return;
             }
@@ -115,30 +77,15 @@ namespace SkillsExtended.Controllers
 
         private void ApplyUsecARXp(MasterSkillClass action)
         {
-            var items = _session.Profile.InventoryInfo.GetItemsInSlots(new EquipmentSlot[] { EquipmentSlot.FirstPrimaryWeapon, EquipmentSlot.SecondPrimaryWeapon })
+            var items = _session.Profile.InventoryInfo.GetItemsInSlots([EquipmentSlot.FirstPrimaryWeapon, EquipmentSlot.SecondPrimaryWeapon])
                 .Where(x => x != null && (_usecSkillData.Weapons.Contains(x.TemplateId))).Any();
 
+            // TODO: This is bugged, it will allow xp even if its not the active weapon.
             if (items)
             {
                 _skillManager.UsecArsystems.Current += _usecSkillData.WeaponProfXp * SEConfig.usecWeaponSpeedMult.Value;
 
                 Plugin.Log.LogDebug($"USEC AR {_usecSkillData.WeaponProfXp * SEConfig.usecWeaponSpeedMult.Value} XP Gained.");
-                return;
-            }
-
-            Plugin.Log.LogDebug("Invalid weapon for XP");
-        }
-
-        private void ApplyBearAKXp(MasterSkillClass action)
-        {
-            var items = _session.Profile.InventoryInfo.GetItemsInSlots(new EquipmentSlot[] { EquipmentSlot.FirstPrimaryWeapon, EquipmentSlot.SecondPrimaryWeapon })
-                .Where(x => x != null && (_bearSkillData.Weapons.Contains(x.TemplateId))).Any();
-
-            if (items)
-            {
-                _skillManager.BearAksystems.Current += _bearSkillData.WeaponProfXp * SEConfig.bearWeaponSpeedMult.Value;
-
-                Plugin.Log.LogDebug($"BEAR AK {_bearSkillData.WeaponProfXp * SEConfig.bearWeaponSpeedMult.Value} XP Gained.");
                 return;
             }
 
@@ -154,11 +101,12 @@ namespace SkillsExtended.Controllers
                     // Store the weapons original values
                     if (!_originalWeaponValues.ContainsKey(item.TemplateId))
                     {
-                        var origVals = new OrigWeaponValues();
-
-                        origVals.ergo = weap.Template.Ergonomics;
-                        origVals.weaponUp = weap.Template.RecoilForceUp;
-                        origVals.weaponBack = weap.Template.RecoilForceBack;
+                        var origVals = new OrigWeaponValues
+                        {
+                            ergo = weap.Template.Ergonomics,
+                            weaponUp = weap.Template.RecoilForceUp,
+                            weaponBack = weap.Template.RecoilForceBack
+                        };
 
                         Plugin.Log.LogDebug($"original {weap.LocalizedName()} ergo: {weap.Template.Ergonomics}, up {weap.Template.RecoilForceUp}, back {weap.Template.RecoilForceBack}");
 

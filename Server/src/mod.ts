@@ -72,7 +72,6 @@ class SkillsPlus implements IPreAkiLoadMod, IPostDBLoadMod
              || items[item]._parent === "543be5e94bdc2df1348b4568")
             {
                 keys.keyLocale[item] = this.locale.en[`${items[item]._id} Name`];
-                this.Instance.logger.logWithColor(this.locale.en[`${items[item]._id} Name`], LogTextColor.GREEN);
             }
         }
 

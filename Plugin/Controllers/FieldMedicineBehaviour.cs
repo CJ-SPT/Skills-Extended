@@ -11,9 +11,9 @@ using UnityEngine;
 
 namespace SkillsExtended.Controllers
 {
-    internal class FieldMedicineBehavior : MonoBehaviour
+    internal class FieldMedicineBehaviour : MonoBehaviour
     {
-        private SkillManager _skillManager => Utils.SetActiveSkillManager();
+        private SkillManager _skillManager => Utils.GetActiveSkillManager();
 
         private MedicalSkillData _skillData => Plugin.SkillData.MedicalSkills;
 
@@ -21,14 +21,11 @@ namespace SkillsExtended.Controllers
             ? 1f - (_skillManager.FirstAid.Level * _skillData.MedicalSpeedBonus) - _skillData.MedicalSpeedBonusElite
             : 1f - (_skillManager.FirstAid.Level * _skillData.MedicalSpeedBonus);
 
-        private Dictionary<string, HealthEffectValues> _originalHealthEffectValues
-            = new Dictionary<string, HealthEffectValues>();
+        private Dictionary<string, HealthEffectValues> _originalHealthEffectValues = [];
 
-        private Dictionary<EBodyPart, DateTime> _fieldMedicineBodyPartCache
-            = new Dictionary<EBodyPart, DateTime>();
+        private Dictionary<EBodyPart, DateTime> _fieldMedicineBodyPartCache = [];
 
-        public Dictionary<string, int> fieldMedicineInstanceIDs
-            = new Dictionary<string, int>();
+        public Dictionary<string, int> fieldMedicineInstanceIDs = [];
 
         private void Update()
         {
@@ -65,13 +62,14 @@ namespace SkillsExtended.Controllers
             {
                 if (!_originalHealthEffectValues.ContainsKey(item.TemplateId))
                 {
-                    var origValues = new HealthEffectValues();
-
-                    origValues.UseTime = meds.HealthEffectsComponent.UseTime;
-                    origValues.BodyPartTimeMults = meds.HealthEffectsComponent.BodyPartTimeMults;
-                    origValues.HealthEffects = meds.HealthEffectsComponent.HealthEffects;
-                    origValues.DamageEffects = meds.HealthEffectsComponent.DamageEffects;
-                    origValues.StimulatorBuffs = meds.HealthEffectsComponent.StimulatorBuffs;
+                    var origValues = new HealthEffectValues
+                    {
+                        UseTime = meds.HealthEffectsComponent.UseTime,
+                        BodyPartTimeMults = meds.HealthEffectsComponent.BodyPartTimeMults,
+                        HealthEffects = meds.HealthEffectsComponent.HealthEffects,
+                        DamageEffects = meds.HealthEffectsComponent.DamageEffects,
+                        StimulatorBuffs = meds.HealthEffectsComponent.StimulatorBuffs
+                    };
 
                     _originalHealthEffectValues.Add(item.TemplateId, origValues);
                 }

@@ -17,7 +17,7 @@ namespace SkillsExtended.Patches
     internal class SkillManagerConstructorPatch : ModulePatch
     {
         protected override MethodBase GetTargetMethod() =>
-            typeof(SkillManager).GetConstructor(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null, new Type[] { typeof(EPlayerSide) }, null);
+            typeof(SkillManager).GetConstructor(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null, [typeof(EPlayerSide)], null);
 
         [PatchPostfix]
         public static void Postfix(SkillManager __instance, ref SkillClass[] ___DisplayList, ref SkillClass[] ___Skills,
@@ -53,10 +53,18 @@ namespace SkillsExtended.Patches
             ___Skills[___Skills.Length - 3] = ___UsecTactics;
             ___Skills[___Skills.Length - 4] = ___BearRawpower;
 
-            AccessTools.Field(typeof(SkillClass), "Locked").SetValue(__instance.UsecArsystems, false);
-            AccessTools.Field(typeof(SkillClass), "Locked").SetValue(__instance.BearAksystems, false);
-            AccessTools.Field(typeof(SkillClass), "Locked").SetValue(__instance.UsecTactics, false);
-            AccessTools.Field(typeof(SkillClass), "Locked").SetValue(__instance.BearRawpower, false);
+            // If the skill is not enabled, lock it
+            AccessTools.Field(typeof(SkillClass), "Locked").SetValue(__instance.UsecArsystems,
+                !Plugin.SkillData.UsecRifleSkill.Enabled);
+
+            AccessTools.Field(typeof(SkillClass), "Locked").SetValue(__instance.BearAksystems,
+                !Plugin.SkillData.BearRifleSkill.Enabled);
+
+            AccessTools.Field(typeof(SkillClass), "Locked").SetValue(__instance.UsecTactics,
+                !Plugin.SkillData.UsecTacticsSkill.Enabled);
+
+            AccessTools.Field(typeof(SkillClass), "Locked").SetValue(__instance.BearRawpower,
+                !Plugin.SkillData.BearRawPowerSkill.Enabled);
         }
     }
 
@@ -70,9 +78,15 @@ namespace SkillsExtended.Patches
         {
             try
             {
-                AccessTools.Field(typeof(SkillClass), "Locked").SetValue(__instance.FirstAid, false);
-                AccessTools.Field(typeof(SkillClass), "Locked").SetValue(__instance.FieldMedicine, false);
-                AccessTools.Field(typeof(SkillClass), "Locked").SetValue(__instance.Lockpicking, false);
+                // If the skill is not enabled, lock it
+                AccessTools.Field(typeof(SkillClass), "Locked").SetValue(__instance.FirstAid,
+                    !Plugin.SkillData.MedicalSkills.EnableFirstAid);
+
+                AccessTools.Field(typeof(SkillClass), "Locked").SetValue(__instance.FieldMedicine,
+                    !Plugin.SkillData.MedicalSkills.EnableFieldMedicine);
+
+                AccessTools.Field(typeof(SkillClass), "Locked").SetValue(__instance.Lockpicking,
+                    !Plugin.SkillData.LockPickingSkill.Enabled);
             }
             catch (Exception e)
             {
@@ -284,9 +298,26 @@ namespace SkillsExtended.Patches
         {
             if (eftScreenType == EEftScreenType.Inventory)
             {
-                Plugin.FieldMedicineScript.fieldMedicineInstanceIDs.Clear();
-                Plugin.FirstAidScript.firstAidInstanceIDs.Clear();
-                Plugin.WeaponsScript.weaponInstanceIds.Clear();
+                if (Plugin.SkillData.MedicalSkills.EnableFieldMedicine)
+                {
+                    Plugin.FieldMedicineScript.fieldMedicineInstanceIDs.Clear();
+                }
+
+                if (Plugin.SkillData.MedicalSkills.EnableFirstAid)
+                {
+                    Plugin.FirstAidScript.firstAidInstanceIDs.Clear();
+                }
+
+                if (Plugin.SkillData.UsecRifleSkill.Enabled)
+                {
+                    Plugin.UsecRifleScript.weaponInstanceIds.Clear();
+                }
+
+                if (Plugin.SkillData.BearRifleSkill.Enabled)
+                {
+                    Plugin.BearRifleScript.weaponInstanceIds.Clear();
+                }
+
                 Utils.CheckServerModExists();
             }
         }

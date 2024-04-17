@@ -1,5 +1,7 @@
 {
     "MedicalSkills": {
+        "ENABLE_FIELD_MEDICINE": true,
+        "ENABLE_FIRST_AID": true,
         "MEDKIT_HP_BONUS": 0.01,
         "MEDKIT_HP_BONUS_ELITE": 0.20,
         "MEDICAL_SPEED_BONUS": 0.007,
@@ -24,6 +26,7 @@
         ]
     },
     "USECRifleSkill": {
+        "ENABLED": true,
         "WEAPON_PROF_XP": 1.05,
         "ERGO_MOD": 0.003,
         "ERGO_MOD_ELITE": 0.10,
@@ -46,10 +49,12 @@
             "6184055050224f204c1da540",
             "618428466ef05c2ce828f218",
             "5f2a9575926fd9352339381f",
-            "5d43021ca4b9362eab4b5e25"  
+            "5d43021ca4b9362eab4b5e25",
+            "65290f395ae2ae97b80fdf2d" 
         ]
     },
     "BEARRifleSkill": {
+        "ENABLED": true,
         "WEAPON_PROF_XP": 1.05,
         "ERGO_MOD": 0.003,
         "ERGO_MOD_ELITE": 0.10,
@@ -85,7 +90,8 @@
             "5c07c60e0db834002330051f"  
         ]
     },
-    "LockPicking": {
+    "LockPickingSkill": {
+        "ENABLED": true,
         "BASE_PICK_TIME": 15,
         "PICK_TIME_REDUCTION": 0.005,
         "PICK_TIME_REDUCTION_ELITE": 0.10,
@@ -130,11 +136,13 @@
             }
         }
     },
-    "UsecTactics": {
+    "UsecTacticsSkill": {
+        "ENABLED": true,
         "USEC_INERTIA_RED_BONUS": 0.002,
         "USEC_INERTIA_RED_BONUS_ELITE": 0.10
     },
-    "BearRawPower": {
+    "BearRawPowerSkill": {
+        "ENABLED": true,
         "BEAR_POWER_HP_BONUS": 0.001,
         "BEAR_POWER_HP_BONUS_ELITE": 0.05,
         "BEAR_POWER_UPDATE_TIME": 1
