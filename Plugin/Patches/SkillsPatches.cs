@@ -86,7 +86,7 @@ namespace SkillsExtended.Patches
         protected override MethodBase GetTargetMethod() =>
             typeof(SimpleTooltip).GetMethods().SingleCustom(x => x.Name == "Show" && x.GetParameters().Length == 5);
 
-        private static SkillDataResponse _skillData => Constants.SkillData;
+        private static SkillDataResponse _skillData => Plugin.SkillData;
 
         [PatchPostfix]
         public static void Postfix(SimpleTooltip __instance, ref string text)

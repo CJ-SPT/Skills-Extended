@@ -15,6 +15,8 @@ export interface IMedicalSkillData
     MEDKIT_HP_BONUS_ELITE: number;
     MEDICAL_SPEED_BONUS: number;
     MEDICAL_SPEED_BONUS_ELITE: number;
+    FM_ITEM_LIST: string[];
+    FA_ITEM_LIST: string[];
 }
 
 export interface IWeaponSkillData
@@ -24,6 +26,7 @@ export interface IWeaponSkillData
     ERGO_MOD_ELITE: number;
     RECOIL_REDUCTION: number;
     RECOIL_REDUCTION_ELITE: number;
+    WEAPONS: string[];
 }
 
 export interface ILockPickingData

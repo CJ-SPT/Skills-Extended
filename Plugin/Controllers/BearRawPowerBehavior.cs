@@ -4,7 +4,6 @@ using SkillsExtended.Helpers;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using static SkillsExtended.Helpers.Constants;
 
 namespace SkillsExtended.Controllers
 {
@@ -17,15 +16,14 @@ namespace SkillsExtended.Controllers
         private SkillManager _skillManager => Utils.SetActiveSkillManager();
 
         private float _hpBonus => _skillManager.BearRawpower.IsEliteLevel
-                ? _skillManager.BearRawpower.Level * SkillData.BearRawPowerSkill.HPBonus + SkillData.BearRawPowerSkill.HPBonusElite
-                : _skillManager.BearRawpower.Level * SkillData.BearRawPowerSkill.HPBonus;
+                ? _skillManager.BearRawpower.Level * Plugin.SkillData.BearRawPowerSkill.HPBonus + Plugin.SkillData.BearRawPowerSkill.HPBonusElite
+                : _skillManager.BearRawpower.Level * Plugin.SkillData.BearRawPowerSkill.HPBonus;
 
         private Dictionary<EBodyPart, Profile.GClass1756.GClass1758> _origHealthVals = new Dictionary<EBodyPart, Profile.GClass1756.GClass1758>();
 
         private DateTime _lastXpTime = DateTime.Now;
 
         private int _lastHealthAppliedLevel = -1;
-        private int _lastWeightAppliedLevel = -1;
 
         private void Awake()
         {
@@ -60,7 +58,7 @@ namespace SkillsExtended.Controllers
         {
             TimeSpan elapsed = DateTime.Now - _lastXpTime;
 
-            if (elapsed.TotalSeconds >= SkillData.BearRawPowerSkill.UpdateTime)
+            if (elapsed.TotalSeconds >= Plugin.SkillData.BearRawPowerSkill.UpdateTime)
             {
                 _lastXpTime = DateTime.Now;
                 return true;

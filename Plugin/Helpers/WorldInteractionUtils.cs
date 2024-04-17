@@ -81,9 +81,9 @@ namespace SkillsExtended.Helpers
 
             public void TryPickLock()
             {
-                if (Constants.Keys.KeyLocale.ContainsKey(interactiveObject.KeyId))
+                if (Plugin.Keys.KeyLocale.ContainsKey(interactiveObject.KeyId))
                 {
-                    NotificationManagerClass.DisplayMessageNotification($"Key for door is {Constants.Keys.KeyLocale[interactiveObject.KeyId]}");
+                    NotificationManagerClass.DisplayMessageNotification($"Key for door is {Plugin.Keys.KeyLocale[interactiveObject.KeyId]}");
                 }
 
                 LockPickingHelpers.PickLock(interactiveObject, owner);

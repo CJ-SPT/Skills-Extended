@@ -31,6 +31,12 @@ namespace SkillsExtended.Models
 
         [JsonProperty("MEDICAL_SPEED_BONUS_ELITE")]
         public float MedicalSpeedBonusElite;
+
+        [JsonProperty("FA_ITEM_LIST")]
+        public List<string> FaItemList;
+
+        [JsonProperty("FM_ITEM_LIST")]
+        public List<string> FmItemList;
     }
 
     public struct WeaponSkillData
@@ -49,6 +55,9 @@ namespace SkillsExtended.Models
 
         [JsonProperty("RECOIL_REDUCTION_ELITE")]
         public float RecoilReductionElite;
+
+        [JsonProperty("WEAPONS")]
+        public List<string> Weapons;
     }
 
     public struct LockPickingData

@@ -31,8 +31,8 @@ namespace SkillsExtended.Controllers
 
         private int _bearAKLevel => _session.Profile.Skills.BearAksystems.Level;
 
-        private WeaponSkillData _usecSkillData => Constants.SkillData.UsecRifleSkill;
-        private WeaponSkillData _bearSkillData => Constants.SkillData.BearRifleSkill;
+        private WeaponSkillData _usecSkillData => Plugin.SkillData.UsecRifleSkill;
+        private WeaponSkillData _bearSkillData => Plugin.SkillData.BearRifleSkill;
 
         private float _ergoBonusUsec => _skillManager.UsecArsystems.IsEliteLevel
             ? _usecARLevel * _usecSkillData.ErgoMod + _usecSkillData.ErgoModElite
@@ -57,17 +57,12 @@ namespace SkillsExtended.Controllers
         private List<string> _customBearWeapons = new List<string>();
 
         private IEnumerable<Item> _usecWeapons => _session.Profile.Inventory.AllRealPlayerItems
-            .Where(x => Constants.USEC_WEAPON_LIST.Contains(x.TemplateId) || _customUsecWeapons.Contains(x.TemplateId));
+            .Where(x => _usecSkillData.Weapons.Contains(x.TemplateId));
 
         private IEnumerable<Item> _bearWeapons => _session.Profile.Inventory.AllRealPlayerItems
-            .Where(x => Constants.BEAR_WEAPON_LIST.Contains(x.TemplateId) || _customBearWeapons.Contains(x.TemplateId));
+            .Where(x => _bearSkillData.Weapons.Contains(x.TemplateId));
 
         public static bool isSubscribed = false;
-
-        private void Awake()
-        {
-            GetCustomWeapons();
-        }
 
         private void Update()
         {
@@ -121,7 +116,7 @@ namespace SkillsExtended.Controllers
         private void ApplyUsecARXp(MasterSkillClass action)
         {
             var items = _session.Profile.InventoryInfo.GetItemsInSlots(new EquipmentSlot[] { EquipmentSlot.FirstPrimaryWeapon, EquipmentSlot.SecondPrimaryWeapon })
-                .Where(x => x != null && (Constants.USEC_WEAPON_LIST.Contains(x.TemplateId) || _customUsecWeapons.Contains(x.TemplateId))).Any();
+                .Where(x => x != null && (_usecSkillData.Weapons.Contains(x.TemplateId))).Any();
 
             if (items)
             {
@@ -137,7 +132,7 @@ namespace SkillsExtended.Controllers
         private void ApplyBearAKXp(MasterSkillClass action)
         {
             var items = _session.Profile.InventoryInfo.GetItemsInSlots(new EquipmentSlot[] { EquipmentSlot.FirstPrimaryWeapon, EquipmentSlot.SecondPrimaryWeapon })
-                .Where(x => x != null && (Constants.BEAR_WEAPON_LIST.Contains(x.TemplateId) || _customBearWeapons.Contains(x.TemplateId))).Any();
+                .Where(x => x != null && (_bearSkillData.Weapons.Contains(x.TemplateId))).Any();
 
             if (items)
             {
@@ -194,30 +189,6 @@ namespace SkillsExtended.Controllers
             }
 
             yield break;
-        }
-
-        private void GetCustomWeapons()
-        {
-            _customUsecWeapons = Utils.Get<List<string>>("/skillsExtended/GetCustomWeaponsUsec");
-            _customBearWeapons = Utils.Get<List<string>>("/skillsExtended/GetCustomWeaponsBear");
-
-            if (_customUsecWeapons == null)
-            {
-                // Add a bogus entry to prevent a null condition
-                _customUsecWeapons = new List<string>
-                {
-                    ""
-                };
-            }
-
-            if (_customBearWeapons == null)
-            {
-                // Add a bogus entry to prevent a null condition
-                _customBearWeapons = new List<string>
-                {
-                    ""
-                };
-            }
         }
     }
 }

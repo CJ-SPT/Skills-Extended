@@ -1,7 +1,6 @@
 ﻿using Aki.Reflection.Patching;
 using EFT;
 using EFT.InventoryLogic;
-using SkillsExtended.Helpers;
 using System.Linq;
 using System.Reflection;
 
@@ -29,14 +28,14 @@ namespace SkillsExtended.Patches
                 return;
             }
 
-            if (Constants.FIELD_MEDICINE_ITEM_LIST.Contains(meds.TemplateId))
+            if (Plugin.SkillData.MedicalSkills.FmItemList.Contains(meds.TemplateId))
             {
                 Plugin.FieldMedicineScript.ApplyFieldMedicineExp(bodyPart);
                 Plugin.Log.LogDebug("Field Medicine Effect");
                 return;
             }
 
-            if (Constants.FIRST_AID_ITEM_LIST.Contains(meds.TemplateId))
+            if (Plugin.SkillData.MedicalSkills.FaItemList.Contains(meds.TemplateId))
             {
                 Plugin.FirstAidScript.ApplyFirstAidExp(bodyPart);
             }
@@ -64,13 +63,13 @@ namespace SkillsExtended.Patches
                 return;
             }
 
-            if (Constants.FIELD_MEDICINE_ITEM_LIST.Contains(item.TemplateId))
+            if (Plugin.SkillData.MedicalSkills.FmItemList.Contains(item.TemplateId))
             {
                 Plugin.FieldMedicineScript.ApplyFieldMedicineExp(EBodyPart.Common);
                 return;
             }
 
-            if (Constants.FIRST_AID_ITEM_LIST.Contains(item.TemplateId))
+            if (Plugin.SkillData.MedicalSkills.FaItemList.Contains(item.TemplateId))
             {
                 Plugin.FirstAidScript.ApplyFirstAidExp(EBodyPart.Common);
             }

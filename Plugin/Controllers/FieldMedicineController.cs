@@ -15,7 +15,7 @@ namespace SkillsExtended.Controllers
     {
         private SkillManager _skillManager => Utils.SetActiveSkillManager();
 
-        private MedicalSkillData _skillData => Constants.SkillData.MedicalSkills;
+        private MedicalSkillData _skillData => Plugin.SkillData.MedicalSkills;
 
         private float FmPmcSpeedBonus => _skillManager.FirstAid.IsEliteLevel
             ? 1f - (_skillManager.FirstAid.Level * _skillData.MedicalSpeedBonus) - _skillData.MedicalSpeedBonusElite
@@ -116,7 +116,7 @@ namespace SkillsExtended.Controllers
                 }
 
                 // Apply Field medicine speed bonus to items
-                if (Constants.FIELD_MEDICINE_ITEM_LIST.Contains(item.TemplateId))
+                if (_skillData.FmItemList.Contains(item.TemplateId))
                 {
                     ApplyFieldMedicineSpeedBonus(item);
                     fieldMedicineInstanceIDs.Add(item.Id, _skillManager.FieldMedicine.Level);

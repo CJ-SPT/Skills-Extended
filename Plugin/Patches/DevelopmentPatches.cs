@@ -1,6 +1,5 @@
 ﻿using Aki.Reflection.Patching;
 using AnimationEventSystem;
-using SkillsExtended.Helpers;
 using System.Collections.Generic;
 using System.Reflection;
 
@@ -17,7 +16,7 @@ namespace SkillsExtended.Patches
             {
                 if (interactableObj.KeyId != null && interactableObj.KeyId != string.Empty)
                 {
-                    Plugin.Log.LogDebug($"Door ID: {interactableObj.Id} KeyID: {interactableObj.KeyId} Key Name: {Constants.Keys.KeyLocale[interactableObj.KeyId]}");
+                    Plugin.Log.LogDebug($"Door ID: {interactableObj.Id} KeyID: {interactableObj.KeyId} Key Name: {Plugin.Keys.KeyLocale[interactableObj.KeyId]}");
                 }
             }
         }

@@ -15,7 +15,7 @@ namespace SkillsExtended.Helpers
         private static SkillManager _skills => Utils.SetActiveSkillManager();
         private static Player _player => Singleton<GameWorld>.Instance.MainPlayer;
 
-        private static LockPickingData _lockPicking => Constants.SkillData.LockPickingSkill;
+        private static LockPickingData _lockPicking => Plugin.SkillData.LockPickingSkill;
 
         public static void PickLock(WorldInteractiveObject interactiveObject, GamePlayerOwner owner)
         {
@@ -88,7 +88,7 @@ namespace SkillsExtended.Helpers
 
         private static SkillManager _skills => Utils.SetActiveSkillManager();
 
-        private static LockPickingData _lockPicking => Constants.SkillData.LockPickingSkill;
+        private static LockPickingData _lockPicking => Plugin.SkillData.LockPickingSkill;
 
         public void PickLockAction(bool successful)
         {

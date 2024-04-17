@@ -17,7 +17,7 @@ namespace SkillsExtended.Controllers
 
         private SkillManager _skillManager => Utils.SetActiveSkillManager();
 
-        private MedicalSkillData _skillData => Constants.SkillData.MedicalSkills;
+        private MedicalSkillData _skillData => Plugin.SkillData.MedicalSkills;
 
         // Store the instance ID of the item and the level its bonus resource is set to.
         public Dictionary<string, int> firstAidInstanceIDs = new Dictionary<string, int>();
@@ -172,7 +172,7 @@ namespace SkillsExtended.Controllers
                 }
 
                 // Apply first aid speed bonus to items
-                if (Constants.FIRST_AID_ITEM_LIST.Contains(item.TemplateId))
+                if (_skillData.FaItemList.Contains(item.TemplateId))
                 {
                     ApplyFirstAidSpeedBonus(item);
                     ApplyFirstAidHPBonus(item);

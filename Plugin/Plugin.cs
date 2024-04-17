@@ -26,6 +26,12 @@ namespace SkillsExtended
         public static Player Player => Singleton<GameWorld>.Instance.MainPlayer;
         public static IEnumerable<Item> Items => Session?.Profile?.Inventory?.AllRealPlayerItems;
 
+        // Contains key information
+        public static KeysResponse Keys;
+
+        // Contains skill data
+        public static SkillDataResponse SkillData;
+
         internal static GameObject Hook;
         internal static FirstAidBehavior FirstAidScript;
         internal static FieldMedicineBehavior FieldMedicineScript;
@@ -73,8 +79,8 @@ namespace SkillsExtended
 
         private void Start()
         {
-            Constants.Keys = Utils.Get<KeysResponse>("/skillsExtended/GetKeys");
-            Constants.SkillData = Utils.Get<SkillDataResponse>("/skillsExtended/GetSkillsConfig");
+            Keys = Utils.Get<KeysResponse>("/skillsExtended/GetKeys");
+            SkillData = Utils.Get<SkillDataResponse>("/skillsExtended/GetSkillsConfig");
         }
 
         private void Update()

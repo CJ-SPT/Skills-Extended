@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 
 import { InstanceManager } from "./InstanceManager";
-import * as customWeapons from "../config/CustomWeapons.json";
-import * as SkillsConfig from "../config/SkillsConfig.json"
+import * as SkillsConfig from "../config/SkillsConfig.json";
 
 import type { DependencyContainer } from "tsyringe";
 import type { IPostDBLoadMod } from "@spt-aki/models/external/IPostDBLoadMod";
@@ -11,7 +10,6 @@ import { LogTextColor } from "@spt-aki/models/spt/logging/LogTextColor";
 import type { CustomItemService } from "@spt-aki/services/mod/CustomItemService";
 import type { NewItemFromCloneDetails } from "@spt-aki/models/spt/mod/NewItemDetails";
 import type { IKeys } from "./Models/IKeys";
-import { ISkillData } from "./Models/ISkillData";
 
 enum TraderIDs {
     Mechanic = "5a7c2eca46aef81a7ca2145d",
@@ -59,16 +57,6 @@ class SkillsPlus implements IPreAkiLoadMod, IPostDBLoadMod
         this.Instance.database.locales.global.en.FieldMedicineDescription = "FieldMedicineDescriptionPattern";
     }
 
-    private loadCustomWeaponsForUsecSkill(): string
-    {
-        return JSON.stringify(customWeapons.USEC_Rifle_Carbine_Skill);
-    }
-
-    private loadCustomWeaponsForBearSkill(): string
-    {
-        return JSON.stringify(customWeapons.BEAR_Rifle_Carbine_Skill);
-    }
-
     private getKeys(): string
     {
         const items = this.Instance.database.templates.items;
@@ -101,9 +89,7 @@ class SkillsPlus implements IPreAkiLoadMod, IPostDBLoadMod
                     // eslint-disable-next-line @typescript-eslint/no-unused-vars
                     action: (url, info, sessionId, output) => 
                     {                     
-                        const SkillConfig = SkillsConfig;
-
-                        return JSON.stringify(SkillConfig);
+                        return JSON.stringify(SkillsConfig);
                     }
                 }
             ],
@@ -119,36 +105,6 @@ class SkillsPlus implements IPreAkiLoadMod, IPostDBLoadMod
                     action: (url, info, sessionId, output) => 
                     {                     
                         return this.getKeys();
-                    }
-                }
-            ],
-            ""
-        );
-
-        this.Instance.staticRouter.registerStaticRouter(
-            "GetCustomWeaponsUsec",
-            [
-                {
-                    url: "/skillsExtended/GetCustomWeaponsUsec",
-                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                    action: (url, info, sessionId, output) => 
-                    {
-                        return this.loadCustomWeaponsForUsecSkill();
-                    }
-                }
-            ],
-            ""
-        );
-
-        this.Instance.staticRouter.registerStaticRouter(
-            "GetCustomWeaponsBear",
-            [
-                {
-                    url: "/skillsExtended/GetCustomWeaponsBear",
-                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                    action: (url, info, sessionId, output) => 
-                    {
-                        return this.loadCustomWeaponsForBearSkill();
                     }
                 }
             ],

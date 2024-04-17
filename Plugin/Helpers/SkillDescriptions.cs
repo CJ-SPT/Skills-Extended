@@ -4,7 +4,7 @@ namespace SkillsExtended.Helpers
 {
     public static class SkillDescriptions
     {
-        private static SkillDataResponse _skillData => Constants.SkillData;
+        private static SkillDataResponse _skillData => Plugin.SkillData;
 
         public static string FirstAidDescription(float speedBonus, float hpBonus)
         {
