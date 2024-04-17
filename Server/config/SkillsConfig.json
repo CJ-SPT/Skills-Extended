@@ -86,7 +86,7 @@
             "5c07c60e0db834002330051f"  
         ]
     },
-    "LockPicking": {
+    "LockPickingSkill": {
         "BASE_PICK_TIME": 15,
         "PICK_TIME_REDUCTION": 0.005,
         "PICK_TIME_REDUCTION_ELITE": 0.10,
@@ -131,11 +131,11 @@
             }
         }
     },
-    "UsecTactics": {
+    "UsecTacticsSkill": {
         "USEC_INERTIA_RED_BONUS": 0.002,
         "USEC_INERTIA_RED_BONUS_ELITE": 0.10
     },
-    "BearRawPower": {
+    "BearRawPowerSkill": {
         "BEAR_POWER_HP_BONUS": 0.001,
         "BEAR_POWER_HP_BONUS_ELITE": 0.05,
         "BEAR_POWER_UPDATE_TIME": 1
