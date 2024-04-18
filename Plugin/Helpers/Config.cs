@@ -6,12 +6,6 @@ namespace SkillsExtended.Helpers
     {
         public static ConfigEntry<bool> disableEliteRequirement;
 
-        public static ConfigEntry<bool> enableFirstAid;
-        public static ConfigEntry<bool> enableFieldMedicine;
-        public static ConfigEntry<bool> enableUsecRifleSystems;
-        public static ConfigEntry<bool> enableBearRifleSystems;
-        public static ConfigEntry<bool> enableLockpicking;
-
         public static ConfigEntry<float> firstAidSpeedMult;
         public static ConfigEntry<float> fieldMedicineSpeedMult;
         public static ConfigEntry<float> medicalSkillCoolDownTime;
@@ -68,46 +62,6 @@ namespace SkillsExtended.Helpers
                 new ConfigDescription("Changes the leveling speed multiplier for bear Rifle and carbine proficiency.",
                 null,
                 new ConfigurationManagerAttributes { IsAdvanced = false, ShowRangeAsPercent = false, Order = 5 }));
-
-            enableFirstAid = Config.Bind(
-                "Skill Toggles",
-                "Enable First Aid",
-                true,
-                new ConfigDescription("Enables or disables the first aid skill",
-                null,
-                new ConfigurationManagerAttributes { IsAdvanced = false, Order = 0 }));
-
-            enableFieldMedicine = Config.Bind(
-                "Skill Toggles",
-                "Enable Field Medicine",
-                true,
-                new ConfigDescription("Enables or disables the field medicine skill",
-                null,
-                new ConfigurationManagerAttributes { IsAdvanced = false, Order = 1 }));
-
-            enableUsecRifleSystems = Config.Bind(
-                "Skill Toggles",
-                "Enable USEC rifle skill",
-                true,
-                new ConfigDescription("Enables or disables the USEC rifle skill",
-                null,
-                new ConfigurationManagerAttributes { IsAdvanced = false, Order = 2 }));
-
-            enableBearRifleSystems = Config.Bind(
-                "Skill Toggles",
-                "Enable BEAR rifle skill",
-                true,
-                new ConfigDescription("Enables or disables the BEAR rifle skill",
-                null,
-                new ConfigurationManagerAttributes { IsAdvanced = false, Order = 3 }));
-
-            enableLockpicking = Config.Bind(
-                "Skill Toggles",
-                "Enable Lock Picking skill",
-                true,
-                new ConfigDescription("Enables or disables the lock picking skill",
-                null,
-                new ConfigurationManagerAttributes { IsAdvanced = false, Order = 4 }));
         }
     }
 }
