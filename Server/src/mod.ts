@@ -127,16 +127,16 @@ class SkillsPlus implements IPreAkiLoadMod, IPostDBLoadMod
             },
 
             parentId: "5c99f98d86f7745c314214b3",
-            newId: "LOCKPICK_PLACEHOLDER",
+            newId: "LOCKPICK_SET",
             fleaPriceRoubles: 120000,
             handbookPriceRoubles: 25000,
             handbookParentId: "5c518ec986f7743b68682ce2",
 
             locales: {
                 en: {
-                    name: "LOCKPICK_PLACEHOLDER",
-                    shortName: "LOCKPICK_PLACEHOLDER",
-                    description: "A placeholder for the lockpick to be implemented later."
+                    name: "Lockpick set",
+                    shortName: "lockpick",
+                    description: "A set of tools used for picking locks"
                 }
             }
         }
@@ -146,8 +146,8 @@ class SkillsPlus implements IPreAkiLoadMod, IPostDBLoadMod
         const mechanic = this.Instance.database.traders[TraderIDs.Mechanic];
 
         mechanic.assort.items.push({
-            _id: "LOCKPICK_PLACEHOLDER",
-            _tpl: "LOCKPICK_PLACEHOLDER",
+            _id: "LOCKPICK_SET",
+            _tpl: "LOCKPICK_SET",
             parentId: "hideout",
             slotId: "hideout",
             upd:
@@ -157,7 +157,7 @@ class SkillsPlus implements IPreAkiLoadMod, IPostDBLoadMod
             }
         });
 
-        mechanic.assort.barter_scheme["LOCKPICK_PLACEHOLDER"] = [
+        mechanic.assort.barter_scheme["LOCKPICK_SET"] = [
             [
                 {
                     count: 100000,
@@ -166,7 +166,7 @@ class SkillsPlus implements IPreAkiLoadMod, IPostDBLoadMod
             ]
         ];
         
-        mechanic.assort.loyal_level_items["LOCKPICK_PLACEHOLDER"] = 1;
+        mechanic.assort.loyal_level_items["LOCKPICK_SET"] = 1;
     }
 }
 
