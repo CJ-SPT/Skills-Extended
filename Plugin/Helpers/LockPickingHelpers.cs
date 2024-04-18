@@ -1,5 +1,4 @@
-﻿using Aki.Reflection.Utils;
-using Comfort.Common;
+﻿using Comfort.Common;
 using EFT;
 using EFT.Interactive;
 using EFT.InventoryLogic;
@@ -55,7 +54,7 @@ namespace SkillsExtended.Helpers
             }
 
             // Only allow lockpicking if the player is stationary
-            if (GetIdleStateType().IsAssignableFrom(owner.Player.CurrentState.GetType()))
+            if (Utils.IdleStateType.IsAssignableFrom(owner.Player.CurrentState.GetType()))
             {
                 var currentManagedState = owner.Player.CurrentManagedState;
                 var lpTime = CalculateTimeForAction();
@@ -129,14 +128,6 @@ namespace SkillsExtended.Helpers
         private static Dictionary<string, int> GetDoorLevelsForLocation(string locationId)
         {
             return LocationDoorIdLevels[locationId];
-        }
-
-        private static Type GetIdleStateType()
-        {
-            return PatchConstants.EftTypes.Single(x =>
-                AccessTools.GetDeclaredMethods(x).Any(method => method.Name == "Plant") &&
-                AccessTools.GetDeclaredFields(x).Count >= 5 &&
-                x.BaseType.Name == "MovementState");
         }
     }
 

@@ -60,6 +60,7 @@ namespace SkillsExtended
             new SetItemInHands().Enable();
 
             SEConfig.InitializeConfig(Config);
+            Utils.GetTypes();
 
             Log = Logger;
 

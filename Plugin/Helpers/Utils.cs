@@ -2,17 +2,23 @@
 using Aki.Reflection.Utils;
 using Comfort.Common;
 using EFT;
+using HarmonyLib;
 using Newtonsoft.Json;
 using SkillsExtended.Controllers;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 
 namespace SkillsExtended.Helpers
 {
     public static class Utils
     {
+        public static Type IdleStateType => _idleStateType;
+
+        private static Type _idleStateType;
+
         public static void CheckServerModExists()
         {
             var dllLoc = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -77,6 +83,19 @@ namespace SkillsExtended.Helpers
                 Plugin.Log.LogDebug($"Time until next available xp: {SEConfig.medicalSkillCoolDownTime.Value - elapsed.TotalSeconds} seconds");
                 return false;
             }
+        }
+
+        public static void GetTypes()
+        {
+            _idleStateType = GetIdleStateType();
+        }
+
+        private static Type GetIdleStateType()
+        {
+            return PatchConstants.EftTypes.Single(x =>
+                AccessTools.GetDeclaredMethods(x).Any(method => method.Name == "Plant") &&
+                AccessTools.GetDeclaredFields(x).Count >= 5 &&
+                x.BaseType.Name == "MovementState");
         }
     }
 }
