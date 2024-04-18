@@ -111,6 +111,8 @@ namespace SkillsExtended.Patches
             string usecARSystems = @"\bUsecArsystemsDescription\b";
             string usecTactics = @"\bUsecTacticsDescription\b";
 
+            string lockPicking = @"\bLock picking skill\b";
+
             string bearAKSystems = @"\bBearAksystemsDescription\b";
             string bearRawpower = @"\bBearRawpowerDescription\b";
 
@@ -168,6 +170,17 @@ namespace SkillsExtended.Patches
                     : bearSystems.Level * _skillData.BearRifleSkill.RecoilReduction;
 
                 __instance.SetText(SkillDescriptions.BearAkSystemsDescription(ergoBonus, recoilReduction));
+            }
+
+            if (Regex.IsMatch(text, lockPicking))
+            {
+                var lockPickingSkill = Plugin.Session.Profile.Skills.Lockpicking;
+
+                float timeReduction = lockPickingSkill.IsEliteLevel
+                    ? lockPickingSkill.Level * _skillData.LockPickingSkill.TimeReduction + _skillData.LockPickingSkill.TimeReductionElite
+                    : lockPickingSkill.Level * _skillData.LockPickingSkill.TimeReduction;
+
+                __instance.SetText(SkillDescriptions.LockPickingDescription(timeReduction));
             }
 
             if (Regex.IsMatch(text, usecTactics))

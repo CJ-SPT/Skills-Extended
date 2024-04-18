@@ -47,6 +47,14 @@ namespace SkillsExtended.Helpers
                     $"\nCurrent recoil bonuses: <color=#54C1FFFF>{recoilReduction * 100}%</color>";
         }
 
+        public static string LockPickingDescription(float timeReduction)
+        {
+            return "Picking locks requires patience and skill. As you gain levels, the chance for locks to be picked increases. Some locks are harder to pick than others." +
+                $"\n\nReduces time it takes to pick locks by {_skillData.LockPickingSkill.TimeReduction * 100}%" +
+                $"\n {_skillData.LockPickingSkill.TimeReductionElite * 100}% Elite bonus" +
+                $"\n\nCurrent time reduction bonus: <color=#54C1FFFF>{timeReduction * 100}%</color>";
+        }
+
         public static string UsecTacticsDescription(float inertiaReduction)
         {
             return $"Master the art of swift, calculated engagements with USEC's Tactical Prowess. " +

@@ -13,13 +13,14 @@ namespace SkillsExtended.Patches
         {
             LockPickingHelpers.InspectedDoors.Clear();
 
+            /*
             foreach (var interactableObj in __instance.WorldInteractiveObjects)
             {
                 if (interactableObj.KeyId != null && interactableObj.KeyId != string.Empty)
                 {
                     Plugin.Log.LogDebug($"Door ID: {interactableObj.Id} KeyID: {interactableObj.KeyId} Key Name: {Plugin.Keys.KeyLocale[interactableObj.KeyId]}");
                 }
-            }
+            }*/
         }
     }
 }
