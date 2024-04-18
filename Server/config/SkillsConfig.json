@@ -92,9 +92,11 @@
     },
     "LockPickingSkill": {
         "ENABLED": true,
+        "INSPECT_BASE_TIME": 5,
+        "INSPECT_CHANCE_BONUS": 10,
         "PICK_BASE_TIME": 15,
-        "PICK_TIME_REDUCTION": 0.005,
-        "PICK_TIME_REDUCTION_ELITE": 0.10,
+        "TIME_REDUCTION_BONUS_PER_LEVEL": 0.005,
+        "TIME_REDUCTION_BONUS_PER_LEVEL_ELITE": 0.10,
         "PICK_BASE_SUCCESS_CHANCE": 100,
         "PICK_BASE_DIFFICULTY_MOD": 8,
         "INSPECT_LOCK_XP_RATIO": 0.30,

@@ -32,9 +32,11 @@ export interface IWeaponSkillData
 export interface ILockPickingData
 {
     ENABLED: boolean;
+    INSPECT_BASE_TIME: number;
+    INSPECT_CHANCE_BONUS: number;
     BASE_PICK_TIME: number;
-    PICK_TIME_REDUCTION: number;
-    PICK_TIME_REDUCTION_ELITE: number;
+    TIME_REDUCTION_BONUS_PER_LEVEL: number;
+    TIME_REDUCTION_BONUS_PER_LEVEL_ELITE: number;
     PICK_BASE_SUCCESS_CHANCE: number;
     PICK_BASE_DIFFICULTY_MOD: number;
     INSPECT_LOCK_XP_RATIO: number;

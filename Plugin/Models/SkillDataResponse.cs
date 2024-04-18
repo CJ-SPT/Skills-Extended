@@ -74,14 +74,20 @@ namespace SkillsExtended.Models
         [JsonProperty("ENABLED")]
         public bool Enabled;
 
+        [JsonProperty("INSPECT_BASE_TIME")]
+        public float InspectBaseTime;
+
+        [JsonProperty("INSPECT_CHANCE_BONUS")]
+        public float InspectChanceBonus;
+
         [JsonProperty("PICK_BASE_TIME")]
         public float PickBaseTime;
 
-        [JsonProperty("PICK_TIME_REDUCTION")]
-        public float PickTimeReduction;
+        [JsonProperty("TIME_REDUCTION_BONUS_PER_LEVEL")]
+        public float TimeReduction;
 
-        [JsonProperty("PICK_TIME_REDUCTION_ELITE")]
-        public float PickTimeReductionElite;
+        [JsonProperty("TIME_REDUCTION_BONUS_PER_LEVEL_ELITE")]
+        public float TimeReductionElite;
 
         [JsonProperty("PICK_BASE_SUCCESS_CHANCE")]
         public float PickBaseSuccessChance;

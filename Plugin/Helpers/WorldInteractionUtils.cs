@@ -2,7 +2,6 @@
 using EFT;
 using EFT.Interactive;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace SkillsExtended.Helpers
@@ -53,7 +52,7 @@ namespace SkillsExtended.Helpers
             ActionsTypesClass action = new()
             {
                 Name = "Inspect Lock",
-                Disabled = !interactiveObject.Operatable || LockInspectInteraction.InspectedDoors.Contains(interactiveObject.Id)
+                Disabled = !interactiveObject.Operatable
             };
 
             LockInspectInteraction keyInfoAction = new(interactiveObject, owner);
@@ -98,13 +97,6 @@ namespace SkillsExtended.Helpers
 
             public void TryPickLock()
             {
-                int level = LockPickingHelpers.GetLevelForDoor(owner.Player.Location, interactiveObject.Id);
-
-                if (owner.Player.Skills.Lockpicking.Level < level)
-                {
-                    owner.DisplayPreloaderUiNotification("This lock is hard for your level...");
-                }
-
                 LockPickingHelpers.PickLock(interactiveObject, owner);
             }
         }
@@ -113,8 +105,6 @@ namespace SkillsExtended.Helpers
         {
             public GamePlayerOwner owner;
             public WorldInteractiveObject interactiveObject;
-
-            public static List<string> InspectedDoors = [];
 
             public LockInspectInteraction()
             { }
@@ -127,19 +117,13 @@ namespace SkillsExtended.Helpers
 
             public void TryInspectLock()
             {
-                if (InspectedDoors.Contains(interactiveObject.Id))
+                if (Plugin.Keys.KeyLocale.ContainsKey(interactiveObject.KeyId))
                 {
+                    LockPickingHelpers.InspectDoor(interactiveObject, owner);
                     return;
                 }
 
-                if (Plugin.Keys.KeyLocale.ContainsKey(interactiveObject.KeyId))
-                {
-                    NotificationManagerClass.DisplayMessageNotification($"Key for door is {Plugin.Keys.KeyLocale[interactiveObject.KeyId]}");
-
-                    InspectedDoors.Add(interactiveObject.Id);
-
-                    LockPickingHelpers.ApplyLockPickActionXp(interactiveObject, owner, true);
-                }
+                Plugin.Log.LogError($"Missing locale data for door {interactiveObject.Id} and key {interactiveObject.KeyId}");
             }
         }
     }
