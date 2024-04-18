@@ -1,5 +1,6 @@
 ﻿using Aki.Reflection.Patching;
 using System.Reflection;
+using static SkillsExtended.Helpers.WorldInteractionUtils;
 
 namespace SkillsExtended.Patches
 {
@@ -10,6 +11,8 @@ namespace SkillsExtended.Patches
         [PatchPostfix]
         private static void Postfix(LocationScene __instance)
         {
+            LockInspectInteraction.InspectedDoors.Clear();
+
             foreach (var interactableObj in __instance.WorldInteractiveObjects)
             {
                 if (interactableObj.KeyId != null && interactableObj.KeyId != string.Empty)

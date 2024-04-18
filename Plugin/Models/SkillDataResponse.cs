@@ -89,6 +89,9 @@ namespace SkillsExtended.Models
         [JsonProperty("PICK_BASE_DIFFICULTY_MOD")]
         public float PickBaseDifficultyMod;
 
+        [JsonProperty("INSPECT_LOCK_XP_RATIO")]
+        public float InspectLockXpRatio;
+
         [JsonProperty("XP_TABLE")]
         public Dictionary<string, float> XpTable;
 

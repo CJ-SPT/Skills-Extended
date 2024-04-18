@@ -6,7 +6,6 @@ import * as SkillsConfig from "../config/SkillsConfig.json";
 import type { DependencyContainer } from "tsyringe";
 import type { IPostDBLoadMod } from "@spt-aki/models/external/IPostDBLoadMod";
 import type { IPreAkiLoadMod } from "@spt-aki/models/external/IPreAkiLoadMod";
-import { LogTextColor } from "@spt-aki/models/spt/logging/LogTextColor";
 import type { CustomItemService } from "@spt-aki/services/mod/CustomItemService";
 import type { NewItemFromCloneDetails } from "@spt-aki/models/spt/mod/NewItemDetails";
 import type { IKeys } from "./Models/IKeys";
@@ -69,7 +68,8 @@ class SkillsPlus implements IPreAkiLoadMod, IPostDBLoadMod
         {
             if (items[item]._parent === "5c99f98d86f7745c314214b3" 
              || items[item]._parent === "5c164d2286f774194c5e69fa"
-             || items[item]._parent === "543be5e94bdc2df1348b4568")
+             || items[item]._parent === "543be5e94bdc2df1348b4568"
+             || items[item]._parent === "5c164d2286f774194c5e69fa")
             {
                 keys.keyLocale[item] = this.locale.en[`${items[item]._id} Name`];
             }
@@ -120,16 +120,17 @@ class SkillsPlus implements IPreAkiLoadMod, IPostDBLoadMod
     private cloneIndustrialKeyToBlank()
     {
         const blankKey: NewItemFromCloneDetails = {
-            itemTplToClone: "544fb5454bdc2df8738b456a",
+            itemTplToClone: "5448ba0b4bdc2d02308b456c",
             overrideProperties: {
-                CanSellOnRagfair: false
+                CanSellOnRagfair: false,
+                MaximumNumberOfUsage: 5
             },
 
-            parentId: "5447e0e74bdc2d3c308b4567",
+            parentId: "5c99f98d86f7745c314214b3",
             newId: "LOCKPICK_PLACEHOLDER",
             fleaPriceRoubles: 120000,
-            handbookPriceRoubles: 100000,
-            handbookParentId: "5b47574386f77428ca22b342",
+            handbookPriceRoubles: 25000,
+            handbookParentId: "5c518ec986f7743b68682ce2",
 
             locales: {
                 en: {
@@ -165,7 +166,7 @@ class SkillsPlus implements IPreAkiLoadMod, IPostDBLoadMod
             ]
         ];
         
-        mechanic.assort.loyal_level_items["LOCKPICK_PLACEHOLDER"] = 2;
+        mechanic.assort.loyal_level_items["LOCKPICK_PLACEHOLDER"] = 1;
     }
 }
 

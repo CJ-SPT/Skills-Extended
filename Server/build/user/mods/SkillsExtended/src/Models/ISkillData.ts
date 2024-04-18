@@ -37,6 +37,7 @@ export interface ILockPickingData
     PICK_TIME_REDUCTION_ELITE: number;
     PICK_BASE_SUCCESS_CHANCE: number;
     PICK_BASE_DIFFICULTY_MOD: number;
+    INSPECT_LOCK_XP_RATIO: number;
     XP_TABLE: Record<string, number>;
     DOOR_PICK_LEVELS: IDoorPickLevels;
 }

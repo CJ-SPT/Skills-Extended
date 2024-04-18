@@ -32,17 +32,19 @@ namespace SkillsExtended.Helpers
             {"laboratory", Plugin.SkillData.LockPickingSkill.DoorPickLevels.Labs},
             {"lighthouse", Plugin.SkillData.LockPickingSkill.DoorPickLevels.Lighthouse},
             {"TarkovStreets", Plugin.SkillData.LockPickingSkill.DoorPickLevels.Streets},
-            {"", Plugin.SkillData.LockPickingSkill.DoorPickLevels.GroundZero},
+            {"sandbox", Plugin.SkillData.LockPickingSkill.DoorPickLevels.GroundZero},
         };
 
         public static void PickLock(WorldInteractiveObject interactiveObject, GamePlayerOwner owner)
         {
-            if (!IsLockPickInInventory())
+            // Check if a lock pick exists in the inventory
+            if (!GetLockPicksInInventory().Any())
             {
                 owner.DisplayPreloaderUiNotification("You must have a lock pick in your inventory to pick a lock...");
                 return;
             }
 
+            // Check if the locks broken
             if (DoorAttempts.ContainsKey(interactiveObject.Id))
             {
                 if (DoorAttempts[interactiveObject.Id] > 3)
@@ -80,19 +82,38 @@ namespace SkillsExtended.Helpers
             return GetDoorLevelsForLocation(locationId)[doorId];
         }
 
-        public static bool IsLockPickInInventory()
+        public static IEnumerable<Item> GetLockPicksInInventory()
         {
             return Plugin.Session.Profile.Inventory.GetPlayerItems(EPlayerItems.Equipment)
-                .Where(x => x.TemplateId == "LOCKPICK_PLACEHOLDER").Any();
+                .Where(x => x.TemplateId == "LOCKPICK_PLACEHOLDER");
         }
 
-        public static float CalculateChanceForFailure()
+        public static void ApplyLockPickActionXp(WorldInteractiveObject interactiveObject, GamePlayerOwner owner, bool isInspect = false, bool IsFailure = false)
         {
-            return 0f;
-        }
+            var doorLevel = GetLevelForDoor(owner.Player.Location, interactiveObject.Id);
 
-        public static void ApplyLockPickExperience()
-        {
+            bool xpExists = Plugin.SkillData.LockPickingSkill.XpTable.TryGetValue(doorLevel.ToString(), out float xp);
+
+            if (xpExists)
+            {
+                var xpToApply = isInspect
+                    ? xp * (Plugin.SkillData.LockPickingSkill.InspectLockXpRatio)
+                    : xp;
+
+                // Failures recieve 25% xp
+                xpToApply = IsFailure
+                    ? xpToApply * 0.25f
+                    : xpToApply;
+
+                Plugin.Log.LogInfo($"Lockpicking xp found in table : {xpToApply} experience for door level {doorLevel} : IsInspect {isInspect} : IsFailure {IsFailure}");
+
+                _skills.Lockpicking.Current += xpToApply;
+
+                return;
+            }
+
+            Plugin.Log.LogWarning($"Lockpicking xp not found in table.. defaulting to {6f} experience");
+            _skills.Lockpicking.Current += 6f;
         }
 
         private static float CalculateTimeForAction()
@@ -132,6 +153,7 @@ namespace SkillsExtended.Helpers
         {
             int doorLevel = LockPickingHelpers.GetLevelForDoor(Owner.Player.Location, InteractiveObject.Id);
 
+            // If the player completed the full timer uninterrupted
             if (actionCompleted)
             {
                 // Attempt was not successful
@@ -149,22 +171,49 @@ namespace SkillsExtended.Helpers
                         LockPickingHelpers.DoorAttempts[InteractiveObject.Id]++;
                     }
 
+                    // Break the lock if more than 3 failed attempts
                     if (LockPickingHelpers.DoorAttempts[InteractiveObject.Id] > 3)
                     {
                         Owner.DisplayPreloaderUiNotification("You broke the lock...");
                         InteractiveObject.KeyId = string.Empty;
+                        InteractiveObject.Operatable = false;
                         InteractiveObject.DoorStateChanged(EDoorState.None);
                     }
+
+                    // Apply failure xp
+                    LockPickingHelpers.ApplyLockPickActionXp(InteractiveObject, Owner, false, true);
+                    RemoveUseFromLockpick();
 
                     return;
                 }
 
+                RemoveUseFromLockpick();
+                LockPickingHelpers.ApplyLockPickActionXp(InteractiveObject, Owner);
                 AccessTools.Method(typeof(WorldInteractiveObject), "Unlock").Invoke(InteractiveObject, null);
-                LockPickingHelpers.ApplyLockPickExperience();
             }
             else
             {
                 Owner.CloseObjectivesPanel();
+            }
+        }
+
+        private void RemoveUseFromLockpick()
+        {
+            // Remove a use from a lockpick in the inventory
+            var lockPicks = LockPickingHelpers.GetLockPicksInInventory();
+            Item lockpick = lockPicks.First();
+
+            if (lockpick is GClass2720 pick)
+            {
+                pick.KeyComponent.NumberOfUsages++;
+
+                // lockpick has no uses left, destroy it
+                if (pick.KeyComponent.NumberOfUsages >= pick.KeyComponent.Template.MaximumNumberOfUsage && pick.KeyComponent.Template.MaximumNumberOfUsage > 0)
+                {
+                    InventoryControllerClass inventoryController = (InventoryControllerClass)AccessTools.Field(typeof(Player), "_inventoryController").GetValue(Owner.Player);
+
+                    inventoryController.DestroyItem(lockpick);
+                }
             }
         }
 
@@ -176,21 +225,18 @@ namespace SkillsExtended.Helpers
         {
             int levelDifference = _skills.Lockpicking.Level - doorLevel;
 
-            // Level difference is to great, never succeed
-            if (levelDifference < 0)
-            {
-                return false;
-            }
             // Player level is high enough to always pick this lock
-            else if (levelDifference > 5)
+            if (levelDifference > 10)
             {
+                Plugin.Log.LogDebug("Pick attempt success chance: Player out leveled this lock: SUCCEED ");
                 return true;
             }
 
-            float baseSuccessChance = Plugin.SkillData.LockPickingSkill.PickBaseSuccessChance;
-            float successMod = Plugin.SkillData.LockPickingSkill.PickBaseDifficultyMod;
+            float baseSuccessChance = _lockPicking.PickBaseSuccessChance;
+            float successMod = _lockPicking.PickBaseDifficultyMod;
 
-            float successChance = baseSuccessChance + (levelDifference * successMod);
+            // Never below 0, never above 100
+            float successChance = UnityEngine.Mathf.Clamp(baseSuccessChance + (levelDifference * successMod), 0f, 100f);
             float roll = UnityEngine.Random.Range(0f, 100f);
 
             Plugin.Log.LogDebug($"Pick attempt success chance: {successChance}, Roll: {roll}");
