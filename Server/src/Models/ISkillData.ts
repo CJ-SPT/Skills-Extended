@@ -1,3 +1,5 @@
+import { IHideoutProduction } from "@spt-aki/models/eft/hideout/IHideoutProduction";
+
 /* eslint-disable @typescript-eslint/naming-convention */
 export interface ISkillData
 {
@@ -42,6 +44,7 @@ export interface ILockPickingData
     INSPECT_LOCK_XP_RATIO: number;
     XP_TABLE: Record<string, number>;
     DOOR_PICK_LEVELS: IDoorPickLevels;
+    CRAFTING_RECIPES: IHideoutProduction[]
 }
 
 export interface IDoorPickLevels

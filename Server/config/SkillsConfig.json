@@ -439,7 +439,39 @@
                 "door_Sandbox_Area_01_indoor_00014": 0,
                 "door_Sandbox_Area_05_00007": 0
             }
-        }
+        },
+        "CRAFTING_RECIPES": [
+            {
+                "_id": "66220a0a699107e88f76ff91",
+                "areaType": 10,
+                "requirements": [
+                  {
+                    "areaType": 10,
+                    "requiredLevel": 1,
+                    "type": "Area"
+                  },
+                  {
+                    "templateId": "619cc01e0a7c3a1a2731940c",
+                    "count": 2,
+                    "isFunctional": false,
+                    "isEncoded": false,
+                    "type": "Item"
+                  },
+                  {
+                    "templateId": "62a0a0bb621468534a797ad5",
+                    "type": "Tool"
+                  }
+                ],
+                "productionTime": 10,
+                "needFuelForAllProductionTime": false,
+                "locked": false,
+                "endProduct": "6621be05088d0393df54a91a",
+                "continuous": false,
+                "count": 3,
+                "productionLimitCount": 0,
+                "isEncoded": false
+            }
+        ]
     },
     "UsecTacticsSkill": {
         "ENABLED": false,

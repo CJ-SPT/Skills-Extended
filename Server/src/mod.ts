@@ -10,20 +10,11 @@ import type { CustomItemService } from "@spt-aki/services/mod/CustomItemService"
 import type { NewItemFromCloneDetails } from "@spt-aki/models/spt/mod/NewItemDetails";
 import type { IKeys } from "./Models/IKeys";
 
-enum TraderIDs {
-    Mechanic = "5a7c2eca46aef81a7ca2145d",
-    Skier = "58330581ace78e27b8b10cee",
-    Peacekeeper = "5935c25fb3acc3127c3d8cd9",
-    Therapist = "54cb57776803fa99248b456e",
-    Prapor = "54cb50c76803fa8b248b4571",
-    Jaeger = "5c0647fdd443bc2504c2d371",
-    Ragman = "5ac3b934156ae10c4430e83c"
-}
+import { Money } from "@spt-aki/models/enums/Money";
+import { Traders } from "@spt-aki/models/enums/Traders";
 
-enum CurrencyIDs {
-    Roubles = "5449016a4bdc2d6f028b456f",
-    Euros = "569668774bdc2da2298b4568",
-    Dollars = "5696686a4bdc2da3298b456a"
+enum ItemIDS {
+    Lockpick  = "6621be05088d0393df54a91a"
 }
 
 class SkillsPlus implements IPreAkiLoadMod, IPostDBLoadMod
@@ -43,9 +34,11 @@ class SkillsPlus implements IPreAkiLoadMod, IPostDBLoadMod
         this.Instance.postDBLoad(container);
         this.customItemService = container.resolve<CustomItemService>("CustomItemService");
 
+
         this.setLocales();
 
         this.CloneKeysToBlanks();
+        this.addCraftsToDatabase();
 
         this.locale = this.Instance.database.locales.global;
     }
@@ -127,7 +120,7 @@ class SkillsPlus implements IPreAkiLoadMod, IPostDBLoadMod
             },
 
             parentId: "5c99f98d86f7745c314214b3",
-            newId: "LOCKPICK_SET",
+            newId: ItemIDS.Lockpick,
             fleaPriceRoubles: 120000,
             handbookPriceRoubles: 25000,
             handbookParentId: "5c518ec986f7743b68682ce2",
@@ -143,11 +136,11 @@ class SkillsPlus implements IPreAkiLoadMod, IPostDBLoadMod
 
         this.customItemService.createItemFromClone(blankKey);
 
-        const mechanic = this.Instance.database.traders[TraderIDs.Mechanic];
+        const mechanic = this.Instance.database.traders[Traders.MECHANIC];
 
         mechanic.assort.items.push({
-            _id: "LOCKPICK_SET",
-            _tpl: "LOCKPICK_SET",
+            _id: ItemIDS.Lockpick,
+            _tpl: ItemIDS.Lockpick,
             parentId: "hideout",
             slotId: "hideout",
             upd:
@@ -157,16 +150,25 @@ class SkillsPlus implements IPreAkiLoadMod, IPostDBLoadMod
             }
         });
 
-        mechanic.assort.barter_scheme["LOCKPICK_SET"] = [
+        mechanic.assort.barter_scheme[ItemIDS.Lockpick] = [
             [
                 {
                     count: 100000,
-                    _tpl: CurrencyIDs.Roubles
+                    _tpl: Money.ROUBLES
                 }
             ]
         ];
         
-        mechanic.assort.loyal_level_items["LOCKPICK_SET"] = 1;
+        mechanic.assort.loyal_level_items[ItemIDS.Lockpick] = 1;
+    }
+
+    private addCraftsToDatabase(): void
+    {
+        const crafts = SkillsConfig.LockPickingSkill.CRAFTING_RECIPES;
+
+        crafts.forEach((craft) => {
+            this.Instance.database.hideout.production.push(craft);
+        })
     }
 }
 
