@@ -14,7 +14,7 @@ import { Money } from "@spt-aki/models/enums/Money";
 import { Traders } from "@spt-aki/models/enums/Traders";
 
 enum ItemIDS {
-    Lockpick  = "LOCKPICK_PLACEHOLDER"
+    Lockpick  = "6622c28aed7e3bc72e301e22"
 }
 
 class SkillsPlus implements IPreAkiLoadMod, IPostDBLoadMod

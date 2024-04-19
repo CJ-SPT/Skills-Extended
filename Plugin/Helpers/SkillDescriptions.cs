@@ -64,7 +64,6 @@ namespace SkillsExtended.Helpers
         {
             return $"Master the art of swift, calculated engagements with USEC's Tactical Prowess. " +
                     $"This skill minimizes inertia, allowing you to move seamlessly between cover and execute precise maneuvers. " +
-                    $"Additionally, it reduces aimpunch, granting you superior control over your aim even in the heat of battle." +
                     $"\n\nReduces Intertia by {_skillData.UsecTacticsSkill.InertiaRedBonus * 100}% per level" +
                     $"\n{_skillData.UsecTacticsSkill.InertiaRedBonusElite * 100}% Elite bonus" +
                     $"\n\nCurrent inertia bonus: <color=#54C1FFFF>{inertiaReduction * 100}%</color>";
@@ -72,10 +71,8 @@ namespace SkillsExtended.Helpers
 
         public static string BearRawpowerDescription(float hpBonus)
         {
-            return $"Unleash the untamed strength within with BEAR Raw Power. This skill amplifies your survivability by boosting your overall health, " +
-                $"turning you into a resilient force on the battlefield. Moreover, " +
-                $"revel in the enhanced physical prowess as your carry weight capacity expands, " +
-                $"allowing you to wield heavier armaments and gear. Harness the true essence of BEAR's raw power for unparalleled endurance and dominance in the face of adversity." +
+            return $"This skill amplifies your survivability by boosting your overall health, " +
+                $"turning you into a resilient force on the battlefield." +
                 $"\n\nIncreases health by {_skillData.BearRawPowerSkill.HPBonus * 100}% per level" +
                 $"\n{_skillData.BearRawPowerSkill.HPBonusElite * 100}% Elite bonus" +
                 $"\n\nCurrent health bonus: <color=#54C1FFFF>{hpBonus * 100}%</color>";
