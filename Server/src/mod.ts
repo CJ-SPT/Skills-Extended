@@ -122,7 +122,7 @@ class SkillsPlus implements IPreAkiLoadMod, IPostDBLoadMod
             parentId: "5c99f98d86f7745c314214b3",
             newId: ItemIDS.Lockpick,
             fleaPriceRoubles: 120000,
-            handbookPriceRoubles: 25000,
+            handbookPriceRoubles: 75000,
             handbookParentId: "5c518ec986f7743b68682ce2",
 
             locales: {
@@ -153,13 +153,13 @@ class SkillsPlus implements IPreAkiLoadMod, IPostDBLoadMod
         mechanic.assort.barter_scheme[ItemIDS.Lockpick] = [
             [
                 {
-                    count: 100000,
+                    count: 75000,
                     _tpl: Money.ROUBLES
                 }
             ]
         ];
         
-        mechanic.assort.loyal_level_items[ItemIDS.Lockpick] = 1;
+        mechanic.assort.loyal_level_items[ItemIDS.Lockpick] = 2;
     }
 
     private addCraftsToDatabase(): void
