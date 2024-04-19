@@ -28,14 +28,14 @@ namespace SkillsExtended.Patches
                 return;
             }
 
-            if (Plugin.SkillData.MedicalSkills.FmItemList.Contains(meds.TemplateId))
+            if (Plugin.SkillData.MedicalSkills.FmItemList.Contains(meds.TemplateId) && Plugin.SkillData.MedicalSkills.EnableFieldMedicine)
             {
                 Plugin.FieldMedicineScript.ApplyFieldMedicineExp(bodyPart);
                 Plugin.Log.LogDebug("Field Medicine Effect");
                 return;
             }
 
-            if (Plugin.SkillData.MedicalSkills.FaItemList.Contains(meds.TemplateId))
+            if (Plugin.SkillData.MedicalSkills.FaItemList.Contains(meds.TemplateId) && Plugin.SkillData.MedicalSkills.EnableFirstAid)
             {
                 Plugin.FirstAidScript.ApplyFirstAidExp(bodyPart);
             }
@@ -63,13 +63,13 @@ namespace SkillsExtended.Patches
                 return;
             }
 
-            if (Plugin.SkillData.MedicalSkills.FmItemList.Contains(item.TemplateId))
+            if (Plugin.SkillData.MedicalSkills.FmItemList.Contains(item.TemplateId) && Plugin.SkillData.MedicalSkills.EnableFieldMedicine)
             {
                 Plugin.FieldMedicineScript.ApplyFieldMedicineExp(EBodyPart.Common);
                 return;
             }
 
-            if (Plugin.SkillData.MedicalSkills.FaItemList.Contains(item.TemplateId))
+            if (Plugin.SkillData.MedicalSkills.FaItemList.Contains(item.TemplateId) && Plugin.SkillData.MedicalSkills.EnableFirstAid)
             {
                 Plugin.FirstAidScript.ApplyFirstAidExp(EBodyPart.Common);
             }

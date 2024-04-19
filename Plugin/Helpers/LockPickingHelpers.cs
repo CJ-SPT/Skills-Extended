@@ -123,7 +123,7 @@ namespace SkillsExtended.Helpers
         public static IEnumerable<Item> GetLockPicksInInventory()
         {
             return Plugin.Session.Profile.Inventory.GetPlayerItems(EPlayerItems.Equipment)
-                .Where(x => x.TemplateId == "LOCKPICK_SET");
+                .Where(x => x.TemplateId == "LOCKPICK_PLACEHOLDER");
         }
 
         private static void ApplyLockPickActionXp(WorldInteractiveObject interactiveObject, GamePlayerOwner owner, bool isInspect = false, bool IsFailure = false)
