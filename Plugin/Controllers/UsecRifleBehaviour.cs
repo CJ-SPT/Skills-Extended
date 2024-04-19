@@ -64,7 +64,7 @@ namespace SkillsExtended.Controllers
 
                 if ((_gameWorld.MainPlayer.Side == EPlayerSide.Usec && !_skillManager.UsecArsystems.IsEliteLevel)
                     || (_skillManager.BearAksystems.IsEliteLevel && !_skillManager.UsecArsystems.IsEliteLevel)
-                    || SEConfig.disableEliteRequirement.Value)
+                    || Plugin.SkillData.DisableEliteRequirements)
                 {
                     _skillManager.OnMasteringExperienceChanged += ApplyUsecARXp;
                     Plugin.Log.LogDebug("USEC AR XP ENABLED.");

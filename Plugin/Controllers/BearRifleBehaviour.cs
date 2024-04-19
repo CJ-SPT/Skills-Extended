@@ -64,7 +64,7 @@ namespace SkillsExtended.Controllers
 
                 if ((_gameWorld.MainPlayer.Side == EPlayerSide.Bear && !_skillManager.BearAksystems.IsEliteLevel)
                     || (_skillManager.UsecArsystems.IsEliteLevel && !_skillManager.BearAksystems.IsEliteLevel)
-                    || SEConfig.disableEliteRequirement.Value)
+                    || Plugin.SkillData.DisableEliteRequirements)
                 {
                     _skillManager.OnMasteringExperienceChanged += ApplyBearAKXp;
                     Plugin.Log.LogDebug("BEAR AK XP ENABLED.");

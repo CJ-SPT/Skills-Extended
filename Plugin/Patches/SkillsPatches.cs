@@ -227,7 +227,7 @@ namespace SkillsExtended.Patches
             // Usec AR systems
             if (skill.Id == ESkillId.UsecArsystems && side == EPlayerSide.Bear && !skills.BearAksystems.IsEliteLevel)
             {
-                if (SEConfig.disableEliteRequirement.Value)
+                if (Plugin.SkillData.DisableEliteRequirements)
                 {
                     return true;
                 }
@@ -246,7 +246,7 @@ namespace SkillsExtended.Patches
             // Bear AK systems
             if (skill.Id == ESkillId.BearAksystems && side == EPlayerSide.Usec && !skills.UsecArsystems.IsEliteLevel)
             {
-                if (SEConfig.disableEliteRequirement.Value)
+                if (Plugin.SkillData.DisableEliteRequirements)
                 {
                     return true;
                 }

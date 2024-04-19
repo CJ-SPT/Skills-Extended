@@ -4,8 +4,6 @@ namespace SkillsExtended.Helpers
 {
     internal static class SEConfig
     {
-        public static ConfigEntry<bool> disableEliteRequirement;
-
         public static ConfigEntry<float> firstAidSpeedMult;
         public static ConfigEntry<float> fieldMedicineSpeedMult;
         public static ConfigEntry<float> medicalSkillCoolDownTime;
@@ -15,14 +13,6 @@ namespace SkillsExtended.Helpers
 
         public static void InitializeConfig(ConfigFile Config)
         {
-            disableEliteRequirement = Config.Bind(
-                "Skills Extended",
-                "Disable elite requirements",
-                false,
-                new ConfigDescription("Removes the requirement to have elite in your factions skill, to unlock the opposing factions skill.",
-                null,
-                new ConfigurationManagerAttributes { IsAdvanced = false, ShowRangeAsPercent = false, Order = 0 }));
-
             firstAidSpeedMult = Config.Bind(
                 "Skills Extended",
                 "First aid leveling speed multiplier",

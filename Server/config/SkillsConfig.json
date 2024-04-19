@@ -1,7 +1,9 @@
 {
+    "DisableEliteRequirements": false,
     "MedicalSkills": {
         "ENABLE_FIELD_MEDICINE": true,
         "ENABLE_FIRST_AID": true,
+        "COOL_DOWN_TIME_PER_LIMB": 60,
         "MEDKIT_HP_BONUS": 0.01,
         "MEDKIT_HP_BONUS_ELITE": 0.20,
         "MEDICAL_SPEED_BONUS": 0.007,

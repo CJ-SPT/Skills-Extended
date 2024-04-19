@@ -5,6 +5,8 @@ namespace SkillsExtended.Models
 {
     public struct SkillDataResponse
     {
+        public bool DisableEliteRequirements;
+
         public MedicalSkillData MedicalSkills;
 
         public WeaponSkillData UsecRifleSkill;
@@ -25,6 +27,9 @@ namespace SkillsExtended.Models
 
         [JsonProperty("ENABLE_FIRST_AID")]
         public bool EnableFirstAid;
+
+        [JsonProperty("COOL_DOWN_TIME_PER_LIMB")]
+        public bool CoolDownTimePerLimb;
 
         [JsonProperty("MEDKIT_HP_BONUS")]
         public float MedkitHpBonus;
