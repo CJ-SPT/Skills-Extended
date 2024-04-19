@@ -116,7 +116,11 @@ class SkillsPlus implements IPreAkiLoadMod, IPostDBLoadMod
             itemTplToClone: "5448ba0b4bdc2d02308b456c",
             overrideProperties: {
                 CanSellOnRagfair: false,
-                MaximumNumberOfUsage: 5
+                MaximumNumberOfUsage: 5,
+                Prefab: {
+                    path: "lockpick.bundle",
+                    rcid: ""
+                }
             },
 
             parentId: "5c99f98d86f7745c314214b3",

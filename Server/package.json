@@ -5,12 +5,12 @@
     "license": "CC BY-NC-ND 4.0",
     "author": "dirtbikercj",
     "akiVersion": "3.8.0",
+    "isBundleMod": true,
     "loadBefore": [],
     "loadAfter": [],
     "incompatibilities": [
     ],
     "contributors": [],
-    "isBundleMod": false,
     "scripts": {
         "setup": "npm i",
         "build": "node ./packageBuild.ts",
