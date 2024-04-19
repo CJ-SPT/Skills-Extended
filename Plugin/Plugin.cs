@@ -1,10 +1,13 @@
-﻿using Aki.Reflection.Utils;
+﻿using Aki.Common.Http;
+using Aki.Reflection.Utils;
 using BepInEx;
+using BepInEx.Bootstrap;
 using BepInEx.Logging;
 using Comfort.Common;
 using DrakiaXYZ.VersionChecker;
 using EFT;
 using EFT.InventoryLogic;
+using Newtonsoft.Json;
 using SkillsExtended.Controllers;
 using SkillsExtended.Helpers;
 using SkillsExtended.Models;
@@ -31,6 +34,8 @@ namespace SkillsExtended
 
         // Contains skill data
         public static SkillDataResponse SkillData;
+
+        public static RealismConfig RealismConfig;
 
         internal static GameObject Hook;
 
@@ -77,6 +82,15 @@ namespace SkillsExtended
         {
             Keys = Utils.Get<KeysResponse>("/skillsExtended/GetKeys");
             SkillData = Utils.Get<SkillDataResponse>("/skillsExtended/GetSkillsConfig");
+
+            // If realism is installed, load its config
+            if (Chainloader.PluginInfos.ContainsKey("RealismMod"))
+            {
+                var jsonString = RequestHandler.GetJson("/RealismMod/GetInfo");
+                var str = JsonConvert.DeserializeObject<string>(jsonString);
+                RealismConfig = JsonConvert.DeserializeObject<RealismConfig>(str);
+                Log.LogInfo("Realism mod detected");
+            }
 
             if (SkillData.MedicalSkills.EnableFirstAid)
             {

@@ -132,7 +132,7 @@ class SkillsPlus implements IPreAkiLoadMod, IPostDBLoadMod
             locales: {
                 en: {
                     name: "Lockpick set",
-                    shortName: "lockpick",
+                    shortName: "Lockpick",
                     description: "A set of tools used for picking locks"
                 }
             }
