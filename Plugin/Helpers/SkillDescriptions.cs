@@ -8,13 +8,18 @@ namespace SkillsExtended.Helpers
 
         public static string FirstAidDescription(float speedBonus, float hpBonus)
         {
+            string medicalHpString = !Plugin.RealismConfig.med_changes
+                ? $"\n\n Increases the HP resource of medical items by {_skillData.MedicalSkills.MedkitHpBonus * 100}% per level." +
+                  $"\n\n Elite bonus: {_skillData.MedicalSkills.MedkitHpBonusElite * 100}%." +
+                  $"\n\n Current speed bonus: <color=#54C1FFFF>{speedBonus * 100}%</color> " +
+                  $"\n\n Current bonus HP: <color=#54C1FFFF>{hpBonus * 100}%</color>"
+
+                : $"\n\n Current speed bonus: <color=#54C1FFFF>{speedBonus * 100}%</color> ";
+
             return $"First aid skills make use of first aid kits quicker and more effective." +
                     $"\n\n Increases the speed of healing items by {_skillData.MedicalSkills.MedicalSpeedBonus * 100}% per level. " +
                     $"\n\n Elite bonus: {_skillData.MedicalSkills.MedicalSpeedBonusElite * 100}% " +
-                    $"\n\n Increases the HP resource of medical items by {_skillData.MedicalSkills.MedkitHpBonus * 100}% per level." +
-                    $"\n\n Elite bonus: {_skillData.MedicalSkills.MedkitHpBonusElite * 100}%." +
-                    $"\n\n Current speed bonus: <color=#54C1FFFF>{speedBonus * 100}%</color> " +
-                    $"\n\n Current bonus HP: <color=#54C1FFFF>{hpBonus * 100}%</color>";
+                    medicalHpString;
         }
 
         public static string FieldMedicineDescription(float speedBonus)

@@ -102,6 +102,9 @@ namespace SkillsExtended.Controllers
 
         private void ApplyFirstAidHPBonus(Item item)
         {
+            // Dont apply HP bonuses with realism med changes enabled
+            if (Plugin.RealismConfig.med_changes) { return; }
+
             if (firstAidInstanceIDs.ContainsKey(item.Id)) { return; }
 
             if (item is MedsClass meds)
