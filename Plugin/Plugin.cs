@@ -60,6 +60,7 @@ namespace SkillsExtended
             new SimpleToolTipPatch().Enable();
             new SkillManagerConstructorPatch().Enable();
             new OnScreenChangePatch().Enable();
+            new OnGameStartedPatch().Enable();
             new GetActionsClassPatch().Enable();
             new DoMedEffectPatch().Enable();
             new SetItemInHands().Enable();
@@ -74,7 +75,6 @@ namespace SkillsExtended
 
 #if DEBUG
             new LocationSceneAwakePatch().Enable();
-            new OnGameStartedPatch().Enable();
             ConsoleCommands.RegisterCommands();
 #endif
         }

@@ -13,9 +13,6 @@ namespace SkillsExtended.Patches
         [PatchPostfix]
         private static void Postfix(LocationScene __instance)
         {
-            LockPickingHelpers.InspectedDoors.Clear();
-
-            /*
             foreach (var interactableObj in __instance.WorldInteractiveObjects)
             {
                 if (interactableObj.KeyId != null && interactableObj.KeyId != string.Empty)
@@ -29,7 +26,7 @@ namespace SkillsExtended.Patches
                         Plugin.Log.LogError($"Door ID: {interactableObj.Id} KeyID: {interactableObj.KeyId} Key locale missing...");
                     }
                 }
-            }*/
+            }
         }
     }
 
@@ -41,7 +38,10 @@ namespace SkillsExtended.Patches
         [PatchPostfix]
         private static void Postfix(GameWorld __instance)
         {
+#if DEBUG
             Plugin.Log.LogDebug($"Player map id: {__instance.MainPlayer.Location}");
+#endif
+            LockPickingHelpers.InspectedDoors.Clear();
         }
     }
 }
