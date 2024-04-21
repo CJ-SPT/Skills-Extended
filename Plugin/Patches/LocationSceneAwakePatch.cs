@@ -1,4 +1,5 @@
 ﻿using Aki.Reflection.Patching;
+using EFT;
 using SkillsExtended.Helpers;
 using System.Reflection;
 
@@ -6,7 +7,8 @@ namespace SkillsExtended.Patches
 {
     internal class LocationSceneAwakePatch : ModulePatch
     {
-        protected override MethodBase GetTargetMethod() => typeof(LocationScene).GetMethod(nameof(LocationScene.Awake));
+        protected override MethodBase GetTargetMethod()
+            => typeof(LocationScene).GetMethod(nameof(LocationScene.Awake));
 
         [PatchPostfix]
         private static void Postfix(LocationScene __instance)
@@ -18,9 +20,28 @@ namespace SkillsExtended.Patches
             {
                 if (interactableObj.KeyId != null && interactableObj.KeyId != string.Empty)
                 {
-                    Plugin.Log.LogDebug($"Door ID: {interactableObj.Id} KeyID: {interactableObj.KeyId} Key Name: {Plugin.Keys.KeyLocale[interactableObj.KeyId]}");
+                    if (Plugin.Keys.KeyLocale.ContainsKey(interactableObj.KeyId))
+                    {
+                        Plugin.Log.LogDebug($"Door ID: {interactableObj.Id} KeyID: {interactableObj.KeyId} Key Name: {Plugin.Keys.KeyLocale[interactableObj.KeyId]}");
+                    }
+                    else
+                    {
+                        Plugin.Log.LogError($"Door ID: {interactableObj.Id} KeyID: {interactableObj.KeyId} Key locale missing...");
+                    }
                 }
             }*/
+        }
+    }
+
+    internal class OnGameStartedPatch : ModulePatch
+    {
+        protected override MethodBase GetTargetMethod()
+            => typeof(GameWorld).GetMethod(nameof(GameWorld.OnGameStarted));
+
+        [PatchPostfix]
+        private static void Postfix(GameWorld __instance)
+        {
+            Plugin.Log.LogDebug($"Player map id: {__instance.MainPlayer.Location}");
         }
     }
 }

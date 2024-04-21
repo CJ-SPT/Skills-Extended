@@ -63,7 +63,7 @@ namespace SkillsExtended.Helpers
 
         private static bool IsDoorValidForLockPicking(WorldInteractiveObject interactiveObject)
         {
-            if (interactiveObject.DoorState != EDoorState.Locked || !interactiveObject.Operatable)
+            if (interactiveObject.DoorState != EDoorState.Locked || !interactiveObject.Operatable || !Plugin.Keys.KeyLocale.ContainsKey(interactiveObject.KeyId))
             {
                 return false;
             }
@@ -73,7 +73,9 @@ namespace SkillsExtended.Helpers
 
         private static bool IsValidDoorForInspect(WorldInteractiveObject interactiveObject)
         {
-            if (interactiveObject.KeyId == null || interactiveObject.KeyId == string.Empty || !interactiveObject.Operatable || interactiveObject.DoorState != EDoorState.Locked)
+            if (interactiveObject.KeyId == null || interactiveObject.KeyId == string.Empty
+                || !interactiveObject.Operatable || interactiveObject.DoorState != EDoorState.Locked
+                || !Plugin.Keys.KeyLocale.ContainsKey(interactiveObject.KeyId))
             {
                 return false;
             }

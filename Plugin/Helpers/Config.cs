@@ -6,7 +6,6 @@ namespace SkillsExtended.Helpers
     {
         public static ConfigEntry<float> firstAidSpeedMult;
         public static ConfigEntry<float> fieldMedicineSpeedMult;
-        public static ConfigEntry<float> medicalSkillCoolDownTime;
 
         public static ConfigEntry<float> usecWeaponSpeedMult;
         public static ConfigEntry<float> bearWeaponSpeedMult;
@@ -19,7 +18,7 @@ namespace SkillsExtended.Helpers
                 1f,
                 new ConfigDescription("Changes the leveling speed multiplier for first aid.",
                 null,
-                new ConfigurationManagerAttributes { IsAdvanced = false, ShowRangeAsPercent = false, Order = 1 }));
+                new ConfigurationManagerAttributes { IsAdvanced = false, ShowRangeAsPercent = false, Order = 0 }));
 
             fieldMedicineSpeedMult = Config.Bind(
                 "Skills Extended",
@@ -27,15 +26,7 @@ namespace SkillsExtended.Helpers
                 1f,
                 new ConfigDescription("Changes the leveling speed multiplier for field medicine.",
                 null,
-                new ConfigurationManagerAttributes { IsAdvanced = false, ShowRangeAsPercent = false, Order = 2 }));
-
-            medicalSkillCoolDownTime = Config.Bind(
-                "Skills Extended",
-                "Cool down time for xp per limb",
-                60f,
-                new ConfigDescription("Time in seconds for a limb to become available for XP again. \n\nNOTE: When using meds from a hotkey without selecting a specific bodypart, bodypart common is chosen everytime, this leads to a global cooldown of the skill for hotkey use. Specific limb selection works off of a different patch. I'll figure out how to fix this in the future.",
-                null,
-                new ConfigurationManagerAttributes { IsAdvanced = false, ShowRangeAsPercent = false, Order = 3 }));
+                new ConfigurationManagerAttributes { IsAdvanced = false, ShowRangeAsPercent = false, Order = 1 }));
 
             usecWeaponSpeedMult = Config.Bind(
                 "Skills Extended",
@@ -43,7 +34,7 @@ namespace SkillsExtended.Helpers
                 1f,
                 new ConfigDescription("Changes the leveling speed multiplier for usec Rifle and carbine proficiency.",
                 null,
-                new ConfigurationManagerAttributes { IsAdvanced = false, ShowRangeAsPercent = false, Order = 4 }));
+                new ConfigurationManagerAttributes { IsAdvanced = false, ShowRangeAsPercent = false, Order = 2 }));
 
             bearWeaponSpeedMult = Config.Bind(
                 "Skills Extended",
@@ -51,7 +42,7 @@ namespace SkillsExtended.Helpers
                 1f,
                 new ConfigDescription("Changes the leveling speed multiplier for bear Rifle and carbine proficiency.",
                 null,
-                new ConfigurationManagerAttributes { IsAdvanced = false, ShowRangeAsPercent = false, Order = 5 }));
+                new ConfigurationManagerAttributes { IsAdvanced = false, ShowRangeAsPercent = false, Order = 3 }));
         }
     }
 }

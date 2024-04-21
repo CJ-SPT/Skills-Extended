@@ -74,13 +74,13 @@ namespace SkillsExtended.Helpers
             {
                 TimeSpan elapsed = DateTime.Now - dict[bodypart];
 
-                if (elapsed.TotalSeconds >= SEConfig.medicalSkillCoolDownTime.Value)
+                if (elapsed.TotalSeconds >= Plugin.SkillData.MedicalSkills.CoolDownTimePerLimb)
                 {
                     dict.Remove(bodypart);
                     return true;
                 }
 
-                Plugin.Log.LogDebug($"Time until next available xp: {SEConfig.medicalSkillCoolDownTime.Value - elapsed.TotalSeconds} seconds");
+                Plugin.Log.LogDebug($"Time until next available xp: {Plugin.SkillData.MedicalSkills.CoolDownTimePerLimb - elapsed.TotalSeconds} seconds");
                 return false;
             }
         }

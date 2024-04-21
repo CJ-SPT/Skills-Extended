@@ -74,6 +74,7 @@ namespace SkillsExtended
 
 #if DEBUG
             new LocationSceneAwakePatch().Enable();
+            new OnGameStartedPatch().Enable();
             ConsoleCommands.RegisterCommands();
 #endif
         }
@@ -119,7 +120,7 @@ namespace SkillsExtended
 
             if (SkillData.BearRawPowerSkill.Enabled)
             {
-                BearPowerScript = Hook.AddComponent<BearRawPowerBehavior>();
+                //BearPowerScript = Hook.AddComponent<BearRawPowerBehavior>();
             }
         }
 

@@ -12,9 +12,11 @@ import type { IKeys } from "./Models/IKeys";
 
 import { Money } from "@spt-aki/models/enums/Money";
 import { Traders } from "@spt-aki/models/enums/Traders";
+import { BaseClasses } from "@spt-aki/models/enums/BaseClasses";
 
 enum ItemIDS {
-    Lockpick  = "6622c28aed7e3bc72e301e22"
+    Lockpick  = "6622c28aed7e3bc72e301e22",
+    Pda = "662400eb756ca8948fe64fe8"
 }
 
 class SkillsPlus implements IPreAkiLoadMod, IPostDBLoadMod
@@ -34,10 +36,9 @@ class SkillsPlus implements IPreAkiLoadMod, IPostDBLoadMod
         this.Instance.postDBLoad(container);
         this.customItemService = container.resolve<CustomItemService>("CustomItemService");
 
-
         this.setLocales();
 
-        this.CloneKeysToBlanks();
+        this.CreateItems();
         this.addCraftsToDatabase();
 
         this.locale = this.Instance.database.locales.global;
@@ -51,21 +52,21 @@ class SkillsPlus implements IPreAkiLoadMod, IPostDBLoadMod
 
     private getKeys(): string
     {
-        const items = this.Instance.database.templates.items;
+        const items = Object.values(this.Instance.database.templates.items);
 
         const keys: IKeys = {
             keyLocale: {}
         }
 
-        for (const item in items)
+        const ItemHelper = this.Instance.itemHelper;
+        
+        const keyItems = items.filter(x => 
+            x._type === "Item" 
+            && ItemHelper.isOfBaseclasses(x._id, [BaseClasses.KEY, BaseClasses.KEY_MECHANICAL, BaseClasses.KEYCARD]))
+
+        for (const item of keyItems)
         {
-            if (items[item]._parent === "5c99f98d86f7745c314214b3" 
-             || items[item]._parent === "5c164d2286f774194c5e69fa"
-             || items[item]._parent === "543be5e94bdc2df1348b4568"
-             || items[item]._parent === "5c164d2286f774194c5e69fa")
-            {
-                keys.keyLocale[item] = this.locale.en[`${items[item]._id} Name`];
-            }
+            keys.keyLocale[item._id] = this.locale.en[`${item._id} Name`];
         }
 
         return JSON.stringify(keys);
@@ -104,15 +105,16 @@ class SkillsPlus implements IPreAkiLoadMod, IPostDBLoadMod
         );
     }
 
-    private CloneKeysToBlanks()
+    private CreateItems(): void
     {
-        this.cloneIndustrialKeyToBlank();
+        this.CreateLockpick();
+        this.CreatePDA();
     }
 
     // Clones factory key to be used as a blank for bump lock picking
-    private cloneIndustrialKeyToBlank()
+    private CreateLockpick(): void
     {
-        const blankKey: NewItemFromCloneDetails = {
+        const lockPick: NewItemFromCloneDetails = {
             itemTplToClone: "5448ba0b4bdc2d02308b456c",
             overrideProperties: {
                 CanSellOnRagfair: false,
@@ -138,10 +140,10 @@ class SkillsPlus implements IPreAkiLoadMod, IPostDBLoadMod
             }
         }
 
-        this.customItemService.createItemFromClone(blankKey);
+        this.customItemService.createItemFromClone(lockPick);
 
         const mechanic = this.Instance.database.traders[Traders.MECHANIC];
-
+        
         mechanic.assort.items.push({
             _id: ItemIDS.Lockpick,
             _tpl: ItemIDS.Lockpick,
@@ -164,6 +166,61 @@ class SkillsPlus implements IPreAkiLoadMod, IPostDBLoadMod
         ];
         
         mechanic.assort.loyal_level_items[ItemIDS.Lockpick] = 2;
+    }
+
+    private CreatePDA(): void
+    {
+        const Pda: NewItemFromCloneDetails = {
+            itemTplToClone: "5bc9b720d4351e450201234b",
+            overrideProperties: {
+                CanSellOnRagfair: false,
+                Prefab: {
+                    path: "pda.bundle",
+                    rcid: ""
+                }
+            },
+
+            parentId: "5c164d2286f774194c5e69fa",
+            newId: ItemIDS.Pda,
+            fleaPriceRoubles: 3650000,
+            handbookPriceRoubles: 75000,
+            handbookParentId: "5c164d2286f774194c5e69fa",
+
+            locales: {
+                en: {
+                    name: "Flipper zero",
+                    shortName: "Flipper",
+                    description: "A hacking device used for gaining access to key card doors. Requires Lockpicking level 20 to use."
+                }
+            }
+        }
+
+        this.customItemService.createItemFromClone(Pda);
+        
+        const peaceKeeper = this.Instance.database.traders[Traders.PEACEKEEPER];
+
+        peaceKeeper.assort.items.push({
+            _id: ItemIDS.Pda,
+            _tpl: ItemIDS.Pda,
+            parentId: "hideout",
+            slotId: "hideout",
+            upd:
+            {
+                UnlimitedCount: false,
+                StackObjectsCount: 1
+            }
+        });
+
+        peaceKeeper.assort.barter_scheme[ItemIDS.Pda] = [
+            [
+                {
+                    count: 12500,
+                    _tpl: Money.DOLLARS
+                }
+            ]
+        ];
+        
+        peaceKeeper.assort.loyal_level_items[ItemIDS.Pda] = 3;
     }
 
     private addCraftsToDatabase(): void

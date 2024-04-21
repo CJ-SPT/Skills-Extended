@@ -7,6 +7,14 @@
                 "shaders",
                 "cubemaps"
             ]
+        },
+        {
+            "key": "pda.bundle",
+            "dependencyKeys": [
+                "assets/commonassets/physics/physicsmaterials.bundle",
+                "shaders",
+                "cubemaps"
+            ]
         }
     ]
 }

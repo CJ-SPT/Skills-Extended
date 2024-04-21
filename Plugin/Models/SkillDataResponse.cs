@@ -29,7 +29,7 @@ namespace SkillsExtended.Models
         public bool EnableFirstAid;
 
         [JsonProperty("COOL_DOWN_TIME_PER_LIMB")]
-        public bool CoolDownTimePerLimb;
+        public float CoolDownTimePerLimb;
 
         [JsonProperty("MEDKIT_HP_BONUS")]
         public float MedkitHpBonus;
