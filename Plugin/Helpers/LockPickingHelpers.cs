@@ -63,10 +63,19 @@ namespace SkillsExtended.Helpers
                 owner.ShowObjectivesPanel("Picking lock {0:F1}", lpTime);
 
                 int level = GetLevelForDoor(owner.Player.Location, interactiveObject.Id);
+                float chanceForSuccess = CalculateChanceForSuccess(interactiveObject, owner);
 
-                if (owner.Player.Skills.Lockpicking.Level < level)
+                if (chanceForSuccess > 80f)
                 {
-                    owner.DisplayPreloaderUiNotification("This lock is hard for your level...");
+                    owner.DisplayPreloaderUiNotification("This lock is easy for your level");
+                }
+                else if (chanceForSuccess < 80f && chanceForSuccess > 0f)
+                {
+                    owner.DisplayPreloaderUiNotification("This lock is hard for your level");
+                }
+                else if (chanceForSuccess == 0f)
+                {
+                    owner.DisplayPreloaderUiNotification("This lock is impossible for your level");
                 }
 
                 LockPickActionHandler handler = new()

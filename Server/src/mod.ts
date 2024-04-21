@@ -108,7 +108,7 @@ class SkillsPlus implements IPreAkiLoadMod, IPostDBLoadMod
     private CreateItems(): void
     {
         this.CreateLockpick();
-        this.CreatePDA();
+        //this.CreatePDA();
     }
 
     // Clones factory key to be used as a blank for bump lock picking
