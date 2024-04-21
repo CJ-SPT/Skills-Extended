@@ -122,7 +122,9 @@ class SkillsPlus implements IPreAkiLoadMod, IPostDBLoadMod
                 Prefab: {
                     path: "lockpick.bundle",
                     rcid: ""
-                }
+                },
+                BackgroundColor: "Orange"
+                
             },
 
             parentId: "5c99f98d86f7745c314214b3",
@@ -152,7 +154,7 @@ class SkillsPlus implements IPreAkiLoadMod, IPostDBLoadMod
             upd:
             {
                 UnlimitedCount: false,
-                StackObjectsCount: 200
+                StackObjectsCount: 10
             }
         });
 
