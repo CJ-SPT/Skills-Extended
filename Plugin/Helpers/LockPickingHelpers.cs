@@ -32,7 +32,7 @@ namespace SkillsExtended.Helpers
             {"laboratory", Plugin.SkillData.LockPickingSkill.DoorPickLevels.Labs},
             {"lighthouse", Plugin.SkillData.LockPickingSkill.DoorPickLevels.Lighthouse},
             {"TarkovStreets", Plugin.SkillData.LockPickingSkill.DoorPickLevels.Streets},
-            {"sandbox", Plugin.SkillData.LockPickingSkill.DoorPickLevels.GroundZero},
+            {"Sandbox", Plugin.SkillData.LockPickingSkill.DoorPickLevels.GroundZero},
         };
 
         public static void PickLock(WorldInteractiveObject interactiveObject, GamePlayerOwner owner)
