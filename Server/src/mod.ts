@@ -1,31 +1,22 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 
 import { InstanceManager } from "./InstanceManager";
-import * as customWeapons from "../config/CustomWeapons.json";
-import * as blankKeyMapping from "../config/KeyBlankMapping.json";
+import * as SkillsConfig from "../config/SkillsConfig.json";
 
 import type { DependencyContainer } from "tsyringe";
 import type { IPostDBLoadMod } from "@spt-aki/models/external/IPostDBLoadMod";
 import type { IPreAkiLoadMod } from "@spt-aki/models/external/IPreAkiLoadMod";
-import { LogTextColor } from "@spt-aki/models/spt/logging/LogTextColor";
 import type { CustomItemService } from "@spt-aki/services/mod/CustomItemService";
 import type { NewItemFromCloneDetails } from "@spt-aki/models/spt/mod/NewItemDetails";
 import type { IKeys } from "./Models/IKeys";
 
-enum TraderIDs {
-    Mechanic = "5a7c2eca46aef81a7ca2145d",
-    Skier = "58330581ace78e27b8b10cee",
-    Peacekeeper = "5935c25fb3acc3127c3d8cd9",
-    Therapist = "54cb57776803fa99248b456e",
-    Prapor = "54cb50c76803fa8b248b4571",
-    Jaeger = "5c0647fdd443bc2504c2d371",
-    Ragman = "5ac3b934156ae10c4430e83c"
-}
+import { Money } from "@spt-aki/models/enums/Money";
+import { Traders } from "@spt-aki/models/enums/Traders";
+import { BaseClasses } from "@spt-aki/models/enums/BaseClasses";
 
-enum CurrencyIDs {
-    Roubles = "5449016a4bdc2d6f028b456f",
-    Euros = "569668774bdc2da2298b4568",
-    Dollars = "5696686a4bdc2da3298b456a"
+enum ItemIDS {
+    Lockpick  = "6622c28aed7e3bc72e301e22",
+    Pda = "662400eb756ca8948fe64fe8"
 }
 
 class SkillsPlus implements IPreAkiLoadMod, IPostDBLoadMod
@@ -47,7 +38,8 @@ class SkillsPlus implements IPreAkiLoadMod, IPostDBLoadMod
 
         this.setLocales();
 
-        //this.CloneKeysToBlanks();
+        this.CreateItems();
+        this.addCraftsToDatabase();
 
         this.locale = this.Instance.database.locales.global;
     }
@@ -58,41 +50,45 @@ class SkillsPlus implements IPreAkiLoadMod, IPostDBLoadMod
         this.Instance.database.locales.global.en.FieldMedicineDescription = "FieldMedicineDescriptionPattern";
     }
 
-    private loadCustomWeaponsForUsecSkill(): string
-    {
-        return JSON.stringify(customWeapons.USEC_Rifle_Carbine_Skill);
-    }
-
-    private loadCustomWeaponsForBearSkill(): string
-    {
-        return JSON.stringify(customWeapons.BEAR_Rifle_Carbine_Skill);
-    }
-
     private getKeys(): string
     {
-        const items = this.Instance.database.templates.items;
+        const items = Object.values(this.Instance.database.templates.items);
 
         const keys: IKeys = {
-            keyLocale: {},
-            keyBlankMapping: {}
+            keyLocale: {}
         }
 
-        for (const item in items)
+        const ItemHelper = this.Instance.itemHelper;
+        
+        const keyItems = items.filter(x => 
+            x._type === "Item" 
+            && ItemHelper.isOfBaseclasses(x._id, [BaseClasses.KEY, BaseClasses.KEY_MECHANICAL, BaseClasses.KEYCARD]))
+
+        for (const item of keyItems)
         {
-            if (items[item]._parent === "5c99f98d86f7745c314214b3" || items[item]._parent === "5c164d2286f774194c5e69fa")
-            {
-                keys.keyLocale[item] = this.locale.en[`${items[item]._id} Name`];
-                this.Instance.logger.logWithColor(this.locale.en[`${items[item]._id} Name`], LogTextColor.GREEN);
-            }
+            keys.keyLocale[item._id] = this.locale.en[`${item._id} Name`];
         }
-
-        keys.keyBlankMapping = blankKeyMapping;
 
         return JSON.stringify(keys);
     }
 
     private registerRoutes(): void
     {
+        this.Instance.staticRouter.registerStaticRouter(
+            "GetSkillsConfig",
+            [
+                {
+                    url: "/skillsExtended/GetSkillsConfig",
+                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                    action: (url, info, sessionId, output) => 
+                    {                     
+                        return JSON.stringify(SkillsConfig);
+                    }
+                }
+            ],
+            ""
+        );
+
         this.Instance.staticRouter.registerStaticRouter(
             "GetKeys",
             [
@@ -107,94 +103,135 @@ class SkillsPlus implements IPreAkiLoadMod, IPostDBLoadMod
             ],
             ""
         );
-
-        this.Instance.staticRouter.registerStaticRouter(
-            "GetCustomWeaponsUsec",
-            [
-                {
-                    url: "/skillsExtended/GetCustomWeaponsUsec",
-                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                    action: (url, info, sessionId, output) => 
-                    {
-                        return this.loadCustomWeaponsForUsecSkill();
-                    }
-                }
-            ],
-            ""
-        );
-
-        this.Instance.staticRouter.registerStaticRouter(
-            "GetCustomWeaponsBear",
-            [
-                {
-                    url: "/skillsExtended/GetCustomWeaponsBear",
-                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                    action: (url, info, sessionId, output) => 
-                    {
-                        return this.loadCustomWeaponsForBearSkill();
-                    }
-                }
-            ],
-            ""
-        );
     }
 
-    private CloneKeysToBlanks()
+    private CreateItems(): void
     {
-        this.cloneIndustrialKeyToBlank();
+        this.CreateLockpick();
+        //this.CreatePDA();
     }
 
     // Clones factory key to be used as a blank for bump lock picking
-    private cloneIndustrialKeyToBlank()
+    private CreateLockpick(): void
     {
-        const blankKey: NewItemFromCloneDetails = {
+        const lockPick: NewItemFromCloneDetails = {
             itemTplToClone: "5448ba0b4bdc2d02308b456c",
             overrideProperties: {
+                CanSellOnRagfair: false,
                 MaximumNumberOfUsage: 5,
-                CanSellOnRagfair: false
+                Prefab: {
+                    path: "lockpick.bundle",
+                    rcid: ""
+                },
+                BackgroundColor: "Orange"
+                
             },
 
-            parentId: "543be5e94bdc2df1348b4568",
-            newId: "Industrial_Blank_Key",
+            parentId: "5c99f98d86f7745c314214b3",
+            newId: ItemIDS.Lockpick,
             fleaPriceRoubles: 120000,
-            handbookPriceRoubles: 100000,
-            handbookParentId: "5b47574386f77428ca22b342",
+            handbookPriceRoubles: 75000,
+            handbookParentId: "5c518ec986f7743b68682ce2",
 
             locales: {
                 en: {
-                    name: "Industrial key blank",
-                    shortName: "Industrial Key blank",
-                    description: "An industrial blank key used for bump picking locks"
+                    name: "Lockpick set",
+                    shortName: "Lockpick",
+                    description: "A set of tools used for picking locks"
                 }
             }
         }
 
-        this.customItemService.createItemFromClone(blankKey);
+        this.customItemService.createItemFromClone(lockPick);
 
-        const mechanic = this.Instance.database.traders[TraderIDs.Mechanic];
-
+        const mechanic = this.Instance.database.traders[Traders.MECHANIC];
+        
         mechanic.assort.items.push({
-            _id: "Industrial_Blank_Key",
-            _tpl: "Industrial_Blank_Key",
+            _id: ItemIDS.Lockpick,
+            _tpl: ItemIDS.Lockpick,
             parentId: "hideout",
             slotId: "hideout",
             upd:
             {
                 UnlimitedCount: false,
-                StackObjectsCount: 2
+                StackObjectsCount: 10
             }
         });
 
-        mechanic.assort.barter_scheme.Industrial_Blank_Key = [
+        mechanic.assort.barter_scheme[ItemIDS.Lockpick] = [
             [
                 {
-                    count: 100000,
-                    _tpl: CurrencyIDs.Roubles
+                    count: 75000,
+                    _tpl: Money.ROUBLES
                 }
             ]
         ];
         
-        mechanic.assort.loyal_level_items.Industrial_Blank_Key = 2;
+        mechanic.assort.loyal_level_items[ItemIDS.Lockpick] = 2;
+    }
+
+    private CreatePDA(): void
+    {
+        const Pda: NewItemFromCloneDetails = {
+            itemTplToClone: "5bc9b720d4351e450201234b",
+            overrideProperties: {
+                CanSellOnRagfair: false,
+                Prefab: {
+                    path: "pda.bundle",
+                    rcid: ""
+                }
+            },
+
+            parentId: "5c164d2286f774194c5e69fa",
+            newId: ItemIDS.Pda,
+            fleaPriceRoubles: 3650000,
+            handbookPriceRoubles: 75000,
+            handbookParentId: "5c164d2286f774194c5e69fa",
+
+            locales: {
+                en: {
+                    name: "Flipper zero",
+                    shortName: "Flipper",
+                    description: "A hacking device used for gaining access to key card doors. Requires Lockpicking level 20 to use."
+                }
+            }
+        }
+
+        this.customItemService.createItemFromClone(Pda);
+        
+        const peaceKeeper = this.Instance.database.traders[Traders.PEACEKEEPER];
+
+        peaceKeeper.assort.items.push({
+            _id: ItemIDS.Pda,
+            _tpl: ItemIDS.Pda,
+            parentId: "hideout",
+            slotId: "hideout",
+            upd:
+            {
+                UnlimitedCount: false,
+                StackObjectsCount: 1
+            }
+        });
+
+        peaceKeeper.assort.barter_scheme[ItemIDS.Pda] = [
+            [
+                {
+                    count: 12500,
+                    _tpl: Money.DOLLARS
+                }
+            ]
+        ];
+        
+        peaceKeeper.assort.loyal_level_items[ItemIDS.Pda] = 3;
+    }
+
+    private addCraftsToDatabase(): void
+    {
+        const crafts = SkillsConfig.LockPickingSkill.CRAFTING_RECIPES;
+
+        crafts.forEach((craft) => {
+            this.Instance.database.hideout.production.push(craft);
+        })
     }
 }
 

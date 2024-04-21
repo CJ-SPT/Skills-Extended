@@ -14,64 +14,64 @@
 
 	<ItemGroup>
 		<Reference Include="0Harmony">
-			<HintPath>..\..\376Deps\0Harmony.dll</HintPath>
+			<HintPath>$(SolutionDir)Dependencies\0Harmony.dll</HintPath>
 		</Reference>
 		<Reference Include="Aki.Common">
-			<HintPath>..\..\376Deps\Aki.Common.dll</HintPath>
+			<HintPath>$(SolutionDir)Dependencies\Aki.Common.dll</HintPath>
 		</Reference>
 		<Reference Include="Aki.Reflection">
-			<HintPath>..\..\376Deps\Aki.Reflection.dll</HintPath>
+			<HintPath>$(SolutionDir)Dependencies\Aki.Reflection.dll</HintPath>
 		</Reference>
 		<Reference Include="AnimationSystem.Types">
-		  <HintPath>..\..\376Deps\AnimationSystem.Types.dll</HintPath>
+		  <HintPath>$(SolutionDir)Dependencies\AnimationSystem.Types.dll</HintPath>
 		</Reference>
 		<Reference Include="Assembly-CSharp">
-			<HintPath>..\..\376Deps\Assembly-CSharp.dll</HintPath>
+		  <HintPath>$(SolutionDir)Dependencies\Assembly-CSharp.dll</HintPath>
 		</Reference>
 		<Reference Include="BepInEx">
-			<HintPath>..\..\376Deps\BepInEx.dll</HintPath>
+			<HintPath>$(SolutionDir)Dependencies\BepInEx.dll</HintPath>
 		</Reference>
 		<Reference Include="bsg.console.core">
-		  <HintPath>Dependencies\bsg.console.core.dll</HintPath>
+		  <HintPath>$(SolutionDir)Dependencies\bsg.console.core.dll</HintPath>
 		</Reference>
 		<Reference Include="Comfort">
-			<HintPath>..\..\376Deps\Comfort.dll</HintPath>
+			<HintPath>$(SolutionDir)Dependencies\Comfort.dll</HintPath>
 		</Reference>
 		<Reference Include="ItemComponent.Types">
-			<HintPath>..\..\376Deps\ItemComponent.Types.dll</HintPath>
+			<HintPath>$(SolutionDir)Dependencies\ItemComponent.Types.dll</HintPath>
 		</Reference>
 		<Reference Include="Newtonsoft.Json">
-			<HintPath>..\..\376Deps\Newtonsoft.Json.dll</HintPath>
+			<HintPath>$(SolutionDir)Dependencies\Newtonsoft.Json.dll</HintPath>
 		</Reference>
 		<Reference Include="Sirenix.Serialization">
-			<HintPath>..\..\376Deps\Sirenix.Serialization.dll</HintPath>
+			<HintPath>$(SolutionDir)Dependencies\Sirenix.Serialization.dll</HintPath>
 		</Reference>
 		<Reference Include="Unity.TextMeshPro">
-			<HintPath>..\..\376Deps\Unity.TextMeshPro.dll</HintPath>
+			<HintPath>$(SolutionDir)Dependencies\Unity.TextMeshPro.dll</HintPath>
 		</Reference>
 		<Reference Include="UnityEngine">
-			<HintPath>..\..\376Deps\UnityEngine.dll</HintPath>
+			<HintPath>$(SolutionDir)Dependencies\UnityEngine.dll</HintPath>
 		</Reference>
 		<Reference Include="UnityEngine.AnimationModule">
-		  <HintPath>..\..\376Deps\UnityEngine.AnimationModule.dll</HintPath>
+		  <HintPath>$(SolutionDir)Dependencies\UnityEngine.AnimationModule.dll</HintPath>
 		</Reference>
 		<Reference Include="UnityEngine.AssetBundleModule">
-		  <HintPath>..\..\376Deps\UnityEngine.AssetBundleModule.dll</HintPath>
+		  <HintPath>$(SolutionDir)Dependencies\UnityEngine.AssetBundleModule.dll</HintPath>
 		</Reference>
 		<Reference Include="UnityEngine.AudioModule">
-			<HintPath>..\..\376Deps\UnityEngine.AudioModule.dll</HintPath>
+			<HintPath>$(SolutionDir)Dependencies\UnityEngine.AudioModule.dll</HintPath>
 		</Reference>
 		<Reference Include="UnityEngine.CoreModule">
-			<HintPath>..\..\376Deps\UnityEngine.CoreModule.dll</HintPath>
+			<HintPath>$(SolutionDir)Dependencies\UnityEngine.CoreModule.dll</HintPath>
 		</Reference>
 		<Reference Include="UnityEngine.IMGUIModule">
-		  <HintPath>..\..\376Deps\UnityEngine.IMGUIModule.dll</HintPath>
+		  <HintPath>$(SolutionDir)Dependencies\UnityEngine.IMGUIModule.dll</HintPath>
 		</Reference>
 		<Reference Include="UnityEngine.TextRenderingModule">
-		  <HintPath>..\..\376Deps\UnityEngine.TextRenderingModule.dll</HintPath>
+		  <HintPath>$(SolutionDir)Dependencies\UnityEngine.TextRenderingModule.dll</HintPath>
 		</Reference>
 		<Reference Include="UnityEngine.UI">
-			<HintPath>..\..\376Deps\UnityEngine.UI.dll</HintPath>
+			<HintPath>$(SolutionDir)Dependencies\UnityEngine.UI.dll</HintPath>
 		</Reference>
 	</ItemGroup>
 

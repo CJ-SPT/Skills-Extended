@@ -570,3 +570,4 @@ FodyWeavers.xsd
 /Plugin/Dependencies/aki-singleplayer.dll
 /Plugin/Dependencies/ConfigurationManager.dll
 /Plugin/Dependencies/Microsoft.CSharp.dll
+Server/build/user/mods/SkillsExtended/config/SkillsConfig.json
