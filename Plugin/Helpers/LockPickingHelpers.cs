@@ -262,8 +262,12 @@ namespace SkillsExtended.Helpers
 
             private void RemoveUseFromLockpick()
             {
+#if DEBUG
+                return;
+#endif
+
                 // Remove a use from a lockpick in the inventory
-                var lockPicks = LockPickingHelpers.GetLockPicksInInventory();
+                var lockPicks = GetLockPicksInInventory();
                 Item lockpick = lockPicks.First();
 
                 if (lockpick is GClass2720 pick)
