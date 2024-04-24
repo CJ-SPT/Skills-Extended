@@ -291,12 +291,12 @@ namespace SkillsExtended.Helpers
 
                         // Apply failure xp
                         ApplyLockPickActionXp(InteractiveObject, Owner, false, true);
-                        RemoveUseFromLockpick();
+                        RemoveUseFromLockpick(doorLevel);
 
                         return;
                     }
 
-                    RemoveUseFromLockpick();
+                    RemoveUseFromLockpick(doorLevel);
                     ApplyLockPickActionXp(InteractiveObject, Owner);
                     AccessTools.Method(typeof(WorldInteractiveObject), "Unlock").Invoke(InteractiveObject, null);
                 }
@@ -306,11 +306,14 @@ namespace SkillsExtended.Helpers
                 }
             }
 
-            private void RemoveUseFromLockpick()
+            private void RemoveUseFromLockpick(int doorLevel)
             {
-#if DEBUG
-                return;
-#endif
+                int levelDifference = _skills.Lockpicking.Level - doorLevel;
+
+                if (doorLevel >= 10)
+                {
+                    return;
+                }
 
                 // Remove a use from a lockpick in the inventory
                 var lockPicks = GetLockPicksInInventory();
