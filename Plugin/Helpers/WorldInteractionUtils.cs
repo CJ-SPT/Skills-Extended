@@ -29,6 +29,13 @@ namespace SkillsExtended.Helpers
 
             if (!IsDoorValidForLockPicking(interactiveObject))
             {
+                // Secondary check to prevent action showing on open or closed doors that have
+                // already been picked.
+                if (interactiveObject.DoorState == EDoorState.Open || interactiveObject.DoorState == EDoorState.Shut)
+                {
+                    return;
+                }
+
                 ActionsTypesClass notValidAction = new()
                 {
                     Name = "Door cannot be opened",

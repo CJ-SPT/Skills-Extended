@@ -7,6 +7,7 @@ using SkillsExtended.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 namespace SkillsExtended.Helpers
 {
@@ -243,9 +244,11 @@ namespace SkillsExtended.Helpers
             int level = _skills.Lockpicking.Level;
             bool isElite = _skills.Lockpicking.IsEliteLevel;
 
-            return isElite
-                ? (baseTime * (1 - (level * _lockPicking.TimeReductionElite)))
-                : (baseTime * (1 - (level * _lockPicking.TimeReduction)));
+            float accumulatedRecution = isElite
+                ? Mathf.Max(level * _lockPicking.TimeReduction + _lockPicking.TimeReductionElite, 0f)
+                : Mathf.Max(level * _lockPicking.TimeReduction, 0f);
+
+            return (baseTime * (1 - accumulatedRecution));
         }
 
         private sealed class LockPickActionHandler
