@@ -25,21 +25,30 @@ namespace SkillsExtended.Helpers
 
         public static void AddLockpickingInteraction(this WorldInteractiveObject interactiveObject, ActionsReturnClass actionReturn, GamePlayerOwner owner)
         {
+            LockPickingInteraction lockPickInteraction = new(interactiveObject, owner);
+
             if (!IsDoorValidForLockPicking(interactiveObject))
             {
+                ActionsTypesClass notValidAction = new()
+                {
+                    Name = "Door cannot be opened",
+                    Disabled = interactiveObject.Operatable
+                };
+
+                notValidAction.Action = new Action(lockPickInteraction.DoorNotValid);
+                actionReturn.Actions.Add(notValidAction);
+
                 return;
             }
 
-            ActionsTypesClass action = new()
+            ActionsTypesClass ValidAction = new()
             {
                 Name = "Pick lock",
                 Disabled = !interactiveObject.Operatable && !LockPickingHelpers.GetLockPicksInInventory().Any()
             };
 
-            LockPickingInteraction pickLockAction = new(interactiveObject, owner);
-
-            action.Action = new Action(pickLockAction.TryPickLock);
-            actionReturn.Actions.Add(action);
+            ValidAction.Action = new Action(lockPickInteraction.TryPickLock);
+            actionReturn.Actions.Add(ValidAction);
         }
 
         public static void AddInspectInteraction(this WorldInteractiveObject interactiveObject, ActionsReturnClass actionReturn, GamePlayerOwner owner)
@@ -100,6 +109,11 @@ namespace SkillsExtended.Helpers
             public void TryPickLock()
             {
                 LockPickingHelpers.PickLock(interactiveObject, owner);
+            }
+
+            public void DoorNotValid()
+            {
+                owner.DisplayPreloaderUiNotification("This door is cannot be opened.");
             }
         }
 
