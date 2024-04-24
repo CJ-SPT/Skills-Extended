@@ -13,6 +13,7 @@ import type { IKeys } from "./Models/IKeys";
 import { Money } from "@spt-aki/models/enums/Money";
 import { Traders } from "@spt-aki/models/enums/Traders";
 import { BaseClasses } from "@spt-aki/models/enums/BaseClasses";
+import { LogTextColor } from "@spt-aki/models/spt/logging/LogTextColor";
 
 enum ItemIDS {
     Lockpick  = "6622c28aed7e3bc72e301e22",
@@ -37,10 +38,8 @@ class SkillsPlus implements IPreAkiLoadMod, IPostDBLoadMod
         this.customItemService = container.resolve<CustomItemService>("CustomItemService");
 
         this.setLocales();
-
         this.CreateItems();
         this.addCraftsToDatabase();
-
         this.locale = this.Instance.database.locales.global;
     }
 
@@ -123,7 +122,7 @@ class SkillsPlus implements IPreAkiLoadMod, IPostDBLoadMod
                     path: "lockpick.bundle",
                     rcid: ""
                 },
-                BackgroundColor: "Orange"
+                BackgroundColor: "orange"
                 
             },
 
