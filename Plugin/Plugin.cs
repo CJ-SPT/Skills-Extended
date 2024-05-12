@@ -88,8 +88,7 @@ namespace SkillsExtended
             if (Chainloader.PluginInfos.ContainsKey("RealismMod"))
             {
                 var jsonString = RequestHandler.GetJson("/RealismMod/GetInfo");
-                var str = JsonConvert.DeserializeObject<string>(jsonString);
-                RealismConfig = JsonConvert.DeserializeObject<RealismConfig>(str);
+                RealismConfig = JsonConvert.DeserializeObject<RealismConfig>(jsonString);
                 Log.LogInfo("Realism mod detected");
             }
 
