@@ -310,7 +310,7 @@ namespace SkillsExtended.Helpers
             {
                 int levelDifference = _skills.Lockpicking.Level - doorLevel;
 
-                if (doorLevel >= 10)
+                if (levelDifference >= 10)
                 {
                     return;
                 }
