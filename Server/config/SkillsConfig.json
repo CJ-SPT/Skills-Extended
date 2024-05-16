@@ -158,6 +158,7 @@
                 "custom_mazuto_00010": 5,
                 "custom_mazuto_00011": 5,
                 "custom_multiScene_00003": 3,
+                "custom_multiScene_00043": 3,
                 "Custom_Construction_Factory_00000": 5,
                 "Custom_Expansion_00000": 5
             },
@@ -374,7 +375,9 @@
                 "Lighthouse_WaterStation_00044": 5,
                 "Lighthouse_WaterStation_00019": 5,
                 "Lighthouse_WaterStation_00017": 5,
-                "trunk_Lighthouse_Extension_00005": 0
+                "trunk_Lighthouse_Extension_00005": 0,
+                "Lighthouse_SummerHotel_00051": 5,
+                "Lighthouse_SummerHotel_00053": 5
             },
             "Streets": {
                 "door_City_SE_01_Lenina_74_Indoor_00000": 5,
