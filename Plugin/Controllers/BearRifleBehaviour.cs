@@ -4,7 +4,6 @@ using EFT.InventoryLogic;
 using SkillsExtended.Helpers;
 using SkillsExtended.Models;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace SkillsExtended.Controllers
@@ -46,8 +45,6 @@ namespace SkillsExtended.Controllers
 
             if (_skillManager == null || bearWeapons == null) { return; }
 
-            if (_lastAppliedLevel == _bearAKLevel) { return; }
-
             // Only run this behavior if we are BEAR, or the player has completed the USEC skill
             if (Plugin.Session?.Profile?.Side == EPlayerSide.Bear || _skillManager.UsecArsystems.IsEliteLevel)
             {
@@ -79,19 +76,17 @@ namespace SkillsExtended.Controllers
 
         private void ApplyBearAKXp(MasterSkillClass action)
         {
-            var items = _session.Profile.InventoryInfo.GetItemsInSlots([EquipmentSlot.FirstPrimaryWeapon, EquipmentSlot.SecondPrimaryWeapon])
-                .Where(x => x != null && (_bearSkillData.Weapons.Contains(x.TemplateId))).Any();
+            var weaponInHand = Singleton<GameWorld>.Instance.MainPlayer.HandsController.GetItem();
 
-            // TODO: This is bugged, it will allow xp even if its not the active weapon.
-            if (items)
+            if (!_bearSkillData.Weapons.Contains(weaponInHand.TemplateId))
             {
-                _skillManager.BearAksystems.Current += _bearSkillData.WeaponProfXp * SEConfig.bearWeaponSpeedMult.Value;
-
-                Plugin.Log.LogDebug($"BEAR AK {_bearSkillData.WeaponProfXp * SEConfig.bearWeaponSpeedMult.Value} XP Gained.");
+                Plugin.Log.LogDebug("Invalid weapon for XP");
                 return;
             }
 
-            Plugin.Log.LogDebug("Invalid weapon for XP");
+            _skillManager.BearAksystems.Current += _bearSkillData.WeaponProfXp * SEConfig.bearWeaponSpeedMult.Value;
+
+            Plugin.Log.LogDebug($"BEAR AK {_bearSkillData.WeaponProfXp * SEConfig.bearWeaponSpeedMult.Value} XP Gained.");
         }
 
         private void UpdateWeapons()
