@@ -54,7 +54,7 @@ namespace SkillsExtended.Controllers
 
         public void ApplyFirstAidExp(EBodyPart bodypart)
         {
-            float xpGain = 1.5f;
+            float xpGain = Plugin.SkillData.MedicalSkills.FirstAidXpPerAction;
 
             if (!Utils.CanGainXPForLimb(_firstAidBodypartCahce, bodypart)) { return; }
 

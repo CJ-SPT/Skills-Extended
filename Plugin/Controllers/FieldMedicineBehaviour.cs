@@ -45,7 +45,7 @@ namespace SkillsExtended.Controllers
 
         public void ApplyFieldMedicineExp(EBodyPart bodypart)
         {
-            float xpGain = 2.5f;
+            float xpGain = Plugin.SkillData.MedicalSkills.FieldMedicineXpPerAction;
 
             // If we recently healed this limb, return
             if (!Utils.CanGainXPForLimb(_fieldMedicineBodyPartCache, bodypart)) { return; }

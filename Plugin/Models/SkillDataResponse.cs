@@ -28,6 +28,12 @@ namespace SkillsExtended.Models
         [JsonProperty("ENABLE_FIRST_AID")]
         public bool EnableFirstAid;
 
+        [JsonProperty("FIRSTAID_XP_PER_ACTION")]
+        public float FirstAidXpPerAction;
+
+        [JsonProperty("FIELDMEDICINE_XP_PER_ACTION")]
+        public float FieldMedicineXpPerAction;
+
         [JsonProperty("COOL_DOWN_TIME_PER_LIMB")]
         public float CoolDownTimePerLimb;
 
