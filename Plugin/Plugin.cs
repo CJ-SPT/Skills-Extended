@@ -132,10 +132,5 @@ namespace SkillsExtended
                 Log.LogDebug("Session set");
             }
         }
-
-        private string WriteString(string str)
-        {
-            Console.WriteLine(str);
-        }
     }
 }
