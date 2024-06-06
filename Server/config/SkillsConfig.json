@@ -97,7 +97,7 @@
     },
     "LockPickingSkill": {
         "ENABLED": true,
-        "INSPECT_BASE_TIME": 5,
+        "INSPECT_BASE_TIME": 4,
         "INSPECT_CHANCE_BONUS": 10,
         "PICK_BASE_TIME": 10,
         "TIME_REDUCTION_BONUS_PER_LEVEL": 0.006,
