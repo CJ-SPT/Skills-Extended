@@ -281,7 +281,7 @@ namespace SkillsExtended.Helpers
                         }
 
                         // Break the lock if more than 3 failed attempts
-                        if (DoorAttempts[InteractiveObject.Id] > 3)
+                        if (DoorAttempts[InteractiveObject.Id] > Plugin.SkillData.LockPickingSkill.AttemptsBeforeBreak)
                         {
                             Owner.DisplayPreloaderUiNotification("You broke the lock...");
                             InteractiveObject.KeyId = string.Empty;

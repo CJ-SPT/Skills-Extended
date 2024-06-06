@@ -94,6 +94,9 @@ namespace SkillsExtended.Models
         [JsonProperty("PICK_BASE_TIME")]
         public float PickBaseTime;
 
+        [JsonProperty("ATTEMPTS_BEFORE_BREAK")]
+        public float AttemptsBeforeBreak;
+
         [JsonProperty("TIME_REDUCTION_BONUS_PER_LEVEL")]
         public float TimeReduction;
 
