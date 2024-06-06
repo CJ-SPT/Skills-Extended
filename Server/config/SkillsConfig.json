@@ -29,7 +29,7 @@
     },
     "USECRifleSkill": {
         "ENABLED": true,
-        "WEAPON_PROF_XP": 1.05,
+        "WEAPON_PROF_XP": 1.365,
         "ERGO_MOD": 0.0015,
         "ERGO_MOD_ELITE": 0.05,
         "RECOIL_REDUCTION": 0.0015,
@@ -52,12 +52,18 @@
             "618428466ef05c2ce828f218",
             "5f2a9575926fd9352339381f",
             "5d43021ca4b9362eab4b5e25",
-            "65290f395ae2ae97b80fdf2d" 
+            "65290f395ae2ae97b80fdf2d",
+            "627e14b21713922ded6f2c15",
+            "6176aca650224f204c1da3fb",
+            "5aafa857e5b5b00018480968",
+            "5fc22d7c187fea44d52eda44",
+            "5a367e5dc4a282000e49738f",
+            "5df8ce05b11454561e39243b"
         ]
     },
     "BEARRifleSkill": {
         "ENABLED": true,
-        "WEAPON_PROF_XP": 1.05,
+        "WEAPON_PROF_XP": 1.365,
         "ERGO_MOD": 0.0015,
         "ERGO_MOD_ELITE": 0.05,
         "RECOIL_REDUCTION": 0.002,
@@ -92,7 +98,19 @@
             "5c07c60e0db834002330051f",
             "5839a40f24597726f856b511",
             "57c44b372459772d2b39b8ce",
-            "57838ad32459774a17445cd2"  
+            "57838ad32459774a17445cd2",
+            "5cadfbf7ae92152ac412eeef",
+            "588892092459774ac91d4b11",
+            "55801eed4bdc2d89578b4588",
+            "5df24cf80dee1b22f862e9bc",
+            "5ae08f0a5acfc408fb1398a1",
+            "5bfd297f0db834001a669119",
+            "5c46fbd72e2216398b5a8c9c",
+            "64637076203536ad5600c990",
+            "64ca3d3954fc657e230529cc",
+            "6513ef33e06849f06c0957ca",
+            "65268d8ecb944ff1e90ea385",
+            "5beed0f50db834001c062b12"
         ]
     },
     "LockPickingSkill": {
