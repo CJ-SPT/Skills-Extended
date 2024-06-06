@@ -18,7 +18,7 @@ using UnityEngine;
 
 namespace SkillsExtended
 {
-    [BepInPlugin("com.dirtbikercj.SkillsExtended", "Skills Extended", "0.5.5")]
+    [BepInPlugin("com.dirtbikercj.SkillsExtended", "Skills Extended", "0.5.6")]
     public class Plugin : BaseUnityPlugin
     {
         public const int TarkovVersion = 29197;
@@ -131,6 +131,11 @@ namespace SkillsExtended
 
                 Log.LogDebug("Session set");
             }
+        }
+
+        private string WriteString(string str)
+        {
+            Console.WriteLine(str);
         }
     }
 }

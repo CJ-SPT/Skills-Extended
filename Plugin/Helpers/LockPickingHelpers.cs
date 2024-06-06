@@ -193,13 +193,13 @@ namespace SkillsExtended.Helpers
             if (xpExists)
             {
                 var xpToApply = isInspect
-                    ? xp * (Plugin.SkillData.LockPickingSkill.InspectLockXpRatio)
-                    : xp;
+                    ? xp * Plugin.SkillData.LockPickingSkill.InspectLockXpRatio * SEConfig.lockpickingSpeedMult.Value
+                    : xp * SEConfig.lockpickingSpeedMult.Value;
 
                 // Failures recieve 25% xp
                 xpToApply = IsFailure
-                    ? xpToApply * 0.25f
-                    : xpToApply;
+                    ? xpToApply * 0.25f * SEConfig.lockpickingSpeedMult.Value
+                    : xpToApply * SEConfig.lockpickingSpeedMult.Value;
 
                 Plugin.Log.LogInfo($"Lockpicking xp found in table : {xpToApply} experience for door level {doorLevel} : IsInspect {isInspect} : IsFailure {IsFailure}");
 
@@ -208,7 +208,7 @@ namespace SkillsExtended.Helpers
                 return;
             }
 
-            Plugin.Log.LogWarning($"Lockpicking xp not found in table.. defaulting to {6f} experience");
+            Plugin.Log.LogError($"Lockpicking xp not found in table.. defaulting to {6f} experience");
             _skills.Lockpicking.Current += 6f;
         }
 

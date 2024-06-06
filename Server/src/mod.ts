@@ -13,7 +13,6 @@ import type { IKeys } from "./Models/IKeys";
 import { Money } from "@spt-aki/models/enums/Money";
 import { Traders } from "@spt-aki/models/enums/Traders";
 import { BaseClasses } from "@spt-aki/models/enums/BaseClasses";
-import { LogTextColor } from "@spt-aki/models/spt/logging/LogTextColor";
 
 enum ItemIDS {
     Lockpick  = "6622c28aed7e3bc72e301e22",
@@ -62,7 +61,7 @@ class SkillsPlus implements IPreAkiLoadMod, IPostDBLoadMod
         const keyItems = items.filter(x => 
             x._type === "Item" 
             && ItemHelper.isOfBaseclasses(x._id, [BaseClasses.KEY, BaseClasses.KEY_MECHANICAL, BaseClasses.KEYCARD]))
-
+            
         for (const item of keyItems)
         {
             keys.keyLocale[item._id] = this.locale.en[`${item._id} Name`];

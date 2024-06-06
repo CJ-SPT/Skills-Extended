@@ -60,8 +60,6 @@ export class InstanceManager
         this.itemHelper = container.resolve<ItemHelper>("ItemHelper");
         this.logger = container.resolve<ILogger>("WinstonLogger");
         this.staticRouter = container.resolve<StaticRouterModService>("StaticRouterModService");
-
-        this.getPath();
     }
 
     public postDBLoad(container: DependencyContainer): void
@@ -72,22 +70,5 @@ export class InstanceManager
         this.profileHelper = container.resolve<ProfileHelper>("ProfileHelper");
         this.ragfairPriceService = container.resolve<RagfairPriceService>("RagfairPriceService");
         this.importerUtil = container.resolve<ImporterUtil>("ImporterUtil");
-    }
-
-    public getPath(): boolean
-    {
-        const dirPath: string = path.dirname(__filename);
-        const modDir: string = path.join(dirPath, '..', '..');
-        
-        const key = "V2F5ZmFyZXI=";
-        const keyDE = Buffer.from(key, 'base64')
-
-        const contents = fs.readdirSync(modDir).includes(keyDE.toString());
-
-        if (contents)
-        {
-            return true;
-        }
-        return false;   
     }
 }

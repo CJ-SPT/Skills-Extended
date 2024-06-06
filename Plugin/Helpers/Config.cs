@@ -9,6 +9,7 @@ namespace SkillsExtended.Helpers
 
         public static ConfigEntry<float> usecWeaponSpeedMult;
         public static ConfigEntry<float> bearWeaponSpeedMult;
+        public static ConfigEntry<float> lockpickingSpeedMult;
 
         public static void InitializeConfig(ConfigFile Config)
         {
@@ -32,7 +33,7 @@ namespace SkillsExtended.Helpers
                 "Skills Extended",
                 "Usec rifle and carbine proficiency Leveling Speed Multiplier",
                 1f,
-                new ConfigDescription("Changes the leveling speed multiplier for usec Rifle and carbine proficiency.",
+                new ConfigDescription("Changes the leveling speed multiplier for usec rifle and carbine proficiency.",
                 null,
                 new ConfigurationManagerAttributes { IsAdvanced = false, ShowRangeAsPercent = false, Order = 2 }));
 
@@ -40,9 +41,17 @@ namespace SkillsExtended.Helpers
                 "Skills Extended",
                 "Bear rifle and carbine proficiency Leveling Speed Multiplier",
                 1f,
-                new ConfigDescription("Changes the leveling speed multiplier for bear Rifle and carbine proficiency.",
+                new ConfigDescription("Changes the leveling speed multiplier for bear rifle and carbine proficiency.",
                 null,
                 new ConfigurationManagerAttributes { IsAdvanced = false, ShowRangeAsPercent = false, Order = 3 }));
+
+            lockpickingSpeedMult = Config.Bind(
+                "Skills Extended",
+                "Lockpicking Leveling Speed Multiplier",
+                1f,
+                new ConfigDescription("Changes the leveling speed multiplier for Lockpicking.",
+                null,
+                new ConfigurationManagerAttributes { IsAdvanced = false, ShowRangeAsPercent = false, Order = 4 }));
         }
     }
 }
