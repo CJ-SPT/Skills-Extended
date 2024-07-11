@@ -19,7 +19,7 @@ namespace SkillsExtended.Controllers
                 ? _skillManager.BearRawpower.Level * Plugin.SkillData.BearRawPowerSkill.HPBonus + Plugin.SkillData.BearRawPowerSkill.HPBonusElite
                 : _skillManager.BearRawpower.Level * Plugin.SkillData.BearRawPowerSkill.HPBonus;
 
-        private Dictionary<EBodyPart, Profile.GClass1756.GClass1758> _origHealthVals = [];
+        private Dictionary<EBodyPart, Profile.ProfileHealthClass.GClass1770> _origHealthVals = [];
 
         private DateTime _lastXpTime = DateTime.Now;
 
@@ -77,7 +77,7 @@ namespace SkillsExtended.Controllers
 
             foreach (var bodyPart in bodyParts)
             {
-                bodyPart.Deconstruct(out EBodyPart key, out Profile.GClass1756.GClass1758 value);
+                bodyPart.Deconstruct(out EBodyPart key, out var value);
 
                 if (!_origHealthVals.ContainsKey(key))
                 {

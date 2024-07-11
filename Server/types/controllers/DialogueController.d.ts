@@ -1,34 +1,31 @@
-import { DialogueHelper } from "@spt-aki/helpers/DialogueHelper";
-import { ProfileHelper } from "@spt-aki/helpers/ProfileHelper";
-import { IGetAllAttachmentsResponse } from "@spt-aki/models/eft/dialog/IGetAllAttachmentsResponse";
-import { IGetFriendListDataResponse } from "@spt-aki/models/eft/dialog/IGetFriendListDataResponse";
-import { IGetMailDialogViewRequestData } from "@spt-aki/models/eft/dialog/IGetMailDialogViewRequestData";
-import { IGetMailDialogViewResponseData } from "@spt-aki/models/eft/dialog/IGetMailDialogViewResponseData";
-import { ISendMessageRequest } from "@spt-aki/models/eft/dialog/ISendMessageRequest";
-import { Dialogue, DialogueInfo, IAkiProfile, IUserDialogInfo, Message } from "@spt-aki/models/eft/profile/IAkiProfile";
-import { MessageType } from "@spt-aki/models/enums/MessageType";
-import { ICoreConfig } from "@spt-aki/models/spt/config/ICoreConfig";
-import { ILogger } from "@spt-aki/models/spt/utils/ILogger";
-import { ConfigServer } from "@spt-aki/servers/ConfigServer";
-import { SaveServer } from "@spt-aki/servers/SaveServer";
-import { GiftService } from "@spt-aki/services/GiftService";
-import { MailSendService } from "@spt-aki/services/MailSendService";
-import { HashUtil } from "@spt-aki/utils/HashUtil";
-import { RandomUtil } from "@spt-aki/utils/RandomUtil";
-import { TimeUtil } from "@spt-aki/utils/TimeUtil";
+import { IDialogueChatBot } from "@spt/helpers/Dialogue/IDialogueChatBot";
+import { DialogueHelper } from "@spt/helpers/DialogueHelper";
+import { IFriendRequestData } from "@spt/models/eft/dialog/IFriendRequestData";
+import { IFriendRequestSendResponse } from "@spt/models/eft/dialog/IFriendRequestSendResponse";
+import { IGetAllAttachmentsResponse } from "@spt/models/eft/dialog/IGetAllAttachmentsResponse";
+import { IGetFriendListDataResponse } from "@spt/models/eft/dialog/IGetFriendListDataResponse";
+import { IGetMailDialogViewRequestData } from "@spt/models/eft/dialog/IGetMailDialogViewRequestData";
+import { IGetMailDialogViewResponseData } from "@spt/models/eft/dialog/IGetMailDialogViewResponseData";
+import { ISendMessageRequest } from "@spt/models/eft/dialog/ISendMessageRequest";
+import { Dialogue, DialogueInfo, ISptProfile, IUserDialogInfo, Message } from "@spt/models/eft/profile/ISptProfile";
+import { MessageType } from "@spt/models/enums/MessageType";
+import { ILogger } from "@spt/models/spt/utils/ILogger";
+import { ConfigServer } from "@spt/servers/ConfigServer";
+import { SaveServer } from "@spt/servers/SaveServer";
+import { LocalisationService } from "@spt/services/LocalisationService";
+import { MailSendService } from "@spt/services/MailSendService";
+import { TimeUtil } from "@spt/utils/TimeUtil";
 export declare class DialogueController {
     protected logger: ILogger;
     protected saveServer: SaveServer;
     protected timeUtil: TimeUtil;
     protected dialogueHelper: DialogueHelper;
-    protected profileHelper: ProfileHelper;
-    protected randomUtil: RandomUtil;
     protected mailSendService: MailSendService;
-    protected giftService: GiftService;
-    protected hashUtil: HashUtil;
+    protected localisationService: LocalisationService;
     protected configServer: ConfigServer;
-    protected coreConfig: ICoreConfig;
-    constructor(logger: ILogger, saveServer: SaveServer, timeUtil: TimeUtil, dialogueHelper: DialogueHelper, profileHelper: ProfileHelper, randomUtil: RandomUtil, mailSendService: MailSendService, giftService: GiftService, hashUtil: HashUtil, configServer: ConfigServer);
+    protected dialogueChatBots: IDialogueChatBot[];
+    constructor(logger: ILogger, saveServer: SaveServer, timeUtil: TimeUtil, dialogueHelper: DialogueHelper, mailSendService: MailSendService, localisationService: LocalisationService, configServer: ConfigServer, dialogueChatBots: IDialogueChatBot[]);
+    registerChatBot(chatBot: IDialogueChatBot): void;
     /** Handle onUpdate spt event */
     update(): void;
     /**
@@ -58,7 +55,7 @@ export declare class DialogueController {
      * @param sessionID Player id
      * @returns IUserDialogInfo array
      */
-    getDialogueUsers(dialog: Dialogue, messageType: MessageType, sessionID: string): IUserDialogInfo[];
+    getDialogueUsers(dialog: Dialogue, messageType: MessageType, sessionID: string): IUserDialogInfo[] | undefined;
     /**
      * Handle client/mail/dialog/view
      * Handle player clicking 'messenger' and seeing all the messages they've recieved
@@ -75,14 +72,14 @@ export declare class DialogueController {
      * @param request get dialog request (params used when dialog doesnt exist in profile)
      * @returns Dialogue
      */
-    protected getDialogByIdFromProfile(profile: IAkiProfile, request: IGetMailDialogViewRequestData): Dialogue;
+    protected getDialogByIdFromProfile(profile: ISptProfile, request: IGetMailDialogViewRequestData): Dialogue;
     /**
      * Get the users involved in a mail between two entities
      * @param fullProfile Player profile
      * @param dialogUsers The participants of the mail
      * @returns IUserDialogInfo array
      */
-    protected getProfilesForMail(fullProfile: IAkiProfile, dialogUsers: IUserDialogInfo[]): IUserDialogInfo[];
+    protected getProfilesForMail(fullProfile: ISptProfile, dialogUsers?: IUserDialogInfo[]): IUserDialogInfo[];
     /**
      * Get a count of messages with attachments from a particular dialog
      * @param sessionID Session id
@@ -117,18 +114,11 @@ export declare class DialogueController {
      * Get all uncollected items attached to mail in a particular dialog
      * @param dialogueId Dialog to get mail attachments from
      * @param sessionId Session id
-     * @returns
+     * @returns IGetAllAttachmentsResponse
      */
-    getAllAttachments(dialogueId: string, sessionId: string): IGetAllAttachmentsResponse;
+    getAllAttachments(dialogueId: string, sessionId: string): IGetAllAttachmentsResponse | undefined;
     /** client/mail/msg/send */
     sendMessage(sessionId: string, request: ISendMessageRequest): string;
-    /**
-     * Send responses back to player when they communicate with SPT friend on friends list
-     * @param sessionId Session Id
-     * @param request send message request
-     */
-    protected handleChatWithSPTFriend(sessionId: string, request: ISendMessageRequest): void;
-    protected getSptFriendData(friendId?: string): IUserDialogInfo;
     /**
      * Get messages from a specific dialog that have items not expired
      * @param sessionId Session id
@@ -159,4 +149,6 @@ export declare class DialogueController {
      * @returns true or false
      */
     protected messageHasExpired(message: Message): boolean;
+    /** Handle client/friend/request/send  */
+    sendFriendRequest(sessionID: string, request: IFriendRequestData): IFriendRequestSendResponse;
 }

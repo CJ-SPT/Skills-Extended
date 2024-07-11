@@ -1,10 +1,9 @@
-﻿using EFT;
+﻿using Comfort.Common;
+using EFT;
+using EFT.InventoryLogic;
 using EFT.UI;
 using System;
-using Comfort.Common;
 using System.Linq;
-using EFT.InventoryLogic;
-using System.Collections.Generic;
 
 namespace SkillsExtended.Helpers
 {
@@ -179,8 +178,7 @@ namespace SkillsExtended.Helpers
             usecTactics.SetLevel(usecTactics.Level - 1);
         }
 
-
-        #endregion
+        #endregion SKILLS
 
         #region HEALTH
 
@@ -213,6 +211,6 @@ namespace SkillsExtended.Helpers
             player.ActiveHealthController.DoFracture(EBodyPart.LeftArm);
         }
 
-        #endregion
+        #endregion HEALTH
     }
 }

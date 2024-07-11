@@ -1,6 +1,4 @@
-﻿using Aki.Common.Http;
-using Aki.Reflection.Utils;
-using BepInEx;
+﻿using BepInEx;
 using BepInEx.Bootstrap;
 using BepInEx.Logging;
 using Comfort.Common;
@@ -12,16 +10,18 @@ using SkillsExtended.Controllers;
 using SkillsExtended.Helpers;
 using SkillsExtended.Models;
 using SkillsExtended.Patches;
+using SPT.Common.Http;
+using SPT.Reflection.Utils;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace SkillsExtended
 {
-    [BepInPlugin("com.dirtbikercj.SkillsExtended", "Skills Extended", "0.5.6")]
+    [BepInPlugin("com.dirtbikercj.SkillsExtended", "Skills Extended", "0.5.7")]
     public class Plugin : BaseUnityPlugin
     {
-        public const int TarkovVersion = 29197;
+        public const int TarkovVersion = 30626;
 
         public static ISession Session;
 
@@ -54,10 +54,9 @@ namespace SkillsExtended
                 throw new Exception("Invalid EFT Version");
             }
 
-            new EnableSkillsPatch().Enable();
             new SkillPanelNamePatch().Enable();
             new SkillPanelDisablePatch().Enable();
-            new SimpleToolTipPatch().Enable();
+            new SkillToolTipPatch().Enable();
             new SkillManagerConstructorPatch().Enable();
             new OnScreenChangePatch().Enable();
             new OnGameStartedPatch().Enable();

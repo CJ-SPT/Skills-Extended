@@ -168,7 +168,7 @@ if (config.StartServer === true && config.PathToGame !== "")
         {
             try
             {
-                const command = "Aki.Server.Exe";
+                const command = "Spt.Server.Exe";
                 const output = processHost.execSync(command, {
                     cwd: config.PathToGame,
                     stdio: "inherit" // This allows the output to be displayed in the terminal

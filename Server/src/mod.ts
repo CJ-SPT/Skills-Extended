@@ -4,30 +4,30 @@ import { InstanceManager } from "./InstanceManager";
 import * as SkillsConfig from "../config/SkillsConfig.json";
 
 import type { DependencyContainer } from "tsyringe";
-import type { IPostDBLoadMod } from "@spt-aki/models/external/IPostDBLoadMod";
-import type { IPreAkiLoadMod } from "@spt-aki/models/external/IPreAkiLoadMod";
-import type { CustomItemService } from "@spt-aki/services/mod/CustomItemService";
-import type { NewItemFromCloneDetails } from "@spt-aki/models/spt/mod/NewItemDetails";
+import type { IPostDBLoadMod } from "@spt/models/external/IPostDBLoadMod";
+import type { IPreSptLoadMod } from "@spt/models/external/IPreSptLoadMod";
+import type { CustomItemService } from "@spt/services/mod/CustomItemService";
+import type { NewItemFromCloneDetails } from "@spt/models/spt/mod/NewItemDetails";
 import type { IKeys } from "./Models/IKeys";
 
-import { Money } from "@spt-aki/models/enums/Money";
-import { Traders } from "@spt-aki/models/enums/Traders";
-import { BaseClasses } from "@spt-aki/models/enums/BaseClasses";
+import { Money } from "@spt/models/enums/Money";
+import { Traders } from "@spt/models/enums/Traders";
+import { BaseClasses } from "@spt/models/enums/BaseClasses";
 
 enum ItemIDS {
     Lockpick  = "6622c28aed7e3bc72e301e22",
     Pda = "662400eb756ca8948fe64fe8"
 }
 
-class SkillsPlus implements IPreAkiLoadMod, IPostDBLoadMod
+class SkillsPlus implements IPreSptLoadMod, IPostDBLoadMod
 {
     private Instance: InstanceManager = new InstanceManager();
     private locale: Record<string, Record<string, string>>; 
     private customItemService: CustomItemService;
 
-    public preAkiLoad(container: DependencyContainer): void 
+    public preSptLoad(container: DependencyContainer): void 
     {
-        this.Instance.preAkiLoad(container, "Skills Extended");
+        this.Instance.preSptLoad(container, "Skills Extended");
         this.registerRoutes();
     }
 

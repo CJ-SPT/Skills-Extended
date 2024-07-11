@@ -1,10 +1,10 @@
-﻿using Aki.Common.Http;
-using Aki.Reflection.Utils;
-using Comfort.Common;
+﻿using Comfort.Common;
 using EFT;
 using HarmonyLib;
 using Newtonsoft.Json;
 using SkillsExtended.Controllers;
+using SPT.Common.Http;
+using SPT.Reflection.Utils;
 using System;
 using System.Collections.Generic;
 using System.IO;
