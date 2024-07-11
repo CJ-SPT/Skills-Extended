@@ -95,7 +95,7 @@ namespace SkillsExtended.Controllers
                 };
 
                 var healthEffectComp = AccessTools.Field(typeof(MedsClass), "HealthEffectsComponent").GetValue(meds);
-                AccessTools.Field(typeof(HealthEffectsComponent), "ginterface292_0").SetValue(healthEffectComp, newGInterface);
+                AccessTools.Field(typeof(HealthEffectsComponent), "iHealthEffect").SetValue(healthEffectComp, newGInterface);
 
                 Plugin.Log.LogDebug($"First Aid: Set instance {item.Id} of type {item.TemplateId} to {_originalHealthEffectValues[meds.TemplateId].UseTime * bonus} seconds");
             }
