@@ -42,7 +42,7 @@ namespace SkillsExtended.Patches
 
             ___DisplayList = newDisplayList;
 
-            Array.Resize(ref ___Skills, ___Skills.Length + 4);
+            Array.Resize(ref ___Skills, ___Skills.Length + 5);
 
             ___Skills[___Skills.Length - 1] = __instance.UsecArsystems;
             ___Skills[___Skills.Length - 2] = __instance.BearAksystems;
