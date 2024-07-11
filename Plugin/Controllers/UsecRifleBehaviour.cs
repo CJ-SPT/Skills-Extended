@@ -93,46 +93,48 @@ namespace SkillsExtended.Controllers
         {
             foreach (var item in usecWeapons)
             {
-                if (item is Weapon weap)
+                if (item is not Weapon weap)
                 {
-                    // Store the weapons original values
-                    if (!_originalWeaponValues.ContainsKey(item.TemplateId))
-                    {
-                        var origVals = new OrigWeaponValues
-                        {
-                            ergo = weap.Template.Ergonomics,
-                            weaponUp = weap.Template.RecoilForceUp,
-                            weaponBack = weap.Template.RecoilForceBack
-                        };
-
-                        Plugin.Log.LogDebug($"original {weap.LocalizedName()} ergo: {weap.Template.Ergonomics}, up {weap.Template.RecoilForceUp}, back {weap.Template.RecoilForceBack}");
-
-                        _originalWeaponValues.Add(item.TemplateId, origVals);
-                    }
-
-                    //Skip instances of the weapon that are already adjusted at this level.
-                    if (weaponInstanceIds.ContainsKey(item.Id))
-                    {
-                        if (weaponInstanceIds[item.Id] == _usecARLevel)
-                        {
-                            continue;
-                        }
-                        else
-                        {
-                            weaponInstanceIds.Remove(item.Id);
-                        }
-                    }
-
-                    weap.Template.Ergonomics = _originalWeaponValues[item.TemplateId].ergo * (1 + _ergoBonusUsec);
-                    weap.Template.RecoilForceUp = _originalWeaponValues[item.TemplateId].weaponUp * (1 - _recoilBonusUsec);
-                    weap.Template.RecoilForceBack = _originalWeaponValues[item.TemplateId].weaponBack * (1 - _recoilBonusUsec);
-
-                    Plugin.Log.LogDebug($"New {weap.LocalizedName()} ergo: {weap.Template.Ergonomics}, up {weap.Template.RecoilForceUp}, back {weap.Template.RecoilForceBack}");
-
-                    weaponInstanceIds.Add(item.Id, _usecARLevel);
-
-                    _lastAppliedLevel = _usecARLevel;
+                    return;
                 }
+
+                // Store the weapons original values
+                if (!_originalWeaponValues.ContainsKey(item.TemplateId))
+                {
+                    var origVals = new OrigWeaponValues
+                    {
+                        ergo = weap.Template.Ergonomics,
+                        weaponUp = weap.Template.RecoilForceUp,
+                        weaponBack = weap.Template.RecoilForceBack
+                    };
+
+                    Plugin.Log.LogDebug($"original {weap.LocalizedName()} ergo: {weap.Template.Ergonomics}, up {weap.Template.RecoilForceUp}, back {weap.Template.RecoilForceBack}");
+
+                    _originalWeaponValues.Add(item.TemplateId, origVals);
+                }
+
+                //Skip instances of the weapon that are already adjusted at this level.
+                if (weaponInstanceIds.ContainsKey(item.Id))
+                {
+                    if (weaponInstanceIds[item.Id] == _usecARLevel)
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        weaponInstanceIds.Remove(item.Id);
+                    }
+                }
+
+                weap.Template.Ergonomics = _originalWeaponValues[item.TemplateId].ergo * (1 + _ergoBonusUsec);
+                weap.Template.RecoilForceUp = _originalWeaponValues[item.TemplateId].weaponUp * (1 - _recoilBonusUsec);
+                weap.Template.RecoilForceBack = _originalWeaponValues[item.TemplateId].weaponBack * (1 - _recoilBonusUsec);
+
+                Plugin.Log.LogDebug($"New {weap.LocalizedName()} ergo: {weap.Template.Ergonomics}, up {weap.Template.RecoilForceUp}, back {weap.Template.RecoilForceBack}");
+
+                weaponInstanceIds.Add(item.Id, _usecARLevel);
+
+                _lastAppliedLevel = _usecARLevel;
             }
         }
     }
