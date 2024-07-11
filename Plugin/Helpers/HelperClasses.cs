@@ -16,9 +16,9 @@ namespace SkillsExtended.Helpers
 
         public KeyValuePair<EBodyPart, float>[] BodyPartTimeMults { set; get; }
 
-        public Dictionary<EHealthFactorType, GClass1236> HealthEffects { set; get; }
+        public Dictionary<EHealthFactorType, GClass1245> HealthEffects { set; get; }
 
-        public Dictionary<EDamageEffectType, GClass1235> DamageEffects { set; get; }
+        public Dictionary<EDamageEffectType, GClass1244> DamageEffects { set; get; }
 
         public string StimulatorBuffs { set; get; }
     }

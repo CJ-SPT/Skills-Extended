@@ -1,8 +1,8 @@
-﻿using Aki.Reflection.Patching;
-using Comfort.Common;
+﻿using Comfort.Common;
 using EFT;
 using EFT.Interactive;
 using SkillsExtended.Helpers;
+using SPT.Reflection.Patching;
 using System.Reflection;
 
 namespace SkillsExtended.Patches

@@ -1,15 +1,13 @@
-﻿using Aki.Reflection.Patching;
-using Aki.Reflection.Utils;
-using EFT;
+﻿using EFT;
 using EFT.UI;
 using HarmonyLib;
 using SkillsExtended.Helpers;
 using SkillsExtended.Models;
+using SPT.Reflection.Patching;
+using SPT.Reflection.Utils;
 using System;
 using System.Reflection;
-using System.Text.RegularExpressions;
 using TMPro;
-using static EFT.SkillManager;
 
 namespace SkillsExtended.Patches
 {
@@ -24,11 +22,11 @@ namespace SkillsExtended.Patches
         {
             int insertIndex = 12;
 
-            ___UsecArsystems = new SkillClass(__instance, ESkillId.UsecArsystems, ESkillClass.Special, Array.Empty<GClass1780>(), Array.Empty<GClass1773>());
-            ___BearAksystems = new SkillClass(__instance, ESkillId.BearAksystems, ESkillClass.Special, Array.Empty<GClass1780>(), Array.Empty<GClass1773>());
+            ___UsecArsystems = new SkillClass(__instance, ESkillId.UsecArsystems, ESkillClass.Special, [], []);
+            ___BearAksystems = new SkillClass(__instance, ESkillId.BearAksystems, ESkillClass.Special, [], []);
 
-            ___UsecTactics = new SkillClass(__instance, ESkillId.UsecTactics, ESkillClass.Special, Array.Empty<GClass1780>(), Array.Empty<GClass1773>());
-            ___BearRawpower = new SkillClass(__instance, ESkillId.BearRawpower, ESkillClass.Special, Array.Empty<GClass1780>(), Array.Empty<GClass1773>());
+            ___UsecTactics = new SkillClass(__instance, ESkillId.UsecTactics, ESkillClass.Special, [], []);
+            ___BearRawpower = new SkillClass(__instance, ESkillId.BearRawpower, ESkillClass.Special, [], []);
 
             var newDisplayList = new SkillClass[___DisplayList.Length + 4];
 
@@ -97,25 +95,18 @@ namespace SkillsExtended.Patches
     internal class SimpleToolTipPatch : ModulePatch
     {
         protected override MethodBase GetTargetMethod() =>
-            typeof(SimpleTooltip).GetMethods().SingleCustom(x => x.Name == "Show" && x.GetParameters().Length == 5);
+            typeof(SkillTooltip).GetMethods().SingleCustom(x => x.Name == "Show" && x.GetParameters().Length == 1);
 
         private static SkillDataResponse _skillData => Plugin.SkillData;
 
         [PatchPostfix]
-        public static void Postfix(SimpleTooltip __instance, ref string text)
+        public static void Postfix(
+            SkillTooltip __instance,
+            SkillClass skill,
+            ref TextMeshProUGUI ____name,
+            ref TextMeshProUGUI ____description)
         {
-            string firstAid = @"\bFirstAidDescriptionPattern\b";
-            string fieldMedicine = @"\bFieldMedicineDescriptionPattern\b";
-
-            string usecARSystems = @"\bUsecArsystemsDescription\b";
-            string usecTactics = @"\bUsecTacticsDescription\b";
-
-            string lockPicking = @"\bLock picking skill\b";
-
-            string bearAKSystems = @"\bBearAksystemsDescription\b";
-            string bearRawpower = @"\bBearRawpowerDescription\b";
-
-            if (Regex.IsMatch(text, firstAid))
+            if (skill.Id == ESkillId.FirstAid)
             {
                 var firstAidSkill = Plugin.Session.Profile.Skills.FirstAid;
 
@@ -127,10 +118,10 @@ namespace SkillsExtended.Patches
                     ? firstAidSkill.Level * _skillData.MedicalSkills.MedkitHpBonus + _skillData.MedicalSkills.MedkitHpBonusElite
                     : firstAidSkill.Level * _skillData.MedicalSkills.MedkitHpBonus;
 
-                __instance.SetText(SkillDescriptions.FirstAidDescription(speedBonus, hpBonus));
+                ____description.SetText(SkillDescriptions.FirstAidDescription(speedBonus, hpBonus));
             }
 
-            if (Regex.IsMatch(text, fieldMedicine))
+            if (skill.Id == ESkillId.FieldMedicine)
             {
                 var fieldMedicineSkill = Plugin.Session.Profile.Skills.FieldMedicine;
 
@@ -138,10 +129,10 @@ namespace SkillsExtended.Patches
                     ? (fieldMedicineSkill.Level * _skillData.MedicalSkills.MedicalSpeedBonus) - _skillData.MedicalSkills.MedicalSpeedBonusElite
                     : (fieldMedicineSkill.Level * _skillData.MedicalSkills.MedicalSpeedBonus);
 
-                __instance.SetText(SkillDescriptions.FieldMedicineDescription(speedBonus));
+                ____description.SetText(SkillDescriptions.FieldMedicineDescription(speedBonus));
             }
 
-            if (Regex.IsMatch(text, usecARSystems))
+            if (skill.Id == ESkillId.UsecArsystems)
             {
                 var usecSystems = Plugin.Session.Profile.Skills.UsecArsystems;
 
@@ -153,10 +144,11 @@ namespace SkillsExtended.Patches
                     ? usecSystems.Level * _skillData.UsecRifleSkill.RecoilReduction + _skillData.UsecRifleSkill.RecoilReductionElite
                     : usecSystems.Level * _skillData.UsecRifleSkill.RecoilReduction;
 
-                __instance.SetText(SkillDescriptions.UsecArSystemsDescription(ergoBonus, recoilReduction));
+                ____name.SetText("USEC rifle and carbine proficiency");
+                ____description.SetText(SkillDescriptions.UsecArSystemsDescription(ergoBonus, recoilReduction));
             }
 
-            if (Regex.IsMatch(text, bearAKSystems))
+            if (skill.Id == ESkillId.BearAksystems)
             {
                 var bearSystems = Plugin.Session.Profile.Skills.BearAksystems;
 
@@ -168,10 +160,11 @@ namespace SkillsExtended.Patches
                     ? bearSystems.Level * _skillData.BearRifleSkill.RecoilReduction + _skillData.BearRifleSkill.RecoilReductionElite
                     : bearSystems.Level * _skillData.BearRifleSkill.RecoilReduction;
 
-                __instance.SetText(SkillDescriptions.BearAkSystemsDescription(ergoBonus, recoilReduction));
+                ____name.SetText("BEAR rifle and carbine proficiency");
+                ____description.SetText(SkillDescriptions.BearAkSystemsDescription(ergoBonus, recoilReduction));
             }
 
-            if (Regex.IsMatch(text, lockPicking))
+            if (skill.Id == ESkillId.Lockpicking)
             {
                 var lockPickingSkill = Plugin.Session.Profile.Skills.Lockpicking;
 
@@ -179,10 +172,11 @@ namespace SkillsExtended.Patches
                     ? lockPickingSkill.Level * _skillData.LockPickingSkill.TimeReduction + _skillData.LockPickingSkill.TimeReductionElite
                     : lockPickingSkill.Level * _skillData.LockPickingSkill.TimeReduction;
 
-                __instance.SetText(SkillDescriptions.LockPickingDescription(timeReduction));
+                ____name.SetText("Lockpicking");
+                ____description.SetText(SkillDescriptions.LockPickingDescription(timeReduction));
             }
 
-            if (Regex.IsMatch(text, usecTactics))
+            if (skill.Id == ESkillId.UsecTactics)
             {
                 var usecTacticsSkill = Plugin.Session.Profile.Skills.UsecTactics;
 
@@ -190,10 +184,11 @@ namespace SkillsExtended.Patches
                     ? usecTacticsSkill.Level * _skillData.UsecTacticsSkill.InertiaRedBonus + _skillData.UsecTacticsSkill.InertiaRedBonusElite
                     : usecTacticsSkill.Level * _skillData.UsecTacticsSkill.InertiaRedBonus;
 
-                __instance.SetText(SkillDescriptions.UsecTacticsDescription(inertiaReduction));
+                ____name.SetText("USEC Tactics");
+                ____description.SetText(SkillDescriptions.UsecTacticsDescription(inertiaReduction));
             }
 
-            if (Regex.IsMatch(text, bearRawpower))
+            if (skill.Id == ESkillId.BearRawpower)
             {
                 var bearRawpowerSkill = Plugin.Session.Profile.Skills.BearRawpower;
 
@@ -201,7 +196,8 @@ namespace SkillsExtended.Patches
                     ? bearRawpowerSkill.Level * _skillData.BearRawPowerSkill.HPBonus + _skillData.BearRawPowerSkill.HPBonusElite
                     : bearRawpowerSkill.Level * _skillData.BearRawPowerSkill.HPBonus;
 
-                __instance.SetText(SkillDescriptions.BearRawpowerDescription(hpBonus));
+                ____name.SetText("BEAR raw power");
+                ____description.SetText(SkillDescriptions.BearRawpowerDescription(hpBonus));
             }
         }
     }

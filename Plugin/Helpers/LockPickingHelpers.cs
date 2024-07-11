@@ -13,8 +13,8 @@ namespace SkillsExtended.Helpers
 {
     internal static class LockPickingHelpers
     {
-        public static Dictionary<string, int> DoorAttempts = [];
-        public static List<string> InspectedDoors = [];
+        private static Dictionary<string, int> _doorAttempts = [];
+        public static readonly List<string> InspectedDoors = [];
 
         private static SkillManager _skills => Utils.GetActiveSkillManager();
         private static Player _player => Singleton<GameWorld>.Instance.MainPlayer;
@@ -46,9 +46,9 @@ namespace SkillsExtended.Helpers
             }
 
             // Check if the locks broken
-            if (DoorAttempts.ContainsKey(interactiveObject.Id))
+            if (_doorAttempts.TryGetValue(interactiveObject.Id, out var val))
             {
-                if (DoorAttempts[interactiveObject.Id] > 3)
+                if (val > 3)
                 {
                     owner.DisplayPreloaderUiNotification("You cannot pick a broken lock...");
                     return;
@@ -271,17 +271,17 @@ namespace SkillsExtended.Helpers
                         Owner.DisplayPreloaderUiNotification("You failed to pick the lock...");
 
                         // Add to the counter
-                        if (!DoorAttempts.ContainsKey(InteractiveObject.Id))
+                        if (!_doorAttempts.ContainsKey(InteractiveObject.Id))
                         {
-                            DoorAttempts.Add(InteractiveObject.Id, 1);
+                            _doorAttempts.Add(InteractiveObject.Id, 1);
                         }
                         else
                         {
-                            DoorAttempts[InteractiveObject.Id]++;
+                            _doorAttempts[InteractiveObject.Id]++;
                         }
 
                         // Break the lock if more than 3 failed attempts
-                        if (DoorAttempts[InteractiveObject.Id] > Plugin.SkillData.LockPickingSkill.AttemptsBeforeBreak)
+                        if (_doorAttempts[InteractiveObject.Id] > Plugin.SkillData.LockPickingSkill.AttemptsBeforeBreak)
                         {
                             Owner.DisplayPreloaderUiNotification("You broke the lock...");
                             InteractiveObject.KeyId = string.Empty;
@@ -319,7 +319,7 @@ namespace SkillsExtended.Helpers
                 var lockPicks = GetLockPicksInInventory();
                 Item lockpick = lockPicks.First();
 
-                if (lockpick is GClass2720 pick)
+                if (lockpick is GClass2735 pick)
                 {
                     pick.KeyComponent.NumberOfUsages++;
 
