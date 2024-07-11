@@ -70,7 +70,6 @@ namespace SkillsExtended.Controllers
                 }
 
                 isSubscribed = true;
-                return;
             }
         }
 
