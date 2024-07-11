@@ -63,7 +63,9 @@ namespace SkillsExtended
             new GetActionsClassPatch().Enable();
             new DoMedEffectPatch().Enable();
             new SetItemInHands().Enable();
-
+#if DEBUG
+            new LocationSceneAwakePatch().Enable();
+#endif
             SEConfig.InitializeConfig(Config);
             Utils.GetTypes();
 
