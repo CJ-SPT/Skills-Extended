@@ -120,10 +120,8 @@ namespace SkillsExtended.Controllers
                     {
                         continue;
                     }
-                    else
-                    {
-                        weaponInstanceIds.Remove(item.Id);
-                    }
+
+                    weaponInstanceIds.Remove(item.Id);
                 }
 
                 weap.Template.Ergonomics = _originalWeaponValues[item.TemplateId].ergo * (1 + _ergoBonusBear);
