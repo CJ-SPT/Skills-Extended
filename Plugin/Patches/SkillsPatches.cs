@@ -66,34 +66,16 @@ namespace SkillsExtended.Patches
 
             AccessTools.Field(typeof(SkillClass), "Locked").SetValue(__instance.Lockpicking,
                 !Plugin.SkillData.LockPickingSkill.Enabled);
+
+            AccessTools.Field(typeof(SkillClass), "Locked").SetValue(__instance.FirstAid,
+                !Plugin.SkillData.MedicalSkills.EnableFirstAid);
+
+            AccessTools.Field(typeof(SkillClass), "Locked").SetValue(__instance.FieldMedicine,
+                !Plugin.SkillData.MedicalSkills.EnableFieldMedicine);
         }
     }
 
-    internal class EnableSkillsPatch : ModulePatch
-    {
-        protected override MethodBase GetTargetMethod() =>
-            typeof(SkillManager).GetMethod("method_3", BindingFlags.Public | BindingFlags.Instance);
-
-        [PatchPostfix]
-        public static void Postfix(SkillManager __instance)
-        {
-            try
-            {
-                // If the skill is not enabled, lock it
-                AccessTools.Field(typeof(SkillClass), "Locked").SetValue(__instance.FirstAid,
-                    !Plugin.SkillData.MedicalSkills.EnableFirstAid);
-
-                AccessTools.Field(typeof(SkillClass), "Locked").SetValue(__instance.FieldMedicine,
-                    !Plugin.SkillData.MedicalSkills.EnableFieldMedicine);
-            }
-            catch (Exception e)
-            {
-                Plugin.Log.LogDebug(e);
-            }
-        }
-    }
-
-    internal class SimpleToolTipPatch : ModulePatch
+    internal class SkillToolTipPatch : ModulePatch
     {
         protected override MethodBase GetTargetMethod() =>
             typeof(SkillTooltip).GetMethods().SingleCustom(x => x.Name == "Show" && x.GetParameters().Length == 1);

@@ -54,10 +54,9 @@ namespace SkillsExtended
                 throw new Exception("Invalid EFT Version");
             }
 
-            new EnableSkillsPatch().Enable();
             new SkillPanelNamePatch().Enable();
             new SkillPanelDisablePatch().Enable();
-            new SimpleToolTipPatch().Enable();
+            new SkillToolTipPatch().Enable();
             new SkillManagerConstructorPatch().Enable();
             new OnScreenChangePatch().Enable();
             new OnGameStartedPatch().Enable();
