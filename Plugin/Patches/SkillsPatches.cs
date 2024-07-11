@@ -17,38 +17,39 @@ namespace SkillsExtended.Patches
             typeof(SkillManager).GetConstructor(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null, [typeof(EPlayerSide)], null);
 
         [PatchPostfix]
-        public static void Postfix(SkillManager __instance, ref SkillClass[] ___DisplayList, ref SkillClass[] ___Skills,
-            ref SkillClass ___UsecArsystems, ref SkillClass ___BearAksystems, ref SkillClass ___UsecTactics, ref SkillClass ___BearRawpower)
+        public static void Postfix(SkillManager __instance, ref SkillClass[] ___DisplayList, ref SkillClass[] ___Skills)
         {
             int insertIndex = 12;
 
-            ___UsecArsystems = new SkillClass(__instance, ESkillId.UsecArsystems, ESkillClass.Special, [], []);
-            ___BearAksystems = new SkillClass(__instance, ESkillId.BearAksystems, ESkillClass.Special, [], []);
+            __instance.UsecArsystems = new SkillClass(__instance, ESkillId.UsecArsystems, ESkillClass.Special, [], []);
+            __instance.BearAksystems = new SkillClass(__instance, ESkillId.BearAksystems, ESkillClass.Special, [], []);
 
-            ___UsecTactics = new SkillClass(__instance, ESkillId.UsecTactics, ESkillClass.Special, [], []);
-            ___BearRawpower = new SkillClass(__instance, ESkillId.BearRawpower, ESkillClass.Special, [], []);
+            __instance.UsecTactics = new SkillClass(__instance, ESkillId.UsecTactics, ESkillClass.Special, [], []);
+            __instance.BearRawpower = new SkillClass(__instance, ESkillId.BearRawpower, ESkillClass.Special, [], []);
 
-            var newDisplayList = new SkillClass[___DisplayList.Length + 4];
+            var newDisplayList = new SkillClass[___DisplayList.Length + 5];
 
             Array.Copy(___DisplayList, newDisplayList, insertIndex);
 
-            newDisplayList[12] = ___UsecArsystems;
-            newDisplayList[12 + 1] = ___BearAksystems;
+            newDisplayList[12] = __instance.UsecArsystems;
+            newDisplayList[12 + 1] = __instance.BearAksystems;
 
-            newDisplayList[12 + 2] = ___UsecTactics;
-            newDisplayList[12 + 3] = ___BearRawpower;
+            newDisplayList[12 + 2] = __instance.UsecTactics;
+            newDisplayList[12 + 3] = __instance.BearRawpower;
+            newDisplayList[12 + 4] = __instance.Lockpicking;
 
-            Array.Copy(___DisplayList, insertIndex, newDisplayList, insertIndex + 4, ___DisplayList.Length - insertIndex);
+            Array.Copy(___DisplayList, insertIndex, newDisplayList, insertIndex + 5, ___DisplayList.Length - insertIndex);
 
             ___DisplayList = newDisplayList;
 
             Array.Resize(ref ___Skills, ___Skills.Length + 4);
 
-            ___Skills[___Skills.Length - 1] = ___UsecArsystems;
-            ___Skills[___Skills.Length - 2] = ___BearAksystems;
+            ___Skills[___Skills.Length - 1] = __instance.UsecArsystems;
+            ___Skills[___Skills.Length - 2] = __instance.BearAksystems;
 
-            ___Skills[___Skills.Length - 3] = ___UsecTactics;
-            ___Skills[___Skills.Length - 4] = ___BearRawpower;
+            ___Skills[___Skills.Length - 3] = __instance.UsecTactics;
+            ___Skills[___Skills.Length - 4] = __instance.BearRawpower;
+            ___Skills[___Skills.Length - 5] = __instance.Lockpicking;
 
             // If the skill is not enabled, lock it
             AccessTools.Field(typeof(SkillClass), "Locked").SetValue(__instance.UsecArsystems,
@@ -62,6 +63,9 @@ namespace SkillsExtended.Patches
 
             AccessTools.Field(typeof(SkillClass), "Locked").SetValue(__instance.BearRawpower,
                 !Plugin.SkillData.BearRawPowerSkill.Enabled);
+
+            AccessTools.Field(typeof(SkillClass), "Locked").SetValue(__instance.Lockpicking,
+                !Plugin.SkillData.LockPickingSkill.Enabled);
         }
     }
 
@@ -81,9 +85,6 @@ namespace SkillsExtended.Patches
 
                 AccessTools.Field(typeof(SkillClass), "Locked").SetValue(__instance.FieldMedicine,
                     !Plugin.SkillData.MedicalSkills.EnableFieldMedicine);
-
-                AccessTools.Field(typeof(SkillClass), "Locked").SetValue(__instance.Lockpicking,
-                    !Plugin.SkillData.LockPickingSkill.Enabled);
             }
             catch (Exception e)
             {
