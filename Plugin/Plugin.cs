@@ -18,7 +18,7 @@ using UnityEngine;
 
 namespace SkillsExtended
 {
-    [BepInPlugin("com.dirtbikercj.SkillsExtended", "Skills Extended", "0.5.8")]
+    [BepInPlugin("com.dirtbikercj.SkillsExtended", "Skills Extended", "1.0.0")]
     public class Plugin : BaseUnityPlugin
     {
         public const int TarkovVersion = 30626;
@@ -57,6 +57,7 @@ namespace SkillsExtended
             new SkillPanelNamePatch().Enable();
             new SkillPanelDisablePatch().Enable();
             new SkillToolTipPatch().Enable();
+            new BuffIconShowPatch().Enable();
             new SkillManagerConstructorPatch().Enable();
             new OnScreenChangePatch().Enable();
             new OnGameStartedPatch().Enable();

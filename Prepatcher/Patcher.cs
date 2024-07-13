@@ -14,11 +14,12 @@ public static class Patcher
 
     private static FieldDefinition CreateNewEnum(ref AssemblyDefinition assembly ,string AttributeName, string EnumName, TypeDefinition EnumClass, int CustomConstant)
     {
-        TypeDefinition enumAttributeClass = assembly.MainModule.GetType("GAttribute19");
-        MethodReference attributeConstructor = enumAttributeClass.Methods.First(m => m.IsConstructor);
-        CustomAttributeArgument valueArgument = new CustomAttributeArgument(assembly.MainModule.TypeSystem.String, AttributeName);
-
-        CustomAttribute attribute = new CustomAttribute(attributeConstructor);
+        var enumAttributeClass = assembly.MainModule.GetType("GAttribute21");
+        
+        var attributeConstructor = enumAttributeClass.Methods.First(m => m.IsConstructor);
+        var valueArgument = new CustomAttributeArgument(assembly.MainModule.TypeSystem.String, AttributeName);
+        
+        var attribute = new CustomAttribute(attributeConstructor);
         attribute.ConstructorArguments.Add(valueArgument);
 
         var newEnum = new FieldDefinition(EnumName, FieldAttributes.Public | FieldAttributes.Static | FieldAttributes.Literal | FieldAttributes.HasDefault, EnumClass) { Constant = CustomConstant };
@@ -30,40 +31,141 @@ public static class Patcher
     private static void PatchNewBuffs(ref AssemblyDefinition assembly)
     {
         // New Buffs Enums
-        TypeDefinition buffEnums = assembly.MainModule.GetType("EFT.EBuffId");
-        TypeDefinition gClass1641 = skillsClass.NestedTypes.FirstOrDefault(t => t.Name == "GClass1641");
+        var buffEnums = assembly.MainModule.GetType("EFT.EBuffId");
+        var skillBuffClass = skillsClass.NestedTypes.FirstOrDefault(t => t.Name == "SkillBuff");
 
-        FieldDefinition firstAidhealingSpeedEnum = CreateNewEnum(ref assembly, "FirstaidBuffHealingSpeed", "FirstaidBuffHealingSpeed", buffEnums, 1000);
-        FieldDefinition firstAidhealingSpeedEliteEnum = CreateNewEnum(ref assembly, "FirstaidBuffHealingSpeedElite", "FirstaidBuffHealingSpeedElite", buffEnums, 1001);
-        buffEnums.Fields.Add(firstAidhealingSpeedEnum);
-        buffEnums.Fields.Add(firstAidhealingSpeedEliteEnum);
-
-        FieldDefinition firstAidmaxHpEnum = CreateNewEnum(ref assembly, "FirstaidBuffMaxHp", "FirstaidBuffMaxHp", buffEnums, 1002);
-        FieldDefinition firstAidmaxHpEliteEnum = CreateNewEnum(ref assembly, "FirstaidBuffMaxHpElite", "FirstaidBuffMaxHpElite", buffEnums, 1003);
-        buffEnums.Fields.Add(firstAidmaxHpEnum);
-        buffEnums.Fields.Add(firstAidmaxHpEliteEnum);
-
-        FieldDefinition fieldMedicineHealingSpeedEnum = CreateNewEnum(ref assembly, "FieldMedicineBuffSpeed", "FieldMedicineBuffSpeed", buffEnums, 1004);
-        FieldDefinition fieldMedicineHealingSpeedEliteEnum = CreateNewEnum(ref assembly, "FieldMedicineBuffSpeedElite", "FieldMedicineBuffSpeedElite", buffEnums, 1005);
+        var firstAidHealingSpeedEnum = CreateNewEnum(
+            ref assembly, 
+            "FirstAidHealingSpeed", 
+            "FirstAidBuffHealingSpeed", 
+            buffEnums, 
+            1000);
+        
+        var firstAidHealingSpeedEliteEnum = CreateNewEnum(
+            ref assembly, 
+            "FirstAidHealingSpeedElite", 
+            "FirstAidBuffHealingSpeedElite", 
+            buffEnums, 
+            1001);
+        
+        var firstAidMaxHpEnum = CreateNewEnum(
+            ref assembly, 
+            "FirstAidMaxHp", 
+            "FirstAidMaxHp",
+            buffEnums, 
+            1002);
+        
+        var firstAidMaxHpEliteEnum = CreateNewEnum(
+            ref assembly, 
+            "FirstAidMaxHpElite", 
+            "FirstAidMaxHpElite", 
+            buffEnums, 
+            1003);
+        
+        buffEnums.Fields.Add(firstAidHealingSpeedEnum);
+        buffEnums.Fields.Add(firstAidHealingSpeedEliteEnum);
+        buffEnums.Fields.Add(firstAidMaxHpEnum);
+        buffEnums.Fields.Add(firstAidMaxHpEliteEnum);
+        
+        var fieldMedicineHealingSpeedEnum = CreateNewEnum(
+            ref assembly, 
+            "FieldMedicineSpeed", 
+            "FieldMedicineSpeed", 
+            buffEnums, 
+            1004);
+        
+        var fieldMedicineHealingSpeedEliteEnum = CreateNewEnum(
+            ref assembly, 
+            "FieldMedicineSpeedElite", 
+            "FieldMedicineBuffSpeedElite", 
+            buffEnums, 
+            1005);
+        
         buffEnums.Fields.Add(fieldMedicineHealingSpeedEnum);
         buffEnums.Fields.Add(fieldMedicineHealingSpeedEliteEnum);
 
-        // New Buff Vars
-
-        FieldDefinition firstAidhealingSpeedBuffVar = new FieldDefinition("FirstaidBuffHealingSpeed", FieldAttributes.Public, gClass1641);
-        FieldDefinition firstAidhealingSpeedEliteBuffVar = new FieldDefinition("FirstaidBuffHealingSpeedElite", FieldAttributes.Public, gClass1641);
-        skillsClass.Fields.Add(firstAidhealingSpeedBuffVar);
-        skillsClass.Fields.Add(firstAidhealingSpeedEliteBuffVar);
-
-        FieldDefinition firstAidmaxHpBuffVar = new FieldDefinition("FirstaidBuffMaxHp", FieldAttributes.Public, gClass1641);
-        FieldDefinition firstAidmaxHpEliteBuffVar = new FieldDefinition("FirstaidBuffMaxHp", FieldAttributes.Public, gClass1641);    
-        skillsClass.Fields.Add(firstAidmaxHpBuffVar);
-        skillsClass.Fields.Add(firstAidmaxHpBuffVar);
-
-        FieldDefinition fieldMedicineHealingSpeedBuffVar = new FieldDefinition("FieldMedicineBuffSpeed", FieldAttributes.Public, gClass1641);
-        FieldDefinition fieldMedicineHealingSpeedEliteBuffVar = new FieldDefinition("FieldMedicineBuffSpeedElite", FieldAttributes.Public, gClass1641);
-        skillsClass.Fields.Add(fieldMedicineHealingSpeedBuffVar);
-        skillsClass.Fields.Add(fieldMedicineHealingSpeedEliteBuffVar);
+        var usecArSystemsRecoilEnum = CreateNewEnum(
+            ref assembly, 
+            "UsecArSystemsRecoil", 
+            "UsecArSystemsRecoil", 
+            buffEnums, 
+            1006);
+        
+        var usecArSystemsRecoilEliteEnum = CreateNewEnum(
+            ref assembly, 
+            "UsecArSystemsRecoilElite", 
+            "UsecArSystemsRecoilElite", 
+            buffEnums, 
+            1007);
+        
+        var usecArSystemsErgoEnum = CreateNewEnum(
+            ref assembly, 
+            "UsecArSystemsErgo", 
+            "UsecArSystemsErgo", 
+            buffEnums, 
+            1008);
+        
+        var usecArSystemsErgoEliteEnum = CreateNewEnum(
+            ref assembly, 
+            "UsecArSystemsErgoElite", 
+            "UsecArSystemsErgoElite", 
+            buffEnums, 
+            1009);
+        
+        buffEnums.Fields.Add(usecArSystemsRecoilEnum);
+        buffEnums.Fields.Add(usecArSystemsRecoilEliteEnum);
+        buffEnums.Fields.Add(usecArSystemsErgoEnum);
+        buffEnums.Fields.Add(usecArSystemsErgoEliteEnum);
+        
+        var bearAkSystemsRecoilEnum = CreateNewEnum(
+            ref assembly, 
+            "BearArSystemsRecoil", 
+            "BearArSystemsRecoil", 
+            buffEnums, 
+            1010);
+        
+        var bearAkSystemsRecoilEliteEnum = CreateNewEnum(
+            ref assembly, 
+            "BearAkSystemsRecoilElite", 
+            "BearAkSystemsRecoilElite", 
+            buffEnums, 
+            1011);
+        
+        var bearAkSystemsErgoEnum = CreateNewEnum(
+            ref assembly, 
+            "BearAkSystemsErgo", 
+            "BearAkSystemsErgo", 
+            buffEnums, 
+            1012);
+        
+        var bearAkSystemsErgoEliteEnum = CreateNewEnum(
+            ref assembly, 
+            "BearAkSystemsErgoElite", 
+            "BearAkSystemsErgoElite", 
+            buffEnums, 
+            1013);
+        
+        buffEnums.Fields.Add(bearAkSystemsRecoilEnum);
+        buffEnums.Fields.Add(bearAkSystemsRecoilEliteEnum);
+        buffEnums.Fields.Add(bearAkSystemsErgoEnum);
+        buffEnums.Fields.Add(bearAkSystemsErgoEliteEnum);
+        
+        var lockpickingTimeReduction = CreateNewEnum(
+            ref assembly, 
+            "LockpickingTimeRed", 
+            "LockpickingTimeRed", 
+            buffEnums, 
+            1013);
+        
+        var lockpickingTimeReductionElite = CreateNewEnum(
+            ref assembly, 
+            "LockpickingTimeRedElite", 
+            "LockpickingTimeRedElite", 
+            buffEnums, 
+            1014);
+        
+        buffEnums.Fields.Add(lockpickingTimeReduction);
+        buffEnums.Fields.Add(lockpickingTimeReductionElite);
     }
 
     private static void AddSkillFields(ref AssemblyDefinition assembly)
