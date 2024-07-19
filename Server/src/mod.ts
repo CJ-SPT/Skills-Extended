@@ -222,13 +222,13 @@ class SkillsPlus implements IPreSptLoadMod, IPostDBLoadMod
         peaceKeeper.assort.barter_scheme[ItemIDS.Pda] = [
             [
                 {
-                    count: 1000,
+                    count: 12600,
                     _tpl: Money.DOLLARS
                 }
             ]
         ];
         
-        peaceKeeper.assort.loyal_level_items[ItemIDS.Pda] = 1;
+        peaceKeeper.assort.loyal_level_items[ItemIDS.Pda] = 3;
     }
 
     private addCraftsToDatabase(): void
