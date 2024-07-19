@@ -31,7 +31,7 @@ namespace SkillsExtended
 
         // Contains key information
         public static KeysResponse Keys;
-
+        
         // Contains skill data
         public static SkillDataResponse SkillData;
 
@@ -67,6 +67,8 @@ namespace SkillsExtended
             new DoMedEffectPatch().Enable();
             new SetItemInHands().Enable();
 #if DEBUG
+            Log.LogWarning("PRE RELEASE ALPHA BUILD - NO SUPPORT");
+            Log.LogWarning("COMMANDS ENABLED");
             new LocationSceneAwakePatch().Enable();
 #endif
             SEConfig.InitializeConfig(Config);
