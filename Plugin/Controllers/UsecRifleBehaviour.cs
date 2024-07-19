@@ -27,15 +27,7 @@ namespace SkillsExtended.Controllers
         private int _lastAppliedLevel = -1;
 
         private WeaponSkillData _usecSkillData => Plugin.SkillData.UsecRifleSkill;
-
-        private float _ergoBonusUsec => _skillManager.UsecArsystems.IsEliteLevel
-            ? _usecARLevel * _usecSkillData.ErgoMod + _usecSkillData.ErgoModElite
-            : _usecARLevel * _usecSkillData.ErgoMod;
-
-        private float _recoilBonusUsec => _skillManager.UsecArsystems.IsEliteLevel
-            ? _usecARLevel * _usecSkillData.RecoilReduction + _usecSkillData.RecoilReductionElite
-            : _usecARLevel * _usecSkillData.RecoilReduction;
-
+        
         // Store an object containing the weapons original stats.
         private Dictionary<string, OrigWeaponValues> _originalWeaponValues = [];
 
@@ -123,9 +115,9 @@ namespace SkillsExtended.Controllers
                     weaponInstanceIds.Remove(item.Id);
                 }
 
-                weap.Template.Ergonomics = _originalWeaponValues[item.TemplateId].ergo * (1 + _ergoBonusUsec);
-                weap.Template.RecoilForceUp = _originalWeaponValues[item.TemplateId].weaponUp * (1 - _recoilBonusUsec);
-                weap.Template.RecoilForceBack = _originalWeaponValues[item.TemplateId].weaponBack * (1 - _recoilBonusUsec);
+                weap.Template.Ergonomics = _originalWeaponValues[item.TemplateId].ergo * (1 + SkillBuffs.UsecArSystemsErgoBuff);
+                weap.Template.RecoilForceUp = _originalWeaponValues[item.TemplateId].weaponUp * (1 - SkillBuffs.UsecArSystemsRecoilBuff);
+                weap.Template.RecoilForceBack = _originalWeaponValues[item.TemplateId].weaponBack * (1 - SkillBuffs.UsecArSystemsRecoilBuff);
 
                 Plugin.Log.LogDebug($"New {weap.LocalizedName()} ergo: {weap.Template.Ergonomics}, up {weap.Template.RecoilForceUp}, back {weap.Template.RecoilForceBack}");
 

@@ -53,12 +53,11 @@ namespace SkillsExtended
             {
                 throw new Exception("Invalid EFT Version");
             }
-
-            new SkillPanelNamePatch().Enable();
+            
             new SkillPanelDisablePatch().Enable();
-            new SkillToolTipPatch().Enable();
             new BuffIconShowPatch().Enable();
             new SkillManagerConstructorPatch().Enable();
+            new SkillClassCtorPatch().Enable();
             new OnScreenChangePatch().Enable();
             new OnGameStartedPatch().Enable();
             new GetActionsClassPatch().Enable();

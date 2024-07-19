@@ -18,9 +18,7 @@ namespace SkillsExtended.Controllers
 
         private MedicalSkillData _skillData => Plugin.SkillData.MedicalSkills;
 
-        private float FmPmcSpeedBonus => _skillManager.FirstAid.IsEliteLevel
-            ? 1f - (_skillManager.FirstAid.Level * _skillData.MedicalSpeedBonus) - _skillData.MedicalSpeedBonusElite
-            : 1f - (_skillManager.FirstAid.Level * _skillData.MedicalSpeedBonus);
+        private float FmPmcSpeedBonus => 1f - SkillBuffs.FieldMedicineSpeedBuff;
 
         private Dictionary<string, HealthEffectValues> _originalHealthEffectValues = [];
 

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 
 import { InstanceManager } from "./InstanceManager";
-import * as SkillsConfig from "../config/SkillsConfig.json";
+import SkillsConfig from "../config/SkillsConfig.json";
 
 import type { DependencyContainer } from "tsyringe";
 import type { IPostDBLoadMod } from "@spt/models/external/IPostDBLoadMod";
@@ -13,6 +13,7 @@ import type { IKeys } from "./Models/IKeys";
 import { Money } from "@spt/models/enums/Money";
 import { Traders } from "@spt/models/enums/Traders";
 import { BaseClasses } from "@spt/models/enums/BaseClasses";
+import { LogTextColor } from "@spt/models/spt/logging/LogTextColor";
 
 enum ItemIDS {
     Lockpick  = "6622c28aed7e3bc72e301e22",
@@ -44,8 +45,16 @@ class SkillsPlus implements IPreSptLoadMod, IPostDBLoadMod
 
     private setLocales(): void
     {
-        this.Instance.database.locales.global.en.FirstAidDescription += "FirstAidDescriptionPattern";
-        this.Instance.database.locales.global.en.FieldMedicineDescription = "FieldMedicineDescriptionPattern";
+        const global = this.Instance.database.locales.global[SkillsConfig.Locale];
+
+        const modPath = this.Instance.modPath;
+
+        const locales = this.Instance.loadStringDictionarySync(`${modPath}/locale/${SkillsConfig.Locale}.json`);
+
+        for (const entry in locales)
+        {
+            global[entry] = locales[entry];
+        }
     }
 
     private getKeys(): string
@@ -78,7 +87,7 @@ class SkillsPlus implements IPreSptLoadMod, IPostDBLoadMod
                 {
                     url: "/skillsExtended/GetSkillsConfig",
                     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                    action: (url, info, sessionId, output) => 
+                    action: async (url, info, sessionId, output) => 
                     {                     
                         return JSON.stringify(SkillsConfig);
                     }
@@ -93,7 +102,7 @@ class SkillsPlus implements IPreSptLoadMod, IPostDBLoadMod
                 {
                     url: "/skillsExtended/GetKeys",
                     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                    action: (url, info, sessionId, output) => 
+                    action: async (url, info, sessionId, output) => 
                     {                     
                         return this.getKeys();
                     }

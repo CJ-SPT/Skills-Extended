@@ -37,135 +37,80 @@ public static class Patcher
         var firstAidHealingSpeedEnum = CreateNewEnum(
             ref assembly, 
             "FirstAidHealingSpeed", 
-            "FirstAidBuffHealingSpeed", 
+            "FirstAidHealingSpeed", 
             buffEnums, 
             1000);
-        
-        var firstAidHealingSpeedEliteEnum = CreateNewEnum(
-            ref assembly, 
-            "FirstAidHealingSpeedElite", 
-            "FirstAidBuffHealingSpeedElite", 
-            buffEnums, 
-            1001);
         
         var firstAidMaxHpEnum = CreateNewEnum(
             ref assembly, 
             "FirstAidMaxHp", 
             "FirstAidMaxHp",
             buffEnums, 
-            1002);
-        
-        var firstAidMaxHpEliteEnum = CreateNewEnum(
-            ref assembly, 
-            "FirstAidMaxHpElite", 
-            "FirstAidMaxHpElite", 
-            buffEnums, 
-            1003);
+            1001);
         
         buffEnums.Fields.Add(firstAidHealingSpeedEnum);
-        buffEnums.Fields.Add(firstAidHealingSpeedEliteEnum);
         buffEnums.Fields.Add(firstAidMaxHpEnum);
-        buffEnums.Fields.Add(firstAidMaxHpEliteEnum);
         
         var fieldMedicineHealingSpeedEnum = CreateNewEnum(
             ref assembly, 
             "FieldMedicineSpeed", 
             "FieldMedicineSpeed", 
             buffEnums, 
-            1004);
-        
-        var fieldMedicineHealingSpeedEliteEnum = CreateNewEnum(
-            ref assembly, 
-            "FieldMedicineSpeedElite", 
-            "FieldMedicineBuffSpeedElite", 
-            buffEnums, 
-            1005);
+            1002);
         
         buffEnums.Fields.Add(fieldMedicineHealingSpeedEnum);
-        buffEnums.Fields.Add(fieldMedicineHealingSpeedEliteEnum);
 
         var usecArSystemsRecoilEnum = CreateNewEnum(
             ref assembly, 
             "UsecArSystemsRecoil", 
             "UsecArSystemsRecoil", 
             buffEnums, 
-            1006);
-        
-        var usecArSystemsRecoilEliteEnum = CreateNewEnum(
-            ref assembly, 
-            "UsecArSystemsRecoilElite", 
-            "UsecArSystemsRecoilElite", 
-            buffEnums, 
-            1007);
+            1003);
         
         var usecArSystemsErgoEnum = CreateNewEnum(
             ref assembly, 
             "UsecArSystemsErgo", 
             "UsecArSystemsErgo", 
             buffEnums, 
-            1008);
+            1004);
         
-        var usecArSystemsErgoEliteEnum = CreateNewEnum(
-            ref assembly, 
-            "UsecArSystemsErgoElite", 
-            "UsecArSystemsErgoElite", 
-            buffEnums, 
-            1009);
         
         buffEnums.Fields.Add(usecArSystemsRecoilEnum);
-        buffEnums.Fields.Add(usecArSystemsRecoilEliteEnum);
         buffEnums.Fields.Add(usecArSystemsErgoEnum);
-        buffEnums.Fields.Add(usecArSystemsErgoEliteEnum);
         
         var bearAkSystemsRecoilEnum = CreateNewEnum(
             ref assembly, 
-            "BearArSystemsRecoil", 
-            "BearArSystemsRecoil", 
+            "BearAkSystemsRecoil", 
+            "BearAkSystemsRecoil", 
             buffEnums, 
-            1010);
-        
-        var bearAkSystemsRecoilEliteEnum = CreateNewEnum(
-            ref assembly, 
-            "BearAkSystemsRecoilElite", 
-            "BearAkSystemsRecoilElite", 
-            buffEnums, 
-            1011);
+            1005);
         
         var bearAkSystemsErgoEnum = CreateNewEnum(
             ref assembly, 
             "BearAkSystemsErgo", 
             "BearAkSystemsErgo", 
             buffEnums, 
-            1012);
-        
-        var bearAkSystemsErgoEliteEnum = CreateNewEnum(
-            ref assembly, 
-            "BearAkSystemsErgoElite", 
-            "BearAkSystemsErgoElite", 
-            buffEnums, 
-            1013);
+            1006);
         
         buffEnums.Fields.Add(bearAkSystemsRecoilEnum);
-        buffEnums.Fields.Add(bearAkSystemsRecoilEliteEnum);
         buffEnums.Fields.Add(bearAkSystemsErgoEnum);
-        buffEnums.Fields.Add(bearAkSystemsErgoEliteEnum);
         
         var lockpickingTimeReduction = CreateNewEnum(
             ref assembly, 
-            "LockpickingTimeRed", 
-            "LockpickingTimeRed", 
+            "LockpickingTimeReduction", 
+            "LockpickingTimeReduction", 
             buffEnums, 
-            1013);
+            1007);
         
-        var lockpickingTimeReductionElite = CreateNewEnum(
+        var lockpickingUseElite = CreateNewEnum(
             ref assembly, 
-            "LockpickingTimeRedElite", 
-            "LockpickingTimeRedElite", 
+            "LockpickingUseElite", 
+            "LockpickingUseElite", 
             buffEnums, 
-            1014);
+            1008);
         
         buffEnums.Fields.Add(lockpickingTimeReduction);
-        buffEnums.Fields.Add(lockpickingTimeReductionElite);
+        buffEnums.Fields.Add(lockpickingUseElite);
     }
 
     private static void AddSkillFields(ref AssemblyDefinition assembly)

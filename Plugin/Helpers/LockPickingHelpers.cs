@@ -241,14 +241,7 @@ namespace SkillsExtended.Helpers
 
         private static float CalculateTimeForAction(float baseTime)
         {
-            int level = _skills.Lockpicking.Level;
-            bool isElite = _skills.Lockpicking.IsEliteLevel;
-
-            float accumulatedRecution = isElite
-                ? Mathf.Max(level * _lockPicking.TimeReduction + _lockPicking.TimeReductionElite, 0f)
-                : Mathf.Max(level * _lockPicking.TimeReduction, 0f);
-
-            return (baseTime * (1 - accumulatedRecution));
+            return (baseTime * (1 - SkillBuffs.LockpickingTimeBuff));
         }
 
         private sealed class LockPickActionHandler
@@ -310,7 +303,7 @@ namespace SkillsExtended.Helpers
             {
                 int levelDifference = _skills.Lockpicking.Level - doorLevel;
 
-                if (levelDifference >= 10)
+                if (levelDifference >= 10 || SkillBuffs.LockpickingUseBuffElite.Value)
                 {
                     return;
                 }

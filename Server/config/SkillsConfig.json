@@ -1,4 +1,5 @@
 {
+    "Locale": "en",
     "DisableEliteRequirements": false,
     "MedicalSkills": {
         "ENABLE_FIELD_MEDICINE": true,
@@ -6,10 +7,10 @@
         "FIRSTAID_XP_PER_ACTION": 3,
         "FIELDMEDICINE_XP_PER_ACTION": 4,
         "COOL_DOWN_TIME_PER_LIMB": 45,
-        "MEDKIT_HP_BONUS": 0.01,
-        "MEDKIT_HP_BONUS_ELITE": 0.20,
-        "MEDICAL_SPEED_BONUS": 0.007,
-        "MEDICAL_SPEED_BONUS_ELITE": 0.15,
+        "MEDKIT_HP_BONUS": 0.50,
+        "MEDKIT_HP_BONUS_ELITE": 0.70,
+        "MEDICAL_SPEED_BONUS": 0.35,
+        "MEDICAL_SPEED_BONUS_ELITE": 0.50,
         "FM_ITEM_LIST": [
             "544fb25a4bdc2dfb738b4567",
             "5751a25924597722c463c472", 
@@ -32,10 +33,10 @@
     "USECRifleSkill": {
         "ENABLED": true,
         "WEAPON_PROF_XP": 1.365,
-        "ERGO_MOD": 0.0015,
-        "ERGO_MOD_ELITE": 0.05,
-        "RECOIL_REDUCTION": 0.0015,
-        "RECOIL_REDUCTION_ELITE": 0.06,
+        "ERGO_MOD": 0.075,
+        "ERGO_MOD_ELITE": 0.125,
+        "RECOIL_REDUCTION": 0.075,
+        "RECOIL_REDUCTION_ELITE": 0.135,
         "WEAPONS": [
             "62e7c4fba689e8c9c50dfc38",
             "63171672192e68c5460cebc5",
@@ -121,8 +122,8 @@
         "INSPECT_CHANCE_BONUS": 10,
         "PICK_BASE_TIME": 10,
         "ATTEMPTS_BEFORE_BREAK": 3,
-        "TIME_REDUCTION_BONUS_PER_LEVEL": 0.006,
-        "TIME_REDUCTION_BONUS_PER_LEVEL_ELITE": 0.15,
+        "TIME_REDUCTION_BONUS_PER_LEVEL": 0.3,
+        "TIME_REDUCTION_BONUS_PER_LEVEL_ELITE": 0.45,
         "PICK_BASE_SUCCESS_CHANCE": 90,
         "PICK_BASE_DIFFICULTY_MOD": 8,
         "INSPECT_LOCK_XP_RATIO": 0.30,

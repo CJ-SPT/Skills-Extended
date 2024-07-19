@@ -29,13 +29,9 @@ namespace SkillsExtended.Controllers
 
         private Dictionary<string, HealthEffectValues> _originalHealthEffectValues = [];
 
-        private float FaPmcSpeedBonus => _skillManager.FirstAid.IsEliteLevel
-            ? 1f - (_skillManager.FirstAid.Level * _skillData.MedicalSpeedBonus) - _skillData.MedicalSpeedBonusElite
-            : 1f - (_skillManager.FirstAid.Level * _skillData.MedicalSpeedBonus);
+        private float FaPmcSpeedBonus => 1f - SkillBuffs.FirstAidSpeedBuff;
 
-        private float FaHpBonus => _skillManager.FirstAid.IsEliteLevel
-            ? _skillManager.FirstAid.Level * _skillData.MedkitHpBonus + _skillData.MedkitHpBonusElite
-            : _skillManager.FirstAid.Level * _skillData.MedkitHpBonus;
+        private float FaHpBonus => 1 + SkillBuffs.FirstAidHpBuff;
 
         private void Update()
         {

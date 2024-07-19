@@ -27,15 +27,7 @@ namespace SkillsExtended.Controllers
         private int _lastAppliedLevel = -1;
 
         private WeaponSkillData _bearSkillData => Plugin.SkillData.BearRifleSkill;
-
-        private float _ergoBonusBear => _skillManager.BearAksystems.IsEliteLevel
-            ? _bearAKLevel * _bearSkillData.ErgoMod + _bearSkillData.ErgoModElite
-            : _bearAKLevel * _bearSkillData.ErgoMod;
-
-        private float _recoilBonusBear => _skillManager.BearAksystems.IsEliteLevel
-            ? _bearAKLevel * _bearSkillData.RecoilReduction + _bearSkillData.RecoilReductionElite
-            : _bearAKLevel * _bearSkillData.RecoilReduction;
-
+        
         // Store an object containing the weapons original stats.
         private Dictionary<string, OrigWeaponValues> _originalWeaponValues = [];
 
@@ -123,9 +115,9 @@ namespace SkillsExtended.Controllers
                     weaponInstanceIds.Remove(item.Id);
                 }
 
-                weap.Template.Ergonomics = _originalWeaponValues[item.TemplateId].ergo * (1 + _ergoBonusBear);
-                weap.Template.RecoilForceUp = _originalWeaponValues[item.TemplateId].weaponUp * (1 - _recoilBonusBear);
-                weap.Template.RecoilForceBack = _originalWeaponValues[item.TemplateId].weaponBack * (1 - _recoilBonusBear);
+                weap.Template.Ergonomics = _originalWeaponValues[item.TemplateId].ergo * (1 + SkillBuffs.BearAkSystemsErgoBuff);
+                weap.Template.RecoilForceUp = _originalWeaponValues[item.TemplateId].weaponUp * (1 - SkillBuffs.BearAkSystemsRecoilBuff);
+                weap.Template.RecoilForceBack = _originalWeaponValues[item.TemplateId].weaponBack * (1 - SkillBuffs.BearAkSystemsRecoilBuff);
 
                 Plugin.Log.LogDebug($"New {weap.LocalizedName()} ergo: {weap.Template.Ergonomics}, up {weap.Template.RecoilForceUp}, back {weap.Template.RecoilForceBack}");
 

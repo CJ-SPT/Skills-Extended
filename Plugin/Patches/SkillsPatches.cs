@@ -8,7 +8,10 @@ using SPT.Reflection.Utils;
 using System;
 using System.Net.Mime;
 using System.Reflection;
+using EFT.HealthSystem;
+using EFT.InventoryLogic;
 using TMPro;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace SkillsExtended.Patches;
@@ -22,11 +25,9 @@ internal class SkillManagerConstructorPatch : ModulePatch
     public static void Postfix(SkillManager __instance, ref SkillClass[] ___DisplayList, ref SkillClass[] ___Skills)
     {
         int insertIndex = 12;
-
-        SetupFirstAid(__instance);
         
-        __instance.UsecArsystems = new SkillClass(__instance, ESkillId.UsecArsystems, ESkillClass.Special, [], []);
-        __instance.BearAksystems = new SkillClass(__instance, ESkillId.BearAksystems, ESkillClass.Special, [], []);
+        __instance.UsecArsystems = new SkillClass(__instance, ESkillId.UsecArsystems, ESkillClass.Special, [], SkillBuffs.UsecArBuffs());
+        __instance.BearAksystems = new SkillClass(__instance, ESkillId.BearAksystems, ESkillClass.Special, [], SkillBuffs.BearAkBuffs());
 
         __instance.UsecTactics = new SkillClass(__instance, ESkillId.UsecTactics, ESkillClass.Special, [], []);
         __instance.BearRawpower = new SkillClass(__instance, ESkillId.BearRawpower, ESkillClass.Special, [], []);
@@ -70,131 +71,37 @@ internal class SkillManagerConstructorPatch : ModulePatch
 
         AccessTools.Field(typeof(SkillClass), "Locked").SetValue(__instance.Lockpicking,
             !Plugin.SkillData.LockPickingSkill.Enabled);
-
-        AccessTools.Field(typeof(SkillClass), "Locked").SetValue(__instance.FirstAid,
-            !Plugin.SkillData.MedicalSkills.EnableFirstAid);
-
+        
         AccessTools.Field(typeof(SkillClass), "Locked").SetValue(__instance.FieldMedicine,
             !Plugin.SkillData.MedicalSkills.EnableFieldMedicine);
     }
-
-    private static void SetupFirstAid(SkillManager skillManager)
-    {
-        var firstAidSpeedBonus = new SkillManager.SkillBuffClass
-        {
-            
-        };
-        
-        skillManager.FirstAid = new SkillClass(skillManager, ESkillId.FirstAid, ESkillClass.Practical, [], []);
-    }
 }
 
-internal class SkillToolTipPatch : ModulePatch
+internal class SkillClassCtorPatch : ModulePatch
 {
     protected override MethodBase GetTargetMethod() =>
-        typeof(SkillTooltip).GetMethods().SingleCustom(x => x.Name == "Show" && x.GetParameters().Length == 1);
+        typeof(SkillClass).GetConstructor(
+            BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, 
+            null, 
+            [typeof(SkillManager), typeof(ESkillId), typeof(ESkillClass), typeof(SkillManager.SkillActionClass[]), typeof(SkillManager.SkillBuffAbstractClass[])], 
+            null);
 
-    private static SkillDataResponse _skillData => Plugin.SkillData;
-
-    [PatchPostfix]
-    public static void Postfix(
-        SkillTooltip __instance,
-        SkillClass skill,
-        ref TextMeshProUGUI ____name,
-        ref TextMeshProUGUI ____description)
+    [PatchPrefix]
+    public static void Prefix(SkillClass __instance, ESkillId id, ref SkillManager.SkillBuffAbstractClass[] buffs)
     {
-        if (skill.Id == ESkillId.FirstAid)
+        if (id == ESkillId.FirstAid)
         {
-            var firstAidSkill = Plugin.Session.Profile.Skills.FirstAid;
-
-            float speedBonus = firstAidSkill.IsEliteLevel
-                ? (firstAidSkill.Level * _skillData.MedicalSkills.MedicalSpeedBonus) - _skillData.MedicalSkills.MedicalSpeedBonusElite
-                : (firstAidSkill.Level * _skillData.MedicalSkills.MedicalSpeedBonus);
-
-            float hpBonus = firstAidSkill.IsEliteLevel
-                ? firstAidSkill.Level * _skillData.MedicalSkills.MedkitHpBonus + _skillData.MedicalSkills.MedkitHpBonusElite
-                : firstAidSkill.Level * _skillData.MedicalSkills.MedkitHpBonus;
-
-            ____description.SetText(SkillDescriptions.FirstAidDescription(speedBonus, hpBonus));
+            buffs = SkillBuffs.FirstAidBuffs();
+        }
+        
+        if (id == ESkillId.FieldMedicine)
+        {
+            buffs = SkillBuffs.FieldMedicineBuffs();
         }
 
-        if (skill.Id == ESkillId.FieldMedicine)
+        if (id == ESkillId.Lockpicking)
         {
-            var fieldMedicineSkill = Plugin.Session.Profile.Skills.FieldMedicine;
-
-            float speedBonus = fieldMedicineSkill.IsEliteLevel
-                ? (fieldMedicineSkill.Level * _skillData.MedicalSkills.MedicalSpeedBonus) - _skillData.MedicalSkills.MedicalSpeedBonusElite
-                : (fieldMedicineSkill.Level * _skillData.MedicalSkills.MedicalSpeedBonus);
-
-            ____description.SetText(SkillDescriptions.FieldMedicineDescription(speedBonus));
-        }
-
-        if (skill.Id == ESkillId.UsecArsystems)
-        {
-            var usecSystems = Plugin.Session.Profile.Skills.UsecArsystems;
-
-            float ergoBonus = usecSystems.IsEliteLevel
-                ? usecSystems.Level * _skillData.UsecRifleSkill.ErgoMod + _skillData.UsecRifleSkill.ErgoModElite
-                : usecSystems.Level * _skillData.UsecRifleSkill.ErgoMod;
-
-            float recoilReduction = usecSystems.IsEliteLevel
-                ? usecSystems.Level * _skillData.UsecRifleSkill.RecoilReduction + _skillData.UsecRifleSkill.RecoilReductionElite
-                : usecSystems.Level * _skillData.UsecRifleSkill.RecoilReduction;
-
-            ____name.SetText("USEC rifle and carbine proficiency");
-            ____description.SetText(SkillDescriptions.UsecArSystemsDescription(ergoBonus, recoilReduction));
-        }
-
-        if (skill.Id == ESkillId.BearAksystems)
-        {
-            var bearSystems = Plugin.Session.Profile.Skills.BearAksystems;
-
-            float ergoBonus = bearSystems.IsEliteLevel
-                ? bearSystems.Level * _skillData.BearRifleSkill.ErgoMod + _skillData.BearRifleSkill.ErgoModElite
-                : bearSystems.Level * _skillData.BearRifleSkill.ErgoMod;
-
-            float recoilReduction = bearSystems.IsEliteLevel
-                ? bearSystems.Level * _skillData.BearRifleSkill.RecoilReduction + _skillData.BearRifleSkill.RecoilReductionElite
-                : bearSystems.Level * _skillData.BearRifleSkill.RecoilReduction;
-
-            ____name.SetText("BEAR rifle and carbine proficiency");
-            ____description.SetText(SkillDescriptions.BearAkSystemsDescription(ergoBonus, recoilReduction));
-        }
-
-        if (skill.Id == ESkillId.Lockpicking)
-        {
-            var lockPickingSkill = Plugin.Session.Profile.Skills.Lockpicking;
-
-            float timeReduction = lockPickingSkill.IsEliteLevel
-                ? lockPickingSkill.Level * _skillData.LockPickingSkill.TimeReduction + _skillData.LockPickingSkill.TimeReductionElite
-                : lockPickingSkill.Level * _skillData.LockPickingSkill.TimeReduction;
-
-            ____name.SetText("Lockpicking");
-            ____description.SetText(SkillDescriptions.LockPickingDescription(timeReduction));
-        }
-
-        if (skill.Id == ESkillId.UsecTactics)
-        {
-            var usecTacticsSkill = Plugin.Session.Profile.Skills.UsecTactics;
-
-            float inertiaReduction = usecTacticsSkill.IsEliteLevel
-                ? usecTacticsSkill.Level * _skillData.UsecTacticsSkill.InertiaRedBonus + _skillData.UsecTacticsSkill.InertiaRedBonusElite
-                : usecTacticsSkill.Level * _skillData.UsecTacticsSkill.InertiaRedBonus;
-
-            ____name.SetText("USEC Tactics");
-            ____description.SetText(SkillDescriptions.UsecTacticsDescription(inertiaReduction));
-        }
-
-        if (skill.Id == ESkillId.BearRawpower)
-        {
-            var bearRawpowerSkill = Plugin.Session.Profile.Skills.BearRawpower;
-
-            float hpBonus = bearRawpowerSkill.IsEliteLevel
-                ? bearRawpowerSkill.Level * _skillData.BearRawPowerSkill.HPBonus + _skillData.BearRawPowerSkill.HPBonusElite
-                : bearRawpowerSkill.Level * _skillData.BearRawPowerSkill.HPBonus;
-
-            ____name.SetText("BEAR raw power");
-            ____description.SetText(SkillDescriptions.BearRawpowerDescription(hpBonus));
+            buffs = SkillBuffs.LockPickingBuffs();
         }
     }
 }
@@ -209,7 +116,11 @@ internal class SkillPanelDisablePatch : ModulePatch
     {
         var skills = Plugin.Session.Profile.Skills;
         var side = Plugin.Session.Profile.Side;
-
+        
+        #if DEBUG
+        return true;
+        #endif
+        
         if (skill.Locked)
         {
             // Skip original method and dont show skill
@@ -259,126 +170,54 @@ internal class SkillPanelDisablePatch : ModulePatch
     }
 }
 
-internal class SkillPanelNamePatch : ModulePatch
-{
-    protected override MethodBase GetTargetMethod() =>
-        typeof(SkillPanel).GetMethod("Show", BindingFlags.Public | BindingFlags.Instance);
-
-    [PatchPostfix]
-    public static void Postfix(SkillPanel __instance, SkillClass skill)
-    {
-        if (skill.Id == ESkillId.UsecArsystems)
-        {
-            TextMeshProUGUI name = (TextMeshProUGUI)AccessTools.Field(typeof(SkillPanel), "_name").GetValue(__instance);
-            name.text = "USEC rifle and carbine proficiency";
-        }
-
-        if (skill.Id == ESkillId.UsecTactics)
-        {
-            TextMeshProUGUI name = (TextMeshProUGUI)AccessTools.Field(typeof(SkillPanel), "_name").GetValue(__instance);
-            name.text = "USEC Tactics";
-        }
-
-        if (skill.Id == ESkillId.BearAksystems)
-        {
-            TextMeshProUGUI name = (TextMeshProUGUI)AccessTools.Field(typeof(SkillPanel), "_name").GetValue(__instance);
-            name.text = "BEAR rifle and carbine proficiency";
-        }
-
-        if (skill.Id == ESkillId.BearRawpower)
-        {
-            TextMeshProUGUI name = (TextMeshProUGUI)AccessTools.Field(typeof(SkillPanel), "_name").GetValue(__instance);
-            name.text = "BEAR Raw Power";
-        }
-    }
-}
-
 internal class BuffIconShowPatch : ModulePatch
 {
     protected override MethodBase GetTargetMethod()
     {
-        return AccessTools.Method(typeof(BuffPanel), nameof(BuffPanel.Show));
+        return AccessTools.Method(typeof(BuffIcon), nameof(BuffIcon.Show));
     }
 
-    [PatchPrefix]
-    public static bool Prefix(
-        BuffPanel __instance, 
-        SkillClass skill,
-        SkillManager.SkillBuffAbstractClass buff, 
-        BuffIcon ____icon, 
-        CustomTextMeshProUGUI ____description)
+    [PatchPostfix]
+    public static void Postfix(
+        BuffIcon __instance, 
+        SkillManager.SkillBuffAbstractClass buff,
+        Image ____icon)
     {
-        if (skill.Id == ESkillId.FirstAid)
-        {
-            ShowFirstAidIcons(__instance, ____icon, skill, buff, ____description);
-            return false;
-        }
-        if (skill.Id == ESkillId.FieldMedicine)
-        {
-            ShowFirstAidIcons(__instance, ____icon, skill, buff, ____description);
-            return false;
-        }
-        if (skill.Id == ESkillId.UsecArsystems)
-        {
-            ShowUsecArSystemIcons(__instance, ____icon, skill, buff, ____description);
-            return false;
-        }
-        if (skill.Id == ESkillId.BearAksystems)
-        {
-            ShowBearAkSystemsIcons(__instance, ____icon, skill, buff, ____description);
-            return false;
-        }
-        if (skill.Id == ESkillId.Lockpicking)
-        {
-            ShowLockpickingIcons(__instance, ____icon, skill, buff, ____description);
-            return false;
-        }
+        var staticIcons = EFTHardSettings.Instance.StaticIcons;
 
-        return true;
-    }
-
-    private static void ShowFirstAidIcons(
-        BuffPanel buffIcon, 
-        BuffIcon icon, 
-        SkillClass skill,
-        SkillManager.SkillBuffAbstractClass buff, 
-        CustomTextMeshProUGUI tooltip)
-    {
-    }
-    
-    private static void ShowFieldMedIcons(
-        BuffPanel buffIcon,
-        SkillClass skill,
-        SkillManager.SkillBuffAbstractClass buff, 
-        BuffIcon icon, 
-        CustomTextMeshProUGUI tooltip)
-    {
-    }
-    
-    private static void ShowUsecArSystemIcons(
-        BuffPanel buffIcon, 
-        BuffIcon icon, 
-        SkillClass skill,
-        SkillManager.SkillBuffAbstractClass buff, 
-        CustomTextMeshProUGUI tooltip)
-    {
-    }
-    
-    private static void ShowBearAkSystemsIcons(
-        BuffPanel buffIcon, 
-        BuffIcon icon, 
-        SkillClass skill,
-        SkillManager.SkillBuffAbstractClass buff, 
-        CustomTextMeshProUGUI tooltip)
-    {
-    }
-    
-    private static void ShowLockpickingIcons(
-        BuffPanel buffIcon, 
-        BuffIcon icon, 
-        SkillClass skill,
-        SkillManager.SkillBuffAbstractClass buff, 
-        CustomTextMeshProUGUI tooltip)
-    {
+        switch (buff.Id)
+        {
+            case EBuffId.FirstAidHealingSpeed:
+                ____icon.sprite = staticIcons.HealEffectSprites.GetValueOrDefault(EHealthFactorType.Energy);
+                break;
+            
+            case EBuffId.FirstAidMaxHp:
+                ____icon.sprite = staticIcons.HealEffectSprites.GetValueOrDefault(EHealthFactorType.Health);
+                break;
+            
+            case EBuffId.FieldMedicineSpeed:
+                ____icon.sprite = staticIcons.HealEffectSprites.GetValueOrDefault(EHealthFactorType.Energy);
+                break;
+            
+            case EBuffId.UsecArSystemsErgo:
+            case EBuffId.BearAkSystemsErgo:
+                ____icon.sprite = staticIcons.BuffIdSprites.GetValueOrDefault(EBuffId.WeaponErgonomicsBuff);
+                break;
+            
+            case EBuffId.UsecArSystemsRecoil:
+            case EBuffId.BearAkSystemsRecoil:
+                ____icon.sprite = staticIcons.BuffIdSprites.GetValueOrDefault(EBuffId.WeaponRecoilBuff);
+                break;
+            
+            case EBuffId.LockpickingTimeReduction:
+                ____icon.sprite = staticIcons.BuffIdSprites.GetValueOrDefault(EBuffId.CraftingContinueTimeReduce);
+                break;
+            
+            case EBuffId.LockpickingUseElite:
+                ____icon.sprite = staticIcons.ItemAttributeSprites.GetValueOrDefault(EItemAttributeId.KeyUses);
+                break;
+        }
+        
+        __instance.UpdateBuff();
     }
 }
