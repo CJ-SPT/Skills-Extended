@@ -9,378 +9,455 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace SkillsExtended.Helpers
+namespace SkillsExtended.Helpers;
+
+internal static class LockPickingHelpers
 {
-    internal static class LockPickingHelpers
+    private static Dictionary<string, int> _doorAttempts = [];
+    public static readonly List<string> InspectedDoors = [];
+
+    private static SkillManager _skills => Utils.GetActiveSkillManager();
+    private static Player _player => Singleton<GameWorld>.Instance.MainPlayer;
+
+    private static LockPickingData _lockPicking => Plugin.SkillData.LockPickingSkill;
+
+    private static readonly Dictionary<string, Dictionary<string, int>> LocationDoorIdLevels = new()
     {
-        private static Dictionary<string, int> _doorAttempts = [];
-        public static readonly List<string> InspectedDoors = [];
+        {"factory4_day", Plugin.SkillData.LockPickingSkill.DoorPickLevels.Factory},
+        {"factory4_night", Plugin.SkillData.LockPickingSkill.DoorPickLevels.Factory},
+        {"Woods", Plugin.SkillData.LockPickingSkill.DoorPickLevels.Woods},
+        {"bigmap", Plugin.SkillData.LockPickingSkill.DoorPickLevels.Customs},
+        {"Interchange", Plugin.SkillData.LockPickingSkill.DoorPickLevels.Interchange},
+        {"RezervBase", Plugin.SkillData.LockPickingSkill.DoorPickLevels.Reserve},
+        {"Shoreline", Plugin.SkillData.LockPickingSkill.DoorPickLevels.Shoreline},
+        {"laboratory", Plugin.SkillData.LockPickingSkill.DoorPickLevels.Labs},
+        {"Lighthouse", Plugin.SkillData.LockPickingSkill.DoorPickLevels.Lighthouse},
+        {"TarkovStreets", Plugin.SkillData.LockPickingSkill.DoorPickLevels.Streets},
+        {"Sandbox", Plugin.SkillData.LockPickingSkill.DoorPickLevels.GroundZero},
+    };
 
-        private static SkillManager _skills => Utils.GetActiveSkillManager();
-        private static Player _player => Singleton<GameWorld>.Instance.MainPlayer;
-
-        private static LockPickingData _lockPicking => Plugin.SkillData.LockPickingSkill;
-
-        private static readonly Dictionary<string, Dictionary<string, int>> LocationDoorIdLevels = new()
+    public static void PickLock(WorldInteractiveObject interactiveObject, GamePlayerOwner owner)
+    {
+        // Check if a lock pick exists in the inventory
+        if (!GetLockPicksInInventory().Any())
         {
-            {"factory4_day", Plugin.SkillData.LockPickingSkill.DoorPickLevels.Factory},
-            {"factory4_night", Plugin.SkillData.LockPickingSkill.DoorPickLevels.Factory},
-            {"Woods", Plugin.SkillData.LockPickingSkill.DoorPickLevels.Woods},
-            {"bigmap", Plugin.SkillData.LockPickingSkill.DoorPickLevels.Customs},
-            {"Interchange", Plugin.SkillData.LockPickingSkill.DoorPickLevels.Interchange},
-            {"RezervBase", Plugin.SkillData.LockPickingSkill.DoorPickLevels.Reserve},
-            {"Shoreline", Plugin.SkillData.LockPickingSkill.DoorPickLevels.Shoreline},
-            {"laboratory", Plugin.SkillData.LockPickingSkill.DoorPickLevels.Labs},
-            {"Lighthouse", Plugin.SkillData.LockPickingSkill.DoorPickLevels.Lighthouse},
-            {"TarkovStreets", Plugin.SkillData.LockPickingSkill.DoorPickLevels.Streets},
-            {"Sandbox", Plugin.SkillData.LockPickingSkill.DoorPickLevels.GroundZero},
-        };
+            owner.DisplayPreloaderUiNotification("You must have a lock pick in your inventory to pick a lock...");
+            return;
+        }
 
-        public static void PickLock(WorldInteractiveObject interactiveObject, GamePlayerOwner owner)
+        // Check if the locks broken
+        if (_doorAttempts.TryGetValue(interactiveObject.Id, out var val))
         {
-            // Check if a lock pick exists in the inventory
-            if (!GetLockPicksInInventory().Any())
+            if (val > 3)
             {
-                owner.DisplayPreloaderUiNotification("You must have a lock pick in your inventory to pick a lock...");
+                owner.DisplayPreloaderUiNotification("You cannot pick a broken lock...");
                 return;
-            }
-
-            // Check if the locks broken
-            if (_doorAttempts.TryGetValue(interactiveObject.Id, out var val))
-            {
-                if (val > 3)
-                {
-                    owner.DisplayPreloaderUiNotification("You cannot pick a broken lock...");
-                    return;
-                }
-            }
-
-            // Only allow lockpicking if the player is stationary
-            if (Utils.IdleStateType.IsAssignableFrom(owner.Player.CurrentState.GetType()))
-            {
-                var currentManagedState = owner.Player.CurrentManagedState;
-                var lpTime = CalculateTimeForAction(_lockPicking.PickBaseTime);
-                int level = GetLevelForDoor(owner.Player.Location, interactiveObject.Id);
-
-                // Return out if the door level is not found
-                if (level == -1)
-                {
-                    NotificationManagerClass.DisplayMessageNotification(
-                        $"ERROR: Door {interactiveObject.Id} on map {owner.Player.Location} not found in lookup table, sceenshot and report this error to the developer.",
-                        EFT.Communications.ENotificationDurationType.Long,
-                        EFT.Communications.ENotificationIconType.Alert);
-
-                    return;
-                }
-
-                float chanceForSuccess = CalculateChanceForSuccess(interactiveObject, owner);
-
-                owner.ShowObjectivesPanel("Picking lock {0:F1}", lpTime);
-
-                if (chanceForSuccess > 80f)
-                {
-                    owner.DisplayPreloaderUiNotification("This lock is easy for your level");
-                }
-                else if (chanceForSuccess < 80f && chanceForSuccess > 0f)
-                {
-                    owner.DisplayPreloaderUiNotification("This lock is hard for your level");
-                }
-                else if (chanceForSuccess == 0f)
-                {
-                    owner.DisplayPreloaderUiNotification("This lock is impossible for your level");
-                }
-
-                LockPickActionHandler handler = new()
-                {
-                    Owner = owner,
-                    InteractiveObject = interactiveObject,
-                };
-
-                Action<bool> action = new(handler.PickLockAction);
-                currentManagedState.Plant(true, false, lpTime, action);
-            }
-            else
-            {
-                owner.DisplayPreloaderUiNotification("Cannot pick the lock while moving.");
             }
         }
 
-        public static void InspectDoor(WorldInteractiveObject interactiveObject, GamePlayerOwner owner)
+        // Only allow lockpicking if the player is stationary
+        if (Utils.IdleStateType.IsAssignableFrom(owner.Player.CurrentState.GetType()))
         {
+            var currentManagedState = owner.Player.CurrentManagedState;
+            var lpTime = CalculateTimeForAction(_lockPicking.PickBaseTime);
             int level = GetLevelForDoor(owner.Player.Location, interactiveObject.Id);
 
             // Return out if the door level is not found
             if (level == -1)
             {
                 NotificationManagerClass.DisplayMessageNotification(
-                    $"ERROR: Door {interactiveObject.Id} on map {owner.Player.Location} not found in lookup table, sceenshot and report this error to the developer.",
+                    $"ERROR: Door {interactiveObject.Id} on map {owner.Player.Location} not found in lookup table, screenshot and report this error to the developer.",
                     EFT.Communications.ENotificationDurationType.Long,
                     EFT.Communications.ENotificationIconType.Alert);
 
                 return;
             }
 
-            // Only allow inspecting if the player is stationary
-            if (Utils.IdleStateType.IsAssignableFrom(owner.Player.CurrentState.GetType()))
+            float chanceForSuccess = CalculateChanceForSuccess(interactiveObject, owner);
+
+            owner.ShowObjectivesPanel("Picking lock {0:F1}", lpTime);
+
+            if (chanceForSuccess > 80f)
             {
-                // If we have not inspected this door yet, inspect it
-                if (!InspectedDoors.Contains(interactiveObject.Id))
-                {
-                    InspectLockActionHandler handler = new()
-                    {
-                        Owner = owner,
-                        InteractiveObject = interactiveObject,
-                    };
-
-                    Action<bool> action = new(handler.InspectLockAction);
-                    var currentManagedState = owner.Player.CurrentManagedState;
-                    var inspectTime = CalculateTimeForAction(_lockPicking.InspectBaseTime);
-
-                    owner.ShowObjectivesPanel("Inspecting lock {0:F1}", inspectTime);
-                    currentManagedState.Plant(true, false, inspectTime, action);
-                    return;
-                }
-
-                DisplayInspectInformation(interactiveObject, owner);
+                owner.DisplayPreloaderUiNotification("This lock is easy for your level");
             }
-            else
+            else if (chanceForSuccess < 80f && chanceForSuccess > 0f)
             {
-                owner.DisplayPreloaderUiNotification("Cannot inspect the lock while moving.");
+                owner.DisplayPreloaderUiNotification("This lock is hard for your level");
+            }
+            else if (chanceForSuccess == 0f)
+            {
+                owner.DisplayPreloaderUiNotification("This lock is impossible for your level");
+            }
+
+            LockPickActionHandler handler = new()
+            {
+                Owner = owner,
+                InteractiveObject = interactiveObject,
+            };
+
+            Action<bool> action = new(handler.PickLockAction);
+            currentManagedState.Plant(true, false, lpTime, action);
+        }
+        else
+        {
+            owner.DisplayPreloaderUiNotification("Cannot pick the lock while moving.");
+        }
+    }
+
+    public static void HackTerminal(KeycardDoor door, GamePlayerOwner owner)
+    {
+        if (!IsFlipperZeroInInventory())
+        {
+            owner.DisplayPreloaderUiNotification("You must have a Flipper Zero in your inventory to hack a key card door..."); 
+            return;
+        }
+        
+        // Check if the locks broken
+        if (_doorAttempts.TryGetValue(door.Id, out var val))
+        {
+            if (val > 3)
+            {
+                owner.DisplayPreloaderUiNotification("Security protocols tripped...");
+                return;
             }
         }
-
-        /// <summary>
-        /// Get the door level given a location ID and door ID
-        /// </summary>
-        /// <param name="locationId"></param>
-        /// <param name="doorId"></param>
-        /// <returns>Door level if found, -1 if not found</returns>
-        public static int GetLevelForDoor(string locationId, string doorId)
+        
+        // Only allow lockpicking if the player is stationary
+        if (Utils.IdleStateType.IsAssignableFrom(owner.Player.CurrentState.GetType()))
         {
-            if (!LocationDoorIdLevels.ContainsKey(locationId))
+            var currentManagedState = owner.Player.CurrentManagedState;
+            var lpTime = CalculateTimeForAction(_lockPicking.PickBaseTime);
+            int level = GetLevelForDoor(owner.Player.Location, door.Id);
+
+            // Return out if the door level is not found
+            if (level == -1)
             {
-                Plugin.Log.LogError($"Could not find location ID: {locationId}");
-                return -1;
-            }
-
-            var locationLevels = LocationDoorIdLevels[locationId];
-
-            if (!locationLevels.ContainsKey(doorId))
-            {
-                Plugin.Log.LogError($"Could not find Door ID: {doorId} in location {locationId}");
-                return -1;
-            }
-
-            return locationLevels[doorId];
-        }
-
-        /// <summary>
-        /// Get any lockpick in the players equipment inventory
-        /// </summary>
-        /// <returns>All lockpick items in the players inventory</returns>
-        public static IEnumerable<Item> GetLockPicksInInventory()
-        {
-            return Plugin.Session.Profile.Inventory.GetPlayerItems(EPlayerItems.Equipment)
-                .Where(x => x.TemplateId == "6622c28aed7e3bc72e301e22");
-        }
-
-        private static void ApplyLockPickActionXp(WorldInteractiveObject interactiveObject, GamePlayerOwner owner, bool isInspect = false, bool IsFailure = false)
-        {
-            var doorLevel = GetLevelForDoor(owner.Player.Location, interactiveObject.Id);
-
-            bool xpExists = Plugin.SkillData.LockPickingSkill.XpTable.TryGetValue(doorLevel.ToString(), out float xp);
-
-            if (xpExists)
-            {
-                var xpToApply = isInspect
-                    ? xp * Plugin.SkillData.LockPickingSkill.InspectLockXpRatio * SEConfig.lockpickingSpeedMult.Value
-                    : xp * SEConfig.lockpickingSpeedMult.Value;
-
-                // Failures recieve 25% xp
-                xpToApply = IsFailure
-                    ? xpToApply * 0.25f * SEConfig.lockpickingSpeedMult.Value
-                    : xpToApply * SEConfig.lockpickingSpeedMult.Value;
-
-                Plugin.Log.LogInfo($"Lockpicking xp found in table : {xpToApply} experience for door level {doorLevel} : IsInspect {isInspect} : IsFailure {IsFailure}");
-
-                _skills.Lockpicking.Current += xpToApply;
+                NotificationManagerClass.DisplayMessageNotification(
+                    $"ERROR: Door {door.Id} on map {owner.Player.Location} not found in lookup table, screenshot and report this error to the developer.",
+                    EFT.Communications.ENotificationDurationType.Long,
+                    EFT.Communications.ENotificationIconType.Alert);
 
                 return;
             }
 
-            Plugin.Log.LogError($"Lockpicking xp not found in table.. defaulting to {6f} experience");
-            _skills.Lockpicking.Current += 6f;
-        }
+            float chanceForSuccess = CalculateChanceForSuccess(door, owner);
 
-        private static void DisplayInspectInformation(WorldInteractiveObject interactiveObject, GamePlayerOwner owner)
-        {
-            int doorLevel = GetLevelForDoor(owner.Player.Location, interactiveObject.Id);
+            owner.ShowObjectivesPanel("Picking lock {0:F1}", lpTime);
 
-            // Display inspection info
-            NotificationManagerClass.DisplayMessageNotification($"Key for door is {Plugin.Keys.KeyLocale[interactiveObject.KeyId]}");
-            NotificationManagerClass.DisplayMessageNotification($"Lock level {doorLevel} chance for success {CalculateChanceForSuccess(interactiveObject, owner)}%");
-        }
-
-        private static float CalculateChanceForSuccess(WorldInteractiveObject interactiveObject, GamePlayerOwner owner)
-        {
-            int doorLevel = GetLevelForDoor(owner.Player.Location, interactiveObject.Id);
-
-            int levelDifference = _skills.Lockpicking.Level - doorLevel;
-
-            float baseSuccessChance = InspectedDoors.Contains(interactiveObject.Id)
-                ? _lockPicking.PickBaseSuccessChance + 10
-                : _lockPicking.PickBaseSuccessChance;
-
-            float difficultyModifier = _lockPicking.PickBaseDifficultyMod;
-
-            // Never below 0, never above 100
-            float successChance = UnityEngine.Mathf.Clamp(baseSuccessChance + (levelDifference * difficultyModifier), 0f, 100f);
-
-            return successChance;
-        }
-
-        private static float CalculateTimeForAction(float baseTime)
-        {
-            return (baseTime * (1 - SkillBuffs.LockpickingTimeBuff));
-        }
-
-        private sealed class LockPickActionHandler
-        {
-            public GamePlayerOwner Owner;
-            public WorldInteractiveObject InteractiveObject;
-
-            private static SkillManager _skills => Utils.GetActiveSkillManager();
-
-            public void PickLockAction(bool actionCompleted)
+            if (chanceForSuccess > 80f)
             {
-                int doorLevel = GetLevelForDoor(Owner.Player.Location, InteractiveObject.Id);
-
-                // If the player completed the full timer uninterrupted
-                if (actionCompleted)
-                {
-                    // Attempt was not successful
-                    if (!IsAttemptSuccessful(doorLevel))
-                    {
-                        Owner.DisplayPreloaderUiNotification("You failed to pick the lock...");
-
-                        // Add to the counter
-                        if (!_doorAttempts.ContainsKey(InteractiveObject.Id))
-                        {
-                            _doorAttempts.Add(InteractiveObject.Id, 1);
-                        }
-                        else
-                        {
-                            _doorAttempts[InteractiveObject.Id]++;
-                        }
-
-                        // Break the lock if more than 3 failed attempts
-                        if (_doorAttempts[InteractiveObject.Id] > Plugin.SkillData.LockPickingSkill.AttemptsBeforeBreak)
-                        {
-                            Owner.DisplayPreloaderUiNotification("You broke the lock...");
-                            InteractiveObject.KeyId = string.Empty;
-                            InteractiveObject.Operatable = false;
-                            InteractiveObject.DoorStateChanged(EDoorState.None);
-                        }
-
-                        // Apply failure xp
-                        ApplyLockPickActionXp(InteractiveObject, Owner, false, true);
-                        RemoveUseFromLockpick(doorLevel);
-
-                        return;
-                    }
-
-                    RemoveUseFromLockpick(doorLevel);
-                    ApplyLockPickActionXp(InteractiveObject, Owner);
-                    AccessTools.Method(typeof(WorldInteractiveObject), "Unlock").Invoke(InteractiveObject, null);
-                }
-                else
-                {
-                    Owner.CloseObjectivesPanel();
-                }
+                owner.DisplayPreloaderUiNotification("This lock is easy for your level");
+            }
+            else if (chanceForSuccess < 80f && chanceForSuccess > 0f)
+            {
+                owner.DisplayPreloaderUiNotification("This lock is hard for your level");
+            }
+            else if (chanceForSuccess == 0f)
+            {
+                owner.DisplayPreloaderUiNotification("This lock is impossible for your level");
             }
 
-            private void RemoveUseFromLockpick(int doorLevel)
+            LockPickActionHandler handler = new()
             {
-                int levelDifference = _skills.Lockpicking.Level - doorLevel;
+                Owner = owner,
+                InteractiveObject = door,
+            };
 
-                if (levelDifference >= 10 || SkillBuffs.LockpickingUseBuffElite.Value)
+            Action<bool> action = new(handler.PickLockAction);
+            currentManagedState.Plant(true, false, lpTime, action);
+        }
+        else
+        {
+            owner.DisplayPreloaderUiNotification("Cannot hack the terminal while moving.");
+        }
+    }
+    
+    public static void InspectDoor(WorldInteractiveObject interactiveObject, GamePlayerOwner owner)
+    {
+        int level = GetLevelForDoor(owner.Player.Location, interactiveObject.Id);
+
+        // Return out if the door level is not found
+        if (level == -1)
+        {
+            NotificationManagerClass.DisplayMessageNotification(
+                $"ERROR: Door {interactiveObject.Id} on map {owner.Player.Location} not found in lookup table, sceenshot and report this error to the developer.",
+                EFT.Communications.ENotificationDurationType.Long,
+                EFT.Communications.ENotificationIconType.Alert);
+
+            return;
+        }
+
+        // Only allow inspecting if the player is stationary
+        if (Utils.IdleStateType.IsAssignableFrom(owner.Player.CurrentState.GetType()))
+        {
+            // If we have not inspected this door yet, inspect it
+            if (!InspectedDoors.Contains(interactiveObject.Id))
+            {
+                InspectLockActionHandler handler = new()
                 {
+                    Owner = owner,
+                    InteractiveObject = interactiveObject,
+                };
+
+                Action<bool> action = new(handler.InspectLockAction);
+                var currentManagedState = owner.Player.CurrentManagedState;
+                var inspectTime = CalculateTimeForAction(_lockPicking.InspectBaseTime);
+
+                owner.ShowObjectivesPanel("Inspecting lock {0:F1}", inspectTime);
+                currentManagedState.Plant(true, false, inspectTime, action);
+                return;
+            }
+
+            DisplayInspectInformation(interactiveObject, owner);
+        }
+        else
+        {
+            owner.DisplayPreloaderUiNotification("Cannot inspect the lock while moving.");
+        }
+    }
+
+    /// <summary>
+    /// Get the door level given a location ID and door ID
+    /// </summary>
+    /// <param name="locationId"></param>
+    /// <param name="doorId"></param>
+    /// <returns>Door level if found, -1 if not found</returns>
+    public static int GetLevelForDoor(string locationId, string doorId)
+    {
+        if (!LocationDoorIdLevels.ContainsKey(locationId))
+        {
+            Plugin.Log.LogError($"Could not find location ID: {locationId}");
+            return -1;
+        }
+
+        var locationLevels = LocationDoorIdLevels[locationId];
+
+        if (!locationLevels.ContainsKey(doorId))
+        {
+            Plugin.Log.LogError($"Could not find Door ID: {doorId} in location {locationId}");
+            return -1;
+        }
+
+        return locationLevels[doorId];
+    }
+
+    /// <summary>
+    /// Get any lockpick in the players equipment inventory
+    /// </summary>
+    /// <returns>All lockpick items in the players inventory</returns>
+    public static IEnumerable<Item> GetLockPicksInInventory()
+    {
+        return Plugin.Session.Profile.Inventory.GetPlayerItems(EPlayerItems.Equipment)
+            .Where(x => x.TemplateId == "6622c28aed7e3bc72e301e22");
+    }
+
+    /// <summary>
+    /// Gets if a flipper zero exists in the inventory
+    /// </summary>
+    /// <returns>true if in inventory</returns>
+    public static bool IsFlipperZeroInInventory()
+    {
+        return Plugin.Session.Profile.Inventory.GetPlayerItems(EPlayerItems.Equipment)
+            .Any(x => x.TemplateId == "662400eb756ca8948fe64fe8");
+    }
+    
+    private static void ApplyLockPickActionXp(WorldInteractiveObject interactiveObject, GamePlayerOwner owner, bool isInspect = false, bool IsFailure = false)
+    {
+        var doorLevel = GetLevelForDoor(owner.Player.Location, interactiveObject.Id);
+
+        bool xpExists = Plugin.SkillData.LockPickingSkill.XpTable.TryGetValue(doorLevel.ToString(), out float xp);
+
+        if (xpExists)
+        {
+            var xpToApply = isInspect
+                ? xp * Plugin.SkillData.LockPickingSkill.InspectLockXpRatio * SEConfig.lockpickingSpeedMult.Value
+                : xp * SEConfig.lockpickingSpeedMult.Value;
+
+            // Failures recieve 25% xp
+            xpToApply = IsFailure
+                ? xpToApply * 0.25f * SEConfig.lockpickingSpeedMult.Value
+                : xpToApply * SEConfig.lockpickingSpeedMult.Value;
+
+            Plugin.Log.LogInfo($"Lockpicking xp found in table : {xpToApply} experience for door level {doorLevel} : IsInspect {isInspect} : IsFailure {IsFailure}");
+
+            _skills.Lockpicking.Current += xpToApply;
+
+            return;
+        }
+
+        Plugin.Log.LogError($"Lockpicking xp not found in table.. defaulting to {6f} experience");
+        _skills.Lockpicking.Current += 6f;
+    }
+
+    private static void DisplayInspectInformation(WorldInteractiveObject interactiveObject, GamePlayerOwner owner)
+    {
+        int doorLevel = GetLevelForDoor(owner.Player.Location, interactiveObject.Id);
+
+        // Display inspection info
+        NotificationManagerClass.DisplayMessageNotification($"Key for door is {Plugin.Keys.KeyLocale[interactiveObject.KeyId]}");
+        NotificationManagerClass.DisplayMessageNotification($"Lock level {doorLevel} chance for success {CalculateChanceForSuccess(interactiveObject, owner)}%");
+    }
+
+    private static float CalculateChanceForSuccess(WorldInteractiveObject interactiveObject, GamePlayerOwner owner)
+    {
+        int doorLevel = GetLevelForDoor(owner.Player.Location, interactiveObject.Id);
+
+        int levelDifference = _skills.Lockpicking.Level - doorLevel;
+
+        float baseSuccessChance = InspectedDoors.Contains(interactiveObject.Id)
+            ? _lockPicking.PickBaseSuccessChance + 10
+            : _lockPicking.PickBaseSuccessChance;
+
+        float difficultyModifier = _lockPicking.PickBaseDifficultyMod;
+
+        // Never below 0, never above 100
+        float successChance = UnityEngine.Mathf.Clamp(baseSuccessChance + (levelDifference * difficultyModifier), 0f, 100f);
+
+        return successChance;
+    }
+
+    private static float CalculateTimeForAction(float baseTime)
+    {
+        return (baseTime * (1 - SkillBuffs.LockpickingTimeBuff));
+    }
+
+    private sealed class LockPickActionHandler
+    {
+        public GamePlayerOwner Owner;
+        public WorldInteractiveObject InteractiveObject;
+
+        private static SkillManager _skills => Utils.GetActiveSkillManager();
+
+        public void PickLockAction(bool actionCompleted)
+        {
+            int doorLevel = GetLevelForDoor(Owner.Player.Location, InteractiveObject.Id);
+
+            // If the player completed the full timer uninterrupted
+            if (actionCompleted)
+            {
+                // Attempt was not successful
+                if (!IsAttemptSuccessful(doorLevel))
+                {
+                    Owner.DisplayPreloaderUiNotification("You failed to pick the lock...");
+
+                    // Add to the counter
+                    if (!_doorAttempts.ContainsKey(InteractiveObject.Id))
+                    {
+                        _doorAttempts.Add(InteractiveObject.Id, 1);
+                    }
+                    else
+                    {
+                        _doorAttempts[InteractiveObject.Id]++;
+                    }
+
+                    // Break the lock if more than 3 failed attempts
+                    if (_doorAttempts[InteractiveObject.Id] > Plugin.SkillData.LockPickingSkill.AttemptsBeforeBreak)
+                    {
+                        Owner.DisplayPreloaderUiNotification("You broke the lock...");
+                        InteractiveObject.KeyId = string.Empty;
+                        InteractiveObject.Operatable = false;
+                        InteractiveObject.DoorStateChanged(EDoorState.None);
+                    }
+
+                    // Apply failure xp
+                    ApplyLockPickActionXp(InteractiveObject, Owner, false, true);
+                    RemoveUseFromLockpick(doorLevel);
+
                     return;
                 }
 
-                // Remove a use from a lockpick in the inventory
-                var lockPicks = GetLockPicksInInventory();
-                Item lockpick = lockPicks.First();
-
-                if (lockpick is GClass2735 pick)
-                {
-                    pick.KeyComponent.NumberOfUsages++;
-
-                    // lockpick has no uses left, destroy it
-                    if (pick.KeyComponent.NumberOfUsages >= pick.KeyComponent.Template.MaximumNumberOfUsage && pick.KeyComponent.Template.MaximumNumberOfUsage > 0)
-                    {
-                        InventoryControllerClass inventoryController = (InventoryControllerClass)AccessTools.Field(typeof(Player), "_inventoryController").GetValue(Owner.Player);
-
-                        inventoryController.DestroyItem(lockpick);
-                    }
-                }
+                RemoveUseFromLockpick(doorLevel);
+                ApplyLockPickActionXp(InteractiveObject, Owner);
+                AccessTools.Method(typeof(WorldInteractiveObject), "Unlock").Invoke(InteractiveObject, null);
             }
-
-            /// <summary>
-            /// Returns true if the pick attempt succeeded
-            /// </summary>
-            /// <returns></returns>
-            private bool IsAttemptSuccessful(int doorLevel)
+            else
             {
-                int levelDifference = _skills.Lockpicking.Level - doorLevel;
-
-                // Player level is high enough to always pick this lock
-                if (levelDifference > 10)
-                {
-                    Plugin.Log.LogDebug("Pick attempt success chance: Player out leveled this lock: SUCCEED ");
-                    return true;
-                }
-
-                // Never below 0, never above 100
-                float successChance = CalculateChanceForSuccess(InteractiveObject, Owner);
-                float roll = UnityEngine.Random.Range(0f, 100f);
-
-                Plugin.Log.LogDebug($"Pick attempt success chance: {successChance}, Roll: {roll}");
-
-                if (successChance > roll)
-                {
-                    return true;
-                }
-
-                return false;
+                Owner.CloseObjectivesPanel();
             }
         }
 
-        private sealed class InspectLockActionHandler
+        private void RemoveUseFromLockpick(int doorLevel)
         {
-            public GamePlayerOwner Owner;
-            public WorldInteractiveObject InteractiveObject;
+            int levelDifference = _skills.Lockpicking.Level - doorLevel;
 
-            public void InspectLockAction(bool actionCompleted)
+            if (levelDifference >= 10 || SkillBuffs.LockpickingUseBuffElite.Value)
             {
-                int doorLevel = GetLevelForDoor(Owner.Player.Location, InteractiveObject.Id);
+                return;
+            }
 
-                // If the player completed the full timer uninterrupted
-                if (actionCompleted)
-                {
-                    // Only apply xp once per door per raid
-                    if (!InspectedDoors.Contains(InteractiveObject.Id))
-                    {
-                        InspectedDoors.Add(InteractiveObject.Id);
-                        ApplyLockPickActionXp(InteractiveObject, Owner, true, false);
-                    }
+            // Remove a use from a lockpick in the inventory
+            var lockPicks = GetLockPicksInInventory();
+            Item lockpick = lockPicks.First();
 
-                    DisplayInspectInformation(InteractiveObject, Owner);
-                }
-                else
+            if (lockpick is GClass2735 pick)
+            {
+                pick.KeyComponent.NumberOfUsages++;
+
+                // lockpick has no uses left, destroy it
+                if (pick.KeyComponent.NumberOfUsages >= pick.KeyComponent.Template.MaximumNumberOfUsage && pick.KeyComponent.Template.MaximumNumberOfUsage > 0)
                 {
-                    Owner.CloseObjectivesPanel();
+                    InventoryControllerClass inventoryController = (InventoryControllerClass)AccessTools.Field(typeof(Player), "_inventoryController").GetValue(Owner.Player);
+
+                    inventoryController.DestroyItem(lockpick);
                 }
+            }
+        }
+
+        /// <summary>
+        /// Returns true if the pick attempt succeeded
+        /// </summary>
+        /// <returns></returns>
+        private bool IsAttemptSuccessful(int doorLevel)
+        {
+            int levelDifference = _skills.Lockpicking.Level - doorLevel;
+
+            // Player level is high enough to always pick this lock
+            if (levelDifference > 10)
+            {
+                Plugin.Log.LogDebug("Pick attempt success chance: Player out leveled this lock: SUCCEED ");
+                return true;
+            }
+
+            // Never below 0, never above 100
+            float successChance = CalculateChanceForSuccess(InteractiveObject, Owner);
+            float roll = UnityEngine.Random.Range(0f, 100f);
+
+            Plugin.Log.LogDebug($"Pick attempt success chance: {successChance}, Roll: {roll}");
+
+            if (successChance > roll)
+            {
+                return true;
+            }
+
+            return false;
+        }
+    }
+
+    private sealed class InspectLockActionHandler
+    {
+        public GamePlayerOwner Owner;
+        public WorldInteractiveObject InteractiveObject;
+
+        public void InspectLockAction(bool actionCompleted)
+        {
+            int doorLevel = GetLevelForDoor(Owner.Player.Location, InteractiveObject.Id);
+
+            // If the player completed the full timer uninterrupted
+            if (actionCompleted)
+            {
+                // Only apply xp once per door per raid
+                if (!InspectedDoors.Contains(InteractiveObject.Id))
+                {
+                    InspectedDoors.Add(InteractiveObject.Id);
+                    ApplyLockPickActionXp(InteractiveObject, Owner, true, false);
+                }
+
+                DisplayInspectInformation(InteractiveObject, Owner);
+            }
+            else
+            {
+                Owner.CloseObjectivesPanel();
             }
         }
     }

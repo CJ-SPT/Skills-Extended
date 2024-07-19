@@ -502,6 +502,64 @@
                 "count": 3,
                 "productionLimitCount": 0,
                 "isEncoded": false
+            },
+            {
+                "_id": "669a85102566982ef62614f5",
+                "areaType": 10,
+                "requirements": [
+                  {
+                    "areaType": 10,
+                    "requiredLevel": 3,
+                    "type": "Area"
+                  },
+                  {
+                    "templateId": "5c1265fc86f7743f896a21c2",
+                    "count": 1,
+                    "isFunctional": false,
+                    "isEncoded": false,
+                    "type": "Item"
+                  },
+                  {
+                    "templateId": "6389c7f115805221fb410466",
+                    "count": 1,
+                    "isFunctional": false,
+                    "isEncoded": false,
+                    "type": "Item"
+                  },
+                  {
+                    "templateId": "5c0530ee86f774697952d952",
+                    "count": 1,
+                    "isFunctional": false,
+                    "isEncoded": false,
+                    "type": "Item"
+                  },
+                  {
+                    "templateId": "5e2aedd986f7746d404f3aa4",
+                    "count": 4,
+                    "isFunctional": false,
+                    "isEncoded": false,
+                    "type": "Item"
+                  },
+                  {
+                    "templateId": "5c94bbff86f7747ee735c08f",
+                    "count": 1,
+                    "isFunctional": false,
+                    "isEncoded": false,
+                    "type": "Item"
+                  },
+                  {
+                    "templateId": "5af04b6486f774195a3ebb49",
+                    "type": "Tool"
+                  }
+                ],
+                "productionTime": 3600,
+                "needFuelForAllProductionTime": true,
+                "locked": false,
+                "endProduct": "662400eb756ca8948fe64fe8",
+                "continuous": false,
+                "count": 1,
+                "productionLimitCount": 0,
+                "isEncoded": false
             }
         ]
     },

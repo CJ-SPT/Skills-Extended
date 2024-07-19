@@ -2,16 +2,11 @@
 using EFT.UI;
 using HarmonyLib;
 using SkillsExtended.Helpers;
-using SkillsExtended.Models;
 using SPT.Reflection.Patching;
-using SPT.Reflection.Utils;
 using System;
-using System.Net.Mime;
 using System.Reflection;
 using EFT.HealthSystem;
 using EFT.InventoryLogic;
-using TMPro;
-using UnityEngine;
 using UnityEngine.UI;
 
 namespace SkillsExtended.Patches;
@@ -116,10 +111,6 @@ internal class SkillPanelDisablePatch : ModulePatch
     {
         var skills = Plugin.Session.Profile.Skills;
         var side = Plugin.Session.Profile.Side;
-        
-        #if DEBUG
-        return true;
-        #endif
         
         if (skill.Locked)
         {

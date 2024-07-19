@@ -19,7 +19,7 @@
     "BearAkSystemsErgo": "Increases the ergonomics of Russian weapons by [{0:0.#%}]",
     "BearAkSystemsRecoil": "Reduces the recoil of Russian weapons by [{0:0.#%}]",
     "Lockpicking": "Lockpicking",
-    "LockpickingDescription": "Pick locks and gain access to rooms even if you dont have the key.",
+    "LockpickingDescription": "Pick locks and gain access to rooms even if you dont have the key. At level 25 you can use a Flipper zero to attempt to hack into keycard doors.",
     "LockpickingLevelingUpDescription": "Improved by inspecting and picking locks.",
     "LockpickingTimeReduction": "Reduces time it takes to inspect and pick locks by [{0:0.#%}]",
     "LockpickingUseElite": "You no longer break Lockpicks."

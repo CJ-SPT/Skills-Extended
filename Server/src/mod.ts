@@ -13,7 +13,6 @@ import type { IKeys } from "./Models/IKeys";
 import { Money } from "@spt/models/enums/Money";
 import { Traders } from "@spt/models/enums/Traders";
 import { BaseClasses } from "@spt/models/enums/BaseClasses";
-import { LogTextColor } from "@spt/models/spt/logging/LogTextColor";
 
 enum ItemIDS {
     Lockpick  = "6622c28aed7e3bc72e301e22",
@@ -115,7 +114,7 @@ class SkillsPlus implements IPreSptLoadMod, IPostDBLoadMod
     private CreateItems(): void
     {
         this.CreateLockpick();
-        //this.CreatePDA();
+        this.CreatePDA();
     }
 
     // Clones factory key to be used as a blank for bump lock picking
@@ -192,14 +191,14 @@ class SkillsPlus implements IPreSptLoadMod, IPostDBLoadMod
             parentId: "5c164d2286f774194c5e69fa",
             newId: ItemIDS.Pda,
             fleaPriceRoubles: 3650000,
-            handbookPriceRoubles: 75000,
+            handbookPriceRoubles: 7560000,
             handbookParentId: "5c164d2286f774194c5e69fa",
 
             locales: {
                 en: {
                     name: "Flipper zero",
                     shortName: "Flipper",
-                    description: "A hacking device used for gaining access to key card doors. Requires Lockpicking level 20 to use."
+                    description: "A hacking device used for gaining access to key card doors. Requires Lockpicking level 25 to use."
                 }
             }
         }
@@ -223,13 +222,13 @@ class SkillsPlus implements IPreSptLoadMod, IPostDBLoadMod
         peaceKeeper.assort.barter_scheme[ItemIDS.Pda] = [
             [
                 {
-                    count: 12500,
+                    count: 1000,
                     _tpl: Money.DOLLARS
                 }
             ]
         ];
         
-        peaceKeeper.assort.loyal_level_items[ItemIDS.Pda] = 3;
+        peaceKeeper.assort.loyal_level_items[ItemIDS.Pda] = 1;
     }
 
     private addCraftsToDatabase(): void

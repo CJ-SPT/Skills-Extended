@@ -58,6 +58,41 @@ namespace SkillsExtended.Helpers
             actionReturn.Actions.Add(ValidAction);
         }
 
+        public static void AddKeyCardInteraction(this KeycardDoor door, ActionsReturnClass actionReturn, GamePlayerOwner owner)
+        {
+            HackTerminalInteraction hackTerminalOperation = new(door, owner);
+
+            if (!IsDoorValidForLockPicking(door))
+            {
+                // Secondary check to prevent action showing on open or closed doors that have
+                // already been picked.
+                if (door.DoorState == EDoorState.Open || door.DoorState == EDoorState.Shut)
+                {
+                    return;
+                }
+
+                ActionsTypesClass notValidAction = new()
+                {
+                    Name = "Door cannot be opened",
+                    Disabled = door.Operatable
+                };
+
+                notValidAction.Action = new Action(hackTerminalOperation.DoorNotValid);
+                actionReturn.Actions.Add(notValidAction);
+
+                return;
+            }
+
+            ActionsTypesClass ValidAction = new()
+            {
+                Name = "Hack terminal",
+                Disabled = !door.Operatable && !LockPickingHelpers.IsFlipperZeroInInventory()
+            };
+
+            ValidAction.Action = new Action(hackTerminalOperation.TryHackTerminal);
+            actionReturn.Actions.Add(ValidAction);
+        }
+        
         public static void AddInspectInteraction(this WorldInteractiveObject interactiveObject, ActionsReturnClass actionReturn, GamePlayerOwner owner)
         {
             if (!IsValidDoorForInspect(interactiveObject))
@@ -76,7 +111,7 @@ namespace SkillsExtended.Helpers
             action.Action = new Action(keyInfoAction.TryInspectLock);
             actionReturn.Actions.Add(action);
         }
-
+        
         private static bool IsDoorValidForLockPicking(WorldInteractiveObject interactiveObject)
         {
             if (interactiveObject.DoorState != EDoorState.Locked || !interactiveObject.Operatable || !Plugin.Keys.KeyLocale.ContainsKey(interactiveObject.KeyId))
@@ -124,6 +159,31 @@ namespace SkillsExtended.Helpers
             }
         }
 
+        public sealed class HackTerminalInteraction
+        {
+            public GamePlayerOwner owner;
+            public KeycardDoor door;
+
+            public HackTerminalInteraction()
+            { }
+
+            public HackTerminalInteraction(KeycardDoor door, GamePlayerOwner owner)
+            {
+                this.door = door ?? throw new ArgumentNullException("keycard door is Null...");
+                this.owner = owner ?? throw new ArgumentNullException("Owner is null...");
+            }
+
+            public void TryHackTerminal()
+            {
+                LockPickingHelpers.HackTerminal(door, owner);
+            }
+
+            public void DoorNotValid()
+            {
+                owner.DisplayPreloaderUiNotification("This door is cannot be opened.");
+            }
+        }
+        
         public sealed class LockInspectInteraction
         {
             public GamePlayerOwner owner;

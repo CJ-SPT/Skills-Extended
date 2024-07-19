@@ -22,7 +22,11 @@ public static class Patcher
         var attribute = new CustomAttribute(attributeConstructor);
         attribute.ConstructorArguments.Add(valueArgument);
 
-        var newEnum = new FieldDefinition(EnumName, FieldAttributes.Public | FieldAttributes.Static | FieldAttributes.Literal | FieldAttributes.HasDefault, EnumClass) { Constant = CustomConstant };
+        var newEnum = new FieldDefinition(
+            EnumName, 
+            FieldAttributes.Public | FieldAttributes.Static | FieldAttributes.Literal | FieldAttributes.HasDefault, EnumClass) 
+            { Constant = CustomConstant };
+        
         newEnum.CustomAttributes.Add(attribute);
 
         return newEnum;

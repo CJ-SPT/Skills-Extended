@@ -60,7 +60,10 @@ namespace SkillsExtended
             new SkillClassCtorPatch().Enable();
             new OnScreenChangePatch().Enable();
             new OnGameStartedPatch().Enable();
-            new GetActionsClassPatch().Enable();
+            
+            new DoorActionPatch().Enable();
+            new KeycardDoorActionPatch().Enable();
+            
             new DoMedEffectPatch().Enable();
             new SetItemInHands().Enable();
 #if DEBUG
