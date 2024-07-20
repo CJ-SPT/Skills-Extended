@@ -62,29 +62,7 @@ namespace SkillsExtended.Helpers
 
             return JsonConvert.DeserializeObject<T>(req);
         }
-
-        public static bool CanGainXPForLimb(Dictionary<EBodyPart, DateTime> dict, EBodyPart bodypart)
-        {
-            if (!dict.ContainsKey(bodypart))
-            {
-                dict.Add(bodypart, DateTime.Now);
-                return true;
-            }
-            else
-            {
-                TimeSpan elapsed = DateTime.Now - dict[bodypart];
-
-                if (elapsed.TotalSeconds >= Plugin.SkillData.MedicalSkills.CoolDownTimePerLimb)
-                {
-                    dict.Remove(bodypart);
-                    return true;
-                }
-
-                Plugin.Log.LogDebug($"Time until next available xp: {Plugin.SkillData.MedicalSkills.CoolDownTimePerLimb - elapsed.TotalSeconds} seconds");
-                return false;
-            }
-        }
-
+        
         public static void GetTypes()
         {
             _idleStateType = GetIdleStateType();

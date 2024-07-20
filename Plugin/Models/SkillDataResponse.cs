@@ -33,10 +33,7 @@ namespace SkillsExtended.Models
 
         [JsonProperty("FIELDMEDICINE_XP_PER_ACTION")]
         public float FieldMedicineXpPerAction;
-
-        [JsonProperty("COOL_DOWN_TIME_PER_LIMB")]
-        public float CoolDownTimePerLimb;
-
+        
         [JsonProperty("MEDKIT_HP_BONUS")]
         public float MedkitHpBonus;
 

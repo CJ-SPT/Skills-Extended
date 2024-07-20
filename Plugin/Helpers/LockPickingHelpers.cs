@@ -13,7 +13,7 @@ namespace SkillsExtended.Helpers;
 
 internal static class LockPickingHelpers
 {
-    public static Dictionary<string, int> DoorAttempts = [];
+    public static readonly Dictionary<string, int> DoorAttempts = [];
     public static readonly List<string> InspectedDoors = [];
 
     private static SkillManager _skills => Utils.GetActiveSkillManager();

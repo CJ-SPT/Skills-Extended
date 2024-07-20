@@ -19,14 +19,14 @@ namespace SkillsExtended.Patches
             {
                 if (Plugin.SkillData.MedicalSkills.EnableFieldMedicine)
                 {
-                    Plugin.FieldMedicineScript.fieldMedicineInstanceIDs.Clear();
+                    Plugin.FieldMedicineScript.FieldMedicineInstanceIDs.Clear();
 
                     Plugin.FieldMedicineScript.FieldMedicineUpdate();
                 }
 
                 if (Plugin.SkillData.MedicalSkills.EnableFirstAid)
                 {
-                    Plugin.FirstAidScript.firstAidInstanceIDs.Clear();
+                    Plugin.FirstAidScript.FirstAidInstanceIDs.Clear();
 
                     Plugin.FirstAidScript.FirstAidUpdate();
                 }

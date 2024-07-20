@@ -8,8 +8,7 @@
     "isBundleMod": true,
     "loadBefore": [],
     "loadAfter": [],
-    "incompatibilities": [
-    ],
+    "incompatibilities": [],
     "contributors": [],
     "scripts": {
         "setup": "npm i",

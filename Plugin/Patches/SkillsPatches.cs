@@ -7,6 +7,7 @@ using System;
 using System.Reflection;
 using EFT.HealthSystem;
 using EFT.InventoryLogic;
+using SkillsExtended.Models;
 using UnityEngine.UI;
 
 namespace SkillsExtended.Patches;
@@ -21,8 +22,23 @@ internal class SkillManagerConstructorPatch : ModulePatch
     {
         int insertIndex = 12;
         
-        __instance.UsecArsystems = new SkillClass(__instance, ESkillId.UsecArsystems, ESkillClass.Special, [], SkillBuffs.UsecArBuffs());
-        __instance.BearAksystems = new SkillClass(__instance, ESkillId.BearAksystems, ESkillClass.Special, [], SkillBuffs.BearAkBuffs());
+        __instance.UsecArsystems = new SkillClass(
+            __instance, 
+            ESkillId.UsecArsystems, 
+            ESkillClass.Special, 
+            [
+                SkillBuffs.UsecRifleAction.Factor(0.1f)
+            ], 
+            SkillBuffs.UsecArBuffs());
+        
+        __instance.BearAksystems = new SkillClass(
+            __instance, 
+            ESkillId.BearAksystems, 
+            ESkillClass.Special, 
+            [
+                SkillBuffs.BearRifleAction.Factor(0.1f)
+            ], 
+            SkillBuffs.BearAkBuffs());
 
         __instance.UsecTactics = new SkillClass(__instance, ESkillId.UsecTactics, ESkillClass.Special, [], []);
         __instance.BearRawpower = new SkillClass(__instance, ESkillId.BearRawpower, ESkillClass.Special, [], []);
@@ -74,6 +90,8 @@ internal class SkillManagerConstructorPatch : ModulePatch
 
 internal class SkillClassCtorPatch : ModulePatch
 {
+    private static SkillDataResponse skillData => Plugin.SkillData;
+    
     protected override MethodBase GetTargetMethod() =>
         typeof(SkillClass).GetConstructor(
             BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, 
@@ -82,29 +100,37 @@ internal class SkillClassCtorPatch : ModulePatch
             null);
 
     [PatchPrefix]
-    public static void Prefix(SkillClass __instance, ESkillId id, ref SkillManager.SkillBuffAbstractClass[] buffs)
+    public static void Prefix(SkillClass __instance, ESkillId id, ref SkillManager.SkillBuffAbstractClass[] buffs, ref SkillManager.SkillActionClass[] actions)
     {
         if (id == ESkillId.FirstAid)
         {
             buffs = SkillBuffs.FirstAidBuffs();
+            actions = [
+                SkillBuffs.FirstAidAction.Factor(0.1f)
+            ];
         }
         
         if (id == ESkillId.FieldMedicine)
         {
             buffs = SkillBuffs.FieldMedicineBuffs();
+            actions = [
+                SkillBuffs.FieldMedicineAction.Factor(0.1f)
+            ];
         }
 
         if (id == ESkillId.Lockpicking)
         {
             buffs = SkillBuffs.LockPickingBuffs();
+            actions = [
+                SkillBuffs.LockPickAction.Factor(0.1f)
+            ];
         }
     }
 }
 
 internal class SkillPanelDisablePatch : ModulePatch
 {
-    protected override MethodBase GetTargetMethod() =>
-        typeof(SkillPanel).GetMethod("Show", BindingFlags.Public | BindingFlags.Instance);
+    protected override MethodBase GetTargetMethod() => AccessTools.Method(typeof(SkillPanel), nameof(SkillPanel.Show));
 
     [PatchPrefix]
     public static bool Prefix(SkillClass skill)
@@ -114,7 +140,7 @@ internal class SkillPanelDisablePatch : ModulePatch
         
         if (skill.Locked)
         {
-            // Skip original method and dont show skill
+            // Skip original method and don't show skill
             return false;
         }
 
