@@ -33,25 +33,23 @@ namespace SkillsExtended.Patches
 
                 if (Plugin.SkillData.UsecRifleSkill.Enabled)
                 {
-                    Plugin.UsecRifleScript.weaponInstanceIds.Clear();
+                    Plugin.UsecRifleScript.WeaponInstanceIds.Clear();
 
                     var usecWeapons = Plugin.SkillData.UsecRifleSkill;
 
-                    Plugin.UsecRifleScript.usecWeapons = Plugin.Session.Profile.Inventory.AllRealPlayerItems
+                    Plugin.UsecRifleScript.UsecWeapons = Plugin.Session.Profile.Inventory.AllRealPlayerItems
                         .Where(x => usecWeapons.Weapons.Contains(x.TemplateId));
                 }
 
-                if (Plugin.SkillData.BearRifleSkill.Enabled)
+                if (!Plugin.SkillData.BearRifleSkill.Enabled)
                 {
-                    Plugin.BearRifleScript.weaponInstanceIds.Clear();
+                    Plugin.BearRifleScript.WeaponInstanceIds.Clear();
 
                     var bearWeapons = Plugin.SkillData.BearRifleSkill;
 
-                    Plugin.BearRifleScript.bearWeapons = Plugin.Session.Profile.Inventory.AllRealPlayerItems
+                    Plugin.BearRifleScript.BearWeapons = Plugin.Session.Profile.Inventory.AllRealPlayerItems
                         .Where(x => bearWeapons.Weapons.Contains(x.TemplateId));
                 }
-
-                Utils.CheckServerModExists();
             }
         }
     }

@@ -4,127 +4,102 @@ using EFT.InventoryLogic;
 using SkillsExtended.Helpers;
 using SkillsExtended.Models;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using UnityEngine;
 
-namespace SkillsExtended.Controllers
+namespace SkillsExtended.Controllers;
+
+internal class BearRifleBehaviour : MonoBehaviour
 {
-    internal class BearRifleBehaviour : MonoBehaviour
+    private static bool _isSubscribed = false;
+
+    public readonly Dictionary<string, int> WeaponInstanceIds = [];
+    public IEnumerable<Item> BearWeapons = null;
+
+    private static SkillManager SkillManager => Utils.GetActiveSkillManager();
+    private static ISession Session => Plugin.Session;
+
+    private static GameWorld GameWorld => Singleton<GameWorld>.Instance;
+
+    private static int BearAkLevel => Session.Profile.Skills.BearAksystems.Level;
+    private static WeaponSkillData BearSkillData => Plugin.SkillData.BearRifleSkill;
+    
+    // Store an object containing the weapons original stats.
+    private readonly Dictionary<string, OrigWeaponValues> _originalWeaponValues = [];
+    
+    private void Update()
     {
-        public static bool isSubscribed = false;
+        SetupSkillManager();
 
-        public Dictionary<string, int> weaponInstanceIds = [];
+        if (SkillManager == null || BearWeapons == null) { return; }
 
-        public IEnumerable<Item> bearWeapons = null;
+        UpdateWeapons();
+    }
 
-        private SkillManager _skillManager => Utils.GetActiveSkillManager();
-
-        private ISession _session => Plugin.Session;
-
-        private GameWorld _gameWorld => Singleton<GameWorld>.Instance;
-
-        private int _bearAKLevel => _session.Profile.Skills.BearAksystems.Level;
-
-        private int _lastAppliedLevel = -1;
-
-        private WeaponSkillData _bearSkillData => Plugin.SkillData.BearRifleSkill;
+    private static void SetupSkillManager()
+    {
+        if (_isSubscribed || SkillManager is null) return;
         
-        // Store an object containing the weapons original stats.
-        private Dictionary<string, OrigWeaponValues> _originalWeaponValues = [];
-
-        private void Update()
+        if (GameWorld?.MainPlayer is null || GameWorld?.MainPlayer?.Location == "hideout")
         {
-            SetupSkillManager();
-
-            if (_skillManager == null || bearWeapons == null) { return; }
-
-            // Only run this behavior if we are BEAR, or the player has completed the USEC skill
-            if (Plugin.Session?.Profile?.Side == EPlayerSide.Bear || _skillManager.UsecArsystems.IsEliteLevel)
-            {
-                UpdateWeapons();
-            }
+            return;
         }
 
-        private void SetupSkillManager()
+        SkillManager.OnMasteringExperienceChanged += ApplyBearAkXp;
+        _isSubscribed = true;
+    }
+
+    private static void ApplyBearAkXp(MasterSkillClass action)
+    {
+        var weaponInHand = Singleton<GameWorld>.Instance.MainPlayer.HandsController.GetItem();
+
+        if (!BearSkillData.Weapons.Contains(weaponInHand.TemplateId))
         {
-            if (_gameWorld && !isSubscribed)
-            {
-                if (_gameWorld.MainPlayer == null || _gameWorld?.MainPlayer?.Location == "hideout")
-                {
-                    return;
-                }
-
-                if ((_gameWorld.MainPlayer.Side == EPlayerSide.Bear && !_skillManager.BearAksystems.IsEliteLevel)
-                    || (_skillManager.UsecArsystems.IsEliteLevel && !_skillManager.BearAksystems.IsEliteLevel)
-                    || Plugin.SkillData.DisableEliteRequirements)
-                {
-                    _skillManager.OnMasteringExperienceChanged += ApplyBearAKXp;
-                    Plugin.Log.LogDebug("BEAR AK XP ENABLED.");
-                }
-
-                isSubscribed = true;
-            }
+            return;
         }
+        
+        SkillManager.BearAksystems.Actions[0].Complete(BearSkillData.WeaponProfXp);
+    }
 
-        private void ApplyBearAKXp(MasterSkillClass action)
+    private void UpdateWeapons()
+    {
+        foreach (var item in BearWeapons)
         {
-            var weaponInHand = Singleton<GameWorld>.Instance.MainPlayer.HandsController.GetItem();
+            if (item is not Weapon weapon) return;
 
-            if (!_bearSkillData.Weapons.Contains(weaponInHand.TemplateId))
+            // Store the weapons original values
+            if (!_originalWeaponValues.ContainsKey(item.TemplateId))
             {
-                Plugin.Log.LogDebug("Invalid weapon for XP");
-                return;
+                var origVals = new OrigWeaponValues
+                {
+                    ergo = weapon.Template.Ergonomics,
+                    weaponUp = weapon.Template.RecoilForceUp,
+                    weaponBack = weapon.Template.RecoilForceBack
+                };
+
+                Plugin.Log.LogDebug($"original {weapon.LocalizedName()} ergo: {weapon.Template.Ergonomics}, up {weapon.Template.RecoilForceUp}, back {weapon.Template.RecoilForceBack}");
+
+                _originalWeaponValues.Add(item.TemplateId, origVals);
             }
 
-            _skillManager.BearAksystems.Current += _bearSkillData.WeaponProfXp * SEConfig.bearWeaponSpeedMult.Value;
-
-            Plugin.Log.LogDebug($"BEAR AK {_bearSkillData.WeaponProfXp * SEConfig.bearWeaponSpeedMult.Value} XP Gained.");
-        }
-
-        private void UpdateWeapons()
-        {
-            foreach (var item in bearWeapons)
+            //Skip instances of the weapon that are already adjusted at this level.
+            if (WeaponInstanceIds.ContainsKey(item.Id))
             {
-                if (item is not Weapon weap)
+                if (WeaponInstanceIds[item.Id] == BearAkLevel)
                 {
-                    return;
+                    continue;
                 }
 
-                // Store the weapons original values
-                if (!_originalWeaponValues.ContainsKey(item.TemplateId))
-                {
-                    var origVals = new OrigWeaponValues
-                    {
-                        ergo = weap.Template.Ergonomics,
-                        weaponUp = weap.Template.RecoilForceUp,
-                        weaponBack = weap.Template.RecoilForceBack
-                    };
-
-                    Plugin.Log.LogDebug($"original {weap.LocalizedName()} ergo: {weap.Template.Ergonomics}, up {weap.Template.RecoilForceUp}, back {weap.Template.RecoilForceBack}");
-
-                    _originalWeaponValues.Add(item.TemplateId, origVals);
-                }
-
-                //Skip instances of the weapon that are already adjusted at this level.
-                if (weaponInstanceIds.ContainsKey(item.Id))
-                {
-                    if (weaponInstanceIds[item.Id] == _bearAKLevel)
-                    {
-                        continue;
-                    }
-
-                    weaponInstanceIds.Remove(item.Id);
-                }
-
-                weap.Template.Ergonomics = _originalWeaponValues[item.TemplateId].ergo * (1 + SkillBuffs.BearAkSystemsErgoBuff);
-                weap.Template.RecoilForceUp = _originalWeaponValues[item.TemplateId].weaponUp * (1 - SkillBuffs.BearAkSystemsRecoilBuff);
-                weap.Template.RecoilForceBack = _originalWeaponValues[item.TemplateId].weaponBack * (1 - SkillBuffs.BearAkSystemsRecoilBuff);
-
-                Plugin.Log.LogDebug($"New {weap.LocalizedName()} ergo: {weap.Template.Ergonomics}, up {weap.Template.RecoilForceUp}, back {weap.Template.RecoilForceBack}");
-
-                weaponInstanceIds.Add(item.Id, _bearAKLevel);
-
-                _lastAppliedLevel = _bearAKLevel;
+                WeaponInstanceIds.Remove(item.Id);
             }
+
+            weapon.Template.Ergonomics = _originalWeaponValues[item.TemplateId].ergo * (1 + SkillBuffs.BearAkSystemsErgoBuff);
+            weapon.Template.RecoilForceUp = _originalWeaponValues[item.TemplateId].weaponUp * (1 - SkillBuffs.BearAkSystemsRecoilBuff);
+            weapon.Template.RecoilForceBack = _originalWeaponValues[item.TemplateId].weaponBack * (1 - SkillBuffs.BearAkSystemsRecoilBuff);
+
+            Plugin.Log.LogDebug($"New {weapon.LocalizedName()} ergo: {weapon.Template.Ergonomics}, up {weapon.Template.RecoilForceUp}, back {weapon.Template.RecoilForceBack}");
+
+            WeaponInstanceIds.Add(item.Id, BearAkLevel);
         }
     }
 }

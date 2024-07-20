@@ -5,8 +5,6 @@ namespace SkillsExtended.Models
 {
     public struct SkillDataResponse
     {
-        public bool DisableEliteRequirements;
-
         public MedicalSkillData MedicalSkills;
 
         public WeaponSkillData UsecRifleSkill;

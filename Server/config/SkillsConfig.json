@@ -1,12 +1,10 @@
 {
     "Locale": "en",
-    "DisableEliteRequirements": false,
     "MedicalSkills": {
         "ENABLE_FIELD_MEDICINE": true,
         "ENABLE_FIRST_AID": true,
-        "FIRSTAID_XP_PER_ACTION": 3,
-        "FIELDMEDICINE_XP_PER_ACTION": 4,
-        "COOL_DOWN_TIME_PER_LIMB": 45,
+        "FIRSTAID_XP_PER_ACTION": 2.25,
+        "FIELDMEDICINE_XP_PER_ACTION": 2.25,
         "MEDKIT_HP_BONUS": 0.50,
         "MEDKIT_HP_BONUS_ELITE": 0.70,
         "MEDICAL_SPEED_BONUS": 0.35,
@@ -32,7 +30,7 @@
     },
     "USECRifleSkill": {
         "ENABLED": true,
-        "WEAPON_PROF_XP": 1.365,
+        "WEAPON_PROF_XP": 0.15,
         "ERGO_MOD": 0.075,
         "ERGO_MOD_ELITE": 0.125,
         "RECOIL_REDUCTION": 0.075,
@@ -66,7 +64,7 @@
     },
     "BEARRifleSkill": {
         "ENABLED": true,
-        "WEAPON_PROF_XP": 1.365,
+        "WEAPON_PROF_XP": 0.15,
         "ERGO_MOD": 0.0015,
         "ERGO_MOD_ELITE": 0.05,
         "RECOIL_REDUCTION": 0.002,

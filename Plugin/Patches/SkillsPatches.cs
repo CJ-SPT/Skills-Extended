@@ -22,26 +22,35 @@ internal class SkillManagerConstructorPatch : ModulePatch
     {
         int insertIndex = 12;
         
+        // Action and buff lists intentionally empty here, this is for display list purposes only
+        
         __instance.UsecArsystems = new SkillClass(
             __instance, 
             ESkillId.UsecArsystems, 
             ESkillClass.Special, 
-            [
-                SkillBuffs.UsecRifleAction.Factor(0.1f)
-            ], 
-            SkillBuffs.UsecArBuffs());
+            [], 
+            []);
         
         __instance.BearAksystems = new SkillClass(
             __instance, 
             ESkillId.BearAksystems, 
             ESkillClass.Special, 
-            [
-                SkillBuffs.BearRifleAction.Factor(0.1f)
-            ], 
-            SkillBuffs.BearAkBuffs());
+            [], 
+            []);
 
-        __instance.UsecTactics = new SkillClass(__instance, ESkillId.UsecTactics, ESkillClass.Special, [], []);
-        __instance.BearRawpower = new SkillClass(__instance, ESkillId.BearRawpower, ESkillClass.Special, [], []);
+        __instance.UsecTactics = new SkillClass(
+            __instance, 
+            ESkillId.UsecTactics,
+            ESkillClass.Special, 
+            [], 
+            []);
+        
+        __instance.BearRawpower = new SkillClass(
+            __instance, 
+            ESkillId.BearRawpower, 
+            ESkillClass.Special, 
+            [], 
+            []);
 
         var newDisplayList = new SkillClass[___DisplayList.Length + 5];
 
@@ -90,18 +99,18 @@ internal class SkillManagerConstructorPatch : ModulePatch
 
 internal class SkillClassCtorPatch : ModulePatch
 {
-    private static SkillDataResponse skillData => Plugin.SkillData;
-    
     protected override MethodBase GetTargetMethod() =>
         typeof(SkillClass).GetConstructor(
             BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, 
             null, 
             [typeof(SkillManager), typeof(ESkillId), typeof(ESkillClass), typeof(SkillManager.SkillActionClass[]), typeof(SkillManager.SkillBuffAbstractClass[])], 
             null);
-
+    
     [PatchPrefix]
     public static void Prefix(SkillClass __instance, ESkillId id, ref SkillManager.SkillBuffAbstractClass[] buffs, ref SkillManager.SkillActionClass[] actions)
     {
+        // This is where we set all of our buffs and actions, done as a constructor patch, so they always exist when we need them
+        
         if (id == ESkillId.FirstAid)
         {
             buffs = SkillBuffs.FirstAidBuffs();
@@ -125,6 +134,24 @@ internal class SkillClassCtorPatch : ModulePatch
                 SkillBuffs.LockPickAction.Factor(0.1f)
             ];
         }
+
+        if (id == ESkillId.UsecArsystems)
+        {
+            buffs = SkillBuffs.UsecArBuffs();
+            actions =
+            [
+                SkillBuffs.UsecRifleAction.Factor(0.5f)
+            ];
+        }
+        
+        if (id == ESkillId.BearAksystems)
+        {
+            buffs = SkillBuffs.BearAkBuffs();
+            actions =
+            [
+                SkillBuffs.BearRifleAction.Factor(0.5f)
+            ];
+        }
     }
 }
 
@@ -135,7 +162,6 @@ internal class SkillPanelDisablePatch : ModulePatch
     [PatchPrefix]
     public static bool Prefix(SkillClass skill)
     {
-        var skills = Plugin.Session.Profile.Skills;
         var side = Plugin.Session.Profile.Side;
         
         if (skill.Locked)
@@ -143,42 +169,18 @@ internal class SkillPanelDisablePatch : ModulePatch
             // Skip original method and don't show skill
             return false;
         }
-
-        // Usec AR systems
-        if (skill.Id == ESkillId.UsecArsystems && side == EPlayerSide.Bear && !skills.BearAksystems.IsEliteLevel)
-        {
-            if (Plugin.SkillData.DisableEliteRequirements)
-            {
-                return true;
-            }
-
-            // Skip original method and dont show skill
-            return false;
-        }
-
+        
         // Usec Tactics
         if (skill.Id == ESkillId.UsecTactics && side == EPlayerSide.Bear)
         {
-            // Skip original method and dont show skill
+            // Skip original method and don't show skill
             return false;
         }
-
-        // Bear AK systems
-        if (skill.Id == ESkillId.BearAksystems && side == EPlayerSide.Usec && !skills.UsecArsystems.IsEliteLevel)
-        {
-            if (Plugin.SkillData.DisableEliteRequirements)
-            {
-                return true;
-            }
-
-            // Skip original method and dont show skill
-            return false;
-        }
-
+        
         // Bear Raw Power
         if (skill.Id == ESkillId.BearRawpower && side == EPlayerSide.Usec)
         {
-            // Skip original method and dont show skill
+            // Skip original method and don't show skill
             return false;
         }
 
