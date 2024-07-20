@@ -292,7 +292,8 @@
                 "Shopping_Mall_parking_work_00055": 3,
                 "Shopping_Mall_OLI_00037": 10,
                 "Shopping_Mall_OLI_00039": 10,
-                "Shopping_Mall_OLI_00043": 10
+                "Shopping_Mall_OLI_00043": 10,
+                "Shopping_Mall_2_00041": 15
             },
             "Reserve": {
                 "00469": 25,
@@ -366,7 +367,8 @@
                 "shoreline_DesignStuff_00254": 5,
                 "shoreline_DesignStuff_00169": 5,
                 "shoreline_DesignStuff_00197": 5,
-                "shoreline_DesignStuff_00086": 5
+                "shoreline_DesignStuff_00086": 5,
+                "shoreline_hydro_station_00010": 15
             },
             "Labs": {
                 "00043": 15,
@@ -407,7 +409,8 @@
                 "Lighthouse_WaterStation_00017": 5,
                 "trunk_Lighthouse_Extension_00005": 1,
                 "Lighthouse_SummerHotel_00051": 5,
-                "Lighthouse_SummerHotel_00053": 5
+                "Lighthouse_SummerHotel_00053": 5,
+                "Lighthouse_SwampVillage_00007": 15
             },
             "Streets": {
                 "door_City_SE_01_Lenina_74_Indoor_00000": 5,
