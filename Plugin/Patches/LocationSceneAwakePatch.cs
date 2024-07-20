@@ -42,6 +42,7 @@ namespace SkillsExtended.Patches
             Plugin.Log.LogDebug($"Player map id: {__instance.MainPlayer.Location}");
 #endif
             LockPickingHelpers.InspectedDoors.Clear();
+            LockPickingHelpers.DoorAttempts.Clear();
         }
     }
 }

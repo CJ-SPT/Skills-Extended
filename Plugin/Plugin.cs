@@ -67,8 +67,8 @@ namespace SkillsExtended
             new DoMedEffectPatch().Enable();
             new SetItemInHands().Enable();
 #if DEBUG
-            Log.LogWarning("PRE RELEASE ALPHA BUILD - NO SUPPORT");
-            Log.LogWarning("COMMANDS ENABLED");
+            Logger.LogWarning("PRE RELEASE ALPHA BUILD - NO SUPPORT");
+            Logger.LogWarning("COMMANDS ENABLED");
             new LocationSceneAwakePatch().Enable();
 #endif
             SEConfig.InitializeConfig(Config);

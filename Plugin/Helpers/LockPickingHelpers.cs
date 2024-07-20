@@ -13,7 +13,7 @@ namespace SkillsExtended.Helpers;
 
 internal static class LockPickingHelpers
 {
-    private static Dictionary<string, int> _doorAttempts = [];
+    public static Dictionary<string, int> DoorAttempts = [];
     public static readonly List<string> InspectedDoors = [];
 
     private static SkillManager _skills => Utils.GetActiveSkillManager();
@@ -46,7 +46,7 @@ internal static class LockPickingHelpers
         }
 
         // Check if the locks broken
-        if (_doorAttempts.TryGetValue(interactiveObject.Id, out var val))
+        if (DoorAttempts.TryGetValue(interactiveObject.Id, out var val))
         {
             if (val > 3)
             {
@@ -114,7 +114,7 @@ internal static class LockPickingHelpers
         }
         
         // Check if the locks broken
-        if (_doorAttempts.TryGetValue(door.Id, out var val))
+        if (DoorAttempts.TryGetValue(door.Id, out var val))
         {
             if (val > 3)
             {
@@ -342,17 +342,17 @@ internal static class LockPickingHelpers
                     Owner.DisplayPreloaderUiNotification("You failed to pick the lock...");
 
                     // Add to the counter
-                    if (!_doorAttempts.ContainsKey(InteractiveObject.Id))
+                    if (!DoorAttempts.ContainsKey(InteractiveObject.Id))
                     {
-                        _doorAttempts.Add(InteractiveObject.Id, 1);
+                        DoorAttempts.Add(InteractiveObject.Id, 1);
                     }
                     else
                     {
-                        _doorAttempts[InteractiveObject.Id]++;
+                        DoorAttempts[InteractiveObject.Id]++;
                     }
 
                     // Break the lock if more than 3 failed attempts
-                    if (_doorAttempts[InteractiveObject.Id] > Plugin.SkillData.LockPickingSkill.AttemptsBeforeBreak)
+                    if (DoorAttempts[InteractiveObject.Id] > Plugin.SkillData.LockPickingSkill.AttemptsBeforeBreak)
                     {
                         Owner.DisplayPreloaderUiNotification("You broke the lock...");
                         InteractiveObject.KeyId = string.Empty;
