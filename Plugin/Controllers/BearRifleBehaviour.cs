@@ -58,7 +58,7 @@ internal class BearRifleBehaviour : MonoBehaviour
             return;
         }
         
-        SkillManager.BearAksystems.Actions[0].Complete(BearSkillData.WeaponProfXp);
+        SkillBuffs.BearRifleAction.Complete(BearSkillData.WeaponProfXp);
     }
 
     private void UpdateWeapons()

@@ -84,23 +84,18 @@ internal static class Helpers
 
         var xpExists = Plugin.SkillData.LockPickingSkill.XpTable.TryGetValue(doorLevel.ToString(), out var xp);
 
-        if (xpExists)
-        {
-            var xpToApply = isInspect
-                ? xp * Plugin.SkillData.LockPickingSkill.InspectLockXpRatio
-                : xp;
+        if (!xpExists) return;
+        
+        var xpToApply = isInspect
+            ? xp * Plugin.SkillData.LockPickingSkill.InspectLockXpRatio
+            : xp;
 
-            // Failures recieve 25% xp
-            xpToApply = isFailure
-                ? xpToApply * 0.25f
-                : xpToApply;
+        // Failures recieve 25% xp
+        xpToApply = isFailure
+            ? xpToApply * 0.25f
+            : xpToApply;
             
-            _skills.Lockpicking.Actions[0].Complete(xpToApply);
-            return;
-        }
-
-
-        _skills.Lockpicking.Current += 6f;
+        SkillBuffs.LockPickAction.Complete(xpToApply);
     }
 
     public static void DisplayInspectInformation(WorldInteractiveObject interactiveObject, GamePlayerOwner owner)

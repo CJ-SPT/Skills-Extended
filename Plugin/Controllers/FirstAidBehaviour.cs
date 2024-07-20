@@ -52,7 +52,7 @@ public class FirstAidBehaviour : MonoBehaviour
     {
         var xpGain = Plugin.SkillData.MedicalSkills.FirstAidXpPerAction;
         
-        SkillManager.FirstAid.Actions[0].Complete(xpGain);
+        SkillBuffs.FirstAidAction.Complete(xpGain);
     }
 
     private void ApplyFirstAidSpeedBonus(Item item)

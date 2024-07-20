@@ -54,7 +54,7 @@ public class UsecRifleBehaviour : MonoBehaviour
             return;
         }
 
-        SkillManager.UsecArsystems.Actions[0].Complete(UsecSkillData.WeaponProfXp);
+        SkillBuffs.UsecRifleAction.Complete(UsecSkillData.WeaponProfXp);
     }
 
     private void UpdateWeapons()
