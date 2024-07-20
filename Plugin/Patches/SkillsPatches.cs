@@ -20,7 +20,7 @@ internal class SkillManagerConstructorPatch : ModulePatch
     [PatchPostfix]
     public static void Postfix(SkillManager __instance, ref SkillClass[] ___DisplayList, ref SkillClass[] ___Skills)
     {
-        int insertIndex = 12;
+        var insertIndex = 12;
         
         // Action and buff lists intentionally empty here, this is for display list purposes only
         
