@@ -26,7 +26,6 @@ public class Plugin : BaseUnityPlugin
     public static ISession Session;
 
     public static GameWorld GameWorld => Singleton<GameWorld>.Instance;
-    public static Player Player => Singleton<GameWorld>.Instance.MainPlayer;
     public static IEnumerable<Item> Items => Session?.Profile?.Inventory?.AllRealPlayerItems;
 
     // Contains key information
@@ -43,7 +42,6 @@ public class Plugin : BaseUnityPlugin
     internal static FieldMedicineBehaviour FieldMedicineScript;
     internal static UsecRifleBehaviour UsecRifleScript;
     internal static BearRifleBehaviour BearRifleScript;
-    internal static BearRawPowerBehavior BearPowerScript;
 
     internal static ManualLogSource Log;
 
@@ -112,20 +110,10 @@ public class Plugin : BaseUnityPlugin
         {
             UsecRifleScript = Hook.AddComponent<UsecRifleBehaviour>();
         }
-
-        if (SkillData.UsecTacticsSkill.Enabled)
-        {
-            // TODO
-        }
-
+        
         if (SkillData.BearRifleSkill.Enabled)
         {
             BearRifleScript = Hook.AddComponent<BearRifleBehaviour>();
-        }
-
-        if (SkillData.BearRawPowerSkill.Enabled)
-        {
-            //BearPowerScript = Hook.AddComponent<BearRawPowerBehavior>();
         }
     }
 

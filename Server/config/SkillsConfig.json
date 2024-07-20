@@ -569,16 +569,5 @@
                 "isEncoded": false
             }
         ]
-    },
-    "UsecTacticsSkill": {
-        "ENABLED": false,
-        "USEC_INERTIA_RED_BONUS": 0.002,
-        "USEC_INERTIA_RED_BONUS_ELITE": 0.10
-    },
-    "BearRawPowerSkill": {
-        "ENABLED": false,
-        "BEAR_POWER_HP_BONUS": 0.001,
-        "BEAR_POWER_HP_BONUS_ELITE": 0.05,
-        "BEAR_POWER_UPDATE_TIME": 1
     }
 }

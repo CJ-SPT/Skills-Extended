@@ -38,43 +38,23 @@ internal class SkillManagerConstructorPatch : ModulePatch
             [], 
             []);
 
-        __instance.UsecTactics = new SkillClass(
-            __instance, 
-            ESkillId.UsecTactics,
-            ESkillClass.Special, 
-            [], 
-            []);
-        
-        __instance.BearRawpower = new SkillClass(
-            __instance, 
-            ESkillId.BearRawpower, 
-            ESkillClass.Special, 
-            [], 
-            []);
-
-        var newDisplayList = new SkillClass[___DisplayList.Length + 5];
+        var newDisplayList = new SkillClass[___DisplayList.Length + 3];
 
         Array.Copy(___DisplayList, newDisplayList, insertIndex);
 
         newDisplayList[12] = __instance.UsecArsystems;
         newDisplayList[12 + 1] = __instance.BearAksystems;
+        newDisplayList[12 + 2] = __instance.Lockpicking;
 
-        newDisplayList[12 + 2] = __instance.UsecTactics;
-        newDisplayList[12 + 3] = __instance.BearRawpower;
-        newDisplayList[12 + 4] = __instance.Lockpicking;
-
-        Array.Copy(___DisplayList, insertIndex, newDisplayList, insertIndex + 5, ___DisplayList.Length - insertIndex);
+        Array.Copy(___DisplayList, insertIndex, newDisplayList, insertIndex + 3, ___DisplayList.Length - insertIndex);
 
         ___DisplayList = newDisplayList;
 
-        Array.Resize(ref ___Skills, ___Skills.Length + 5);
+        Array.Resize(ref ___Skills, ___Skills.Length + 3);
 
         ___Skills[___Skills.Length - 1] = __instance.UsecArsystems;
         ___Skills[___Skills.Length - 2] = __instance.BearAksystems;
-
-        ___Skills[___Skills.Length - 3] = __instance.UsecTactics;
-        ___Skills[___Skills.Length - 4] = __instance.BearRawpower;
-        ___Skills[___Skills.Length - 5] = __instance.Lockpicking;
+        ___Skills[___Skills.Length - 3] = __instance.Lockpicking;
 
         // If the skill is not enabled, lock it
         AccessTools.Field(typeof(SkillClass), "Locked").SetValue(__instance.UsecArsystems,
@@ -82,13 +62,7 @@ internal class SkillManagerConstructorPatch : ModulePatch
 
         AccessTools.Field(typeof(SkillClass), "Locked").SetValue(__instance.BearAksystems,
             !Plugin.SkillData.BearRifleSkill.Enabled);
-
-        AccessTools.Field(typeof(SkillClass), "Locked").SetValue(__instance.UsecTactics,
-            !Plugin.SkillData.UsecTacticsSkill.Enabled);
-
-        AccessTools.Field(typeof(SkillClass), "Locked").SetValue(__instance.BearRawpower,
-            !Plugin.SkillData.BearRawPowerSkill.Enabled);
-
+        
         AccessTools.Field(typeof(SkillClass), "Locked").SetValue(__instance.Lockpicking,
             !Plugin.SkillData.LockPickingSkill.Enabled);
         
