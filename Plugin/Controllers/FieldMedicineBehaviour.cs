@@ -47,8 +47,6 @@ internal class FieldMedicineBehaviour : MonoBehaviour
         var xpGain = Plugin.SkillData.MedicalSkills.FieldMedicineXpPerAction;
         
         SkillManager.FieldMedicine.Actions[0].Complete(xpGain);
-
-        Plugin.Log.LogDebug($"Skill: {SkillManager.FieldMedicine.Id} Side: {Plugin.Player.Side} Gained: {xpGain * SEConfig.fieldMedicineSpeedMult.Value} exp.");
     }
 
     private void ApplyFieldMedicineSpeedBonus(Item item)
