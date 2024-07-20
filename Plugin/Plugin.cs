@@ -66,7 +66,6 @@ public class Plugin : BaseUnityPlugin
         new KeycardDoorActionPatch().Enable();
 
         new DoMedEffectPatch().Enable();
-        new SetItemInHands().Enable();
 #if DEBUG
         Logger.LogWarning("PRE RELEASE BUILD - NO SUPPORT");
         new LocationSceneAwakePatch().Enable();
