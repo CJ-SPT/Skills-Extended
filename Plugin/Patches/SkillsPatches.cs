@@ -152,6 +152,15 @@ internal class SkillClassCtorPatch : ModulePatch
                 SkillBuffs.BearRifleAction.Factor(0.5f)
             ];
         }
+
+        if (id == ESkillId.Lockpicking)
+        {
+            buffs = SkillBuffs.LockPickingBuffs();
+            actions = 
+            [
+                SkillBuffs.LockPickAction.Factor(0.25f)
+            ];
+        }
     }
 }
 

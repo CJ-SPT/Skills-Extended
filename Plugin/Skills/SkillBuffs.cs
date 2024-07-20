@@ -5,7 +5,7 @@ namespace SkillsExtended.Helpers;
 
 public static class SkillBuffs
 {
-    private static SkillDataResponse skillData => Plugin.SkillData;
+    private static SkillDataResponse SkillData => Plugin.SkillData;
     
     public static readonly SkillManager.SkillBuffClass FirstAidSpeedBuff = new SkillManager.SkillBuffClass
     {
@@ -67,18 +67,18 @@ public static class SkillBuffs
             ? new SkillManager.SkillBuffAbstractClass[]
             {
                 FirstAidSpeedBuff
-                    .Max(skillData.MedicalSkills.MedicalSpeedBonus)
-                    .Elite(skillData.MedicalSkills.MedicalSpeedBonusElite),
+                    .Max(SkillData.MedicalSkills.MedicalSpeedBonus)
+                    .Elite(SkillData.MedicalSkills.MedicalSpeedBonusElite),
                 
                 FirstAidHpBuff
-                    .Max(skillData.MedicalSkills.MedkitHpBonus)
-                    .Elite(skillData.MedicalSkills.MedkitHpBonusElite),
+                    .Max(SkillData.MedicalSkills.MedkitHpBonus)
+                    .Elite(SkillData.MedicalSkills.MedkitHpBonusElite),
             }
             : new SkillManager.SkillBuffAbstractClass[]
             {
                 FirstAidSpeedBuff
-                    .Max(skillData.MedicalSkills.MedkitHpBonus)
-                    .Elite(skillData.MedicalSkills.MedkitHpBonusElite),
+                    .Max(SkillData.MedicalSkills.MedkitHpBonus)
+                    .Elite(SkillData.MedicalSkills.MedkitHpBonusElite),
             };
     }
     
@@ -87,8 +87,8 @@ public static class SkillBuffs
         return new SkillManager.SkillBuffAbstractClass[]
         {
             FieldMedicineSpeedBuff
-                .Max(skillData.MedicalSkills.MedicalSpeedBonus)
-                .Elite(skillData.MedicalSkills.MedicalSpeedBonusElite),
+                .Max(SkillData.MedicalSkills.MedicalSpeedBonus)
+                .Elite(SkillData.MedicalSkills.MedicalSpeedBonusElite),
         };
     }
     
@@ -97,12 +97,12 @@ public static class SkillBuffs
         return new SkillManager.SkillBuffAbstractClass[]
         {
             UsecArSystemsErgoBuff
-                .Max(skillData.UsecRifleSkill.ErgoMod)
-                .Elite(skillData.UsecRifleSkill.ErgoModElite),
+                .Max(SkillData.UsecRifleSkill.ErgoMod)
+                .Elite(SkillData.UsecRifleSkill.ErgoModElite),
             
             UsecArSystemsRecoilBuff
-                .Max(skillData.UsecRifleSkill.RecoilReduction)
-                .Elite(skillData.UsecRifleSkill.RecoilReductionElite),
+                .Max(SkillData.UsecRifleSkill.RecoilReduction)
+                .Elite(SkillData.UsecRifleSkill.RecoilReductionElite),
         };
     }
     
@@ -111,12 +111,12 @@ public static class SkillBuffs
         return new SkillManager.SkillBuffAbstractClass[]
         {
             BearAkSystemsErgoBuff
-                .Max(skillData.BearRifleSkill.ErgoMod)
-                .Elite(skillData.BearRifleSkill.ErgoModElite),
+                .Max(SkillData.BearRifleSkill.ErgoMod)
+                .Elite(SkillData.BearRifleSkill.ErgoModElite),
             
             BearAkSystemsRecoilBuff
-                .Max(skillData.BearRifleSkill.RecoilReduction)
-                .Elite(skillData.BearRifleSkill.RecoilReductionElite),
+                .Max(SkillData.BearRifleSkill.RecoilReduction)
+                .Elite(SkillData.BearRifleSkill.RecoilReductionElite),
         };
     }
     
@@ -125,8 +125,8 @@ public static class SkillBuffs
         return new SkillManager.SkillBuffAbstractClass[]
         {
             LockpickingTimeBuff
-                .Max(skillData.LockPickingSkill.TimeReduction)
-                .Elite(skillData.LockPickingSkill.TimeReductionElite),
+                .Max(SkillData.LockPickingSkill.TimeReduction)
+                .Elite(SkillData.LockPickingSkill.TimeReductionElite),
             
             LockpickingUseBuffElite
         };

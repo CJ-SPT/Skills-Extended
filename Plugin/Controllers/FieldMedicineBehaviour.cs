@@ -6,6 +6,7 @@ using SkillsExtended.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using SkillsExtended.Skills;
 using UnityEngine;
 
 namespace SkillsExtended.Controllers;

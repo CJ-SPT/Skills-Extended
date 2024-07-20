@@ -4,6 +4,7 @@ using EFT.InventoryLogic;
 using SkillsExtended.Helpers;
 using SkillsExtended.Models;
 using System.Collections.Generic;
+using SkillsExtended.Skills;
 using UnityEngine;
 
 namespace SkillsExtended.Controllers;

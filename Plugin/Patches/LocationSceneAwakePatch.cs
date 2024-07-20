@@ -2,6 +2,7 @@
 using SkillsExtended.Helpers;
 using SPT.Reflection.Patching;
 using System.Reflection;
+using SkillsExtended.LockPicking;
 
 namespace SkillsExtended.Patches
 {
@@ -41,8 +42,8 @@ namespace SkillsExtended.Patches
 #if DEBUG
             Plugin.Log.LogDebug($"Player map id: {__instance.MainPlayer.Location}");
 #endif
-            LockPickingHelpers.InspectedDoors.Clear();
-            LockPickingHelpers.DoorAttempts.Clear();
+            LockPicking.Helpers.InspectedDoors.Clear();
+            LockPicking.Helpers.DoorAttempts.Clear();
         }
     }
 }
