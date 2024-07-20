@@ -1,7 +1,7 @@
 ﻿using EFT;
 using SkillsExtended.Models;
 
-namespace SkillsExtended.Helpers;
+namespace SkillsExtended.Skills;
 
 public class SkillManagerExt
 {

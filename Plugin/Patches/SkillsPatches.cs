@@ -1,14 +1,13 @@
 ﻿using EFT;
 using EFT.UI;
 using HarmonyLib;
-using SkillsExtended.Helpers;
 using SPT.Reflection.Patching;
 using System;
 using System.Reflection;
 using Comfort.Common;
 using EFT.HealthSystem;
 using EFT.InventoryLogic;
-using SkillsExtended.Models;
+using SkillsExtended.Skills;
 using UnityEngine.UI;
 
 namespace SkillsExtended.Patches;

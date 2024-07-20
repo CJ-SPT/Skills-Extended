@@ -6,6 +6,7 @@ using SkillsExtended.Models;
 using System.Collections.Generic;
 using System.Linq;
 using SkillsExtended.Helpers;
+using SkillsExtended.Skills;
 
 namespace SkillsExtended.LockPicking;
 

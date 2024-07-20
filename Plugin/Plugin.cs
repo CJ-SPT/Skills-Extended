@@ -14,6 +14,7 @@ using SPT.Common.Http;
 using SPT.Reflection.Utils;
 using System;
 using System.Collections.Generic;
+using SkillsExtended.Skills;
 using UnityEngine;
 
 namespace SkillsExtended;
