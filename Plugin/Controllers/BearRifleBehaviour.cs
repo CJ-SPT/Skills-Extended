@@ -19,6 +19,8 @@ internal class BearRifleBehaviour : MonoBehaviour
     private static SkillManager SkillManager => Utils.GetActiveSkillManager();
     private static ISession Session => Plugin.Session;
 
+    private static SkillManagerExt SkillMgrExt => Singleton<SkillManagerExt>.Instance;
+    
     private static GameWorld GameWorld => Singleton<GameWorld>.Instance;
 
     private static int BearAkLevel => Session.Profile.Skills.BearAksystems.Level;
@@ -58,7 +60,7 @@ internal class BearRifleBehaviour : MonoBehaviour
             return;
         }
         
-        SkillBuffs.BearRifleAction.Complete(BearSkillData.WeaponProfXp);
+        SkillMgrExt.BearRifleAction.Complete(BearSkillData.WeaponProfXp);
     }
 
     private void UpdateWeapons()
@@ -92,10 +94,10 @@ internal class BearRifleBehaviour : MonoBehaviour
 
                 WeaponInstanceIds.Remove(item.Id);
             }
-
-            weapon.Template.Ergonomics = _originalWeaponValues[item.TemplateId].ergo * (1 + SkillBuffs.BearAkSystemsErgoBuff);
-            weapon.Template.RecoilForceUp = _originalWeaponValues[item.TemplateId].weaponUp * (1 - SkillBuffs.BearAkSystemsRecoilBuff);
-            weapon.Template.RecoilForceBack = _originalWeaponValues[item.TemplateId].weaponBack * (1 - SkillBuffs.BearAkSystemsRecoilBuff);
+            
+            weapon.Template.Ergonomics = _originalWeaponValues[item.TemplateId].ergo * (1 + SkillMgrExt.BearAkSystemsErgoBuff);
+            weapon.Template.RecoilForceUp = _originalWeaponValues[item.TemplateId].weaponUp * (1 - SkillMgrExt.BearAkSystemsRecoilBuff);
+            weapon.Template.RecoilForceBack = _originalWeaponValues[item.TemplateId].weaponBack * (1 - SkillMgrExt.BearAkSystemsRecoilBuff);
 
             Plugin.Log.LogDebug($"New {weapon.LocalizedName()} ergo: {weapon.Template.Ergonomics}, up {weapon.Template.RecoilForceUp}, back {weapon.Template.RecoilForceBack}");
 

@@ -9,9 +9,9 @@ using FieldAttributes = Mono.Cecil.FieldAttributes;
 public static class Patcher
 {
     public static IEnumerable<string> TargetDLLs { get; } = new string[] { "Assembly-CSharp.dll" };
-
-    public static TypeDefinition skillsClass;
-
+    
+    public static TypeDefinition SkillManager;
+    
     private static FieldDefinition CreateNewEnum(ref AssemblyDefinition assembly ,string AttributeName, string EnumName, TypeDefinition EnumClass, int CustomConstant)
     {
         var enumAttributeClass = assembly.MainModule.GetType("GAttribute21");
@@ -36,7 +36,6 @@ public static class Patcher
     {
         // New Buffs Enums
         var buffEnums = assembly.MainModule.GetType("EFT.EBuffId");
-        var skillBuffClass = skillsClass.NestedTypes.FirstOrDefault(t => t.Name == "SkillBuff");
 
         var firstAidHealingSpeedEnum = CreateNewEnum(
             ref assembly, 
@@ -116,23 +115,16 @@ public static class Patcher
         buffEnums.Fields.Add(lockpickingTimeReduction);
         buffEnums.Fields.Add(lockpickingUseElite);
     }
-
-    private static void AddSkillFields(ref AssemblyDefinition assembly)
-    {
-        return;
-    }
     
     public static void Patch(ref AssemblyDefinition assembly)
     {
         try
         {
-            //Set Global Vars
-            skillsClass = assembly.MainModule.GetType("EFT.SkillManager");
-
-            AddSkillFields(ref assembly);
+            SkillManager = assembly.MainModule.GetType("EFT.SkillManager");
+            
             PatchNewBuffs(ref assembly);
-
-            Logger.CreateLogSource("Skills Extended Prepatcher").LogInfo("Patching Complete!");
+            
+            Logger.CreateLogSource("Skills Extended PrePatch").LogInfo("Patching Complete!");
         } catch (Exception ex)
         {
             // Get stack trace for the exception with source file information
@@ -142,7 +134,7 @@ public static class Patcher
             // Get the line number from the stack frame
             var line = frame.GetFileLineNumber();
 
-            Logger.CreateLogSource("Skills Extended Prepatcher").LogInfo("Error When Patching: " + ex.Message + " - Line " + line);
+            Logger.CreateLogSource("Skills Extended PrePatch").LogInfo("Error When Patching: " + ex.Message + " - Line " + line);
         }
     }
 }

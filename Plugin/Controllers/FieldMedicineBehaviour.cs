@@ -6,6 +6,7 @@ using SkillsExtended.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Comfort.Common;
 using SkillsExtended.Skills;
 using UnityEngine;
 
@@ -19,7 +20,9 @@ internal class FieldMedicineBehaviour : MonoBehaviour
 
     private static MedicalSkillData SkillData => Plugin.SkillData.MedicalSkills;
 
-    private static float FmPmcSpeedBonus => 1f - SkillBuffs.FieldMedicineSpeedBuff;
+    private static SkillManagerExt SkillMgrExt => Singleton<SkillManagerExt>.Instance;
+    
+    private static float FmPmcSpeedBonus => 1f - SkillMgrExt.FieldMedicineSpeedBuff;
 
     private readonly Dictionary<string, HealthEffectValues> _originalHealthEffectValues = [];
 
@@ -46,7 +49,7 @@ internal class FieldMedicineBehaviour : MonoBehaviour
     {
         var xpGain = Plugin.SkillData.MedicalSkills.FieldMedicineXpPerAction;
         
-        SkillBuffs.FieldMedicineAction.Complete(xpGain);
+        SkillMgrExt.FieldMedicineAction.Complete(xpGain);
     }
 
     private void ApplyFieldMedicineSpeedBonus(Item item)

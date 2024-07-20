@@ -2,9 +2,7 @@
 using EFT;
 using EFT.Interactive;
 using EFT.InventoryLogic;
-using HarmonyLib;
 using SkillsExtended.Models;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using SkillsExtended.Helpers;
@@ -95,7 +93,7 @@ internal static class Helpers
             ? xpToApply * 0.25f
             : xpToApply;
             
-        SkillBuffs.LockPickAction.Complete(xpToApply);
+        Singleton<SkillManagerExt>.Instance.LockPickAction.Complete(xpToApply);
     }
 
     public static void DisplayInspectInformation(WorldInteractiveObject interactiveObject, GamePlayerOwner owner)
@@ -127,6 +125,8 @@ internal static class Helpers
 
     public static float CalculateTimeForAction(float baseTime)
     {
-        return (baseTime * (1 - SkillBuffs.LockpickingTimeBuff));
+        var skillMgrExt = Singleton<SkillManagerExt>.Instance;
+        
+        return (baseTime * (1 - skillMgrExt.LockPickingTimeBuff));
     }
 }

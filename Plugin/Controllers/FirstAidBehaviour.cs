@@ -6,6 +6,7 @@ using SkillsExtended.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Comfort.Common;
 using SkillsExtended.Skills;
 using UnityEngine;
 
@@ -16,7 +17,8 @@ public class FirstAidBehaviour : MonoBehaviour
     private readonly Dictionary<string, MedKitValues> _originalMedKitValues = [];
 
     private static SkillManager SkillManager => Utils.GetActiveSkillManager();
-
+    private static SkillManagerExt SkillMgrExt => Singleton<SkillManagerExt>.Instance;
+    
     private int _lastAppliedLevel = -1;
 
     private static MedicalSkillData SkillData => Plugin.SkillData.MedicalSkills;
@@ -30,8 +32,8 @@ public class FirstAidBehaviour : MonoBehaviour
 
     private readonly Dictionary<string, HealthEffectValues> _originalHealthEffectValues = [];
 
-    private static float FaPmcSpeedBonus => 1f - SkillBuffs.FirstAidSpeedBuff;
-    private static float FaHpBonus => 1 + SkillBuffs.FirstAidHpBuff;
+    private static float FaPmcSpeedBonus => 1f - SkillMgrExt.FirstAidSpeedBuff;
+    private static float FaHpBonus => 1 + SkillMgrExt.FirstAidHpBuff;
 
     private void Update()
     {
@@ -52,7 +54,7 @@ public class FirstAidBehaviour : MonoBehaviour
     {
         var xpGain = Plugin.SkillData.MedicalSkills.FirstAidXpPerAction;
         
-        SkillBuffs.FirstAidAction.Complete(xpGain);
+        SkillMgrExt.FirstAidAction.Complete(xpGain);
     }
 
     private void ApplyFirstAidSpeedBonus(Item item)

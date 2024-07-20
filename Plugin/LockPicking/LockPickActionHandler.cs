@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Comfort.Common;
 using EFT;
 using EFT.Interactive;
 using HarmonyLib;
@@ -64,7 +65,9 @@ public sealed class LockPickActionHandler
     {
         var levelDifference = _skills.Lockpicking.Level - doorLevel;
 
-        if (levelDifference >= 10 || SkillBuffs.LockpickingUseBuffElite.Value)
+        var skillMgrExt = Singleton<SkillManagerExt>.Instance;
+        
+        if (levelDifference >= 10 || skillMgrExt.LockPickingUseBuffElite.Value)
         {
             return;
         }

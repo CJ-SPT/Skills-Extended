@@ -3,6 +3,8 @@ using EFT.InventoryLogic;
 using SPT.Reflection.Patching;
 using System.Linq;
 using System.Reflection;
+using EFT.HealthSystem;
+using HarmonyLib;
 
 namespace SkillsExtended.Patches
 {
@@ -10,32 +12,31 @@ namespace SkillsExtended.Patches
     {
         protected override MethodBase GetTargetMethod()
         {
-            return typeof(Player).GetMethods().First(m =>
-                m.Name == "SetInHands" && m.GetParameters()[0].Name == "meds");
+            return AccessTools.Method(typeof(ActiveHealthController), nameof(ActiveHealthController.DoMedEffect));
         }
 
         [PatchPrefix]
-        public static void Prefix(Player __instance, MedsClass meds, EBodyPart bodyPart)
+        public static void Prefix(ActiveHealthController __instance, Item item, EBodyPart bodyPart)
         {
-            // Dont give xp for surgery
-            if (meds.TemplateId == "5d02778e86f774203e7dedbe" || meds.TemplateId == "5d02797c86f774203f38e30a")
+            // Don't give xp for surgery
+            if (item.TemplateId == "5d02778e86f774203e7dedbe" || item.TemplateId == "5d02797c86f774203f38e30a")
             {
                 return;
             }
 
-            if (!__instance.IsYourPlayer)
+            if (!__instance.Player.IsYourPlayer)
             {
                 return;
             }
 
-            if (Plugin.SkillData.MedicalSkills.FmItemList.Contains(meds.TemplateId) && Plugin.SkillData.MedicalSkills.EnableFieldMedicine)
+            if (Plugin.SkillData.MedicalSkills.FmItemList.Contains(item.TemplateId) && Plugin.SkillData.MedicalSkills.EnableFieldMedicine)
             {
                 Plugin.FieldMedicineScript.ApplyFieldMedicineExp(bodyPart);
                 Plugin.Log.LogDebug("Field Medicine Effect");
                 return;
             }
 
-            if (Plugin.SkillData.MedicalSkills.FaItemList.Contains(meds.TemplateId) && Plugin.SkillData.MedicalSkills.EnableFirstAid)
+            if (Plugin.SkillData.MedicalSkills.FaItemList.Contains(item.TemplateId) && Plugin.SkillData.MedicalSkills.EnableFirstAid)
             {
                 Plugin.FirstAidScript.ApplyFirstAidExp(bodyPart);
             }

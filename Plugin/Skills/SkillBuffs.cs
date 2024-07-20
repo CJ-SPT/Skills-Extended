@@ -3,65 +3,63 @@ using SkillsExtended.Models;
 
 namespace SkillsExtended.Helpers;
 
-public static class SkillBuffs
+public class SkillManagerExt
 {
     private static SkillDataResponse SkillData => Plugin.SkillData;
     
-    public static readonly SkillManager.SkillBuffClass FirstAidSpeedBuff = new SkillManager.SkillBuffClass
+    public readonly SkillManager.SkillBuffClass FirstAidSpeedBuff = new()
     {
         Id = EBuffId.FirstAidHealingSpeed,
     };
     
-    public static readonly SkillManager.SkillBuffClass FirstAidHpBuff = new SkillManager.SkillBuffClass
+    public readonly SkillManager.SkillBuffClass FirstAidHpBuff = new()
     {
         Id = EBuffId.FirstAidMaxHp,
     };
     
-    public static readonly SkillManager.SkillBuffClass FieldMedicineSpeedBuff = new SkillManager.SkillBuffClass
+    public readonly SkillManager.SkillBuffClass FieldMedicineSpeedBuff = new()
     {
         Id = EBuffId.FieldMedicineSpeed,
     };
     
-    public static readonly SkillManager.SkillBuffClass UsecArSystemsErgoBuff = new SkillManager.SkillBuffClass
+    public readonly SkillManager.SkillBuffClass UsecArSystemsErgoBuff = new()
     {
         Id = EBuffId.UsecArSystemsErgo,
     };
     
-    public static readonly SkillManager.SkillBuffClass UsecArSystemsRecoilBuff = new SkillManager.SkillBuffClass
+    public readonly SkillManager.SkillBuffClass UsecArSystemsRecoilBuff = new()
     {
         Id = EBuffId.UsecArSystemsRecoil,
     };
     
-    public static readonly SkillManager.SkillBuffClass BearAkSystemsErgoBuff = new SkillManager.SkillBuffClass
+    public readonly SkillManager.SkillBuffClass BearAkSystemsErgoBuff = new()
     {
         Id = EBuffId.BearAkSystemsErgo,
     };
     
-    public static readonly SkillManager.SkillBuffClass BearAkSystemsRecoilBuff = new SkillManager.SkillBuffClass
+    public readonly SkillManager.SkillBuffClass BearAkSystemsRecoilBuff = new()
     {
         Id = EBuffId.BearAkSystemsRecoil,
     };
     
-    public static readonly SkillManager.SkillBuffClass LockpickingTimeBuff = new SkillManager.SkillBuffClass
+    public readonly SkillManager.SkillBuffClass LockPickingTimeBuff = new()
     {
         Id = EBuffId.LockpickingTimeReduction,
     };
     
-    public static readonly SkillManager.GClass1790 LockpickingUseBuffElite = new SkillManager.GClass1790()
+    public readonly SkillManager.GClass1790 LockPickingUseBuffElite = new()
     {
         Id = EBuffId.LockpickingUseElite,
         BuffType = SkillManager.EBuffType.Elite
     };
 
-    public static readonly SkillManager.SkillActionClass FirstAidAction = new();
-    public static readonly SkillManager.SkillActionClass FieldMedicineAction = new();
-    public static readonly SkillManager.SkillActionClass UsecRifleAction = new();
-    public static readonly SkillManager.SkillActionClass BearRifleAction = new();
-    public static readonly SkillManager.SkillActionClass LockPickAction = new();
-    public static readonly SkillManager.SkillActionClass UsecTacticsAction = new();
-    public static readonly SkillManager.SkillActionClass BearRawPowerAction = new();
+    public readonly SkillManager.SkillActionClass FirstAidAction = new();
+    public readonly SkillManager.SkillActionClass FieldMedicineAction = new();
+    public readonly SkillManager.SkillActionClass UsecRifleAction = new();
+    public readonly SkillManager.SkillActionClass BearRifleAction = new();
+    public readonly SkillManager.SkillActionClass LockPickAction = new();
     
-    public static SkillManager.SkillBuffAbstractClass[] FirstAidBuffs()
+    public SkillManager.SkillBuffAbstractClass[] FirstAidBuffs()
     {
         return !Plugin.RealismConfig.med_changes
             ? new SkillManager.SkillBuffAbstractClass[]
@@ -82,7 +80,7 @@ public static class SkillBuffs
             };
     }
     
-    public static SkillManager.SkillBuffAbstractClass[] FieldMedicineBuffs()
+    public SkillManager.SkillBuffAbstractClass[] FieldMedicineBuffs()
     {
         return new SkillManager.SkillBuffAbstractClass[]
         {
@@ -92,7 +90,7 @@ public static class SkillBuffs
         };
     }
     
-    public static SkillManager.SkillBuffAbstractClass[] UsecArBuffs()
+    public SkillManager.SkillBuffAbstractClass[] UsecArBuffs()
     {
         return new SkillManager.SkillBuffAbstractClass[]
         {
@@ -106,7 +104,7 @@ public static class SkillBuffs
         };
     }
     
-    public static SkillManager.SkillBuffAbstractClass[] BearAkBuffs()
+    public SkillManager.SkillBuffAbstractClass[] BearAkBuffs()
     {
         return new SkillManager.SkillBuffAbstractClass[]
         {
@@ -120,15 +118,15 @@ public static class SkillBuffs
         };
     }
     
-    public static SkillManager.SkillBuffAbstractClass[] LockPickingBuffs()
+    public SkillManager.SkillBuffAbstractClass[] LockPickingBuffs()
     {
         return new SkillManager.SkillBuffAbstractClass[]
         {
-            LockpickingTimeBuff
+            LockPickingTimeBuff
                 .Max(SkillData.LockPickingSkill.TimeReduction)
                 .Elite(SkillData.LockPickingSkill.TimeReductionElite),
             
-            LockpickingUseBuffElite
+            LockPickingUseBuffElite
         };
     }
 }

@@ -5,6 +5,7 @@ using SkillsExtended.Helpers;
 using SPT.Reflection.Patching;
 using System;
 using System.Reflection;
+using Comfort.Common;
 using EFT.HealthSystem;
 using EFT.InventoryLogic;
 using SkillsExtended.Models;
@@ -38,23 +39,41 @@ internal class SkillManagerConstructorPatch : ModulePatch
             [], 
             []);
 
-        var newDisplayList = new SkillClass[___DisplayList.Length + 3];
+        __instance.BearRawpower = new SkillClass(
+            __instance, 
+            ESkillId.BearRawpower, 
+            ESkillClass.Special, 
+            [], 
+            []);
+        
+        __instance.UsecTactics = new SkillClass(
+            __instance, 
+            ESkillId.UsecTactics, 
+            ESkillClass.Special, 
+            [], 
+            []);
+        
+        var newDisplayList = new SkillClass[___DisplayList.Length + 5];
 
         Array.Copy(___DisplayList, newDisplayList, insertIndex);
 
         newDisplayList[12] = __instance.UsecArsystems;
         newDisplayList[12 + 1] = __instance.BearAksystems;
         newDisplayList[12 + 2] = __instance.Lockpicking;
-
-        Array.Copy(___DisplayList, insertIndex, newDisplayList, insertIndex + 3, ___DisplayList.Length - insertIndex);
+        newDisplayList[12 + 3] = __instance.BearRawpower;
+        newDisplayList[12 + 4] = __instance.UsecTactics;
+        
+        Array.Copy(___DisplayList, insertIndex, newDisplayList, insertIndex + 5, ___DisplayList.Length - insertIndex);
 
         ___DisplayList = newDisplayList;
 
-        Array.Resize(ref ___Skills, ___Skills.Length + 3);
+        Array.Resize(ref ___Skills, ___Skills.Length + 5);
 
         ___Skills[___Skills.Length - 1] = __instance.UsecArsystems;
         ___Skills[___Skills.Length - 2] = __instance.BearAksystems;
         ___Skills[___Skills.Length - 3] = __instance.Lockpicking;
+        ___Skills[___Skills.Length - 4] = __instance.BearRawpower;
+        ___Skills[___Skills.Length - 5] = __instance.UsecTactics;
 
         // If the skill is not enabled, lock it
         AccessTools.Field(typeof(SkillClass), "Locked").SetValue(__instance.UsecArsystems,
@@ -80,59 +99,64 @@ internal class SkillClassCtorPatch : ModulePatch
             [typeof(SkillManager), typeof(ESkillId), typeof(ESkillClass), typeof(SkillManager.SkillActionClass[]), typeof(SkillManager.SkillBuffAbstractClass[])], 
             null);
     
+    /// <summary>
+    /// We are using values that have been added by the pre-patcher here.
+    /// </summary>
     [PatchPrefix]
     public static void Prefix(SkillClass __instance, ESkillId id, ref SkillManager.SkillBuffAbstractClass[] buffs, ref SkillManager.SkillActionClass[] actions)
     {
         // This is where we set all of our buffs and actions, done as a constructor patch, so they always exist when we need them
         
+        var skillMgrExt = Singleton<SkillManagerExt>.Instance;
+        
         if (id == ESkillId.FirstAid)
         {
-            buffs = SkillBuffs.FirstAidBuffs();
+            buffs = skillMgrExt.FirstAidBuffs();
             actions = [
-                SkillBuffs.FirstAidAction.Factor(0.1f)
+                skillMgrExt.FirstAidAction.Factor(0.1f)
             ];
         }
         
         if (id == ESkillId.FieldMedicine)
         {
-            buffs = SkillBuffs.FieldMedicineBuffs();
+            buffs = skillMgrExt.FieldMedicineBuffs();
             actions = [
-                SkillBuffs.FieldMedicineAction.Factor(0.1f)
+                skillMgrExt.FieldMedicineAction.Factor(0.1f)
             ];
         }
 
         if (id == ESkillId.Lockpicking)
         {
-            buffs = SkillBuffs.LockPickingBuffs();
+            buffs = skillMgrExt.LockPickingBuffs();
             actions = [
-                SkillBuffs.LockPickAction.Factor(0.1f)
+                skillMgrExt.LockPickAction.Factor(0.1f)
             ];
         }
 
         if (id == ESkillId.UsecArsystems)
         {
-            buffs = SkillBuffs.UsecArBuffs();
+            buffs = skillMgrExt.UsecArBuffs();
             actions =
             [
-                SkillBuffs.UsecRifleAction.Factor(0.5f)
+                skillMgrExt.UsecRifleAction.Factor(0.5f)
             ];
         }
         
         if (id == ESkillId.BearAksystems)
         {
-            buffs = SkillBuffs.BearAkBuffs();
+            buffs = skillMgrExt.BearAkBuffs();
             actions =
             [
-                SkillBuffs.BearRifleAction.Factor(0.5f)
+                skillMgrExt.BearRifleAction.Factor(0.5f)
             ];
         }
 
         if (id == ESkillId.Lockpicking)
         {
-            buffs = SkillBuffs.LockPickingBuffs();
+            buffs = skillMgrExt.LockPickingBuffs();
             actions = 
             [
-                SkillBuffs.LockPickAction.Factor(0.25f)
+                skillMgrExt.LockPickAction.Factor(0.25f)
             ];
         }
     }
@@ -145,30 +169,7 @@ internal class SkillPanelDisablePatch : ModulePatch
     [PatchPrefix]
     public static bool Prefix(SkillClass skill)
     {
-        var side = Plugin.Session.Profile.Side;
-        
-        if (skill.Locked)
-        {
-            // Skip original method and don't show skill
-            return false;
-        }
-        
-        // Usec Tactics
-        if (skill.Id == ESkillId.UsecTactics && side == EPlayerSide.Bear)
-        {
-            // Skip original method and don't show skill
-            return false;
-        }
-        
-        // Bear Raw Power
-        if (skill.Id == ESkillId.BearRawpower && side == EPlayerSide.Usec)
-        {
-            // Skip original method and don't show skill
-            return false;
-        }
-
-        // Show the skill
-        return true;
+        return !skill.Locked;
     }
 }
 

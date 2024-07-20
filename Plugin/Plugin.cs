@@ -52,6 +52,8 @@ public class Plugin : BaseUnityPlugin
             throw new Exception("Invalid EFT Version");
         }
 
+        Log = Logger;
+        
         new SkillPanelDisablePatch().Enable();
         new BuffIconShowPatch().Enable();
         new SkillManagerConstructorPatch().Enable();
@@ -65,19 +67,22 @@ public class Plugin : BaseUnityPlugin
         new DoMedEffectPatch().Enable();
         new SetItemInHands().Enable();
 #if DEBUG
-        Logger.LogWarning("PRE RELEASE ALPHA BUILD - NO SUPPORT");
-        Logger.LogWarning("COMMANDS ENABLED");
+        Logger.LogWarning("PRE RELEASE BUILD - NO SUPPORT");
         new LocationSceneAwakePatch().Enable();
 #endif
-
+        
+        Logger.LogInfo("Creating SkillManagerExt Singleton");
+        Singleton<SkillManagerExt>.Create(new SkillManagerExt());
+        
         Utils.GetTypes();
-
-        Log = Logger;
-
+        
+        Logger.LogInfo("Creating Skill Controller Object");
+        
         Hook = new GameObject("Skills Controller Object");
         DontDestroyOnLoad(Hook);
-
+        
 #if DEBUG
+        Logger.LogWarning("DEBUG BUILD FEATURES ENABLED");
         new LocationSceneAwakePatch().Enable();
         ConsoleCommands.RegisterCommands();
 #endif
