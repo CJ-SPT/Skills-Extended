@@ -55,6 +55,11 @@ public class UsecRifleBehaviour : MonoBehaviour
             return;
         }
 
+        GameWorld.MainPlayer.ExecuteSkill(CompleteSkill);
+    }
+
+    private static void CompleteSkill()
+    {
         SkillMgrExt.UsecRifleAction.Complete(UsecSkillData.WeaponProfXp);
     }
 

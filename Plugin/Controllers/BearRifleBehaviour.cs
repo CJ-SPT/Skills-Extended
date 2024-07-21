@@ -60,6 +60,11 @@ internal class BearRifleBehaviour : MonoBehaviour
             return;
         }
         
+        GameWorld.MainPlayer.ExecuteSkill(CompleteSkill);
+    }
+
+    private static void CompleteSkill()
+    {
         SkillMgrExt.BearRifleAction.Complete(BearSkillData.WeaponProfXp);
     }
 

@@ -45,10 +45,9 @@ internal class FieldMedicineBehaviour : MonoBehaviour
         FieldMedicineUpdate();
     }
 
-    public void ApplyFieldMedicineExp(EBodyPart bodypart)
+    public void ApplyFieldMedicineExp()
     {
         var xpGain = Plugin.SkillData.MedicalSkills.FieldMedicineXpPerAction;
-        
         SkillMgrExt.FieldMedicineAction.Complete(xpGain);
     }
 

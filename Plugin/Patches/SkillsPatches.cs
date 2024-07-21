@@ -27,14 +27,14 @@ internal class SkillManagerConstructorPatch : ModulePatch
         __instance.UsecArsystems = new SkillClass(
             __instance, 
             ESkillId.UsecArsystems, 
-            ESkillClass.Special, 
+            ESkillClass.Combat, 
             [], 
             []);
         
         __instance.BearAksystems = new SkillClass(
             __instance, 
             ESkillId.BearAksystems, 
-            ESkillClass.Special, 
+            ESkillClass.Combat, 
             [], 
             []);
 
@@ -123,15 +123,7 @@ internal class SkillClassCtorPatch : ModulePatch
                 skillMgrExt.FieldMedicineAction.Factor(0.1f)
             ];
         }
-
-        if (id == ESkillId.Lockpicking)
-        {
-            buffs = skillMgrExt.LockPickingBuffs();
-            actions = [
-                skillMgrExt.LockPickAction.Factor(0.1f)
-            ];
-        }
-
+        
         if (id == ESkillId.UsecArsystems)
         {
             buffs = skillMgrExt.UsecArBuffs();

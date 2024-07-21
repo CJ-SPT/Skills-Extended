@@ -19,7 +19,7 @@ public sealed class InspectLockActionHandler
             if (!Helpers.InspectedDoors.Contains(InteractiveObject.Id))
             {
                 Helpers.InspectedDoors.Add(InteractiveObject.Id);
-                Helpers.ApplyLockPickActionXp(InteractiveObject, Owner, true, false);
+                Helpers.ApplyLockPickActionXp(InteractiveObject, Owner);
             }
 
             Helpers.DisplayInspectInformation(InteractiveObject, Owner);

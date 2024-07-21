@@ -1,4 +1,5 @@
-﻿using Comfort.Common;
+﻿using System;
+using Comfort.Common;
 using EFT;
 using EFT.Interactive;
 using EFT.InventoryLogic;
@@ -76,6 +77,8 @@ internal static class Helpers
         return Plugin.Session.Profile.Inventory.GetPlayerItems(EPlayerItems.Equipment)
             .Any(x => x.TemplateId == "662400eb756ca8948fe64fe8");
     }
+
+    private static float xpToApply = 0.0f;
     
     public static void ApplyLockPickActionXp(WorldInteractiveObject interactiveObject, GamePlayerOwner owner, bool isInspect = false, bool isFailure = false)
     {
@@ -85,7 +88,7 @@ internal static class Helpers
 
         if (!xpExists) return;
         
-        var xpToApply = isInspect
+        xpToApply = isInspect
             ? xp * Plugin.SkillData.LockPickingSkill.InspectLockXpRatio
             : xp;
 
@@ -94,9 +97,19 @@ internal static class Helpers
             ? xpToApply * 0.25f
             : xpToApply;
             
-        Singleton<SkillManagerExt>.Instance.LockPickAction.Complete(xpToApply);
+        
+        Singleton<GameWorld>.Instance.MainPlayer.ExecuteSkill(CompleteLockPickAction);
     }
 
+    private static void CompleteLockPickAction()
+    {
+        if (xpToApply == 0.0f) return;
+        
+        var skillMgrExt = Singleton<SkillManagerExt>.Instance;
+        
+        skillMgrExt.LockPickAction.Complete(xpToApply);
+    }
+    
     public static void DisplayInspectInformation(WorldInteractiveObject interactiveObject, GamePlayerOwner owner)
     {
         int doorLevel = GetLevelForDoor(owner.Player.Location, interactiveObject.Id);
@@ -122,6 +135,27 @@ internal static class Helpers
         var successChance = UnityEngine.Mathf.Clamp(baseSuccessChance + (levelDifference * difficultyModifier), 0f, 100f);
 
         return successChance;
+    }
+    
+    /// <summary>
+    /// Returns true if the pick attempt succeeded
+    /// </summary>
+    /// <returns></returns>
+    public static bool IsAttemptSuccessful(int doorLevel, WorldInteractiveObject interactiveObject, GamePlayerOwner owner)
+    {
+        var levelDifference = _skills.Lockpicking.Level - doorLevel;
+        
+        // Player level is high enough to always pick this lock
+        if (levelDifference > 10)
+        {
+            return true;
+        }
+
+        // Never below 0, never above 100
+        var successChance = Helpers.CalculateChanceForSuccess(interactiveObject, owner);
+        var roll = UnityEngine.Random.Range(0f, 100f);
+        
+        return successChance > roll;
     }
 
     public static float CalculateTimeForAction(float baseTime)

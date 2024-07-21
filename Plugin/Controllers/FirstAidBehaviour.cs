@@ -50,13 +50,12 @@ public class FirstAidBehaviour : MonoBehaviour
         FirstAidUpdate();
     }
 
-    public void ApplyFirstAidExp(EBodyPart bodypart)
+    public void ApplyFirstAidExp()
     {
         var xpGain = Plugin.SkillData.MedicalSkills.FirstAidXpPerAction;
-        
         SkillMgrExt.FirstAidAction.Complete(xpGain);
     }
-
+    
     private void ApplyFirstAidSpeedBonus(Item item)
     {
         var bonus = FaPmcSpeedBonus;

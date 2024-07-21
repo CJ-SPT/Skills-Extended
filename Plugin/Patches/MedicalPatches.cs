@@ -16,7 +16,7 @@ internal class DoMedEffectPatch : ModulePatch
     }
 
     [PatchPrefix]
-    public static void Prefix(ActiveHealthController __instance, Item item, EBodyPart bodyPart)
+    public static void Prefix(ActiveHealthController __instance, Item item)
     {
         // Don't give xp for surgery
         if (item.TemplateId == "5d02778e86f774203e7dedbe" || item.TemplateId == "5d02797c86f774203f38e30a")
@@ -24,20 +24,20 @@ internal class DoMedEffectPatch : ModulePatch
             return;
         }
 
-        if (!__instance.Player.IsYourPlayer)
+        if (!__instance.Player.IsYourPlayer || item is not MedsClass)
         {
             return;
         }
 
         if (Plugin.SkillData.MedicalSkills.FmItemList.Contains(item.TemplateId) && Plugin.SkillData.MedicalSkills.EnableFieldMedicine)
         {
-            Plugin.FieldMedicineScript.ApplyFieldMedicineExp(bodyPart);
+            __instance.Player.ExecuteSkill(Plugin.FieldMedicineScript.ApplyFieldMedicineExp);
             return;
         }
 
         if (Plugin.SkillData.MedicalSkills.FaItemList.Contains(item.TemplateId) && Plugin.SkillData.MedicalSkills.EnableFirstAid)
         {
-            Plugin.FirstAidScript.ApplyFirstAidExp(bodyPart);
+            __instance.Player.ExecuteSkill(Plugin.FirstAidScript.ApplyFirstAidExp);
         }
     }
 }

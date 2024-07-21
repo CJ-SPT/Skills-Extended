@@ -119,28 +119,28 @@ public static class LockPickActions
 
             var chanceForSuccess = Helpers.CalculateChanceForSuccess(door, owner);
 
-            owner.ShowObjectivesPanel("Picking lock {0:F1}", lpTime);
+            owner.ShowObjectivesPanel("Hacking terminal {0:F1}", lpTime);
 
             if (chanceForSuccess > 80f)
             {
-                owner.DisplayPreloaderUiNotification("This lock is easy for your level");
+                owner.DisplayPreloaderUiNotification("This terminal is easy for your level");
             }
             else if (chanceForSuccess < 80f && chanceForSuccess > 0f)
             {
-                owner.DisplayPreloaderUiNotification("This lock is hard for your level");
+                owner.DisplayPreloaderUiNotification("This terminal is hard for your level");
             }
             else if (chanceForSuccess == 0f)
             {
-                owner.DisplayPreloaderUiNotification("This lock is impossible for your level");
+                owner.DisplayPreloaderUiNotification("This terminal is impossible for your level");
             }
 
-            LockPickActionHandler handler = new()
+            HackingActionHandler handler = new()
             {
                 Owner = owner,
                 InteractiveObject = door,
             };
 
-            Action<bool> action = new(handler.PickLockAction);
+            Action<bool> action = new(handler.HackTerminalAction);
             currentManagedState.Plant(true, false, lpTime, action);
         }
         else
