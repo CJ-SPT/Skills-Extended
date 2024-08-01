@@ -111,7 +111,7 @@ public class FirstAidBehaviour : MonoBehaviour
             _originalMedKitValues.Add(item.TemplateId, origMedValues);
         }
 
-        var maxHpResource = Mathf.FloorToInt(_originalMedKitValues[item.TemplateId].MaxHpResource * (1 + FaHpBonus));
+        var maxHpResource = Mathf.FloorToInt(_originalMedKitValues[item.TemplateId].MaxHpResource * FaHpBonus);
         
         if (meds.TemplateId == "590c657e86f77412b013051d")
         {
