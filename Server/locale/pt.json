@@ -19,7 +19,7 @@
     "BearAkSystemsErgo": "Aumenta a ergonomia das armas russas em [{0:0.#%}]",
     "BearAkSystemsRecoil": "Reduz o recuo das armas russas em [{0:0.#%}]",
     "Lockpicking": "Arrombamento",
-    "LockpickingDescription": "Arrombe fechaduras e acesse salas mesmo sem a chave. No nível 25, você pode usar um Flipper Zero para tentar hackear portas com cartão-chave.",
+    "LockpickingDescription": "Arrombe fechaduras e acesse salas mesmo sem a chave. No nível 25, você pode usar um \"Flipper Zero\" para tentar hackear portas com cartão-chave.",
     "LockpickingLevelingUpDescription": "Aprimorada ao inspecionar e arrombar fechaduras.",
     "LockpickingTimeReduction": "Reduz o tempo necessário para inspecionar e arrombar fechaduras em [{0:0.#%}]",
     "LockpickingUseElite": "Você não quebra mais gazuas."
