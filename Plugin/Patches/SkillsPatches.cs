@@ -86,7 +86,10 @@ internal class SkillManagerConstructorPatch : ModulePatch
         
         AccessTools.Field(typeof(SkillClass), "Locked").SetValue(__instance.FieldMedicine,
             !Plugin.SkillData.MedicalSkills.EnableFieldMedicine);
-    }
+
+        //BonusController is called in SkillClass.OnTrigger and must not be null, otherwise it will trigger System.NullReferenceException.
+        __instance.BonusController = new();
+	}
 }
 
 internal class SkillClassCtorPatch : ModulePatch
