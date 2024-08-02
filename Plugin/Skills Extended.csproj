@@ -72,6 +72,9 @@
 		<Reference Include="UnityEngine.UI">
 			<HintPath>..\..\..\EscapeFromTarkov_Data\managed\UnityEngine.UI.dll</HintPath>
 		</Reference>
+		<Reference Include="UnityEngine.AnimationModule">
+			<HintPath>..\..\..\EscapeFromTarkov_Data\managed\UnityEngine.AnimationModule.dll</HintPath>
+		</Reference>
 	</ItemGroup>
 
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
