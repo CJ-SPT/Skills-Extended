@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net472</TargetFramework>
+    <TargetFramework>net471</TargetFramework>
     <AssemblyName>SkillsExtended_PrePatch</AssemblyName>
     <Description></Description>
     <Version>1.0.0</Version>
