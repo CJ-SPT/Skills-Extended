@@ -33,6 +33,6 @@
   </ItemGroup>
 
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-		<Exec Command="copy &quot;$(TargetPath)&quot; &quot;G:\3.9.3 - Dev\BepInEx\patchers\$(TargetName).dll&quot;&#xD;&#xA;if $(ConfigurationName) == Debug (&#xD;&#xA;    copy &quot;$(ProjectDir)$(OutDir)$(TargetName).pdb&quot; &quot;G:\3.9.0 - Dev\BepInEx\BepInEx\patchers\$(TargetName).pdb&quot;&#xD;&#xA;) else (&#xD;&#xA;    del &quot;G:\3.9.3 - Dev\BepInEx\BepInEx\patchers\$(TargetName).pdb&quot;&#xD;&#xA;)&#xD;&#xA;&#xD;&#xA;del &quot;G:\3.9.3 - Dev\BepInEx\config\com.dirtbikercj.template.cfg&quot;" />
+		<Exec Command="copy &quot;$(TargetPath)&quot; &quot;..\..\..\BepInEx\patchers\$(TargetName).dll&quot;&#xD;&#xA;if $(ConfigurationName) == Debug (&#xD;&#xA;    copy &quot;$(ProjectDir)$(OutDir)$(TargetName).pdb&quot; &quot;..\..\..\BepInEx\BepInEx\patchers\$(TargetName).pdb&quot;&#xD;&#xA;) else (&#xD;&#xA;    del &quot;..\..\..\BepInEx\BepInEx\patchers\$(TargetName).pdb&quot;&#xD;&#xA;)&#xD;&#xA;&#xD;&#xA;del &quot;..\..\..\BepInEx\config\com.dirtbikercj.template.cfg&quot;" />
 	</Target>
 </Project>

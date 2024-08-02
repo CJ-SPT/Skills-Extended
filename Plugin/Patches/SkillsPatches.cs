@@ -15,7 +15,11 @@ namespace SkillsExtended.Patches;
 internal class SkillManagerConstructorPatch : ModulePatch
 {
     protected override MethodBase GetTargetMethod() =>
-        typeof(SkillManager).GetConstructor(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null, [typeof(EPlayerSide)], null);
+        typeof(SkillManager).GetConstructor(
+            BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, 
+            null, 
+            [typeof(EPlayerSide)], 
+            null);
 
     [PatchPostfix]
     public static void Postfix(SkillManager __instance, ref SkillClass[] ___DisplayList, ref SkillClass[] ___Skills)
