@@ -76,18 +76,16 @@ public sealed class LockPickActionHandler
         // Remove a use from a lockpick in the inventory
         var lockPicks = Helpers.GetLockPicksInInventory();
         
-        var lockpick = lockPicks
+        var lockPick = lockPicks
             .OrderBy(x => x.KeyComponent.NumberOfUsages)
             .First();
         
-        lockpick.KeyComponent.NumberOfUsages++;
+        lockPick.KeyComponent.NumberOfUsages++;
 
-        // lockpick has no uses left, destroy it
-        if (lockpick.KeyComponent.NumberOfUsages >= lockpick.KeyComponent.Template.MaximumNumberOfUsage && lockpick.KeyComponent.Template.MaximumNumberOfUsage > 0)
+        // lock pick has no uses left, destroy it
+        if (lockPick.KeyComponent.NumberOfUsages >= lockPick.KeyComponent.Template.MaximumNumberOfUsage && lockPick.KeyComponent.Template.MaximumNumberOfUsage > 0)
         {
-            var inventoryController = (InventoryControllerClass)AccessTools.Field(typeof(Player), "_inventoryController").GetValue(Owner.Player);
-
-            inventoryController.DestroyItem(lockpick);
+            Owner.Player.InventoryControllerClass.DestroyItem(lockPick);
         }
     }
 }
