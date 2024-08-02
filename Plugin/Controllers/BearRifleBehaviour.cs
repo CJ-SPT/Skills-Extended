@@ -66,7 +66,12 @@ internal class BearRifleBehaviour : MonoBehaviour
     private static void CompleteSkill()
     {
         SkillMgrExt.BearRifleAction.Complete(BearSkillData.WeaponProfXp);
-    }
+
+        if (BearSkillData.SkillShareEnabled)
+        {
+	        SkillMgrExt.UsecRifleAction.Complete(BearSkillData.WeaponProfXp * BearSkillData.SkillShareXpRatio);
+        }
+	}
 
     private void UpdateWeapons()
     {
