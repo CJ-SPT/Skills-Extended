@@ -14,6 +14,8 @@ using SPT.Common.Http;
 using SPT.Reflection.Utils;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
 using SkillsExtended.Skills;
 using UnityEngine;
 
@@ -44,6 +46,8 @@ public class Plugin : BaseUnityPlugin
     internal static UsecRifleBehaviour UsecRifleScript;
     internal static BearRifleBehaviour BearRifleScript;
 
+    internal static AnimationClip[] AnimationClips { get; private set; }
+    
     internal static ManualLogSource Log;
 
     private void Awake()
@@ -120,6 +124,8 @@ public class Plugin : BaseUnityPlugin
         {
             BearRifleScript = Hook.AddComponent<BearRifleBehaviour>();
         }
+        
+        LoadBundle();
     }
 
     private void Update()
@@ -130,5 +136,11 @@ public class Plugin : BaseUnityPlugin
 
             Log.LogDebug("Session set");
         }
+    }
+
+    private static void LoadBundle()
+    {
+        var directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        AnimationClips = AssetBundle.LoadFromFile($"{directory}/bundles/lockpicking_anim.bundle").LoadAllAssets<AnimationClip>();
     }
 }

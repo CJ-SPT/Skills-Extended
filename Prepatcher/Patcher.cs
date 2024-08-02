@@ -4,24 +4,51 @@ using System;
 using System.Linq;
 using BepInEx.Logging;
 using System.Diagnostics;
+using JetBrains.Annotations;
 using FieldAttributes = Mono.Cecil.FieldAttributes;
 
 public static class Patcher
 {
     public static IEnumerable<string> TargetDLLs { get; } = new string[] { "Assembly-CSharp.dll" };
-    
     public static TypeDefinition SkillManager;
     
-    private static FieldDefinition CreateNewEnum(ref AssemblyDefinition assembly ,string AttributeName, string EnumName, TypeDefinition EnumClass, int CustomConstant)
+    public static void Patch(ref AssemblyDefinition assembly)
+    {
+        try
+        {
+            SkillManager = assembly.MainModule.GetType("EFT.SkillManager");
+            
+            PatchNewBuffs(ref assembly);
+            PatchNewAnim(ref assembly);
+            
+            Logger.CreateLogSource("Skills Extended PrePatch").LogInfo("Patching Complete!");
+        } catch (Exception ex)
+        {
+            // Get stack trace for the exception with source file information
+            var st = new StackTrace(ex, true);
+            // Get the top stack frame
+            var frame = st.GetFrame(0);
+            // Get the line number from the stack frame
+            var line = frame.GetFileLineNumber();
+
+            Logger.CreateLogSource("Skills Extended PrePatch").LogInfo("Error When Patching: " + ex.Message + " - Line " + line);
+        }
+    }
+    
+    private static FieldDefinition CreateNewEnum(ref AssemblyDefinition assembly, [CanBeNull] string AttributeName, string EnumName, TypeDefinition EnumClass, int CustomConstant)
     {
         var enumAttributeClass = assembly.MainModule.GetType("GAttribute21");
         
         var attributeConstructor = enumAttributeClass.Methods.First(m => m.IsConstructor);
-        var valueArgument = new CustomAttributeArgument(assembly.MainModule.TypeSystem.String, AttributeName);
         
         var attribute = new CustomAttribute(attributeConstructor);
-        attribute.ConstructorArguments.Add(valueArgument);
 
+        if (AttributeName is not null)
+        {
+            var valueArgument = new CustomAttributeArgument(assembly.MainModule.TypeSystem.String, AttributeName);
+            attribute.ConstructorArguments.Add(valueArgument);
+        }
+        
         var newEnum = new FieldDefinition(
             EnumName, 
             FieldAttributes.Public | FieldAttributes.Static | FieldAttributes.Literal | FieldAttributes.HasDefault, EnumClass) 
@@ -115,26 +142,26 @@ public static class Patcher
         buffEnums.Fields.Add(lockpickingTimeReduction);
         buffEnums.Fields.Add(lockpickingUseElite);
     }
-    
-    public static void Patch(ref AssemblyDefinition assembly)
-    {
-        try
-        {
-            SkillManager = assembly.MainModule.GetType("EFT.SkillManager");
-            
-            PatchNewBuffs(ref assembly);
-            
-            Logger.CreateLogSource("Skills Extended PrePatch").LogInfo("Patching Complete!");
-        } catch (Exception ex)
-        {
-            // Get stack trace for the exception with source file information
-            var st = new StackTrace(ex, true);
-            // Get the top stack frame
-            var frame = st.GetFrame(0);
-            // Get the line number from the stack frame
-            var line = frame.GetFileLineNumber();
 
-            Logger.CreateLogSource("Skills Extended PrePatch").LogInfo("Error When Patching: " + ex.Message + " - Line " + line);
-        }
+    private static void PatchNewAnim(ref AssemblyDefinition assembly)
+    {
+        var animEnum = assembly.MainModule.GetType("EFT.InputSystem.ECommand");
+        
+        var lockPickingAnimStart = CreateNewEnum(
+            ref assembly, 
+            null, 
+            "LockPickingStart", 
+            animEnum, 
+            1000);
+        
+        var lockPickingAnimEnd = CreateNewEnum(
+            ref assembly, 
+            null, 
+            "LockPickingEnd", 
+            animEnum, 
+            1001);
+        
+        animEnum.Fields.Add(lockPickingAnimStart);
+        animEnum.Fields.Add(lockPickingAnimEnd);
     }
 }

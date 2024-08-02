@@ -75,7 +75,7 @@
 	</ItemGroup>
 
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-	  <Exec Command="copy &quot;$(TargetPath)&quot; &quot;..\..\..\BepInEx\plugins\$(TargetName).dll&quot;&#xD;&#xA;if $(ConfigurationName) == Debug (&#xD;&#xA;    copy &quot;$(ProjectDir)$(OutDir)$(TargetName).pdb&quot; &quot;..\..\..\BepInEx\plugins\$(TargetName).pdb&quot;&#xD;&#xA;) else (&#xD;&#xA;    del &quot;..\..\..\BepInEx\plugins\$(TargetName).pdb&quot;&#xD;&#xA;)&#xD;&#xA;&#xD;&#xA;del &quot;..\..\..\BepInEx\config\com.dirtbikercj.SkillsExtended.cfg&quot;" />
+	  <Exec Command="copy &quot;$(TargetPath)&quot; &quot;..\..\..\BepInEx\plugins\SkillsExtended\$(TargetName).dll&quot;&#xA;if $(ConfigurationName) == Debug (&#xA;    copy &quot;$(ProjectDir)$(OutDir)$(TargetName).pdb&quot; &quot;..\..\..\BepInEx\plugins\SkillsExtended\$(TargetName).pdb&quot;&#xA;) else (&#xA;    del &quot;..\..\..\BepInEx\plugins\SkillsExtended\$(TargetName).pdb&quot;&#xA;)&#xA;&#xA;xcopy &quot;$(ProjectDir)bundles\lockpicking_anim.bundle&quot; &quot;..\..\..\BepInEx\plugins\SkillsExtended\bundles\&quot; /Y&#xA;&#xA;del &quot;..\..\..\BepInEx\config\com.dirtbikercj.SkillsExtended.cfg&quot;" />
 	</Target>
 
 </Project>
