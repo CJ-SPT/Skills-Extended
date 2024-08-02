@@ -35,6 +35,8 @@
         "ERGO_MOD_ELITE": 0.125,
         "RECOIL_REDUCTION": 0.075,
         "RECOIL_REDUCTION_ELITE": 0.135,
+        "SKILL_SHARE_ENABLED": true,
+        "SKILL_SHARE_XP_RATIO": 0.1,
         "WEAPONS": [
             "62e7c4fba689e8c9c50dfc38",
             "63171672192e68c5460cebc5",
@@ -69,6 +71,8 @@
         "ERGO_MOD_ELITE": 0.05,
         "RECOIL_REDUCTION": 0.002,
         "RECOIL_REDUCTION_ELITE": 0.07,
+        "SKILL_SHARE_ENABLED": true,
+        "SKILL_SHARE_XP_RATIO": 0.1,
         "WEAPONS": [
             "6499849fc93611967b034949",
             "5ac66cb05acfc40198510a10",

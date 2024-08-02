@@ -67,7 +67,13 @@ namespace SkillsExtended.Models
         [JsonProperty("RECOIL_REDUCTION_ELITE")]
         public float RecoilReductionElite;
 
-        [JsonProperty("WEAPONS")]
+        [JsonProperty("SKILL_SHARE_ENABLED")]
+        public bool SkillShareEnabled;
+
+        [JsonProperty("SKILL_SHARE_XP_RATIO")]
+        public float SkillShareXpRatio;
+
+		[JsonProperty("WEAPONS")]
         public List<string> Weapons;
     }
 

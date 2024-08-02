@@ -61,7 +61,12 @@ public class UsecRifleBehaviour : MonoBehaviour
     private static void CompleteSkill()
     {
         SkillMgrExt.UsecRifleAction.Complete(UsecSkillData.WeaponProfXp);
-    }
+
+        if (UsecSkillData.SkillShareEnabled)
+        {
+	        SkillMgrExt.BearRifleAction.Complete(UsecSkillData.WeaponProfXp * UsecSkillData.SkillShareXpRatio);
+        }
+	}
 
     private void UpdateWeapons()
     {
