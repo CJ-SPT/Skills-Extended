@@ -1,13 +1,16 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 
 import { InstanceManager } from "./InstanceManager";
-import SkillsConfig from "../config/SkillsConfig.json";
+
+import path from "node:path";
+import JSON5 from "json5";
 
 import type { DependencyContainer } from "tsyringe";
 import type { IPostDBLoadMod } from "@spt/models/external/IPostDBLoadMod";
 import type { IPreSptLoadMod } from "@spt/models/external/IPreSptLoadMod";
 import type { CustomItemService } from "@spt/services/mod/CustomItemService";
 import type { NewItemFromCloneDetails } from "@spt/models/spt/mod/NewItemDetails";
+import type { VFS } from "@spt/utils/VFS";
 import type { IKeys } from "./Models/IKeys";
 
 import { Money } from "@spt/models/enums/Money";
@@ -24,10 +27,17 @@ class SkillsPlus implements IPreSptLoadMod, IPostDBLoadMod
     private Instance: InstanceManager = new InstanceManager();
     private locale: Record<string, Record<string, string>>; 
     private customItemService: CustomItemService;
+    private vfs: VFS;
+    private SkillsConfigRaw;
+    private SkillsConfig;
 
     public preSptLoad(container: DependencyContainer): void 
     {
         this.Instance.preSptLoad(container, "Skills Extended");
+        this.vfs = container.resolve<VFS>("VFS");
+        this.SkillsConfigRaw = this.vfs.readFile(path.join(__dirname, "../config/SkillsConfig.json5"));
+        this.SkillsConfig = JSON5.parse(this.SkillsConfigRaw);
+
         this.registerRoutes();
     }
 
@@ -44,11 +54,11 @@ class SkillsPlus implements IPreSptLoadMod, IPostDBLoadMod
 
     private setLocales(): void
     {
-        const global = this.Instance.database.locales.global[SkillsConfig.Locale];
+        const global = this.Instance.database.locales.global[this.SkillsConfig.Locale];
 
         const modPath = this.Instance.modPath;
 
-        const locales = this.Instance.loadStringDictionarySync(`${modPath}/locale/${SkillsConfig.Locale}.json`);
+        const locales = this.Instance.loadStringDictionarySync(`${modPath}/locale/${this.SkillsConfig.Locale}.json`);
 
         for (const entry in locales)
         {
@@ -84,11 +94,11 @@ class SkillsPlus implements IPreSptLoadMod, IPostDBLoadMod
             "GetSkillsConfig",
             [
                 {
-                    url: "/skillsExtended/GetSkillsConfig",
+                    url: "/skillsExtended/GetSkillsConfig", 
                     // eslint-disable-next-line @typescript-eslint/no-unused-vars
                     action: async (url, info, sessionId, output) => 
                     {                     
-                        return JSON.stringify(SkillsConfig);
+                        return this.SkillsConfigRaw;
                     }
                 }
             ],
@@ -233,7 +243,7 @@ class SkillsPlus implements IPreSptLoadMod, IPostDBLoadMod
 
     private addCraftsToDatabase(): void
     {
-        const crafts = SkillsConfig.LockPickingSkill.CRAFTING_RECIPES;
+        const crafts = this.SkillsConfig.LockPickingSkill.CRAFTING_RECIPES;
 
         crafts.forEach((craft) => {
             this.Instance.database.hideout.production.push(craft);
