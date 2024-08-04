@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Comfort.Common;
 using EFT;
 using EFT.Interactive;
@@ -76,14 +77,14 @@ public sealed class LockPickActionHandler
         // Remove a use from a lockpick in the inventory
         var lockPicks = Helpers.GetLockPicksInInventory();
         
-        var lockPick = lockPicks
-            .OrderBy(x => x.KeyComponent.NumberOfUsages)
-            .First();
+        var lockPick = lockPicks.First();
+
+        if (lockPick is not GClass2735 pick) return;
         
-        lockPick.KeyComponent.NumberOfUsages++;
+        pick.KeyComponent.NumberOfUsages++;
 
         // lock pick has no uses left, destroy it
-        if (lockPick.KeyComponent.NumberOfUsages >= lockPick.KeyComponent.Template.MaximumNumberOfUsage && lockPick.KeyComponent.Template.MaximumNumberOfUsage > 0)
+        if (pick.KeyComponent.NumberOfUsages >= pick.KeyComponent.Template.MaximumNumberOfUsage && pick.KeyComponent.Template.MaximumNumberOfUsage > 0)
         {
             Owner.Player.InventoryControllerClass.DestroyItem(lockPick);
         }

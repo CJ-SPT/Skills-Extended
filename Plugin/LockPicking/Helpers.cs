@@ -62,10 +62,10 @@ internal static class Helpers
     /// Get any lockpick in the players equipment inventory
     /// </summary>
     /// <returns>All lockpick items in the players inventory</returns>
-    public static IEnumerable<GClass2735> GetLockPicksInInventory()
+    public static IEnumerable<Item> GetLockPicksInInventory()
     {
         return Plugin.Session.Profile.Inventory.GetPlayerItems(EPlayerItems.Equipment)
-            .Where(x => x.TemplateId == "6622c28aed7e3bc72e301e22" && x is GClass2735) as IEnumerable<GClass2735>;
+            .Where(x => x.TemplateId == "6622c28aed7e3bc72e301e22");
     }
 
     /// <summary>
