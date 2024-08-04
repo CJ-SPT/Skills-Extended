@@ -1,15 +1,15 @@
 {
-    "Locale": "en",
-    "MedicalSkills": {
-        "ENABLE_FIELD_MEDICINE": true,
-        "ENABLE_FIRST_AID": true,
-        "FIRSTAID_XP_PER_ACTION": 2.25,
-        "FIELDMEDICINE_XP_PER_ACTION": 2.25,
-        "MEDKIT_HP_BONUS": 0.50,
-        "MEDKIT_HP_BONUS_ELITE": 0.70,
-        "MEDICAL_SPEED_BONUS": 0.35,
-        "MEDICAL_SPEED_BONUS_ELITE": 0.50,
-        "FM_ITEM_LIST": [
+    "Locale": "en",                                         // Current available locales are; en, es, pt, and ru.
+    "MedicalSkills": {        
+        "ENABLE_FIELD_MEDICINE": true,                      // Enables the field medicine skill
+        "ENABLE_FIRST_AID": true,                           // Enables the First Aid skill
+        "FIRSTAID_XP_PER_ACTION": 2.25,                     // XP gained per first aid action
+        "FIELDMEDICINE_XP_PER_ACTION": 2.25,                // XP gained per field medicine action
+        "MEDKIT_HP_BONUS": 0.50,                            // Medical kit (IFAK, AFAK...) HP bonus total at level 50
+        "MEDKIT_HP_BONUS_ELITE": 0.70,                      // Medical kit elite bonus. Default: +20% over level 50, I.E (0.5 + 0.2 = 0.7) Bsg forced my hand here, it doesnt make sense im sorry.
+        "MEDICAL_SPEED_BONUS": 0.35,                        // Medical kit total bonus at level 50.
+        "MEDICAL_SPEED_BONUS_ELITE": 0.50,                  // Medical kit elite bonus (0.35 + 0.15 = 0.50) Bsg forced my hand here, it doesnt make sense im sorry.
+        "FM_ITEM_LIST": [                                   // Applicable items for Field medicine
             "544fb25a4bdc2dfb738b4567",
             "5751a25924597722c463c472", 
             "5e831507ea0a7c419c2f9bd9", 
@@ -18,7 +18,7 @@
             "544fb3364bdc2d34748b456a", 
             "5af0454c86f7746bf20992e8"  
         ],
-        "FA_ITEM_LIST": [
+        "FA_ITEM_LIST": [                                   // Applicable items for first aid 
             "544fb45d4bdc2dee738b4568", 
             "5755356824597772cb798962", 
             "590c657e86f77412b013051d", 
@@ -28,14 +28,16 @@
             "60098ad7c2240c0fe85c570a"  
         ]
     },
-    "USECRifleSkill": {
-        "ENABLED": true,
-        "WEAPON_PROF_XP": 0.15,
-        "ERGO_MOD": 0.075,
-        "ERGO_MOD_ELITE": 0.125,
-        "RECOIL_REDUCTION": 0.075,
-        "RECOIL_REDUCTION_ELITE": 0.135,
-        "WEAPONS": [
+    "NatoRifleSkill": {
+        "ENABLED": true,                                    // Enable NATO rifle skill
+        "SKILL_SHARE_ENABLED": true,                        // Allows a percentage of XP to bleed into Eastern rifle skill
+        "SKILL_SHARE_XP_RATIO": 0.10,                       // Percentage of xp to bleed into the Eastern rifle skill
+        "WEAPON_PROF_XP": 0.15,                             // XP per shot hit
+        "ERGO_MOD": 0.075,                                  // Ergonomics modifier in percent
+        "ERGO_MOD_ELITE": 0.125,                            // Ergonomics modifier in percent elite
+        "RECOIL_REDUCTION": 0.075,                          // Recoil reduction in percent
+        "RECOIL_REDUCTION_ELITE": 0.135,                    // Recoil reduction in percent elite
+        "WEAPONS": [                                        // Applicable weapons
             "62e7c4fba689e8c9c50dfc38",
             "63171672192e68c5460cebc5",
             "5c488a752e221602b412af63",
@@ -62,14 +64,16 @@
             "5df8ce05b11454561e39243b"
         ]
     },
-    "BEARRifleSkill": {
-        "ENABLED": true,
-        "WEAPON_PROF_XP": 0.15,
-        "ERGO_MOD": 0.0015,
-        "ERGO_MOD_ELITE": 0.05,
-        "RECOIL_REDUCTION": 0.002,
-        "RECOIL_REDUCTION_ELITE": 0.07,
-        "WEAPONS": [
+    "EasternRifleSkill": {
+        "ENABLED": true,                                    // Enable Eastern rifle skill
+        "SKILL_SHARE_ENABLED": true,                        // Allows a percentage of XP to bleed into NATO rifle skill
+        "SKILL_SHARE_XP_RATIO": 0.10,                       // Percentage of xp to bleed into the NATO rifle skill
+        "WEAPON_PROF_XP": 0.15,                             // XP per shot hit
+        "ERGO_MOD": 0.0015,                                 // Ergonomics modifier in percent
+        "ERGO_MOD_ELITE": 0.05,                             // Ergonomics modifier in percent elite
+        "RECOIL_REDUCTION": 0.002,                          // Recoil reduction modifier in percent
+        "RECOIL_REDUCTION_ELITE": 0.07,                     // Recoil reduction modifier in percent elite
+        "WEAPONS": [                                        // Applicable weapons.
             "6499849fc93611967b034949",
             "5ac66cb05acfc40198510a10",
             "5ac66d015acfc400180ae6e4",
@@ -115,17 +119,17 @@
         ]
     },
     "LockPickingSkill": {
-        "ENABLED": true,
-        "INSPECT_BASE_TIME": 4,
-        "INSPECT_CHANCE_BONUS": 10,
-        "PICK_BASE_TIME": 10,
-        "ATTEMPTS_BEFORE_BREAK": 3,
-        "TIME_REDUCTION_BONUS_PER_LEVEL": 0.3,
-        "TIME_REDUCTION_BONUS_PER_LEVEL_ELITE": 0.45,
-        "PICK_BASE_SUCCESS_CHANCE": 85,
-        "PICK_BASE_DIFFICULTY_MOD": 8,
-        "INSPECT_LOCK_XP_RATIO": 0.15,
-        "XP_TABLE": {
+        "ENABLED": true,                                    // Enable lock picking skill
+        "INSPECT_BASE_TIME": 4,                             // Base time before bonuses to inspect a door
+        "INSPECT_CHANCE_BONUS": 10,                         // Bonus chance added for inspecting a door
+        "PICK_BASE_TIME": 10,                               // Base time before bonuses to pick a door
+        "ATTEMPTS_BEFORE_BREAK": 3,                         // Failed attempts before a lock breaks
+        "TIME_REDUCTION_BONUS": 0.3,                        // Time reduction at level 50 in percent
+        "TIME_REDUCTION_BONUS_ELITE": 0.45,                 // Time reduction at elite in percent
+        "PICK_BASE_SUCCESS_CHANCE": 85,                     // Base chance to pick a lock
+        "PICK_BASE_DIFFICULTY_MOD": 8,                      // Difficulty modifier
+        "INSPECT_LOCK_XP_RATIO": 0.15,                      // Ratio of lock xp given for inspecting a lock
+        "XP_TABLE": {                                       // Door XP map
             "1": 0.15,
             "2": 0.35,
             "3": 1.75,
@@ -140,8 +144,8 @@
             "30": 5,
             "35": 5.5
         },
-        "DOOR_PICK_LEVELS": {
-            "Factory": {
+        "DOOR_PICK_LEVELS": {                              // WARNING: DO NOT EDIT THESE UNLESS YOU KNOW WHAT YOU ARE DOING.
+            "Factory": {                                   // THIS IS A COMPREHENSIVE LIST ALL DOORS IN THE GAME AND THEIR ASSOCIATED LEVELS. See "keyDoorIds.txt" to better understand this section.
                 "00094": 7,
                 "00095": 7,
                 "00115": 7,
@@ -479,9 +483,9 @@
                 "door_Sandbox_Area_05_00007": 3
             }
         },
-        "CRAFTING_RECIPES": [
-            {
-                "_id": "66220a0a699107e88f76ff91",
+        "CRAFTING_RECIPES": [                              // WARNING: DO NOT EDIT THIS UNLESS YOU KNOW WHAT YOU ARE DOING.
+            {                                              // I PROVIDE ZERO SUPPORT FOR EDITING ANYTHING BELOW THIS POINT.
+                "_id": "66220a0a699107e88f76ff91",         // YOU WILL BE LAUGHED AT AND TOLD TO REINSTALL THE MOD.
                 "areaType": 10,
                 "requirements": [
                   {
