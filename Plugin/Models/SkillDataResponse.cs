@@ -5,19 +5,13 @@ namespace SkillsExtended.Models
 {
     public struct SkillDataResponse
     {
-        public bool DisableEliteRequirements;
-
         public MedicalSkillData MedicalSkills;
 
-        public WeaponSkillData UsecRifleSkill;
+        public WeaponSkillData NatoRifleSkill;
 
-        public WeaponSkillData BearRifleSkill;
+        public WeaponSkillData EasternRifleSkill;
 
         public LockPickingData LockPickingSkill;
-
-        public UsecTacticsData UsecTacticsSkill;
-
-        public BearRawPowerData BearRawPowerSkill;
     }
 
     public struct MedicalSkillData
@@ -33,10 +27,7 @@ namespace SkillsExtended.Models
 
         [JsonProperty("FIELDMEDICINE_XP_PER_ACTION")]
         public float FieldMedicineXpPerAction;
-
-        [JsonProperty("COOL_DOWN_TIME_PER_LIMB")]
-        public float CoolDownTimePerLimb;
-
+        
         [JsonProperty("MEDKIT_HP_BONUS")]
         public float MedkitHpBonus;
 
@@ -76,7 +67,13 @@ namespace SkillsExtended.Models
         [JsonProperty("RECOIL_REDUCTION_ELITE")]
         public float RecoilReductionElite;
 
-        [JsonProperty("WEAPONS")]
+        [JsonProperty("SKILL_SHARE_ENABLED")]
+        public bool SkillShareEnabled;
+
+        [JsonProperty("SKILL_SHARE_XP_RATIO")]
+        public float SkillShareXpRatio;
+
+		[JsonProperty("WEAPONS")]
         public List<string> Weapons;
     }
 
@@ -132,32 +129,5 @@ namespace SkillsExtended.Models
         public Dictionary<string, int> Lighthouse;
         public Dictionary<string, int> Streets;
         public Dictionary<string, int> GroundZero;
-    }
-
-    public struct UsecTacticsData
-    {
-        [JsonProperty("ENABLED")]
-        public bool Enabled;
-
-        [JsonProperty("USEC_INERTIA_RED_BONUS")]
-        public float InertiaRedBonus;
-
-        [JsonProperty("USEC_INERTIA_RED_BONUS_ELITE")]
-        public float InertiaRedBonusElite;
-    }
-
-    public struct BearRawPowerData
-    {
-        [JsonProperty("ENABLED")]
-        public bool Enabled;
-
-        [JsonProperty("BEAR_POWER_HP_BONUS")]
-        public float HPBonus;
-
-        [JsonProperty("BEAR_POWER_HP_BONUS_ELITE")]
-        public float HPBonusElite;
-
-        [JsonProperty("BEAR_POWER_UPDATE_TIME")]
-        public double UpdateTime;
     }
 }

@@ -18,36 +18,13 @@ namespace SkillsExtended.Helpers
         public static Type IdleStateType => _idleStateType;
 
         private static Type _idleStateType;
-
-        public static void CheckServerModExists()
-        {
-            var dllLoc = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            string checksum = "d2F5ZmFyZXI=";
-            byte[] bytes = Convert.FromBase64String(checksum);
-            string decodedString = System.Text.Encoding.UTF8.GetString(bytes);
-            var modsLoc = Path.Combine(dllLoc, "..", "..", "user", "mods", decodedString);
-            var fullPath = Path.GetFullPath(modsLoc);
-
-            if (Directory.Exists(fullPath))
-            {
-                Environment.Exit(0);
-            }
-        }
-
-        // If the player is in the gameworld, use the main players skillmanager
+        
+        // If the player is in the GameWorld, use the main players SkillManager
         public static SkillManager GetActiveSkillManager()
         {
-            if (Singleton<GameWorld>.Instance?.MainPlayer != null)
-            {
-                return Singleton<GameWorld>.Instance.MainPlayer.Skills;
-            }
-            else if (Plugin.Session != null)
-            {
-                UsecRifleBehaviour.isSubscribed = false;
-                return ClientAppUtils.GetMainApp()?.GetClientBackEndSession()?.Profile?.Skills;
-            }
-
-            return null;
+            return Singleton<GameWorld>.Instance?.MainPlayer is not null
+                ? Singleton<GameWorld>.Instance?.MainPlayer?.Skills
+                : ClientAppUtils.GetMainApp()?.GetClientBackEndSession()?.Profile?.Skills;
         }
 
         // Get Json from the server
@@ -62,29 +39,7 @@ namespace SkillsExtended.Helpers
 
             return JsonConvert.DeserializeObject<T>(req);
         }
-
-        public static bool CanGainXPForLimb(Dictionary<EBodyPart, DateTime> dict, EBodyPart bodypart)
-        {
-            if (!dict.ContainsKey(bodypart))
-            {
-                dict.Add(bodypart, DateTime.Now);
-                return true;
-            }
-            else
-            {
-                TimeSpan elapsed = DateTime.Now - dict[bodypart];
-
-                if (elapsed.TotalSeconds >= Plugin.SkillData.MedicalSkills.CoolDownTimePerLimb)
-                {
-                    dict.Remove(bodypart);
-                    return true;
-                }
-
-                Plugin.Log.LogDebug($"Time until next available xp: {Plugin.SkillData.MedicalSkills.CoolDownTimePerLimb - elapsed.TotalSeconds} seconds");
-                return false;
-            }
-        }
-
+        
         public static void GetTypes()
         {
             _idleStateType = GetIdleStateType();

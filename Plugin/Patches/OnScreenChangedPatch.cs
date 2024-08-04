@@ -19,39 +19,37 @@ namespace SkillsExtended.Patches
             {
                 if (Plugin.SkillData.MedicalSkills.EnableFieldMedicine)
                 {
-                    Plugin.FieldMedicineScript.fieldMedicineInstanceIDs.Clear();
+                    Plugin.FieldMedicineScript.FieldMedicineInstanceIDs.Clear();
 
                     Plugin.FieldMedicineScript.FieldMedicineUpdate();
                 }
 
                 if (Plugin.SkillData.MedicalSkills.EnableFirstAid)
                 {
-                    Plugin.FirstAidScript.firstAidInstanceIDs.Clear();
+                    Plugin.FirstAidScript.FirstAidInstanceIDs.Clear();
 
                     Plugin.FirstAidScript.FirstAidUpdate();
                 }
 
-                if (Plugin.SkillData.UsecRifleSkill.Enabled)
+                if (Plugin.SkillData.NatoRifleSkill.Enabled)
                 {
-                    Plugin.UsecRifleScript.weaponInstanceIds.Clear();
+                    Plugin.UsecRifleScript.WeaponInstanceIds.Clear();
 
-                    var usecWeapons = Plugin.SkillData.UsecRifleSkill;
+                    var usecWeapons = Plugin.SkillData.NatoRifleSkill;
 
-                    Plugin.UsecRifleScript.usecWeapons = Plugin.Session.Profile.Inventory.AllRealPlayerItems
+                    Plugin.UsecRifleScript.UsecWeapons = Plugin.Session.Profile.Inventory.AllRealPlayerItems
                         .Where(x => usecWeapons.Weapons.Contains(x.TemplateId));
                 }
 
-                if (Plugin.SkillData.BearRifleSkill.Enabled)
+                if (!Plugin.SkillData.EasternRifleSkill.Enabled)
                 {
-                    Plugin.BearRifleScript.weaponInstanceIds.Clear();
+                    Plugin.BearRifleScript.WeaponInstanceIds.Clear();
 
-                    var bearWeapons = Plugin.SkillData.BearRifleSkill;
+                    var bearWeapons = Plugin.SkillData.EasternRifleSkill;
 
-                    Plugin.BearRifleScript.bearWeapons = Plugin.Session.Profile.Inventory.AllRealPlayerItems
+                    Plugin.BearRifleScript.BearWeapons = Plugin.Session.Profile.Inventory.AllRealPlayerItems
                         .Where(x => bearWeapons.Weapons.Contains(x.TemplateId));
                 }
-
-                Utils.CheckServerModExists();
             }
         }
     }

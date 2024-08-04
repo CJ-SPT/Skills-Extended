@@ -7,80 +7,78 @@
     <Version>1.0.0</Version>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
-	<TargetSptAkiVersion>sptaki376</TargetSptAkiVersion>
 	<Configurations>Debug;Release;BETA</Configurations>
 	<RootNamespace>$(MSBuildProjectName.Replace(" ", ""))</RootNamespace>
   </PropertyGroup>
 
 	<ItemGroup>
 		<Reference Include="0Harmony">
-			<HintPath>$(SolutionDir)Dependencies\0Harmony.dll</HintPath>
+			<HintPath>..\..\..\BepinEx\Core\0Harmony.dll</HintPath>
 		</Reference>
 		<Reference Include="Spt.Common">
-			<HintPath>$(SolutionDir)Dependencies\SPT-Common.dll</HintPath>
+			<HintPath>..\..\..\BepinEx\Plugins\spt\SPT-Common.dll</HintPath>
 		</Reference>
 		<Reference Include="SPT.Reflection">
-			<HintPath>$(SolutionDir)Dependencies\SPT-Reflection.dll</HintPath>
+			<HintPath>..\..\..\BepinEx\Plugins\spt\SPT-Reflection.dll</HintPath>
 		</Reference>
 		<Reference Include="AnimationSystem.Types">
-		  <HintPath>$(SolutionDir)Dependencies\AnimationSystem.Types.dll</HintPath>
+		  <HintPath>..\..\..\EscapeFromTarkov_data\managed\AnimationSystem.Types.dll</HintPath>
 		</Reference>
 		<Reference Include="Assembly-CSharp">
-		  <HintPath>$(SolutionDir)Dependencies\Assembly-CSharp.dll</HintPath>
+		  <HintPath>..\..\..\BepInEx\DumpedAssemblies\EscapeFromTarkov\Assembly-CSharp.dll</HintPath>
 		</Reference>
 		<Reference Include="BepInEx">
-			<HintPath>$(SolutionDir)Dependencies\BepInEx.dll</HintPath>
+			<HintPath>..\..\..\BepinEx\Core\BepInEx.dll</HintPath>
 		</Reference>
 		<Reference Include="bsg.console.core">
-		  <HintPath>$(SolutionDir)Dependencies\bsg.console.core.dll</HintPath>
+		  <HintPath>..\..\..\EscapeFromTarkov_Data\managed\bsg.console.core.dll</HintPath>
 		</Reference>
 		<Reference Include="Comfort">
-			<HintPath>$(SolutionDir)Dependencies\Comfort.dll</HintPath>
+			<HintPath>..\..\..\EscapeFromTarkov_Data\managed\Comfort.dll</HintPath>
 		</Reference>
 		<Reference Include="ItemComponent.Types">
-			<HintPath>$(SolutionDir)Dependencies\ItemComponent.Types.dll</HintPath>
+			<HintPath>..\..\..\EscapeFromTarkov_Data\managed\ItemComponent.Types.dll</HintPath>
 		</Reference>
 		<Reference Include="Newtonsoft.Json">
-			<HintPath>$(SolutionDir)Dependencies\Newtonsoft.Json.dll</HintPath>
+			<HintPath>..\..\..\EscapeFromTarkov_Data\managed\Newtonsoft.Json.dll</HintPath>
 		</Reference>
 		<Reference Include="Sirenix.Serialization">
-			<HintPath>$(SolutionDir)Dependencies\Sirenix.Serialization.dll</HintPath>
+			<HintPath>..\..\..\EscapeFromTarkov_Data\managed\Sirenix.Serialization.dll</HintPath>
 		</Reference>
 		<Reference Include="Unity.TextMeshPro">
-			<HintPath>$(SolutionDir)Dependencies\Unity.TextMeshPro.dll</HintPath>
+			<HintPath>..\..\..\EscapeFromTarkov_Data\managed\Unity.TextMeshPro.dll</HintPath>
 		</Reference>
 		<Reference Include="UnityEngine">
-			<HintPath>$(SolutionDir)Dependencies\UnityEngine.dll</HintPath>
+			<HintPath>..\..\..\EscapeFromTarkov_Data\managed\UnityEngine.dll</HintPath>
 		</Reference>
 		<Reference Include="UnityEngine.AnimationModule">
-		  <HintPath>$(SolutionDir)Dependencies\UnityEngine.AnimationModule.dll</HintPath>
+		  <HintPath>..\..\..\EscapeFromTarkov_Data\managed\UnityEngine.AnimationModule.dll</HintPath>
 		</Reference>
 		<Reference Include="UnityEngine.AssetBundleModule">
-		  <HintPath>$(SolutionDir)Dependencies\UnityEngine.AssetBundleModule.dll</HintPath>
+		  <HintPath>..\..\..\EscapeFromTarkov_Data\managed\UnityEngine.AssetBundleModule.dll</HintPath>
 		</Reference>
 		<Reference Include="UnityEngine.AudioModule">
-			<HintPath>$(SolutionDir)Dependencies\UnityEngine.AudioModule.dll</HintPath>
+			<HintPath>..\..\..\EscapeFromTarkov_Data\managed\UnityEngine.AudioModule.dll</HintPath>
 		</Reference>
 		<Reference Include="UnityEngine.CoreModule">
-			<HintPath>$(SolutionDir)Dependencies\UnityEngine.CoreModule.dll</HintPath>
+			<HintPath>..\..\..\EscapeFromTarkov_Data\managed\UnityEngine.CoreModule.dll</HintPath>
 		</Reference>
 		<Reference Include="UnityEngine.IMGUIModule">
-		  <HintPath>$(SolutionDir)Dependencies\UnityEngine.IMGUIModule.dll</HintPath>
+		  <HintPath>..\..\..\EscapeFromTarkov_Data\managed\UnityEngine.IMGUIModule.dll</HintPath>
 		</Reference>
 		<Reference Include="UnityEngine.TextRenderingModule">
-		  <HintPath>$(SolutionDir)Dependencies\UnityEngine.TextRenderingModule.dll</HintPath>
+		  <HintPath>..\..\..\EscapeFromTarkov_Data\managed\UnityEngine.TextRenderingModule.dll</HintPath>
 		</Reference>
 		<Reference Include="UnityEngine.UI">
-			<HintPath>$(SolutionDir)Dependencies\UnityEngine.UI.dll</HintPath>
+			<HintPath>..\..\..\EscapeFromTarkov_Data\managed\UnityEngine.UI.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.AnimationModule">
+			<HintPath>..\..\..\EscapeFromTarkov_Data\managed\UnityEngine.AnimationModule.dll</HintPath>
 		</Reference>
 	</ItemGroup>
 
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-	  <Exec Command="copy &quot;$(TargetPath)&quot; &quot;G:\3.9.0 - Dev\BepInEx\plugins\$(TargetName).dll&quot;&#xD;&#xA;if $(ConfigurationName) == Debug (&#xD;&#xA;    copy &quot;$(ProjectDir)$(OutDir)$(TargetName).pdb&quot; &quot;G:\3.9.0 - Dev\BepInEx\plugins\$(TargetName).pdb&quot;&#xD;&#xA;) else (&#xD;&#xA;    del &quot;G:\3.9.0 - Dev\BepInEx\plugins\$(TargetName).pdb&quot;&#xD;&#xA;)&#xD;&#xA;&#xD;&#xA;del &quot;G:\3.9.0 - Dev\BepInEx\config\com.dirtbikercj.SkillsExtended.cfg&quot;" />
-	</Target>
-
-	<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-	  <Exec Command="if not exist &quot;$(SolutionDir)\certificate.pfx&quot; exit /b 1" />
+	  <Exec Command="copy &quot;$(TargetPath)&quot; &quot;..\..\..\BepInEx\plugins\SkillsExtended\$(TargetName).dll&quot;&#xA;if $(ConfigurationName) == Debug (&#xA;    copy &quot;$(ProjectDir)$(OutDir)$(TargetName).pdb&quot; &quot;..\..\..\BepInEx\plugins\SkillsExtended\$(TargetName).pdb&quot;&#xA;) else (&#xA;    del &quot;..\..\..\BepInEx\plugins\SkillsExtended\$(TargetName).pdb&quot;&#xA;)&#xA;&#xA;xcopy &quot;$(ProjectDir)bundles\lockpicking_anim.bundle&quot; &quot;..\..\..\BepInEx\plugins\SkillsExtended\bundles\&quot; /Y&#xA;&#xA;del &quot;..\..\..\BepInEx\config\com.dirtbikercj.SkillsExtended.cfg&quot;" />
 	</Target>
 
 </Project>

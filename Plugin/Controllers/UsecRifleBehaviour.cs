@@ -4,135 +4,109 @@ using EFT.InventoryLogic;
 using SkillsExtended.Helpers;
 using SkillsExtended.Models;
 using System.Collections.Generic;
+using SkillsExtended.Skills;
 using UnityEngine;
 
-namespace SkillsExtended.Controllers
+namespace SkillsExtended.Controllers;
+
+public class UsecRifleBehaviour : MonoBehaviour
 {
-    public class UsecRifleBehaviour : MonoBehaviour
+    private static bool _isSubscribed = false;
+    public readonly Dictionary<string, int> WeaponInstanceIds = [];
+    public IEnumerable<Item> UsecWeapons = null;
+    private static SkillManager SkillManager => Utils.GetActiveSkillManager();
+    private static SkillManagerExt SkillMgrExt => Singleton<SkillManagerExt>.Instance;
+    private static ISession Session => Plugin.Session;
+    private static GameWorld GameWorld => Singleton<GameWorld>.Instance;
+    private static int UsecARLevel => Session.Profile.Skills.UsecArsystems.Level;
+    private static WeaponSkillData NatoSkillData => Plugin.SkillData.NatoRifleSkill;
+    
+    // Store an object containing the weapons original stats.
+    private readonly Dictionary<string, OrigWeaponValues> _originalWeaponValues = [];
+
+    private void Update()
     {
-        public static bool isSubscribed = false;
+        SetupSkillManager();
 
-        public Dictionary<string, int> weaponInstanceIds = [];
+        if (SkillManager == null || UsecWeapons == null) { return; }
 
-        public IEnumerable<Item> usecWeapons = null;
+        UpdateWeapons();
+    }
 
-        private SkillManager _skillManager => Utils.GetActiveSkillManager();
-
-        private ISession _session => Plugin.Session;
-
-        private GameWorld _gameWorld => Singleton<GameWorld>.Instance;
-
-        private int _usecARLevel => _session.Profile.Skills.UsecArsystems.Level;
-
-        private int _lastAppliedLevel = -1;
-
-        private WeaponSkillData _usecSkillData => Plugin.SkillData.UsecRifleSkill;
-
-        private float _ergoBonusUsec => _skillManager.UsecArsystems.IsEliteLevel
-            ? _usecARLevel * _usecSkillData.ErgoMod + _usecSkillData.ErgoModElite
-            : _usecARLevel * _usecSkillData.ErgoMod;
-
-        private float _recoilBonusUsec => _skillManager.UsecArsystems.IsEliteLevel
-            ? _usecARLevel * _usecSkillData.RecoilReduction + _usecSkillData.RecoilReductionElite
-            : _usecARLevel * _usecSkillData.RecoilReduction;
-
-        // Store an object containing the weapons original stats.
-        private Dictionary<string, OrigWeaponValues> _originalWeaponValues = [];
-
-        private void Update()
+    private static void SetupSkillManager()
+    {
+        if (_isSubscribed || SkillManager is null) return;
+        
+        if (GameWorld?.MainPlayer is null || GameWorld?.MainPlayer?.Location == "hideout")
         {
-            SetupSkillManager();
+            return;
+        }
+        
+        SkillManager.OnMasteringExperienceChanged += ApplyUsecARXp;
+        _isSubscribed = true;
+    }
 
-            if (_skillManager == null || usecWeapons == null) { return; }
+    private static void ApplyUsecARXp(MasterSkillClass action)
+    {
+        var weaponInHand = Singleton<GameWorld>.Instance.MainPlayer.HandsController.GetItem();
 
-            // Only run this behavior if we are USEC, or the player has completed the BEAR skill
-            if (Plugin.Session?.Profile?.Side == EPlayerSide.Usec || _skillManager.BearAksystems.IsEliteLevel)
-            {
-                UpdateWeapons();
-            }
+        if (!NatoSkillData.Weapons.Contains(weaponInHand.TemplateId))
+        {
+            return;
         }
 
-        private void SetupSkillManager()
+        GameWorld.MainPlayer.ExecuteSkill(CompleteSkill);
+    }
+
+    private static void CompleteSkill()
+    {
+        SkillMgrExt.UsecRifleAction.Complete(NatoSkillData.WeaponProfXp);
+
+        if (NatoSkillData.SkillShareEnabled)
         {
-            if (_gameWorld && !isSubscribed)
-            {
-                if (_gameWorld.MainPlayer == null || _gameWorld?.MainPlayer?.Location == "hideout")
-                {
-                    return;
-                }
-
-                if ((_gameWorld.MainPlayer.Side == EPlayerSide.Usec && !_skillManager.UsecArsystems.IsEliteLevel)
-                    || (_skillManager.BearAksystems.IsEliteLevel && !_skillManager.UsecArsystems.IsEliteLevel)
-                    || Plugin.SkillData.DisableEliteRequirements)
-                {
-                    _skillManager.OnMasteringExperienceChanged += ApplyUsecARXp;
-                    Plugin.Log.LogDebug("USEC AR XP ENABLED.");
-                }
-
-                isSubscribed = true;
-            }
+	        SkillMgrExt.BearRifleAction.Complete(NatoSkillData.WeaponProfXp * NatoSkillData.SkillShareXpRatio);
         }
+	}
 
-        private void ApplyUsecARXp(MasterSkillClass action)
+    private void UpdateWeapons()
+    {
+        foreach (var item in UsecWeapons)
         {
-            var weaponInHand = Singleton<GameWorld>.Instance.MainPlayer.HandsController.GetItem();
+            if (item is not Weapon weapon) return;
 
-            if (!_usecSkillData.Weapons.Contains(weaponInHand.TemplateId))
+            // Store the weapons original values
+            if (!_originalWeaponValues.ContainsKey(item.TemplateId))
             {
-                Plugin.Log.LogDebug("Invalid weapon for XP");
-                return;
+                var origVals = new OrigWeaponValues
+                {
+                    ergo = weapon.Template.Ergonomics,
+                    weaponUp = weapon.Template.RecoilForceUp,
+                    weaponBack = weapon.Template.RecoilForceBack
+                };
+
+                Plugin.Log.LogDebug($"original {weapon.LocalizedName()} ergo: {weapon.Template.Ergonomics}, up {weapon.Template.RecoilForceUp}, back {weapon.Template.RecoilForceBack}");
+
+                _originalWeaponValues.Add(item.TemplateId, origVals);
             }
 
-            _skillManager.UsecArsystems.Current += _usecSkillData.WeaponProfXp * SEConfig.usecWeaponSpeedMult.Value;
-
-            Plugin.Log.LogDebug($"USEC AR {_usecSkillData.WeaponProfXp * SEConfig.usecWeaponSpeedMult.Value} XP Gained.");
-        }
-
-        private void UpdateWeapons()
-        {
-            foreach (var item in usecWeapons)
+            //Skip instances of the weapon that are already adjusted at this level.
+            if (WeaponInstanceIds.ContainsKey(item.Id))
             {
-                if (item is not Weapon weap)
+                if (WeaponInstanceIds[item.Id] == UsecARLevel)
                 {
-                    return;
+                    continue;
                 }
 
-                // Store the weapons original values
-                if (!_originalWeaponValues.ContainsKey(item.TemplateId))
-                {
-                    var origVals = new OrigWeaponValues
-                    {
-                        ergo = weap.Template.Ergonomics,
-                        weaponUp = weap.Template.RecoilForceUp,
-                        weaponBack = weap.Template.RecoilForceBack
-                    };
-
-                    Plugin.Log.LogDebug($"original {weap.LocalizedName()} ergo: {weap.Template.Ergonomics}, up {weap.Template.RecoilForceUp}, back {weap.Template.RecoilForceBack}");
-
-                    _originalWeaponValues.Add(item.TemplateId, origVals);
-                }
-
-                //Skip instances of the weapon that are already adjusted at this level.
-                if (weaponInstanceIds.ContainsKey(item.Id))
-                {
-                    if (weaponInstanceIds[item.Id] == _usecARLevel)
-                    {
-                        continue;
-                    }
-
-                    weaponInstanceIds.Remove(item.Id);
-                }
-
-                weap.Template.Ergonomics = _originalWeaponValues[item.TemplateId].ergo * (1 + _ergoBonusUsec);
-                weap.Template.RecoilForceUp = _originalWeaponValues[item.TemplateId].weaponUp * (1 - _recoilBonusUsec);
-                weap.Template.RecoilForceBack = _originalWeaponValues[item.TemplateId].weaponBack * (1 - _recoilBonusUsec);
-
-                Plugin.Log.LogDebug($"New {weap.LocalizedName()} ergo: {weap.Template.Ergonomics}, up {weap.Template.RecoilForceUp}, back {weap.Template.RecoilForceBack}");
-
-                weaponInstanceIds.Add(item.Id, _usecARLevel);
-
-                _lastAppliedLevel = _usecARLevel;
+                WeaponInstanceIds.Remove(item.Id);
             }
+
+            weapon.Template.Ergonomics = _originalWeaponValues[item.TemplateId].ergo * (1 + SkillMgrExt.UsecArSystemsErgoBuff);
+            weapon.Template.RecoilForceUp = _originalWeaponValues[item.TemplateId].weaponUp * (1 - SkillMgrExt.UsecArSystemsRecoilBuff);
+            weapon.Template.RecoilForceBack = _originalWeaponValues[item.TemplateId].weaponBack * (1 - SkillMgrExt.UsecArSystemsRecoilBuff);
+
+            Plugin.Log.LogDebug($"New {weapon.LocalizedName()} ergo: {weapon.Template.Ergonomics}, up {weapon.Template.RecoilForceUp}, back {weapon.Template.RecoilForceBack}");
+
+            WeaponInstanceIds.Add(item.Id, UsecARLevel);
         }
     }
 }

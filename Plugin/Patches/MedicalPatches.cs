@@ -3,76 +3,41 @@ using EFT.InventoryLogic;
 using SPT.Reflection.Patching;
 using System.Linq;
 using System.Reflection;
+using EFT.HealthSystem;
+using HarmonyLib;
 
-namespace SkillsExtended.Patches
+namespace SkillsExtended.Patches;
+
+internal class DoMedEffectPatch : ModulePatch
 {
-    internal class DoMedEffectPatch : ModulePatch
+    protected override MethodBase GetTargetMethod()
     {
-        protected override MethodBase GetTargetMethod()
-        {
-            return typeof(Player).GetMethods().First(m =>
-                m.Name == "SetInHands" && m.GetParameters()[0].Name == "meds");
-        }
-
-        [PatchPrefix]
-        public static void Prefix(Player __instance, MedsClass meds, EBodyPart bodyPart)
-        {
-            // Dont give xp for surgery
-            if (meds.TemplateId == "5d02778e86f774203e7dedbe" || meds.TemplateId == "5d02797c86f774203f38e30a")
-            {
-                return;
-            }
-
-            if (!__instance.IsYourPlayer)
-            {
-                return;
-            }
-
-            if (Plugin.SkillData.MedicalSkills.FmItemList.Contains(meds.TemplateId) && Plugin.SkillData.MedicalSkills.EnableFieldMedicine)
-            {
-                Plugin.FieldMedicineScript.ApplyFieldMedicineExp(bodyPart);
-                Plugin.Log.LogDebug("Field Medicine Effect");
-                return;
-            }
-
-            if (Plugin.SkillData.MedicalSkills.FaItemList.Contains(meds.TemplateId) && Plugin.SkillData.MedicalSkills.EnableFirstAid)
-            {
-                Plugin.FirstAidScript.ApplyFirstAidExp(bodyPart);
-            }
-        }
+        return AccessTools.Method(typeof(ActiveHealthController), nameof(ActiveHealthController.DoMedEffect));
     }
 
-    internal class SetItemInHands : ModulePatch
+    [PatchPrefix]
+    public static void Prefix(ActiveHealthController __instance, Item item)
     {
-        protected override MethodBase GetTargetMethod()
+        // Don't give xp for surgery
+        if (item.TemplateId == "5d02778e86f774203e7dedbe" || item.TemplateId == "5d02797c86f774203f38e30a")
         {
-            return typeof(Player).GetMethod("TryProceed", BindingFlags.Public | BindingFlags.Instance);
+            return;
         }
 
-        [PatchPostfix]
-        public static void Postfix(Player __instance, Item item)
+        if (!__instance.Player.IsYourPlayer || item is not MedsClass)
         {
-            // Dont give xp for surgery
-            if (item.TemplateId == "5d02778e86f774203e7dedbe" || item.TemplateId == "5d02797c86f774203f38e30a")
-            {
-                return;
-            }
+            return;
+        }
 
-            if (!__instance.IsYourPlayer)
-            {
-                return;
-            }
+        if (Plugin.SkillData.MedicalSkills.FmItemList.Contains(item.TemplateId) && Plugin.SkillData.MedicalSkills.EnableFieldMedicine)
+        {
+            __instance.Player.ExecuteSkill(Plugin.FieldMedicineScript.ApplyFieldMedicineExp);
+            return;
+        }
 
-            if (Plugin.SkillData.MedicalSkills.FmItemList.Contains(item.TemplateId) && Plugin.SkillData.MedicalSkills.EnableFieldMedicine)
-            {
-                Plugin.FieldMedicineScript.ApplyFieldMedicineExp(EBodyPart.Common);
-                return;
-            }
-
-            if (Plugin.SkillData.MedicalSkills.FaItemList.Contains(item.TemplateId) && Plugin.SkillData.MedicalSkills.EnableFirstAid)
-            {
-                Plugin.FirstAidScript.ApplyFirstAidExp(EBodyPart.Common);
-            }
+        if (Plugin.SkillData.MedicalSkills.FaItemList.Contains(item.TemplateId) && Plugin.SkillData.MedicalSkills.EnableFirstAid)
+        {
+            __instance.Player.ExecuteSkill(Plugin.FirstAidScript.ApplyFirstAidExp);
         }
     }
 }

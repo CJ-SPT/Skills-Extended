@@ -6,123 +6,112 @@ using SkillsExtended.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Comfort.Common;
+using SkillsExtended.Skills;
 using UnityEngine;
 
-namespace SkillsExtended.Controllers
+namespace SkillsExtended.Controllers;
+
+internal class FieldMedicineBehaviour : MonoBehaviour
 {
-    internal class FieldMedicineBehaviour : MonoBehaviour
+    private static SkillManager SkillManager => Utils.GetActiveSkillManager();
+
+    private int _lastAppliedLevel = -1;
+
+    private static MedicalSkillData SkillData => Plugin.SkillData.MedicalSkills;
+
+    private static SkillManagerExt SkillMgrExt => Singleton<SkillManagerExt>.Instance;
+    
+    private static float FmPmcSpeedBonus => 1f - SkillMgrExt.FieldMedicineSpeedBuff;
+
+    private readonly Dictionary<string, HealthEffectValues> _originalHealthEffectValues = [];
+
+    private readonly Dictionary<EBodyPart, DateTime> _fieldMedicineBodyPartCache = [];
+
+    public readonly Dictionary<string, int> FieldMedicineInstanceIDs = [];
+
+    private void Update()
     {
-        private SkillManager _skillManager => Utils.GetActiveSkillManager();
-
-        private int _lastAppliedLevel = -1;
-
-        private MedicalSkillData _skillData => Plugin.SkillData.MedicalSkills;
-
-        private float FmPmcSpeedBonus => _skillManager.FirstAid.IsEliteLevel
-            ? 1f - (_skillManager.FirstAid.Level * _skillData.MedicalSpeedBonus) - _skillData.MedicalSpeedBonusElite
-            : 1f - (_skillManager.FirstAid.Level * _skillData.MedicalSpeedBonus);
-
-        private Dictionary<string, HealthEffectValues> _originalHealthEffectValues = [];
-
-        private Dictionary<EBodyPart, DateTime> _fieldMedicineBodyPartCache = [];
-
-        public Dictionary<string, int> fieldMedicineInstanceIDs = [];
-
-        private void Update()
+        if (Plugin.Items is null || _lastAppliedLevel == SkillManager.FieldMedicine.Level)
         {
-            if (Plugin.Items == null || _lastAppliedLevel == _skillManager.FieldMedicine.Level)
-            {
-                return;
-            }
-
-            if (Plugin.GameWorld?.MainPlayer == null)
-            {
-                _fieldMedicineBodyPartCache.Clear();
-            }
-
-            FieldMedicineUpdate();
+            return;
         }
 
-        public void ApplyFieldMedicineExp(EBodyPart bodypart)
+        if (Plugin.GameWorld?.MainPlayer is null)
         {
-            float xpGain = Plugin.SkillData.MedicalSkills.FieldMedicineXpPerAction;
-
-            // If we recently healed this limb, return
-            if (!Utils.CanGainXPForLimb(_fieldMedicineBodyPartCache, bodypart)) { return; }
-
-            _skillManager.FieldMedicine.SetCurrent(_skillManager.FieldMedicine.Current + (xpGain * SEConfig.fieldMedicineSpeedMult.Value), true);
-
-            Plugin.Log.LogDebug($"Skill: {_skillManager.FieldMedicine.Id} Side: {Plugin.Player.Side} Gained: {xpGain * SEConfig.fieldMedicineSpeedMult.Value} exp.");
+            _fieldMedicineBodyPartCache.Clear();
         }
 
-        private void ApplyFieldMedicineSpeedBonus(Item item)
-        {
-            float bonus = FmPmcSpeedBonus;
+        FieldMedicineUpdate();
+    }
 
-            if (item is MedsClass meds)
+    public void ApplyFieldMedicineExp()
+    {
+        var xpGain = Plugin.SkillData.MedicalSkills.FieldMedicineXpPerAction;
+        SkillMgrExt.FieldMedicineAction.Complete(xpGain);
+    }
+
+    private void ApplyFieldMedicineSpeedBonus(Item item)
+    {
+        var bonus = FmPmcSpeedBonus;
+
+        if (item is not MedsClass meds) return;
+        
+        if (!_originalHealthEffectValues.ContainsKey(item.TemplateId))
+        {
+            var origValues = new HealthEffectValues
             {
-                if (!_originalHealthEffectValues.ContainsKey(item.TemplateId))
+                UseTime = meds.HealthEffectsComponent.UseTime,
+                BodyPartTimeMults = meds.HealthEffectsComponent.BodyPartTimeMults,
+                HealthEffects = meds.HealthEffectsComponent.HealthEffects,
+                DamageEffects = meds.HealthEffectsComponent.DamageEffects,
+                StimulatorBuffs = meds.HealthEffectsComponent.StimulatorBuffs
+            };
+
+            _originalHealthEffectValues.Add(item.TemplateId, origValues);
+        }
+
+        IHealthEffect healthEffects = new HealthEffectValues
+        {
+            UseTime = _originalHealthEffectValues[meds.TemplateId].UseTime * bonus,
+            BodyPartTimeMults = meds.HealthEffectsComponent.BodyPartTimeMults,
+            HealthEffects = meds.HealthEffectsComponent.HealthEffects,
+            DamageEffects = meds.HealthEffectsComponent.DamageEffects,
+            StimulatorBuffs = meds.HealthEffectsComponent.StimulatorBuffs
+        };
+
+        var healthEffectComp = AccessTools.Field(typeof(MedsClass), "HealthEffectsComponent").GetValue(meds);
+        AccessTools.Field(typeof(HealthEffectsComponent), "iHealthEffect").SetValue(healthEffectComp, healthEffects);
+
+        Plugin.Log.LogDebug($"Field Medicine: Set instance {item.Id} of type {item.TemplateId} to {_originalHealthEffectValues[meds.TemplateId].UseTime * bonus} seconds");
+    }
+
+    public void FieldMedicineUpdate()
+    {
+        var items = Plugin.Items.Where(x => x is MedsClass);
+        
+        foreach (var item in items)
+        {
+            // Skip if we already set this field medicine item.
+            if (FieldMedicineInstanceIDs.ContainsKey(item.Id))
+            {
+                var previouslySet = FieldMedicineInstanceIDs[item.Id];
+
+                if (previouslySet == SkillManager.FieldMedicine.Level)
                 {
-                    var origValues = new HealthEffectValues
-                    {
-                        UseTime = meds.HealthEffectsComponent.UseTime,
-                        BodyPartTimeMults = meds.HealthEffectsComponent.BodyPartTimeMults,
-                        HealthEffects = meds.HealthEffectsComponent.HealthEffects,
-                        DamageEffects = meds.HealthEffectsComponent.DamageEffects,
-                        StimulatorBuffs = meds.HealthEffectsComponent.StimulatorBuffs
-                    };
-
-                    _originalHealthEffectValues.Add(item.TemplateId, origValues);
+                    continue;
                 }
-
-                IHealthEffect newGInterface = new HealthEffectValues
-                {
-                    UseTime = _originalHealthEffectValues[meds.TemplateId].UseTime * bonus,
-                    BodyPartTimeMults = meds.HealthEffectsComponent.BodyPartTimeMults,
-                    HealthEffects = meds.HealthEffectsComponent.HealthEffects,
-                    DamageEffects = meds.HealthEffectsComponent.DamageEffects,
-                    StimulatorBuffs = meds.HealthEffectsComponent.StimulatorBuffs
-                };
-
-                var healthEffectComp = AccessTools.Field(typeof(MedsClass), "HealthEffectsComponent").GetValue(meds);
-                AccessTools.Field(typeof(HealthEffectsComponent), "iHealthEffect").SetValue(healthEffectComp, newGInterface);
-
-                Plugin.Log.LogDebug($"Field Medicine: Set instance {item.Id} of type {item.TemplateId} to {_originalHealthEffectValues[meds.TemplateId].UseTime * bonus} seconds");
-            }
-        }
-
-        public void FieldMedicineUpdate()
-        {
-            var items = Plugin.Items.Where(x => x is MedsClass);
-
-            if (items == null) { return; }
-
-            foreach (var item in items)
-            {
-                // Skip if we already set this field medicine item.
-                if (fieldMedicineInstanceIDs.ContainsKey(item.Id))
-                {
-                    int previouslySet = fieldMedicineInstanceIDs[item.Id];
-
-                    if (previouslySet == _skillManager.FieldMedicine.Level)
-                    {
-                        continue;
-                    }
-                    else
-                    {
-                        fieldMedicineInstanceIDs.Remove(item.Id);
-                    }
-                }
-
-                // Apply Field medicine speed bonus to items
-                if (_skillData.FmItemList.Contains(item.TemplateId))
-                {
-                    ApplyFieldMedicineSpeedBonus(item);
-                    fieldMedicineInstanceIDs.Add(item.Id, _skillManager.FieldMedicine.Level);
-                }
+                
+                FieldMedicineInstanceIDs.Remove(item.Id);
             }
 
-            _lastAppliedLevel = _skillManager.FieldMedicine.Level;
+            // Apply Field medicine speed bonus to items not in the list
+            if (!SkillData.FmItemList.Contains(item.TemplateId)) continue;
+            
+            ApplyFieldMedicineSpeedBonus(item);
+            FieldMedicineInstanceIDs.Add(item.Id, SkillManager.FieldMedicine.Level);
         }
+
+        _lastAppliedLevel = SkillManager.FieldMedicine.Level;
     }
 }
