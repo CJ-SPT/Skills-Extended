@@ -7,9 +7,9 @@ namespace SkillsExtended.Models
     {
         public MedicalSkillData MedicalSkills;
 
-        public WeaponSkillData UsecRifleSkill;
+        public WeaponSkillData NatoRifleSkill;
 
-        public WeaponSkillData BearRifleSkill;
+        public WeaponSkillData EasternRifleSkill;
 
         public LockPickingData LockPickingSkill;
     }

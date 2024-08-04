@@ -24,7 +24,7 @@ internal class BearRifleBehaviour : MonoBehaviour
     private static GameWorld GameWorld => Singleton<GameWorld>.Instance;
 
     private static int BearAkLevel => Session.Profile.Skills.BearAksystems.Level;
-    private static WeaponSkillData BearSkillData => Plugin.SkillData.BearRifleSkill;
+    private static WeaponSkillData EasternSkillData => Plugin.SkillData.EasternRifleSkill;
     
     // Store an object containing the weapons original stats.
     private readonly Dictionary<string, OrigWeaponValues> _originalWeaponValues = [];
@@ -55,7 +55,7 @@ internal class BearRifleBehaviour : MonoBehaviour
     {
         var weaponInHand = Singleton<GameWorld>.Instance.MainPlayer.HandsController.GetItem();
 
-        if (!BearSkillData.Weapons.Contains(weaponInHand.TemplateId))
+        if (!EasternSkillData.Weapons.Contains(weaponInHand.TemplateId))
         {
             return;
         }
@@ -65,11 +65,11 @@ internal class BearRifleBehaviour : MonoBehaviour
 
     private static void CompleteSkill()
     {
-        SkillMgrExt.BearRifleAction.Complete(BearSkillData.WeaponProfXp);
+        SkillMgrExt.BearRifleAction.Complete(EasternSkillData.WeaponProfXp);
 
-        if (BearSkillData.SkillShareEnabled)
+        if (EasternSkillData.SkillShareEnabled)
         {
-	        SkillMgrExt.UsecRifleAction.Complete(BearSkillData.WeaponProfXp * BearSkillData.SkillShareXpRatio);
+	        SkillMgrExt.UsecRifleAction.Complete(EasternSkillData.WeaponProfXp * EasternSkillData.SkillShareXpRatio);
         }
 	}
 

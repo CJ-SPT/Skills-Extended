@@ -54,7 +54,7 @@ public sealed class LockPickActionHandler
 
             RemoveUseFromLockPick(doorLevel);
             Helpers.ApplyLockPickActionXp(InteractiveObject, Owner);
-            AccessTools.Method(typeof(WorldInteractiveObject), "Unlock").Invoke(InteractiveObject, null);
+            InteractiveObject.Unlock();
         }
         else
         {

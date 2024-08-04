@@ -19,7 +19,7 @@ public class UsecRifleBehaviour : MonoBehaviour
     private static ISession Session => Plugin.Session;
     private static GameWorld GameWorld => Singleton<GameWorld>.Instance;
     private static int UsecARLevel => Session.Profile.Skills.UsecArsystems.Level;
-    private static WeaponSkillData UsecSkillData => Plugin.SkillData.UsecRifleSkill;
+    private static WeaponSkillData NatoSkillData => Plugin.SkillData.NatoRifleSkill;
     
     // Store an object containing the weapons original stats.
     private readonly Dictionary<string, OrigWeaponValues> _originalWeaponValues = [];
@@ -50,7 +50,7 @@ public class UsecRifleBehaviour : MonoBehaviour
     {
         var weaponInHand = Singleton<GameWorld>.Instance.MainPlayer.HandsController.GetItem();
 
-        if (!UsecSkillData.Weapons.Contains(weaponInHand.TemplateId))
+        if (!NatoSkillData.Weapons.Contains(weaponInHand.TemplateId))
         {
             return;
         }
@@ -60,11 +60,11 @@ public class UsecRifleBehaviour : MonoBehaviour
 
     private static void CompleteSkill()
     {
-        SkillMgrExt.UsecRifleAction.Complete(UsecSkillData.WeaponProfXp);
+        SkillMgrExt.UsecRifleAction.Complete(NatoSkillData.WeaponProfXp);
 
-        if (UsecSkillData.SkillShareEnabled)
+        if (NatoSkillData.SkillShareEnabled)
         {
-	        SkillMgrExt.BearRifleAction.Complete(UsecSkillData.WeaponProfXp * UsecSkillData.SkillShareXpRatio);
+	        SkillMgrExt.BearRifleAction.Complete(NatoSkillData.WeaponProfXp * NatoSkillData.SkillShareXpRatio);
         }
 	}
 

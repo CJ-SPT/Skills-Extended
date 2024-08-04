@@ -31,21 +31,21 @@ namespace SkillsExtended.Patches
                     Plugin.FirstAidScript.FirstAidUpdate();
                 }
 
-                if (Plugin.SkillData.UsecRifleSkill.Enabled)
+                if (Plugin.SkillData.NatoRifleSkill.Enabled)
                 {
                     Plugin.UsecRifleScript.WeaponInstanceIds.Clear();
 
-                    var usecWeapons = Plugin.SkillData.UsecRifleSkill;
+                    var usecWeapons = Plugin.SkillData.NatoRifleSkill;
 
                     Plugin.UsecRifleScript.UsecWeapons = Plugin.Session.Profile.Inventory.AllRealPlayerItems
                         .Where(x => usecWeapons.Weapons.Contains(x.TemplateId));
                 }
 
-                if (!Plugin.SkillData.BearRifleSkill.Enabled)
+                if (!Plugin.SkillData.EasternRifleSkill.Enabled)
                 {
                     Plugin.BearRifleScript.WeaponInstanceIds.Clear();
 
-                    var bearWeapons = Plugin.SkillData.BearRifleSkill;
+                    var bearWeapons = Plugin.SkillData.EasternRifleSkill;
 
                     Plugin.BearRifleScript.BearWeapons = Plugin.Session.Profile.Inventory.AllRealPlayerItems
                         .Where(x => bearWeapons.Weapons.Contains(x.TemplateId));

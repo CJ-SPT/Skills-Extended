@@ -115,12 +115,12 @@ public class Plugin : BaseUnityPlugin
             FieldMedicineScript = Hook.AddComponent<FieldMedicineBehaviour>();
         }
 
-        if (SkillData.UsecRifleSkill.Enabled)
+        if (SkillData.NatoRifleSkill.Enabled)
         {
             UsecRifleScript = Hook.AddComponent<UsecRifleBehaviour>();
         }
         
-        if (SkillData.BearRifleSkill.Enabled)
+        if (SkillData.EasternRifleSkill.Enabled)
         {
             BearRifleScript = Hook.AddComponent<BearRifleBehaviour>();
         }
