@@ -1,4 +1,5 @@
-﻿using Comfort.Common;
+﻿using System.Collections;
+using Comfort.Common;
 using EFT;
 using EFT.InventoryLogic;
 using SkillsExtended.Helpers;
@@ -34,13 +35,13 @@ internal class BearRifleBehaviour : MonoBehaviour
         SetupSkillManager();
     }
 
-    public void UpdateWeapons()
+    public IEnumerator UpdateWeapons()
     {
-        if (SkillManager == null || BearWeapons == null) { return; }
+        if (SkillManager == null || BearWeapons == null) yield break;
         
         foreach (var item in BearWeapons)
         {
-            if (item is not Weapon weapon) return;
+            if (item is not Weapon weapon) continue;
 
             // Store the weapons original values
             if (!_originalWeaponValues.ContainsKey(item.TemplateId))
@@ -75,6 +76,8 @@ internal class BearRifleBehaviour : MonoBehaviour
             Plugin.Log.LogDebug($"New {weapon.LocalizedName()} ergo: {weapon.Template.Ergonomics}, up {weapon.Template.RecoilForceUp}, back {weapon.Template.RecoilForceBack}");
 
             WeaponInstanceIds.Add(item.Id, BearAkLevel);
+
+            yield return null;
         }
     }
     

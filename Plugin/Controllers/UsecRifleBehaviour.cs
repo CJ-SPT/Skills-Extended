@@ -1,10 +1,12 @@
-﻿using Comfort.Common;
+﻿using System.Collections;
+using Comfort.Common;
 using EFT;
 using EFT.InventoryLogic;
 using SkillsExtended.Helpers;
 using SkillsExtended.Models;
 using System.Collections.Generic;
 using SkillsExtended.Skills;
+using Unity.Jobs;
 using UnityEngine;
 
 namespace SkillsExtended.Controllers;
@@ -27,52 +29,15 @@ public class UsecRifleBehaviour : MonoBehaviour
     private void Update()
     {
         SetupSkillManager();
-
-        if (SkillManager == null || UsecWeapons == null) { return; }
-
-        //UpdateWeapons();
     }
 
-    private static void SetupSkillManager()
+    public IEnumerator UpdateWeapons()
     {
-        if (_isSubscribed || SkillManager is null) return;
+        if (SkillManager is null || UsecWeapons is null) yield break; 
         
-        if (GameWorld?.MainPlayer is null || GameWorld?.MainPlayer?.Location == "hideout")
-        {
-            return;
-        }
-        
-        SkillManager.OnMasteringExperienceChanged += ApplyUsecARXp;
-        _isSubscribed = true;
-    }
-
-    private static void ApplyUsecARXp(MasterSkillClass action)
-    {
-        var weaponInHand = Singleton<GameWorld>.Instance.MainPlayer.HandsController.GetItem();
-
-        if (!NatoSkillData.Weapons.Contains(weaponInHand.TemplateId))
-        {
-            return;
-        }
-
-        GameWorld.MainPlayer.ExecuteSkill(CompleteSkill);
-    }
-
-    private static void CompleteSkill()
-    {
-        SkillMgrExt.UsecRifleAction.Complete(NatoSkillData.WeaponProfXp);
-
-        if (NatoSkillData.SkillShareEnabled)
-        {
-	        SkillMgrExt.BearRifleAction.Complete(NatoSkillData.WeaponProfXp * NatoSkillData.SkillShareXpRatio);
-        }
-	}
-
-    public void UpdateWeapons()
-    {
         foreach (var item in UsecWeapons)
         {
-            if (item is not Weapon weapon) return;
+            if (item is not Weapon weapon) continue;
 
             // Store the weapons original values
             if (!_originalWeaponValues.ContainsKey(item.TemplateId))
@@ -107,6 +72,43 @@ public class UsecRifleBehaviour : MonoBehaviour
             Plugin.Log.LogDebug($"New {weapon.LocalizedName()} ergo: {weapon.Template.Ergonomics}, up {weapon.Template.RecoilForceUp}, back {weapon.Template.RecoilForceBack}");
 
             WeaponInstanceIds.Add(item.Id, UsecARLevel);
+
+            yield return null;
         }
     }
+    
+    private static void SetupSkillManager()
+    {
+        if (_isSubscribed || SkillManager is null) return;
+        
+        if (GameWorld?.MainPlayer is null || GameWorld?.MainPlayer?.Location == "hideout")
+        {
+            return;
+        }
+        
+        SkillManager.OnMasteringExperienceChanged += ApplyUsecARXp;
+        _isSubscribed = true;
+    }
+
+    private static void ApplyUsecARXp(MasterSkillClass action)
+    {
+        var weaponInHand = Singleton<GameWorld>.Instance.MainPlayer.HandsController.GetItem();
+
+        if (!NatoSkillData.Weapons.Contains(weaponInHand.TemplateId))
+        {
+            return;
+        }
+
+        GameWorld.MainPlayer.ExecuteSkill(CompleteSkill);
+    }
+
+    private static void CompleteSkill()
+    {
+        SkillMgrExt.UsecRifleAction.Complete(NatoSkillData.WeaponProfXp);
+
+        if (NatoSkillData.SkillShareEnabled)
+        {
+	        SkillMgrExt.BearRifleAction.Complete(NatoSkillData.WeaponProfXp * NatoSkillData.SkillShareXpRatio);
+        }
+	}
 }

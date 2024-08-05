@@ -4,6 +4,7 @@ using SkillsExtended.Helpers;
 using SPT.Reflection.Patching;
 using System.Linq;
 using System.Reflection;
+using EFT;
 
 namespace SkillsExtended.Patches
 {
@@ -39,8 +40,8 @@ namespace SkillsExtended.Patches
 
                     Plugin.NatoWeaponScript.UsecWeapons = Plugin.Session.Profile.Inventory.AllRealPlayerItems
                         .Where(x => usecWeapons.Weapons.Contains(x.TemplateId));
-                    
-                    Plugin.NatoWeaponScript.UpdateWeapons();
+
+                    StaticManager.BeginCoroutine(Plugin.NatoWeaponScript.UpdateWeapons());
                 }
 
                 if (Plugin.SkillData.EasternRifleSkill.Enabled)
@@ -52,7 +53,7 @@ namespace SkillsExtended.Patches
                     Plugin.EasternWeaponScript.BearWeapons = Plugin.Session.Profile.Inventory.AllRealPlayerItems
                         .Where(x => bearWeapons.Weapons.Contains(x.TemplateId));
                     
-                    Plugin.EasternWeaponScript.UpdateWeapons();
+                    StaticManager.BeginCoroutine(Plugin.EasternWeaponScript.UpdateWeapons());
                 }
             }
         }
