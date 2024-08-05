@@ -130,7 +130,7 @@ public class FirstAidBehaviour : MonoBehaviour
         var currentMaxResource = meds.MedKitComponent.MaxHpResource;
 
         // Only change the current resource if the item is unused.
-        if (currentResource == currentMaxResource)
+        if (Mathf.FloorToInt(currentResource) == currentMaxResource)
         {
             meds.MedKitComponent.HpResource = medKitInterface.MaxHpResource;
         }
