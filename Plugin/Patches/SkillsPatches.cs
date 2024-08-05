@@ -119,7 +119,7 @@ internal class SkillClassCtorPatch : ModulePatch
         {
             buffs = skillMgrExt.FirstAidBuffs();
             actions = [
-                skillMgrExt.FirstAidAction.Factor(0.1f)
+                skillMgrExt.FirstAidAction.Factor(0.35f)
             ];
         }
         
@@ -127,7 +127,7 @@ internal class SkillClassCtorPatch : ModulePatch
         {
             buffs = skillMgrExt.FieldMedicineBuffs();
             actions = [
-                skillMgrExt.FieldMedicineAction.Factor(0.1f)
+                skillMgrExt.FieldMedicineAction.Factor(0.35f)
             ];
         }
         
