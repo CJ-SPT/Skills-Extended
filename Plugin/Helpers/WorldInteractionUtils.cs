@@ -11,7 +11,7 @@ public static class WorldInteractionUtils
 {
     public static bool IsBotInteraction(GamePlayerOwner owner)
     {
-        if (owner == null)
+        if (owner is null)
         {
             throw new ArgumentNullException("owner is null...");
         }
@@ -135,10 +135,10 @@ public static class WorldInteractionUtils
         return true;
     }
 
-    public sealed class LockPickingInteraction
+    private sealed class LockPickingInteraction
     {
-        public GamePlayerOwner owner;
-        public WorldInteractiveObject interactiveObject;
+        private GamePlayerOwner owner;
+        private WorldInteractiveObject interactiveObject;
 
         public LockPickingInteraction()
         { }
@@ -160,10 +160,10 @@ public static class WorldInteractionUtils
         }
     }
 
-    public sealed class HackTerminalInteraction
+    private sealed class HackTerminalInteraction
     {
-        public GamePlayerOwner owner;
-        public KeycardDoor door;
+        private GamePlayerOwner owner;
+        private KeycardDoor door;
 
         public HackTerminalInteraction()
         { }
@@ -185,10 +185,10 @@ public static class WorldInteractionUtils
         }
     }
     
-    public sealed class LockInspectInteraction
+    private sealed class LockInspectInteraction
     {
-        public GamePlayerOwner owner;
-        public WorldInteractiveObject interactiveObject;
+        private GamePlayerOwner owner;
+        private WorldInteractiveObject interactiveObject;
 
         public LockInspectInteraction()
         { }
