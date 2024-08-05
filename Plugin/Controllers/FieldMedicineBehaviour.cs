@@ -25,32 +25,49 @@ internal class FieldMedicineBehaviour : MonoBehaviour
     private static float FmPmcSpeedBonus => 1f - SkillMgrExt.FieldMedicineSpeedBuff;
 
     private readonly Dictionary<string, HealthEffectValues> _originalHealthEffectValues = [];
-
-    private readonly Dictionary<EBodyPart, DateTime> _fieldMedicineBodyPartCache = [];
-
+    
     public readonly Dictionary<string, int> FieldMedicineInstanceIDs = [];
-
-    private void Update()
-    {
-        if (Plugin.Items is null || _lastAppliedLevel == SkillManager.FieldMedicine.Level)
-        {
-            return;
-        }
-
-        if (Plugin.GameWorld?.MainPlayer is null)
-        {
-            _fieldMedicineBodyPartCache.Clear();
-        }
-
-        //FieldMedicineUpdate();
-    }
-
+    
     public void ApplyFieldMedicineExp()
     {
         var xpGain = Plugin.SkillData.MedicalSkills.FieldMedicineXpPerAction;
         SkillMgrExt.FieldMedicineAction.Complete(xpGain);
     }
 
+    public void FieldMedicineUpdate()
+    {
+        if (Plugin.Items is null || _lastAppliedLevel == SkillManager.FieldMedicine.Level)
+        {
+            return;
+        }
+        
+        var items = Plugin.Items.Where(x => x is MedsClass);
+        
+        foreach (var item in items)
+        {
+            // Skip if we already set this field medicine item.
+            if (FieldMedicineInstanceIDs.ContainsKey(item.Id))
+            {
+                var previouslySet = FieldMedicineInstanceIDs[item.Id];
+
+                if (previouslySet == SkillManager.FieldMedicine.Level)
+                {
+                    continue;
+                }
+                
+                FieldMedicineInstanceIDs.Remove(item.Id);
+            }
+
+            // Apply Field medicine speed bonus to items not in the list
+            if (!SkillData.FmItemList.Contains(item.TemplateId)) continue;
+            
+            ApplyFieldMedicineSpeedBonus(item);
+            FieldMedicineInstanceIDs.Add(item.Id, SkillManager.FieldMedicine.Level);
+        }
+
+        _lastAppliedLevel = SkillManager.FieldMedicine.Level;
+    }
+    
     private void ApplyFieldMedicineSpeedBonus(Item item)
     {
         var bonus = FmPmcSpeedBonus;
@@ -84,34 +101,5 @@ internal class FieldMedicineBehaviour : MonoBehaviour
         AccessTools.Field(typeof(HealthEffectsComponent), "iHealthEffect").SetValue(healthEffectComp, healthEffects);
 
         Plugin.Log.LogDebug($"Field Medicine: Set instance {item.Id} of type {item.TemplateId} to {_originalHealthEffectValues[meds.TemplateId].UseTime * bonus} seconds");
-    }
-
-    public void FieldMedicineUpdate()
-    {
-        var items = Plugin.Items.Where(x => x is MedsClass);
-        
-        foreach (var item in items)
-        {
-            // Skip if we already set this field medicine item.
-            if (FieldMedicineInstanceIDs.ContainsKey(item.Id))
-            {
-                var previouslySet = FieldMedicineInstanceIDs[item.Id];
-
-                if (previouslySet == SkillManager.FieldMedicine.Level)
-                {
-                    continue;
-                }
-                
-                FieldMedicineInstanceIDs.Remove(item.Id);
-            }
-
-            // Apply Field medicine speed bonus to items not in the list
-            if (!SkillData.FmItemList.Contains(item.TemplateId)) continue;
-            
-            ApplyFieldMedicineSpeedBonus(item);
-            FieldMedicineInstanceIDs.Add(item.Id, SkillManager.FieldMedicine.Level);
-        }
-
-        _lastAppliedLevel = SkillManager.FieldMedicine.Level;
     }
 }
