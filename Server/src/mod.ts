@@ -135,6 +135,13 @@ class SkillsPlus implements IPreSptLoadMod, IPostDBLoadMod
             overrideProperties: {
                 CanSellOnRagfair: false,
                 MaximumNumberOfUsage: 5,
+                Unlootable: true,
+                UnlootableFromSlot: "SpecialSlot",
+                UnlootableFromSide: [
+                    "Bear",
+                    "Usec",
+                    "Savage"
+                ],
                 Prefab: {
                     path: "lockpick.bundle",
                     rcid: ""
@@ -184,6 +191,8 @@ class SkillsPlus implements IPreSptLoadMod, IPostDBLoadMod
         ];
         
         mechanic.assort.loyal_level_items[ItemIDS.Lockpick] = 2;
+
+        this.addItemToSpecSlots(ItemIDS.Lockpick);
     }
 
     private CreatePDA(): void
@@ -192,6 +201,13 @@ class SkillsPlus implements IPreSptLoadMod, IPostDBLoadMod
             itemTplToClone: "5bc9b720d4351e450201234b",
             overrideProperties: {
                 CanSellOnRagfair: false,
+                Unlootable: true,
+                UnlootableFromSlot: "SpecialSlot",
+                UnlootableFromSide: [
+                    "Bear",
+                    "Usec",
+                    "Savage"
+                ],
                 Prefab: {
                     path: "pda.bundle",
                     rcid: ""
@@ -239,6 +255,8 @@ class SkillsPlus implements IPreSptLoadMod, IPostDBLoadMod
         ];
         
         peaceKeeper.assort.loyal_level_items[ItemIDS.Pda] = 3;
+
+        this.addItemToSpecSlots(ItemIDS.Pda);
     }
 
     private addCraftsToDatabase(): void
@@ -248,6 +266,23 @@ class SkillsPlus implements IPreSptLoadMod, IPostDBLoadMod
         crafts.forEach((craft) => {
             this.Instance.database.hideout.production.push(craft);
         })
+    }
+
+    private addItemToSpecSlots(itemId: string): void
+    {
+        // Allow in spec slot
+        const items = this.Instance.database.templates.items;
+
+        for (const item in items)
+        {
+            const id = items[item]._id;
+            
+            if (id !== "627a4e6b255f7527fb05a0f6" && id !== "65e080be269cbd5c5005e529") continue;
+
+            items[item]._props.Slots[0]._props.filters[0].Filter.push(itemId);
+            items[item]._props.Slots[1]._props.filters[0].Filter.push(itemId);
+            items[item]._props.Slots[2]._props.filters[0].Filter.push(itemId);
+        }
     }
 }
 
