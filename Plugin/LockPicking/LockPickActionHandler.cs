@@ -47,7 +47,7 @@ public sealed class LockPickActionHandler
                 }
 
                 // Apply failure xp
-                Helpers.ApplyLockPickActionXp(InteractiveObject, Owner);
+                Helpers.ApplyLockPickActionXp(InteractiveObject, Owner, isFailure: true);
                 RemoveUseFromLockPick(doorLevel);
 
                 return;

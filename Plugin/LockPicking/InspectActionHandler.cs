@@ -10,8 +10,6 @@ public sealed class InspectLockActionHandler
 
     public void InspectLockAction(bool actionCompleted)
     {
-        var doorLevel = Helpers.GetLevelForDoor(Owner.Player.Location, InteractiveObject.Id);
-
         // If the player completed the full timer uninterrupted
         if (actionCompleted)
         {
@@ -19,7 +17,7 @@ public sealed class InspectLockActionHandler
             if (!Helpers.InspectedDoors.Contains(InteractiveObject.Id))
             {
                 Helpers.InspectedDoors.Add(InteractiveObject.Id);
-                Helpers.ApplyLockPickActionXp(InteractiveObject, Owner);
+                Helpers.ApplyLockPickActionXp(InteractiveObject, Owner, true);
             }
 
             Helpers.DisplayInspectInformation(InteractiveObject, Owner);
