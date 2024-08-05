@@ -26,11 +26,7 @@ public class FirstAidBehaviour : MonoBehaviour
 
     // Store the instance ID of the item and the level its bonus resource is set to.
     public readonly Dictionary<string, int> FirstAidInstanceIDs = [];
-
-    // Store a dictionary of bodyparts to prevent the user from spam exploiting the leveling
-    // system. Bodypart, Last time healed
-    private readonly Dictionary<EBodyPart, DateTime> _firstAidBodyPartCache = [];
-
+    
     private readonly Dictionary<string, HealthEffectValues> _originalHealthEffectValues = [];
 
     private static float FaPmcSpeedBonus => 1f - SkillMgrExt.FirstAidSpeedBuff;
