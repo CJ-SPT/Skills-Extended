@@ -35,26 +35,46 @@ public class FirstAidBehaviour : MonoBehaviour
 
     private static float FaPmcSpeedBonus => 1f - SkillMgrExt.FirstAidSpeedBuff;
     private static float FaHpBonus => 1 + SkillMgrExt.FirstAidHpBuff;
-
-    private void Update()
+    
+    public void ApplyFirstAidExp()
+    {
+        var xpGain = Plugin.SkillData.MedicalSkills.FirstAidXpPerAction;
+        SkillMgrExt.FirstAidAction.Complete(xpGain);
+    }
+    
+    public void FirstAidUpdate()
     {
         if (Plugin.Items is null || _lastAppliedLevel == SkillManager.FirstAid.Level)
         {
             return;
         }
-
-        if (Plugin.GameWorld?.MainPlayer is null)
+        
+        var items = Plugin.Items.Where(x => x is MedsClass);
+        
+        foreach (var item in items)
         {
-            _firstAidBodyPartCache.Clear();
+            // Skip if we already set this first aid item.
+            if (FirstAidInstanceIDs.ContainsKey(item.Id))
+            {
+                int previouslySet = FirstAidInstanceIDs[item.Id];
+
+                if (previouslySet == SkillManager.FirstAid.Level)
+                {
+                    continue;
+                }
+                
+                FirstAidInstanceIDs.Remove(item.Id);
+            }
+
+            // Apply first aid speed bonus to items
+            if (!SkillData.FaItemList.Contains(item.TemplateId)) continue;
+
+            ApplyFirstAidSpeedBonus(item);
+            ApplyFirstAidHpBonus(item);
+            FirstAidInstanceIDs.Add(item.Id, SkillManager.FirstAid.Level);
         }
 
-        //FirstAidUpdate();
-    }
-
-    public void ApplyFirstAidExp()
-    {
-        var xpGain = Plugin.SkillData.MedicalSkills.FirstAidXpPerAction;
-        SkillMgrExt.FirstAidAction.Complete(xpGain);
+        _lastAppliedLevel = SkillManager.FirstAid.Level;
     }
     
     private void ApplyFirstAidSpeedBonus(Item item)
@@ -138,35 +158,5 @@ public class FirstAidBehaviour : MonoBehaviour
 
         var medComp = AccessTools.Field(typeof(MedsClass), "MedKitComponent").GetValue(meds);
         AccessTools.Field(typeof(MedKitComponent), "iMedkitResource").SetValue(medComp, medKitInterface);
-    }
-
-    public void FirstAidUpdate()
-    {
-        var items = Plugin.Items.Where(x => x is MedsClass);
-        
-        foreach (var item in items)
-        {
-            // Skip if we already set this first aid item.
-            if (FirstAidInstanceIDs.ContainsKey(item.Id))
-            {
-                int previouslySet = FirstAidInstanceIDs[item.Id];
-
-                if (previouslySet == SkillManager.FirstAid.Level)
-                {
-                    continue;
-                }
-                
-                FirstAidInstanceIDs.Remove(item.Id);
-            }
-
-            // Apply first aid speed bonus to items
-            if (!SkillData.FaItemList.Contains(item.TemplateId)) continue;
-
-            ApplyFirstAidSpeedBonus(item);
-            ApplyFirstAidHpBonus(item);
-            FirstAidInstanceIDs.Add(item.Id, SkillManager.FirstAid.Level);
-        }
-
-        _lastAppliedLevel = SkillManager.FirstAid.Level;
     }
 }
