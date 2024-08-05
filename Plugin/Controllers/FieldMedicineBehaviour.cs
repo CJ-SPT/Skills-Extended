@@ -42,7 +42,7 @@ internal class FieldMedicineBehaviour : MonoBehaviour
             _fieldMedicineBodyPartCache.Clear();
         }
 
-        FieldMedicineUpdate();
+        //FieldMedicineUpdate();
     }
 
     public void ApplyFieldMedicineExp()

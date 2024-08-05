@@ -9,6 +9,7 @@ using System.Linq;
 using Comfort.Common;
 using SkillsExtended.Skills;
 using UnityEngine;
+using Random = System.Random;
 
 namespace SkillsExtended.Controllers;
 
@@ -47,7 +48,7 @@ public class FirstAidBehaviour : MonoBehaviour
             _firstAidBodyPartCache.Clear();
         }
 
-        FirstAidUpdate();
+        //FirstAidUpdate();
     }
 
     public void ApplyFirstAidExp()

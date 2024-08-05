@@ -35,7 +35,7 @@ internal class BearRifleBehaviour : MonoBehaviour
 
         if (SkillManager == null || BearWeapons == null) { return; }
 
-        UpdateWeapons();
+        //UpdateWeapons();
     }
 
     private static void SetupSkillManager()
@@ -73,7 +73,7 @@ internal class BearRifleBehaviour : MonoBehaviour
         }
 	}
 
-    private void UpdateWeapons()
+    public void UpdateWeapons()
     {
         foreach (var item in BearWeapons)
         {

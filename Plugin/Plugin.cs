@@ -43,8 +43,8 @@ public class Plugin : BaseUnityPlugin
 
     internal static FirstAidBehaviour FirstAidScript;
     internal static FieldMedicineBehaviour FieldMedicineScript;
-    internal static UsecRifleBehaviour UsecRifleScript;
-    internal static BearRifleBehaviour BearRifleScript;
+    internal static UsecRifleBehaviour NatoWeaponScript;
+    internal static BearRifleBehaviour EasternWeaponScript;
 
     internal static AnimationClip[] AnimationClips { get; private set; }
     
@@ -117,12 +117,12 @@ public class Plugin : BaseUnityPlugin
 
         if (SkillData.NatoRifleSkill.Enabled)
         {
-            UsecRifleScript = Hook.AddComponent<UsecRifleBehaviour>();
+            NatoWeaponScript = Hook.AddComponent<UsecRifleBehaviour>();
         }
         
         if (SkillData.EasternRifleSkill.Enabled)
         {
-            BearRifleScript = Hook.AddComponent<BearRifleBehaviour>();
+            EasternWeaponScript = Hook.AddComponent<BearRifleBehaviour>();
         }
         
         LoadBundle();

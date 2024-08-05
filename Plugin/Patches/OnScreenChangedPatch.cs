@@ -33,22 +33,26 @@ namespace SkillsExtended.Patches
 
                 if (Plugin.SkillData.NatoRifleSkill.Enabled)
                 {
-                    Plugin.UsecRifleScript.WeaponInstanceIds.Clear();
+                    Plugin.NatoWeaponScript.WeaponInstanceIds.Clear();
 
                     var usecWeapons = Plugin.SkillData.NatoRifleSkill;
 
-                    Plugin.UsecRifleScript.UsecWeapons = Plugin.Session.Profile.Inventory.AllRealPlayerItems
+                    Plugin.NatoWeaponScript.UsecWeapons = Plugin.Session.Profile.Inventory.AllRealPlayerItems
                         .Where(x => usecWeapons.Weapons.Contains(x.TemplateId));
+                    
+                    Plugin.NatoWeaponScript.UpdateWeapons();
                 }
 
-                if (!Plugin.SkillData.EasternRifleSkill.Enabled)
+                if (Plugin.SkillData.EasternRifleSkill.Enabled)
                 {
-                    Plugin.BearRifleScript.WeaponInstanceIds.Clear();
+                    Plugin.EasternWeaponScript.WeaponInstanceIds.Clear();
 
                     var bearWeapons = Plugin.SkillData.EasternRifleSkill;
 
-                    Plugin.BearRifleScript.BearWeapons = Plugin.Session.Profile.Inventory.AllRealPlayerItems
+                    Plugin.EasternWeaponScript.BearWeapons = Plugin.Session.Profile.Inventory.AllRealPlayerItems
                         .Where(x => bearWeapons.Weapons.Contains(x.TemplateId));
+                    
+                    Plugin.EasternWeaponScript.UpdateWeapons();
                 }
             }
         }

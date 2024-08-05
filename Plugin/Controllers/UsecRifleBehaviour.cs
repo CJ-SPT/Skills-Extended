@@ -30,7 +30,7 @@ public class UsecRifleBehaviour : MonoBehaviour
 
         if (SkillManager == null || UsecWeapons == null) { return; }
 
-        UpdateWeapons();
+        //UpdateWeapons();
     }
 
     private static void SetupSkillManager()
@@ -68,7 +68,7 @@ public class UsecRifleBehaviour : MonoBehaviour
         }
 	}
 
-    private void UpdateWeapons()
+    public void UpdateWeapons()
     {
         foreach (var item in UsecWeapons)
         {
