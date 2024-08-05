@@ -32,49 +32,12 @@ internal class BearRifleBehaviour : MonoBehaviour
     private void Update()
     {
         SetupSkillManager();
-
-        if (SkillManager == null || BearWeapons == null) { return; }
-
-        //UpdateWeapons();
     }
-
-    private static void SetupSkillManager()
-    {
-        if (_isSubscribed || SkillManager is null) return;
-        
-        if (GameWorld?.MainPlayer is null || GameWorld?.MainPlayer?.Location == "hideout")
-        {
-            return;
-        }
-
-        SkillManager.OnMasteringExperienceChanged += ApplyBearAkXp;
-        _isSubscribed = true;
-    }
-
-    private static void ApplyBearAkXp(MasterSkillClass action)
-    {
-        var weaponInHand = Singleton<GameWorld>.Instance.MainPlayer.HandsController.GetItem();
-
-        if (!EasternSkillData.Weapons.Contains(weaponInHand.TemplateId))
-        {
-            return;
-        }
-        
-        GameWorld.MainPlayer.ExecuteSkill(CompleteSkill);
-    }
-
-    private static void CompleteSkill()
-    {
-        SkillMgrExt.BearRifleAction.Complete(EasternSkillData.WeaponProfXp);
-
-        if (EasternSkillData.SkillShareEnabled)
-        {
-	        SkillMgrExt.UsecRifleAction.Complete(EasternSkillData.WeaponProfXp * EasternSkillData.SkillShareXpRatio);
-        }
-	}
 
     public void UpdateWeapons()
     {
+        if (SkillManager == null || BearWeapons == null) { return; }
+        
         foreach (var item in BearWeapons)
         {
             if (item is not Weapon weapon) return;
@@ -114,4 +77,39 @@ internal class BearRifleBehaviour : MonoBehaviour
             WeaponInstanceIds.Add(item.Id, BearAkLevel);
         }
     }
+    
+    private static void SetupSkillManager()
+    {
+        if (_isSubscribed || SkillManager is null) return;
+        
+        if (GameWorld?.MainPlayer is null || GameWorld?.MainPlayer?.Location == "hideout")
+        {
+            return;
+        }
+
+        SkillManager.OnMasteringExperienceChanged += ApplyBearAkXp;
+        _isSubscribed = true;
+    }
+
+    private static void ApplyBearAkXp(MasterSkillClass action)
+    {
+        var weaponInHand = Singleton<GameWorld>.Instance.MainPlayer.HandsController.GetItem();
+
+        if (!EasternSkillData.Weapons.Contains(weaponInHand.TemplateId))
+        {
+            return;
+        }
+        
+        GameWorld.MainPlayer.ExecuteSkill(CompleteSkill);
+    }
+
+    private static void CompleteSkill()
+    {
+        SkillMgrExt.BearRifleAction.Complete(EasternSkillData.WeaponProfXp);
+
+        if (EasternSkillData.SkillShareEnabled)
+        {
+	        SkillMgrExt.UsecRifleAction.Complete(EasternSkillData.WeaponProfXp * EasternSkillData.SkillShareXpRatio);
+        }
+	}
 }
