@@ -22,7 +22,7 @@ enum ItemIDS {
     Pda = "662400eb756ca8948fe64fe8"
 }
 
-class SkillsPlus implements IPreSptLoadMod, IPostDBLoadMod
+class SkillsExtended implements IPreSptLoadMod, IPostDBLoadMod
 {
     private Instance: InstanceManager = new InstanceManager();
     private locale: Record<string, Record<string, string>>; 
@@ -286,4 +286,4 @@ class SkillsPlus implements IPreSptLoadMod, IPostDBLoadMod
     }
 }
 
-module.exports = { mod: new SkillsPlus() }
+module.exports = { mod: new SkillsExtended() }
