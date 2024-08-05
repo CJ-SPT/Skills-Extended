@@ -22,14 +22,14 @@ namespace SkillsExtended.Patches
                 {
                     Plugin.FieldMedicineScript.FieldMedicineInstanceIDs.Clear();
 
-                    Plugin.FieldMedicineScript.FieldMedicineUpdate();
+                    StaticManager.BeginCoroutine(Plugin.FieldMedicineScript.FieldMedicineUpdate());
                 }
 
                 if (Plugin.SkillData.MedicalSkills.EnableFirstAid)
                 {
                     Plugin.FirstAidScript.FirstAidInstanceIDs.Clear();
 
-                    Plugin.FirstAidScript.FirstAidUpdate();
+                    StaticManager.BeginCoroutine(Plugin.FirstAidScript.FirstAidUpdate());
                 }
 
                 if (Plugin.SkillData.NatoRifleSkill.Enabled)

@@ -4,6 +4,7 @@ using HarmonyLib;
 using SkillsExtended.Helpers;
 using SkillsExtended.Models;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Comfort.Common;
@@ -34,11 +35,11 @@ internal class FieldMedicineBehaviour : MonoBehaviour
         SkillMgrExt.FieldMedicineAction.Complete(xpGain);
     }
 
-    public void FieldMedicineUpdate()
+    public IEnumerator FieldMedicineUpdate()
     {
         if (Plugin.Items is null || _lastAppliedLevel == SkillManager.FieldMedicine.Level)
         {
-            return;
+            yield break;
         }
         
         var items = Plugin.Items.Where(x => x is MedsClass);
@@ -63,6 +64,8 @@ internal class FieldMedicineBehaviour : MonoBehaviour
             
             ApplyFieldMedicineSpeedBonus(item);
             FieldMedicineInstanceIDs.Add(item.Id, SkillManager.FieldMedicine.Level);
+
+            yield return null;
         }
 
         _lastAppliedLevel = SkillManager.FieldMedicine.Level;

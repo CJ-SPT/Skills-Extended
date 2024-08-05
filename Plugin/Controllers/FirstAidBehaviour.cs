@@ -4,6 +4,7 @@ using HarmonyLib;
 using SkillsExtended.Helpers;
 using SkillsExtended.Models;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Comfort.Common;
@@ -38,11 +39,11 @@ public class FirstAidBehaviour : MonoBehaviour
         SkillMgrExt.FirstAidAction.Complete(xpGain);
     }
     
-    public void FirstAidUpdate()
+    public IEnumerator FirstAidUpdate()
     {
         if (Plugin.Items is null || _lastAppliedLevel == SkillManager.FirstAid.Level)
         {
-            return;
+            yield break;
         }
         
         var items = Plugin.Items.Where(x => x is MedsClass);
@@ -68,6 +69,8 @@ public class FirstAidBehaviour : MonoBehaviour
             ApplyFirstAidSpeedBonus(item);
             ApplyFirstAidHpBonus(item);
             FirstAidInstanceIDs.Add(item.Id, SkillManager.FirstAid.Level);
+
+            yield return null;
         }
 
         _lastAppliedLevel = SkillManager.FirstAid.Level;
