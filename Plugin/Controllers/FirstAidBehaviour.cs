@@ -41,7 +41,7 @@ public class FirstAidBehaviour : MonoBehaviour
     
     public IEnumerator FirstAidUpdate()
     {
-        if (Plugin.Items is null || _lastAppliedLevel == SkillManager.FirstAid.Level)
+        if (Plugin.Items is null)
         {
             yield break;
         }
@@ -109,7 +109,7 @@ public class FirstAidBehaviour : MonoBehaviour
         var healthEffectComp = AccessTools.Field(typeof(MedsClass), "HealthEffectsComponent").GetValue(meds);
         AccessTools.Field(typeof(HealthEffectsComponent), "iHealthEffect").SetValue(healthEffectComp, newGInterface);
 
-        Plugin.Log.LogDebug($"First Aid: Set instance {item.Id} of type {item.TemplateId} to {_originalHealthEffectValues[meds.TemplateId].UseTime * bonus} seconds");
+        Plugin.Log.LogDebug($"First Aid: Set instance {item.Id} of type {item.TemplateId.LocalizedName()} to {_originalHealthEffectValues[meds.TemplateId].UseTime * bonus} seconds");
     }
 
     private void ApplyFirstAidHpBonus(Item item)
@@ -143,12 +143,10 @@ public class FirstAidBehaviour : MonoBehaviour
             MaxHpResource = maxHpResource,
             HpResourceRate = meds.MedKitComponent.HpResourceRate
         };
-
-        Plugin.Log.LogDebug($"First Aid: Set instance {item.Id} of type {item.TemplateId} to {medKitInterface.MaxHpResource} HP");
-
+        
         var currentResource = meds.MedKitComponent.HpResource;
         var currentMaxResource = meds.MedKitComponent.MaxHpResource;
-
+        
         // Only change the current resource if the item is unused.
         if (Mathf.FloorToInt(currentResource) == currentMaxResource)
         {
@@ -157,5 +155,7 @@ public class FirstAidBehaviour : MonoBehaviour
 
         var medComp = AccessTools.Field(typeof(MedsClass), "MedKitComponent").GetValue(meds);
         AccessTools.Field(typeof(MedKitComponent), "iMedkitResource").SetValue(medComp, medKitInterface);
+        
+        Plugin.Log.LogDebug($"First Aid: Set instance {item.Id} of type {item.TemplateId} to {medKitInterface.MaxHpResource} HP");
     }
 }

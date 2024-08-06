@@ -16,45 +16,42 @@ namespace SkillsExtended.Patches
         [PatchPrefix]
         public static void Prefix(EEftScreenType eftScreenType)
         {
-            if (eftScreenType == EEftScreenType.Inventory)
+            if (Plugin.SkillData.MedicalSkills.EnableFieldMedicine)
             {
-                if (Plugin.SkillData.MedicalSkills.EnableFieldMedicine)
-                {
-                    Plugin.FieldMedicineScript.FieldMedicineInstanceIDs.Clear();
+                Plugin.FieldMedicineScript.FieldMedicineInstanceIDs.Clear();
 
-                    StaticManager.BeginCoroutine(Plugin.FieldMedicineScript.FieldMedicineUpdate());
-                }
+                StaticManager.BeginCoroutine(Plugin.FieldMedicineScript.FieldMedicineUpdate());
+            }
 
-                if (Plugin.SkillData.MedicalSkills.EnableFirstAid)
-                {
-                    Plugin.FirstAidScript.FirstAidInstanceIDs.Clear();
+            if (Plugin.SkillData.MedicalSkills.EnableFirstAid)
+            {
+                Plugin.FirstAidScript.FirstAidInstanceIDs.Clear();
 
-                    StaticManager.BeginCoroutine(Plugin.FirstAidScript.FirstAidUpdate());
-                }
+                StaticManager.BeginCoroutine(Plugin.FirstAidScript.FirstAidUpdate());
+            }
 
-                if (Plugin.SkillData.NatoRifleSkill.Enabled)
-                {
-                    Plugin.NatoWeaponScript.WeaponInstanceIds.Clear();
+            if (Plugin.SkillData.NatoRifleSkill.Enabled)
+            {
+                Plugin.NatoWeaponScript.WeaponInstanceIds.Clear();
 
-                    var usecWeapons = Plugin.SkillData.NatoRifleSkill;
+                var usecWeapons = Plugin.SkillData.NatoRifleSkill;
 
-                    Plugin.NatoWeaponScript.UsecWeapons = Plugin.Session.Profile.Inventory.AllRealPlayerItems
-                        .Where(x => usecWeapons.Weapons.Contains(x.TemplateId));
+                Plugin.NatoWeaponScript.UsecWeapons = Plugin.Session.Profile.Inventory.AllRealPlayerItems
+                    .Where(x => usecWeapons.Weapons.Contains(x.TemplateId));
 
-                    StaticManager.BeginCoroutine(Plugin.NatoWeaponScript.UpdateWeapons());
-                }
+                StaticManager.BeginCoroutine(Plugin.NatoWeaponScript.UpdateWeapons());
+            }
 
-                if (Plugin.SkillData.EasternRifleSkill.Enabled)
-                {
-                    Plugin.EasternWeaponScript.WeaponInstanceIds.Clear();
+            if (Plugin.SkillData.EasternRifleSkill.Enabled)
+            {
+                Plugin.EasternWeaponScript.WeaponInstanceIds.Clear();
 
-                    var bearWeapons = Plugin.SkillData.EasternRifleSkill;
+                var bearWeapons = Plugin.SkillData.EasternRifleSkill;
 
-                    Plugin.EasternWeaponScript.BearWeapons = Plugin.Session.Profile.Inventory.AllRealPlayerItems
-                        .Where(x => bearWeapons.Weapons.Contains(x.TemplateId));
+                Plugin.EasternWeaponScript.BearWeapons = Plugin.Session.Profile.Inventory.AllRealPlayerItems
+                    .Where(x => bearWeapons.Weapons.Contains(x.TemplateId));
                     
-                    StaticManager.BeginCoroutine(Plugin.EasternWeaponScript.UpdateWeapons());
-                }
+                StaticManager.BeginCoroutine(Plugin.EasternWeaponScript.UpdateWeapons());
             }
         }
     }

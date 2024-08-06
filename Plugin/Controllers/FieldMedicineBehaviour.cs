@@ -37,7 +37,7 @@ internal class FieldMedicineBehaviour : MonoBehaviour
 
     public IEnumerator FieldMedicineUpdate()
     {
-        if (Plugin.Items is null || _lastAppliedLevel == SkillManager.FieldMedicine.Level)
+        if (Plugin.Items is null)
         {
             yield break;
         }
