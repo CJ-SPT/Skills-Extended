@@ -4,6 +4,8 @@ using System;
 using System.Linq;
 using BepInEx.Logging;
 using System.Diagnostics;
+using System.IO;
+using System.Reflection;
 using JetBrains.Annotations;
 using FieldAttributes = Mono.Cecil.FieldAttributes;
 
@@ -16,6 +18,17 @@ public static class Patcher
     {
         try
         {
+            
+            #if RELEASE
+            if (!ShouldPatchAssembly())
+            {
+                Logger.CreateLogSource("Skills Extended PrePatch")
+                    .LogWarning("Plugin missing, not patching assembly. Mod is either not properly installed, or not properly uninstalled.");
+                
+                return;
+            }
+            #endif
+            
             SkillManager = assembly.MainModule.GetType("EFT.SkillManager");
             
             PatchNewBuffs(ref assembly);
@@ -33,6 +46,17 @@ public static class Patcher
 
             Logger.CreateLogSource("Skills Extended PrePatch").LogInfo("Error When Patching: " + ex.Message + " - Line " + line);
         }
+    }
+
+    private static bool ShouldPatchAssembly()
+    {
+        var patcherLoc = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        var bepDir = Directory.GetParent(patcherLoc);
+        var modDllLoc = Path.Combine(bepDir.FullName, "plugins", "SkillsExtended", "SkillsExtended.dll");
+        
+        Logger.CreateLogSource("Skills Extended PrePatch").LogWarning(modDllLoc);
+        
+        return File.Exists(modDllLoc);
     }
     
     private static FieldDefinition CreateNewEnum(ref AssemblyDefinition assembly, [CanBeNull] string AttributeName, string EnumName, TypeDefinition EnumClass, int CustomConstant)
