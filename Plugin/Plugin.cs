@@ -59,24 +59,30 @@ public class Plugin : BaseUnityPlugin
 
         Log = Logger;
         
-        new SkillPanelDisablePatch().Enable();
+        new SkillPanelShowPatch().Enable();
         new BuffIconShowPatch().Enable();
         new SkillManagerConstructorPatch().Enable();
-        new SkillClassCtorPatch().Enable();
         new OnScreenChangePatch().Enable();
         new OnGameStartedPatch().Enable();
-
+        
+        new SkillManagerMethod1Patch().Enable();
+        new SkillManagerMethod2Patch().Enable();
+        new SkillManagerMethod3Patch().Enable();
+        new SkillManagerMethod4Patch().Enable();
+        new SkillManagerMethod5Patch().Enable();
+        
         new DoorActionPatch().Enable();
         new KeycardDoorActionPatch().Enable();
 
         new DoMedEffectPatch().Enable();
+
 #if DEBUG
         Logger.LogWarning("PRE RELEASE BUILD - NO SUPPORT");
         new LocationSceneAwakePatch().Enable();
-#endif
         
-        Logger.LogInfo("Creating SkillManagerExt Singleton");
-        Singleton<SkillManagerExt>.Create(new SkillManagerExt());
+        Logger.LogWarning("DEBUG BUILD FEATURES ENABLED");
+        ConsoleCommands.RegisterCommands();
+#endif
         
         Utils.GetTypes();
         
@@ -84,12 +90,6 @@ public class Plugin : BaseUnityPlugin
         
         Hook = new GameObject("Skills Controller Object");
         DontDestroyOnLoad(Hook);
-        
-#if DEBUG
-        Logger.LogWarning("DEBUG BUILD FEATURES ENABLED");
-        new LocationSceneAwakePatch().Enable();
-        ConsoleCommands.RegisterCommands();
-#endif
     }
 
     private void Start()

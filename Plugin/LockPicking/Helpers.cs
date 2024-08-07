@@ -104,10 +104,10 @@ internal static class Helpers
     private static void CompleteLockPickAction()
     {
         if (xpToApply == 0.0f) return;
+
+        var skillManager = Singleton<GameWorld>.Instance.MainPlayer.Skills;
         
-        var skillMgrExt = Singleton<SkillManagerExt>.Instance;
-        
-        skillMgrExt.LockPickAction.Complete(xpToApply);
+        skillManager.LockPickAction.Complete(xpToApply);
     }
     
     public static void DisplayInspectInformation(WorldInteractiveObject interactiveObject, GamePlayerOwner owner)
@@ -160,8 +160,8 @@ internal static class Helpers
 
     public static float CalculateTimeForAction(float baseTime)
     {
-        var skillMgrExt = Singleton<SkillManagerExt>.Instance;
+        var skillMgr = Singleton<GameWorld>.Instance.MainPlayer.Skills;
         
-        return (baseTime * (1 - skillMgrExt.LockPickingTimeBuff));
+        return (baseTime * (1 - skillMgr.LockPickingTimeBuff));
     }
 }

@@ -32,6 +32,7 @@ public static class Patcher
             SkillManager = assembly.MainModule.GetType("EFT.SkillManager");
             
             PatchNewBuffs(ref assembly);
+            PatchNewFields(ref assembly);
             PatchNewAnim(ref assembly);
             
             Logger.CreateLogSource("Skills Extended PrePatch").LogInfo("Patching Complete!");
@@ -59,7 +60,12 @@ public static class Patcher
         return File.Exists(modDllLoc);
     }
     
-    private static FieldDefinition CreateNewEnum(ref AssemblyDefinition assembly, [CanBeNull] string AttributeName, string EnumName, TypeDefinition EnumClass, int CustomConstant)
+    private static FieldDefinition CreateNewEnum(
+        ref AssemblyDefinition assembly, 
+        [CanBeNull] string AttributeName, 
+        string EnumName, 
+        TypeDefinition EnumClass, 
+        int CustomConstant)
     {
         var enumAttributeClass = assembly.MainModule.GetType("GAttribute21");
         
@@ -83,6 +89,34 @@ public static class Patcher
         return newEnum;
     }
 
+    private static void AddFieldToClass(
+        ref AssemblyDefinition assembly, 
+        string className, 
+        string fieldName, 
+        TypeReference fieldType)
+    {
+        var typeDef = assembly.MainModule.Types
+            .FirstOrDefault(t => t.Name == className);
+        
+        if (typeDef is null)
+        {
+            throw new ArgumentException($"Type '{className}' not found in assembly.");
+        }
+
+        var fieldDef = new FieldDefinition(fieldName, FieldAttributes.Public, fieldType);
+        
+        typeDef.Fields.Add(fieldDef);
+    }
+
+    /// <summary>
+    /// Converts a TypeDefinition to a TypeReference
+    /// </summary>
+    /// <returns>TypeReference</returns>
+    private static TypeReference ConvertTypeDefToTypeRef(AssemblyDefinition assembly, TypeDefinition typeDef)
+    {
+        return assembly.MainModule.ImportReference(typeDef);
+    }
+    
     private static void PatchNewBuffs(ref AssemblyDefinition assembly)
     {
         // New Buffs Enums
@@ -187,5 +221,51 @@ public static class Patcher
         
         animEnum.Fields.Add(lockPickingAnimStart);
         animEnum.Fields.Add(lockPickingAnimEnd);
+    }
+
+    private static void PatchNewFields(ref AssemblyDefinition assembly)
+    {
+        var buffTypeDef = SkillManager.NestedTypes.FirstOrDefault(t => t.Name == "SkillBuffClass");
+        var buffEliteTypeDef = SkillManager.NestedTypes.FirstOrDefault(t => t.Name == "GClass1790");
+        var actionTypeDef = SkillManager.NestedTypes.FirstOrDefault(t => t.Name == "SkillActionClass");
+        
+        if (buffTypeDef is null)
+        {
+            throw new NullReferenceException("Failed to locate `SkillBuffAbstractClass`");
+        }
+
+        if (buffEliteTypeDef is null)
+        {
+            throw new NullReferenceException("Failed to locate `SkillBuffEliteClass`");
+        }
+        
+        if (actionTypeDef is null)
+        {
+            throw new NullReferenceException("Failed to locate `SkillActionClass`");
+        }
+        
+        // Buffs
+        
+        AddFieldToClass(ref assembly, "SkillManager", "FirstAidSpeedBuff", buffTypeDef);
+        AddFieldToClass(ref assembly, "SkillManager", "FirstAidHpBuff", buffTypeDef);
+        
+        AddFieldToClass(ref assembly, "SkillManager", "FieldMedicineSpeedBuff", buffTypeDef);
+        
+        AddFieldToClass(ref assembly, "SkillManager", "UsecArSystemsErgoBuff", buffTypeDef);
+        AddFieldToClass(ref assembly, "SkillManager", "UsecArSystemsRecoilBuff", buffTypeDef);
+        
+        AddFieldToClass(ref assembly, "SkillManager", "BearAkSystemsErgoBuff", buffTypeDef);
+        AddFieldToClass(ref assembly, "SkillManager", "BearAkSystemsRecoilBuff", buffTypeDef);
+        
+        AddFieldToClass(ref assembly, "SkillManager", "LockPickingTimeBuff", buffTypeDef);
+        AddFieldToClass(ref assembly, "SkillManager", "LockPickingUseBuffElite", buffEliteTypeDef);
+        
+        // Actions
+        
+        AddFieldToClass(ref assembly, "SkillManager", "FirstAidAction", actionTypeDef);
+        AddFieldToClass(ref assembly, "SkillManager", "FieldMedicineAction", actionTypeDef);
+        AddFieldToClass(ref assembly, "SkillManager", "UsecRifleAction", actionTypeDef);
+        AddFieldToClass(ref assembly, "SkillManager", "BearRifleAction", actionTypeDef);
+        AddFieldToClass(ref assembly, "SkillManager", "LockPickAction", actionTypeDef);
     }
 }

@@ -3,14 +3,11 @@ using EFT.InventoryLogic;
 using HarmonyLib;
 using SkillsExtended.Helpers;
 using SkillsExtended.Models;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Comfort.Common;
 using SkillsExtended.Skills;
 using UnityEngine;
-using Random = System.Random;
 
 namespace SkillsExtended.Controllers;
 
@@ -19,7 +16,6 @@ public class FirstAidBehaviour : MonoBehaviour
     private readonly Dictionary<string, MedKitValues> _originalMedKitValues = [];
 
     private static SkillManager SkillManager => Utils.GetActiveSkillManager();
-    private static SkillManagerExt SkillMgrExt => Singleton<SkillManagerExt>.Instance;
     
     private int _lastAppliedLevel = -1;
 
@@ -30,13 +26,13 @@ public class FirstAidBehaviour : MonoBehaviour
     
     private readonly Dictionary<string, HealthEffectValues> _originalHealthEffectValues = [];
 
-    private static float FaPmcSpeedBonus => 1f - SkillMgrExt.FirstAidSpeedBuff;
-    private static float FaHpBonus => 1 + SkillMgrExt.FirstAidHpBuff;
+    private static float FaPmcSpeedBonus => 1f - SkillManager.FirstAidSpeedBuff;
+    private static float FaHpBonus => 1 + SkillManager.FirstAidHpBuff;
     
     public void ApplyFirstAidExp()
     {
         var xpGain = Plugin.SkillData.MedicalSkills.FirstAidXpPerAction;
-        SkillMgrExt.FirstAidAction.Complete(xpGain);
+        SkillManager.FirstAidAction.Complete(xpGain);
     }
     
     public IEnumerator FirstAidUpdate()
@@ -111,7 +107,7 @@ public class FirstAidBehaviour : MonoBehaviour
 
         Plugin.Log.LogDebug($"First Aid: Set instance {item.Id} of type {item.TemplateId.LocalizedName()} to {_originalHealthEffectValues[meds.TemplateId].UseTime * bonus} seconds");
     }
-
+    
     private void ApplyFirstAidHpBonus(Item item)
     {
         // Don't apply HP bonuses with realism med changes enabled

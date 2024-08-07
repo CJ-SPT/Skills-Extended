@@ -3,11 +3,9 @@ using EFT.InventoryLogic;
 using HarmonyLib;
 using SkillsExtended.Helpers;
 using SkillsExtended.Models;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Comfort.Common;
 using SkillsExtended.Skills;
 using UnityEngine;
 
@@ -20,10 +18,8 @@ internal class FieldMedicineBehaviour : MonoBehaviour
     private int _lastAppliedLevel = -1;
 
     private static MedicalSkillData SkillData => Plugin.SkillData.MedicalSkills;
-
-    private static SkillManagerExt SkillMgrExt => Singleton<SkillManagerExt>.Instance;
     
-    private static float FmPmcSpeedBonus => 1f - SkillMgrExt.FieldMedicineSpeedBuff;
+    private static float FmPmcSpeedBonus => 1f - SkillManager.FieldMedicineSpeedBuff;
 
     private readonly Dictionary<string, HealthEffectValues> _originalHealthEffectValues = [];
     
@@ -32,7 +28,7 @@ internal class FieldMedicineBehaviour : MonoBehaviour
     public void ApplyFieldMedicineExp()
     {
         var xpGain = Plugin.SkillData.MedicalSkills.FieldMedicineXpPerAction;
-        SkillMgrExt.FieldMedicineAction.Complete(xpGain);
+        SkillManager.FieldMedicineAction.Complete(xpGain);
     }
 
     public IEnumerator FieldMedicineUpdate()

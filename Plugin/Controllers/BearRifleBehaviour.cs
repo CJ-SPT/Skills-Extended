@@ -19,9 +19,6 @@ internal class BearRifleBehaviour : MonoBehaviour
 
     private static SkillManager SkillManager => Utils.GetActiveSkillManager();
     private static ISession Session => Plugin.Session;
-
-    private static SkillManagerExt SkillMgrExt => Singleton<SkillManagerExt>.Instance;
-    
     private static GameWorld GameWorld => Singleton<GameWorld>.Instance;
 
     private static int BearAkLevel => Session.Profile.Skills.BearAksystems.Level;
@@ -69,9 +66,9 @@ internal class BearRifleBehaviour : MonoBehaviour
                 WeaponInstanceIds.Remove(item.Id);
             }
             
-            weapon.Template.Ergonomics = _originalWeaponValues[item.TemplateId].ergo * (1 + SkillMgrExt.BearAkSystemsErgoBuff);
-            weapon.Template.RecoilForceUp = _originalWeaponValues[item.TemplateId].weaponUp * (1 - SkillMgrExt.BearAkSystemsRecoilBuff);
-            weapon.Template.RecoilForceBack = _originalWeaponValues[item.TemplateId].weaponBack * (1 - SkillMgrExt.BearAkSystemsRecoilBuff);
+            weapon.Template.Ergonomics = _originalWeaponValues[item.TemplateId].ergo * (1 + SkillManager.BearAkSystemsErgoBuff);
+            weapon.Template.RecoilForceUp = _originalWeaponValues[item.TemplateId].weaponUp * (1 - SkillManager.BearAkSystemsRecoilBuff);
+            weapon.Template.RecoilForceBack = _originalWeaponValues[item.TemplateId].weaponBack * (1 - SkillManager.BearAkSystemsRecoilBuff);
 
             Plugin.Log.LogDebug($"New {weapon.LocalizedName()} ergo: {weapon.Template.Ergonomics}, up {weapon.Template.RecoilForceUp}, back {weapon.Template.RecoilForceBack}");
 
@@ -108,11 +105,11 @@ internal class BearRifleBehaviour : MonoBehaviour
 
     private static void CompleteSkill()
     {
-        SkillMgrExt.BearRifleAction.Complete(EasternSkillData.WeaponProfXp);
+        SkillManager.BearRifleAction.Complete(EasternSkillData.WeaponProfXp);
 
         if (EasternSkillData.SkillShareEnabled)
         {
-	        SkillMgrExt.UsecRifleAction.Complete(EasternSkillData.WeaponProfXp * EasternSkillData.SkillShareXpRatio);
+            SkillManager.UsecRifleAction.Complete(EasternSkillData.WeaponProfXp * EasternSkillData.SkillShareXpRatio);
         }
 	}
 }

@@ -6,7 +6,6 @@ using SkillsExtended.Helpers;
 using SkillsExtended.Models;
 using System.Collections.Generic;
 using SkillsExtended.Skills;
-using Unity.Jobs;
 using UnityEngine;
 
 namespace SkillsExtended.Controllers;
@@ -17,7 +16,6 @@ public class UsecRifleBehaviour : MonoBehaviour
     public readonly Dictionary<string, int> WeaponInstanceIds = [];
     public IEnumerable<Item> UsecWeapons = null;
     private static SkillManager SkillManager => Utils.GetActiveSkillManager();
-    private static SkillManagerExt SkillMgrExt => Singleton<SkillManagerExt>.Instance;
     private static ISession Session => Plugin.Session;
     private static GameWorld GameWorld => Singleton<GameWorld>.Instance;
     private static int UsecARLevel => Session.Profile.Skills.UsecArsystems.Level;
@@ -65,9 +63,9 @@ public class UsecRifleBehaviour : MonoBehaviour
                 WeaponInstanceIds.Remove(item.Id);
             }
 
-            weapon.Template.Ergonomics = _originalWeaponValues[item.TemplateId].ergo * (1 + SkillMgrExt.UsecArSystemsErgoBuff);
-            weapon.Template.RecoilForceUp = _originalWeaponValues[item.TemplateId].weaponUp * (1 - SkillMgrExt.UsecArSystemsRecoilBuff);
-            weapon.Template.RecoilForceBack = _originalWeaponValues[item.TemplateId].weaponBack * (1 - SkillMgrExt.UsecArSystemsRecoilBuff);
+            weapon.Template.Ergonomics = _originalWeaponValues[item.TemplateId].ergo * (1 + SkillManager.UsecArSystemsErgoBuff);
+            weapon.Template.RecoilForceUp = _originalWeaponValues[item.TemplateId].weaponUp * (1 - SkillManager.UsecArSystemsRecoilBuff);
+            weapon.Template.RecoilForceBack = _originalWeaponValues[item.TemplateId].weaponBack * (1 - SkillManager.UsecArSystemsRecoilBuff);
 
             Plugin.Log.LogDebug($"New {weapon.LocalizedName()} ergo: {weapon.Template.Ergonomics}, up {weapon.Template.RecoilForceUp}, back {weapon.Template.RecoilForceBack}");
 
@@ -104,11 +102,11 @@ public class UsecRifleBehaviour : MonoBehaviour
 
     private static void CompleteSkill()
     {
-        SkillMgrExt.UsecRifleAction.Complete(NatoSkillData.WeaponProfXp);
+        SkillManager.UsecRifleAction.Complete(NatoSkillData.WeaponProfXp);
 
         if (NatoSkillData.SkillShareEnabled)
         {
-	        SkillMgrExt.BearRifleAction.Complete(NatoSkillData.WeaponProfXp * NatoSkillData.SkillShareXpRatio);
+            SkillManager.BearRifleAction.Complete(NatoSkillData.WeaponProfXp * NatoSkillData.SkillShareXpRatio);
         }
 	}
 }
