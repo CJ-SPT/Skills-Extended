@@ -1,0 +1,19 @@
+{
+    /*
+    * DIRECTIONS: Add your additional items to each list respectfully, once done remove the `.dist` extention from this file.
+    * We do it this way, so that your changes do not get wiped everytime I update the mod. 
+    * Only the distributed blank gets overwritten when I update.
+    */
+    "ADDITIONAL_NATO_WEAPONS": [ 
+
+    ],
+    "ADDITIONAL_EASTERN_WEAPONS": [
+
+    ],
+    "ADDITIONAL_FIRST_AID_ITEMS": [             // These MUST be med kits. Ex: IFAKS, but not a callok-b
+
+    ],
+    "ADDITIONAL_FIELD_MEDICINE_ITEMS": [        // These MUST either be a fracture fixing item, or bleed fixing items that are not med kits. Ex: Aluminum splint, but not a grizzley.
+
+    ]
+}

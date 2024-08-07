@@ -26,20 +26,30 @@ enum ItemIDS {
 
 class SkillsExtended implements IPreSptLoadMod, IPostDBLoadMod
 {
-    private Instance: InstanceManager = new InstanceManager();
+    private InstanceManager: InstanceManager = new InstanceManager();
     private locale: Record<string, Record<string, string>>; 
     private customItemService: CustomItemService;
     private vfs: VFS;
-    private SkillsConfigRaw;
-    private SkillsConfig;
+    
+    private SkillsConfigRaw: any;
+    private AdditionalItemsRaw: any;
+    private AdditionalItems: any;
+    private SkillsConfig: any;
 
     public preSptLoad(container: DependencyContainer): void 
     {
-        this.Instance.preSptLoad(container, "Skills Extended");
-        
-        this.Instance.logger.logWithColor("Skills Extended loading", LogTextColor.GREEN);
-        
+        this.InstanceManager.preSptLoad(container, "Skills Extended");      
+
         this.vfs = container.resolve<VFS>("VFS");
+
+        const additonalItemsPath = path.join(path.dirname(__filename), "..", "config", "AdditionalItems.json5"); 
+
+        if (this.vfs.exists(additonalItemsPath))
+        {
+            this.InstanceManager.logger.logWithColor("Skills Extended: Loading custom items", LogTextColor.GREEN);
+            this.AdditionalItemsRaw = this.vfs.readFile(additonalItemsPath);
+        }
+   
         this.SkillsConfigRaw = this.vfs.readFile(path.join(path.dirname(__filename), "..", "config", "SkillsConfig.json5"));
         this.SkillsConfig = JSON5.parse(this.SkillsConfigRaw);
 
@@ -48,15 +58,15 @@ class SkillsExtended implements IPreSptLoadMod, IPostDBLoadMod
 
     public postDBLoad(container: DependencyContainer): void 
     {
-        this.Instance.postDBLoad(container);
+        this.InstanceManager.postDBLoad(container);
         this.customItemService = container.resolve<CustomItemService>("CustomItemService");
 
-        this.Instance.logger.logWithColor("Did you know, BSG has 10 faction specific skills they're too lazy to implement?", LogTextColor.BLUE);
+        this.InstanceManager.logger.logWithColor("Did you know, BSG has 10 faction specific skills they're too lazy to implement?", LogTextColor.BLUE);
 
         this.setLocales();
         this.CreateItems();
         this.addCraftsToDatabase();
-        this.locale = this.Instance.database.locales.global;
+        this.locale = this.InstanceManager.database.locales.global;
     }
 
     private setLocales(): void
@@ -76,10 +86,10 @@ class SkillsExtended implements IPreSptLoadMod, IPostDBLoadMod
             if (file === "pt") continue;
 
             const filePath = path.join(path.dirname(__filename), "..", "locale", `${file}.json`);
-            const localeFile = this.Instance.loadStringDictionarySync(filePath);
-            const global = this.Instance.database.locales.global[file];
+            const localeFile = this.InstanceManager.loadStringDictionarySync(filePath);
+            const global = this.InstanceManager.database.locales.global[file];
 
-            this.Instance.logger.logWithColor(`Loading locale: ${file}`, LogTextColor.GREEN);
+            this.InstanceManager.logger.logWithColor(`Loading locale: ${file}`, LogTextColor.GREEN);
 
             for (const locale in localeFile)
             {
@@ -87,18 +97,18 @@ class SkillsExtended implements IPreSptLoadMod, IPostDBLoadMod
             }
         }
 
-        this.Instance.logger.logWithColor("Skills Extended: Locales dynamically loaded. Select your locale in-game on the settings page!", LogTextColor.GREEN);
+        this.InstanceManager.logger.logWithColor("Skills Extended: Locales dynamically loaded. Select your locale in-game on the settings page!", LogTextColor.GREEN);
     }
 
     private getKeys(): string
     {
-        const items = Object.values(this.Instance.database.templates.items);
+        const items = Object.values(this.InstanceManager.database.templates.items);
 
         const keys: IKeys = {
             keyLocale: {}
         }
 
-        const ItemHelper = this.Instance.itemHelper;
+        const ItemHelper = this.InstanceManager.itemHelper;
         
         const keyItems = items.filter(x => 
             x._type === "Item" 
@@ -114,7 +124,7 @@ class SkillsExtended implements IPreSptLoadMod, IPostDBLoadMod
 
     private registerRoutes(): void
     {
-        this.Instance.staticRouter.registerStaticRouter(
+        this.InstanceManager.staticRouter.registerStaticRouter(
             "GetSkillsConfig",
             [
                 {
@@ -129,7 +139,7 @@ class SkillsExtended implements IPreSptLoadMod, IPostDBLoadMod
             ""
         );
 
-        this.Instance.staticRouter.registerStaticRouter(
+        this.InstanceManager.staticRouter.registerStaticRouter(
             "GetKeys",
             [
                 {
@@ -143,6 +153,21 @@ class SkillsExtended implements IPreSptLoadMod, IPostDBLoadMod
             ],
             ""
         );
+
+        this.InstanceManager.staticRouter.registerStaticRouter(
+            "GetCustomItems",
+            [
+                {
+                    url: "/skillsExtended/GetCustomItems",
+                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                    action: async (url, info, sessionId, output) =>
+                    {
+                        return this.AdditionalItemsRaw;
+                    }
+                }
+            ],
+            ""
+        )
     }
 
     private CreateItems(): void
@@ -191,7 +216,7 @@ class SkillsExtended implements IPreSptLoadMod, IPostDBLoadMod
 
         this.customItemService.createItemFromClone(lockPick);
 
-        const mechanic = this.Instance.database.traders[Traders.MECHANIC];
+        const mechanic = this.InstanceManager.database.traders[Traders.MECHANIC];
         
         mechanic.assort.items.push({
             _id: ItemIDS.Lockpick,
@@ -255,7 +280,7 @@ class SkillsExtended implements IPreSptLoadMod, IPostDBLoadMod
 
         this.customItemService.createItemFromClone(Pda);
         
-        const peaceKeeper = this.Instance.database.traders[Traders.PEACEKEEPER];
+        const peaceKeeper = this.InstanceManager.database.traders[Traders.PEACEKEEPER];
 
         peaceKeeper.assort.items.push({
             _id: ItemIDS.Pda,
@@ -288,14 +313,14 @@ class SkillsExtended implements IPreSptLoadMod, IPostDBLoadMod
         const crafts = this.SkillsConfig.LockPickingSkill.CRAFTING_RECIPES;
 
         crafts.forEach((craft) => {
-            this.Instance.database.hideout.production.push(craft);
+            this.InstanceManager.database.hideout.production.push(craft);
         })
     }
 
     private addItemToSpecSlots(itemId: string): void
     {
         // Allow in spec slot
-        const items = this.Instance.database.templates.items;
+        const items = this.InstanceManager.database.templates.items;
 
         for (const item in items)
         {
