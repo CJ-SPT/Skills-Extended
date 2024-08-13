@@ -70,12 +70,12 @@ public class SkillManagerExt
         return new SkillManager.SkillBuffAbstractClass[]
         {
             FirstAidItemSpeedBuff
-                .Max(SkillData.MedicalSkills.ItemSpeedBonus)
-                .Elite(SkillData.MedicalSkills.ItemSpeedBonusElite),
+                .Max(SkillData.FirstAid.ItemSpeedBonus)
+                .Elite(SkillData.FirstAid.ItemSpeedBonusElite),
 
             FirstAidResourceCostBuff
-                .Max(SkillData.MedicalSkills.MedkitUsageReduction)
-                .Elite(SkillData.MedicalSkills.MedkitUsageReductionElite),
+                .Max(SkillData.FirstAid.MedkitUsageReduction)
+                .Elite(SkillData.FirstAid.MedkitUsageReductionElite),
             
             FirstAidMovementSpeedBuffElite
         };
@@ -85,9 +85,7 @@ public class SkillManagerExt
     {
         return new SkillManager.SkillBuffAbstractClass[]
         {
-            FieldMedicineSpeedBuff
-                .Max(SkillData.MedicalSkills.ItemSpeedBonus)
-                .Elite(SkillData.MedicalSkills.ItemSpeedBonusElite),
+            
         };
     }
     
@@ -96,12 +94,12 @@ public class SkillManagerExt
         return new SkillManager.SkillBuffAbstractClass[]
         {
             UsecArSystemsErgoBuff
-                .Max(SkillData.NatoRifleSkill.ErgoMod)
-                .Elite(SkillData.NatoRifleSkill.ErgoModElite),
+                .Max(SkillData.NatoRifle.ErgoMod)
+                .Elite(SkillData.NatoRifle.ErgoModElite),
             
             UsecArSystemsRecoilBuff
-                .Max(SkillData.NatoRifleSkill.RecoilReduction)
-                .Elite(SkillData.NatoRifleSkill.RecoilReductionElite),
+                .Max(SkillData.NatoRifle.RecoilReduction)
+                .Elite(SkillData.NatoRifle.RecoilReductionElite),
         };
     }
     
@@ -110,12 +108,12 @@ public class SkillManagerExt
         return new SkillManager.SkillBuffAbstractClass[]
         {
             BearAkSystemsErgoBuff
-                .Max(SkillData.EasternRifleSkill.ErgoMod)
-                .Elite(SkillData.EasternRifleSkill.ErgoModElite),
+                .Max(SkillData.EasternRifle.ErgoMod)
+                .Elite(SkillData.EasternRifle.ErgoModElite),
             
             BearAkSystemsRecoilBuff
-                .Max(SkillData.EasternRifleSkill.RecoilReduction)
-                .Elite(SkillData.EasternRifleSkill.RecoilReductionElite),
+                .Max(SkillData.EasternRifle.RecoilReduction)
+                .Elite(SkillData.EasternRifle.RecoilReductionElite),
         };
     }
     
@@ -124,8 +122,8 @@ public class SkillManagerExt
         return new SkillManager.SkillBuffAbstractClass[]
         {
             LockPickingTimeBuff
-                .Max(SkillData.LockPickingSkill.TimeReduction)
-                .Elite(SkillData.LockPickingSkill.TimeReductionElite),
+                .Max(SkillData.LockPicking.TimeReduction)
+                .Elite(SkillData.LockPicking.TimeReductionElite),
             
             LockPickingUseBuffElite
         };

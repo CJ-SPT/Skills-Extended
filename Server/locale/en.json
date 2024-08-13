@@ -1,8 +1,8 @@
 {
     "FirstAid": "First Aid",
-    "FirstAidDescription": "First aid skills make use of first aid kits quicker and more effective.",
-    "FirstAidLevelingUpDescription": "The First Aid skill is improved by treating wounds with medical kits.",
-    "FirstAidHealingSpeed": "Increases medical kit use speed by [{0:0.#%}]",
+    "FirstAidDescription": "First aid skills make use of medical items quicker and more effective.",
+    "FirstAidLevelingUpDescription": "The First Aid skill is improved by treating wounds with medical items.",
+    "FirstAidHealingSpeed": "Increases medical items use speed by [{0:0.#%}]",
     "FirstAidResourceCost": "Reduces the cost to heal bleeds and fix fractures using med kits by [{0:0.#%}]",
     "FirstAidMovementSpeedElite": "You can now walk while healing legs",
     "FieldMedicine": "Field Medicine",

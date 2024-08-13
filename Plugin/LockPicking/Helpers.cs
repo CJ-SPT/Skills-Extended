@@ -17,21 +17,21 @@ internal static class Helpers
     public static readonly List<string> InspectedDoors = [];
 
     private static SkillManager _skills => Utils.GetActiveSkillManager();
-    private static LockPickingData _lockPicking => Plugin.SkillData.LockPickingSkill;
+    private static LockPickingData _lockPicking => Plugin.SkillData.LockPicking;
 
     private static readonly Dictionary<string, Dictionary<string, int>> LocationDoorIdLevels = new()
     {
-        {"factory4_day", Plugin.SkillData.LockPickingSkill.DoorPickLevels.Factory},
-        {"factory4_night", Plugin.SkillData.LockPickingSkill.DoorPickLevels.Factory},
-        {"Woods", Plugin.SkillData.LockPickingSkill.DoorPickLevels.Woods},
-        {"bigmap", Plugin.SkillData.LockPickingSkill.DoorPickLevels.Customs},
-        {"Interchange", Plugin.SkillData.LockPickingSkill.DoorPickLevels.Interchange},
-        {"RezervBase", Plugin.SkillData.LockPickingSkill.DoorPickLevels.Reserve},
-        {"Shoreline", Plugin.SkillData.LockPickingSkill.DoorPickLevels.Shoreline},
-        {"laboratory", Plugin.SkillData.LockPickingSkill.DoorPickLevels.Labs},
-        {"Lighthouse", Plugin.SkillData.LockPickingSkill.DoorPickLevels.Lighthouse},
-        {"TarkovStreets", Plugin.SkillData.LockPickingSkill.DoorPickLevels.Streets},
-        {"Sandbox", Plugin.SkillData.LockPickingSkill.DoorPickLevels.GroundZero},
+        {"factory4_day", Plugin.SkillData.LockPicking.DoorPickLevels.Factory},
+        {"factory4_night", Plugin.SkillData.LockPicking.DoorPickLevels.Factory},
+        {"Woods", Plugin.SkillData.LockPicking.DoorPickLevels.Woods},
+        {"bigmap", Plugin.SkillData.LockPicking.DoorPickLevels.Customs},
+        {"Interchange", Plugin.SkillData.LockPicking.DoorPickLevels.Interchange},
+        {"RezervBase", Plugin.SkillData.LockPicking.DoorPickLevels.Reserve},
+        {"Shoreline", Plugin.SkillData.LockPicking.DoorPickLevels.Shoreline},
+        {"laboratory", Plugin.SkillData.LockPicking.DoorPickLevels.Labs},
+        {"Lighthouse", Plugin.SkillData.LockPicking.DoorPickLevels.Lighthouse},
+        {"TarkovStreets", Plugin.SkillData.LockPicking.DoorPickLevels.Streets},
+        {"Sandbox", Plugin.SkillData.LockPicking.DoorPickLevels.GroundZero},
     };
     
     /// <summary>
@@ -82,12 +82,12 @@ internal static class Helpers
     {
         var doorLevel = GetLevelForDoor(owner.Player.Location, interactiveObject.Id);
 
-        var xpExists = Plugin.SkillData.LockPickingSkill.XpTable.TryGetValue(doorLevel.ToString(), out var xp);
+        var xpExists = Plugin.SkillData.LockPicking.XpTable.TryGetValue(doorLevel.ToString(), out var xp);
 
         if (!xpExists) return;
         
         xpToApply = isInspect
-            ? xp * Plugin.SkillData.LockPickingSkill.InspectLockXpRatio
+            ? xp * Plugin.SkillData.LockPicking.InspectLockXpRatio
             : xp;
 
         // Failures recieve 25% xp

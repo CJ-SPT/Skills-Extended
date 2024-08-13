@@ -16,11 +16,11 @@ namespace SkillsExtended.Patches
         [PatchPrefix]
         public static void Prefix(EEftScreenType eftScreenType)
         {
-            if (Plugin.SkillData.NatoRifleSkill.Enabled)
+            if (Plugin.SkillData.NatoRifle.Enabled)
             {
                 Plugin.NatoWeaponScript.WeaponInstanceIds.Clear();
 
-                var usecWeapons = Plugin.SkillData.NatoRifleSkill;
+                var usecWeapons = Plugin.SkillData.NatoRifle;
 
                 Plugin.NatoWeaponScript.UsecWeapons = Plugin.Session.Profile.Inventory.AllRealPlayerItems
                     .Where(x => usecWeapons.Weapons.Contains(x.TemplateId));
@@ -28,11 +28,11 @@ namespace SkillsExtended.Patches
                 StaticManager.BeginCoroutine(Plugin.NatoWeaponScript.UpdateWeapons());
             }
 
-            if (Plugin.SkillData.EasternRifleSkill.Enabled)
+            if (Plugin.SkillData.EasternRifle.Enabled)
             {
                 Plugin.EasternWeaponScript.WeaponInstanceIds.Clear();
 
-                var bearWeapons = Plugin.SkillData.EasternRifleSkill;
+                var bearWeapons = Plugin.SkillData.EasternRifle;
 
                 Plugin.EasternWeaponScript.BearWeapons = Plugin.Session.Profile.Inventory.AllRealPlayerItems
                     .Where(x => bearWeapons.Weapons.Contains(x.TemplateId));

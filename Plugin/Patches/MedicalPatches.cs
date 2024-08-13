@@ -2,13 +2,10 @@
 using EFT;
 using EFT.InventoryLogic;
 using SPT.Reflection.Patching;
-using System.Linq;
 using System.Reflection;
-using Comfort.Common;
 using EFT.HealthSystem;
 using EFT.ObstacleCollision;
 using HarmonyLib;
-using SkillsExtended.Skills;
 using UnityEngine;
 
 namespace SkillsExtended.Patches;
@@ -34,13 +31,13 @@ internal class DoMedEffectPatch : ModulePatch
             return;
         }
 
-        if (Plugin.SkillData.MedicalSkills.FmItemList.Contains(item.TemplateId) && Plugin.SkillData.MedicalSkills.EnableFieldMedicine)
+        if (Plugin.SkillData.FieldMedicine.ItemList.Contains(item.TemplateId) && Plugin.SkillData.FieldMedicine.Enabled)
         {
             __instance.Player.ExecuteSkill(ApplyFieldMedicineExp);
             return;
         }
 
-        if (Plugin.SkillData.MedicalSkills.FaItemList.Contains(item.TemplateId) && Plugin.SkillData.MedicalSkills.EnableFirstAid)
+        if (Plugin.SkillData.FirstAid.ItemList.Contains(item.TemplateId) && Plugin.SkillData.FirstAid.Enabled)
         {
             __instance.Player.ExecuteSkill(ApplyFirstAidExp);
         }
@@ -49,14 +46,14 @@ internal class DoMedEffectPatch : ModulePatch
     private static void ApplyFirstAidExp()
     {
         var skillMgrExt = Plugin.PlayerSkillManagerExt;
-        var xpGain = Plugin.SkillData.MedicalSkills.FirstAidXpPerAction;
+        var xpGain = Plugin.SkillData.FirstAid.FirstAidXpPerAction;
         skillMgrExt.FirstAidAction.Complete(xpGain);
     }
     
     private static void ApplyFieldMedicineExp()
     {
         var skillMgrExt = Plugin.PlayerSkillManagerExt;
-        var xpGain = Plugin.SkillData.MedicalSkills.FieldMedicineXpPerAction;
+        var xpGain = Plugin.SkillData.FieldMedicine.FieldMedicineXpPerAction;
         skillMgrExt.FieldMedicineAction.Complete(xpGain);
     }
 }
@@ -72,23 +69,11 @@ internal class HealthEffectUseTimePatch : ModulePatch
     public static void PostFix(ref float __result, HealthEffectsComponent __instance)
     {
         var skillMgrExt = Plugin.PlayerSkillManagerExt;
-
-        var skillData = Plugin.SkillData.MedicalSkills;
+        var firstAid = Plugin.SkillData.FirstAid;
         
-        if (skillData.FaItemList.Contains(__instance.Item.TemplateId))
-        {
-            if (!skillData.EnableFirstAid) return;
+        if (!firstAid.Enabled) return;
             
-            __result *= (1f - skillMgrExt.FirstAidItemSpeedBuff);
-            return;
-        }
-        
-        if (skillData.FmItemList.Contains(__instance.Item.TemplateId))
-        {
-            if (!skillData.EnableFieldMedicine) return;
-            
-            __result *= (1f - skillMgrExt.FieldMedicineSpeedBuff);
-        }
+        __result *= (1f - skillMgrExt.FirstAidItemSpeedBuff);
     }
 }
 
@@ -106,10 +91,10 @@ internal class HealthEffectDamageEffectPatch : ModulePatch
     public static void PostFix(Dictionary<EDamageEffectType, GClass1244> __result, HealthEffectsComponent __instance)
     {
         var skillMgrExt = Plugin.PlayerSkillManagerExt;
-        var skillData = Plugin.SkillData.MedicalSkills;
+        var skillData = Plugin.SkillData.FirstAid;
         
-        if (!skillData.EnableFirstAid) return;
-        if (!skillData.FaItemList.Contains(__instance.Item.TemplateId)) return;
+        if (!skillData.Enabled) return;
+        if (!skillData.ItemList.Contains(__instance.Item.TemplateId)) return;
         if (__instance.Item is not MedsClass meds) return;
         
         if (_instanceIdsChangedAtLevel.TryGetValue(meds.TemplateId, out var level))
@@ -187,9 +172,9 @@ internal class CanWalkPatch : ModulePatch
         if (!____player.IsYourPlayer) return;
         
         var skillMgrExt = Plugin.PlayerSkillManagerExt;
-        var skillData = Plugin.SkillData.MedicalSkills;
+        var skillData = Plugin.SkillData.FirstAid;
 
-        if (!skillData.EnableFirstAid) return;
+        if (!skillData.Enabled) return;
         if (!skillMgrExt.FirstAidMovementSpeedBuffElite) return;
 
         __result = ____obstacleCollisionFacade.CanMove();

@@ -107,12 +107,12 @@ public class Plugin : BaseUnityPlugin
             Log.LogInfo("Realism mod detected");
         }
         
-        if (SkillData.NatoRifleSkill.Enabled)
+        if (SkillData.NatoRifle.Enabled)
         {
             NatoWeaponScript = Hook.AddComponent<UsecRifleBehaviour>();
         }
         
-        if (SkillData.EasternRifleSkill.Enabled)
+        if (SkillData.EasternRifle.Enabled)
         {
             EasternWeaponScript = Hook.AddComponent<BearRifleBehaviour>();
         }

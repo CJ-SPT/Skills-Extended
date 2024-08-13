@@ -82,17 +82,20 @@ internal class SkillManagerConstructorPatch : ModulePatch
 
         // If the skill is not enabled, lock it
         AccessTools.Field(typeof(SkillClass), "Locked").SetValue(__instance.UsecArsystems,
-            !Plugin.SkillData.NatoRifleSkill.Enabled);
+            !Plugin.SkillData.NatoRifle.Enabled);
 
         AccessTools.Field(typeof(SkillClass), "Locked").SetValue(__instance.BearAksystems,
-            !Plugin.SkillData.EasternRifleSkill.Enabled);
+            !Plugin.SkillData.EasternRifle.Enabled);
         
         AccessTools.Field(typeof(SkillClass), "Locked").SetValue(__instance.Lockpicking,
-            !Plugin.SkillData.LockPickingSkill.Enabled);
+            !Plugin.SkillData.LockPicking.Enabled);
         
         AccessTools.Field(typeof(SkillClass), "Locked").SetValue(__instance.FieldMedicine,
-            !Plugin.SkillData.MedicalSkills.EnableFieldMedicine);
+            !Plugin.SkillData.FieldMedicine.Enabled);
 
+        AccessTools.Field(typeof(SkillClass), "Locked").SetValue(__instance.FirstAid,
+            !Plugin.SkillData.FirstAid.Enabled);
+        
         //BonusController is called in SkillClass.OnTrigger and must not be null, otherwise it will trigger System.NullReferenceException.
         __instance.BonusController = new();
 	}

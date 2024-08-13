@@ -38,7 +38,7 @@ public sealed class LockPickActionHandler
                 }
 
                 // Break the lock if more than 3 failed attempts
-                if (Helpers.DoorAttempts[InteractiveObject.Id] > Plugin.SkillData.LockPickingSkill.AttemptsBeforeBreak)
+                if (Helpers.DoorAttempts[InteractiveObject.Id] > Plugin.SkillData.LockPicking.AttemptsBeforeBreak)
                 {
                     Owner.DisplayPreloaderUiNotification("You broke the lock...");
                     InteractiveObject.KeyId = string.Empty;

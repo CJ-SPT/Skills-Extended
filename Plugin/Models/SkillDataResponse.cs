@@ -5,28 +5,24 @@ namespace SkillsExtended.Models
 {
     public struct SkillDataResponse
     {
-        public MedicalSkillData MedicalSkills;
+        public FirstAidData FirstAid;
 
-        public WeaponSkillData NatoRifleSkill;
+        public FieldMedicineData FieldMedicine;
+        
+        public WeaponSkillData NatoRifle;
 
-        public WeaponSkillData EasternRifleSkill;
+        public WeaponSkillData EasternRifle;
 
-        public LockPickingData LockPickingSkill;
+        public LockPickingData LockPicking;
     }
 
-    public struct MedicalSkillData
+    public struct FirstAidData
     {
-        [JsonProperty("ENABLE_FIELD_MEDICINE")]
-        public bool EnableFieldMedicine;
+        [JsonProperty("ENABLED")]
+        public bool Enabled;
 
-        [JsonProperty("ENABLE_FIRST_AID")]
-        public bool EnableFirstAid;
-
-        [JsonProperty("FIRSTAID_XP_PER_ACTION")]
+        [JsonProperty("FIRST_AID_XP_PER_ACTION")]
         public float FirstAidXpPerAction;
-
-        [JsonProperty("FIELDMEDICINE_XP_PER_ACTION")]
-        public float FieldMedicineXpPerAction;
         
         [JsonProperty("MEDKIT_USAGE_REDUCTION")]
         public float MedkitUsageReduction;
@@ -40,19 +36,22 @@ namespace SkillsExtended.Models
         [JsonProperty("MEDKIT_SPEED_BONUS_ELITE")]
         public float ItemSpeedBonusElite;
         
-        [JsonProperty("MEDKIT_RESOURCE_RATE")]
-        public float MedkitResourceRateReduction;
-
-        [JsonProperty("MEDKIT_RESOURCE_RATE_ELITE")]
-        public float MedkitResourceRateReductionElite;
-
-        [JsonProperty("FA_ITEM_LIST")]
-        public List<string> FaItemList;
-
-        [JsonProperty("FM_ITEM_LIST")]
-        public List<string> FmItemList;
+        [JsonProperty("ITEM_LIST")]
+        public List<string> ItemList;
     }
 
+    public struct FieldMedicineData
+    {
+        [JsonProperty("ENABLED")]
+        public bool Enabled;
+        
+        [JsonProperty("FIELD_MEDICINE_XP_PER_ACTION")]
+        public float FieldMedicineXpPerAction;
+        
+        [JsonProperty("ITEM_LIST")]
+        public List<string> ItemList;
+    }
+    
     public struct WeaponSkillData
     {
         [JsonProperty("ENABLED")]

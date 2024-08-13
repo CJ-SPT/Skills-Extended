@@ -33,7 +33,7 @@ public static class LockPickActions
         if (Utils.IdleStateType.IsInstanceOfType(owner.Player.CurrentState))
         {
             var currentManagedState = owner.Player.CurrentManagedState;
-            var lpTime = Helpers.CalculateTimeForAction(Plugin.SkillData.LockPickingSkill.PickBaseTime);
+            var lpTime = Helpers.CalculateTimeForAction(Plugin.SkillData.LockPicking.PickBaseTime);
             var level = Helpers.GetLevelForDoor(owner.Player.Location, interactiveObject.Id);
 
             // Return out if the door level is not found
@@ -103,7 +103,7 @@ public static class LockPickActions
         if (Utils.IdleStateType.IsInstanceOfType(owner.Player.CurrentState))
         {
             var currentManagedState = owner.Player.CurrentManagedState;
-            var lpTime = Helpers.CalculateTimeForAction(Plugin.SkillData.LockPickingSkill.PickBaseTime);
+            var lpTime = Helpers.CalculateTimeForAction(Plugin.SkillData.LockPicking.PickBaseTime);
             var level = Helpers.GetLevelForDoor(owner.Player.Location, door.Id);
 
             // Return out if the door level is not found
@@ -178,7 +178,7 @@ public static class LockPickActions
 
                 Action<bool> action = new(handler.InspectLockAction);
                 var currentManagedState = owner.Player.CurrentManagedState;
-                var inspectTime = Helpers.CalculateTimeForAction(Plugin.SkillData.LockPickingSkill.InspectBaseTime);
+                var inspectTime = Helpers.CalculateTimeForAction(Plugin.SkillData.LockPicking.InspectBaseTime);
 
                 owner.ShowObjectivesPanel("Inspecting lock {0:F1}", inspectTime);
                 currentManagedState.Plant(true, false, inspectTime, action);
