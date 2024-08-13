@@ -94,42 +94,42 @@ internal class HealthEffectDamageEffectPatch : ModulePatch
     {
         var skillMgrExt = Singleton<SkillManagerExt>.Instance;
         var skillData = Plugin.SkillData.MedicalSkills;
-
+        
         if (!skillData.EnableFirstAid) return;
+        if (!skillData.FaItemList.Contains(__instance.Item.TemplateId)) return;
         
         if (_instanceIdsChangedAtLevel.TryGetValue(__instance.Item.TemplateId, out var level))
         {
             // We've changed this item at this level
             if (level == Plugin.Session.Profile.Skills.FirstAid.Level) return;
-
+            
             _instanceIdsChangedAtLevel.Remove(__instance.Item.TemplateId);
         }
         
-        if (skillData.FaItemList.Contains(__instance.Item.TemplateId))
+        Logger.LogDebug($"Updating Template: {__instance.Item.TemplateId.LocalizedName()}");
+        
+        if (__result.TryGetValue(EDamageEffectType.Fracture, out var fracture))
         {
-            if (__result.TryGetValue(EDamageEffectType.Fracture, out var fracture))
-            {
-                Logger.LogDebug($"Original Fracture Value: {fracture.Cost}");
-                var originalCost = fracture.Cost;
-                fracture.Cost = Mathf.FloorToInt(originalCost * (1f - skillMgrExt.FirstAidItemSpeedBuff));
-                Logger.LogDebug($"New Fracture Value: {fracture.Cost}");
-            }
-            
-            if (__result.TryGetValue(EDamageEffectType.LightBleeding, out var lightBleed))
-            {
-                Logger.LogDebug($"Original LightBleeding Value: {lightBleed.Cost}");
-                lightBleed.Cost = Mathf.FloorToInt(lightBleed.Cost * (1f - skillMgrExt.FirstAidResourceCostBuff));
-                Logger.LogDebug($"New LightBleeding Value: {lightBleed.Cost}");
-            }
-            
-            if (__result.TryGetValue(EDamageEffectType.HeavyBleeding, out var heavyBleed))
-            {
-                Logger.LogDebug($"Original HeavyBleeding Value: {heavyBleed.Cost}");
-                heavyBleed.Cost = Mathf.FloorToInt(heavyBleed.Cost * (1f - skillMgrExt.FirstAidResourceCostBuff));
-                Logger.LogDebug($"New HeavyBleeding Value: {heavyBleed.Cost}");
-            }
-            
-            _instanceIdsChangedAtLevel.Add(__instance.Item.TemplateId, Plugin.Session.Profile.Skills.FirstAid.Level);
+            Logger.LogDebug($"Original Fracture Value: {fracture.Cost}");
+            var originalCost = fracture.Cost;
+            fracture.Cost = Mathf.FloorToInt(originalCost * (1f - skillMgrExt.FirstAidItemSpeedBuff));
+            Logger.LogDebug($"New Fracture Value: {fracture.Cost}");
         }
+            
+        if (__result.TryGetValue(EDamageEffectType.LightBleeding, out var lightBleed))
+        {
+            Logger.LogDebug($"Original LightBleeding Value: {lightBleed.Cost}");
+            lightBleed.Cost = Mathf.FloorToInt(lightBleed.Cost * (1f - skillMgrExt.FirstAidResourceCostBuff));
+            Logger.LogDebug($"New LightBleeding Value: {lightBleed.Cost}");
+        }
+            
+        if (__result.TryGetValue(EDamageEffectType.HeavyBleeding, out var heavyBleed))
+        {
+            Logger.LogDebug($"Original HeavyBleeding Value: {heavyBleed.Cost}");
+            heavyBleed.Cost = Mathf.FloorToInt(heavyBleed.Cost * (1f - skillMgrExt.FirstAidResourceCostBuff));
+            Logger.LogDebug($"New HeavyBleeding Value: {heavyBleed.Cost}");
+        }
+        
+        _instanceIdsChangedAtLevel.Add(__instance.Item.TemplateId, Plugin.Session.Profile.Skills.FirstAid.Level);
     }
 }
