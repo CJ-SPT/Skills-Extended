@@ -4,10 +4,12 @@
         "ENABLE_FIRST_AID": true,                           // Enables the First Aid skill
         "FIRSTAID_XP_PER_ACTION": 6.25,                     // XP gained per first aid action
         "FIELDMEDICINE_XP_PER_ACTION": 12.50,               // XP gained per field medicine action
-        "MEDKIT_HP_BONUS": 0.50,                            // Medical kit (IFAK, AFAK...) HP bonus total at level 50
-        "MEDKIT_HP_BONUS_ELITE": 0.70,                      // Medical kit elite bonus. Default: +20% over level 50, I.E (0.5 + 0.2 = 0.7) Bsg forced my hand here, it doesnt make sense im sorry.
-        "MEDICAL_SPEED_BONUS": 0.35,                        // Medical kit total bonus at level 50.
-        "MEDICAL_SPEED_BONUS_ELITE": 0.50,                  // Medical kit elite bonus (0.35 + 0.15 = 0.50) Bsg forced my hand here, it doesnt make sense im sorry.
+        "MEDKIT_USAGE_REDUCTION": 0.30,                     // Medical kit (IFAK, AFAK...) Resource cost to heal bleeds / fractures etc.
+        "MEDKIT_USAGE_REDUCTION_ELITE": 0.50,               // Medical kit elite bonus. Default: +20% over level 50, I.E (0.3 + 0.2 = 0.5)
+        "MOVEMENT_SPEED_BONUS": 0.50,                       // Movement speed bonus while healing
+        "MOVEMENT_SPEED_BONUS_ELITE": 0.75,                 // Movement elite speed bonus while healing
+        "ITEM_SPEED_BONUS": 0.35,                           // Medical kit total bonus at level 50.
+        "ITEM_SPEED_BONUS_ELITE": 0.50,                     // Medical kit elite bonus (0.35 + 0.15 = 0.50)
         "FM_ITEM_LIST": [                                   // Applicable items for Field medicine
             "544fb25a4bdc2dfb738b4567",
             "5751a25924597722c463c472", 

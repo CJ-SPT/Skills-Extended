@@ -7,14 +7,25 @@ public class SkillManagerExt
 {
     private static SkillDataResponse SkillData => Plugin.SkillData;
     
-    public readonly SkillManager.SkillBuffClass FirstAidSpeedBuff = new()
+    public readonly SkillManager.SkillBuffClass FirstAidItemSpeedBuff = new()
     {
         Id = EBuffId.FirstAidHealingSpeed,
     };
     
-    public readonly SkillManager.SkillBuffClass FirstAidHpBuff = new()
+    public readonly SkillManager.SkillBuffClass FirstAidResourceCostBuff = new()
     {
-        Id = EBuffId.FirstAidMaxHp,
+        Id = EBuffId.FirstAidResourceCost,
+    };
+    
+    public readonly SkillManager.SkillBuffClass FirstAidMovementSpeedBuff = new()
+    {
+        Id = EBuffId.FirstAidMovementSpeed,
+    };
+    
+    public readonly SkillManager.GClass1790 FirstAidMovementSpeedBuffElite = new()
+    {
+        Id = EBuffId.FirstAidMovementSpeedElite,
+        BuffType = SkillManager.EBuffType.Elite
     };
     
     public readonly SkillManager.SkillBuffClass FieldMedicineSpeedBuff = new()
@@ -61,23 +72,22 @@ public class SkillManagerExt
     
     public SkillManager.SkillBuffAbstractClass[] FirstAidBuffs()
     {
-        return !Plugin.RealismConfig.med_changes
-            ? new SkillManager.SkillBuffAbstractClass[]
-            {
-                FirstAidSpeedBuff
-                    .Max(SkillData.MedicalSkills.MedicalSpeedBonus)
-                    .Elite(SkillData.MedicalSkills.MedicalSpeedBonusElite),
-                
-                FirstAidHpBuff
-                    .Max(SkillData.MedicalSkills.MedkitHpBonus)
-                    .Elite(SkillData.MedicalSkills.MedkitHpBonusElite),
-            }
-            : new SkillManager.SkillBuffAbstractClass[]
-            {
-                FirstAidSpeedBuff
-                    .Max(SkillData.MedicalSkills.MedkitHpBonus)
-                    .Elite(SkillData.MedicalSkills.MedkitHpBonusElite),
-            };
+        return new SkillManager.SkillBuffAbstractClass[]
+        {
+            FirstAidItemSpeedBuff
+                .Max(SkillData.MedicalSkills.ItemSpeedBonus)
+                .Elite(SkillData.MedicalSkills.ItemSpeedBonusElite),
+
+            FirstAidResourceCostBuff
+                .Max(SkillData.MedicalSkills.MedkitUsageReduction)
+                .Elite(SkillData.MedicalSkills.MedkitUsageReductionElite),
+            
+            FirstAidMovementSpeedBuff
+                .Max(SkillData.MedicalSkills.MovementSpeedBonus)
+                .Elite(SkillData.MedicalSkills.MovementSpeedBonusElite),
+            
+            FirstAidMovementSpeedBuffElite
+        };
     }
     
     public SkillManager.SkillBuffAbstractClass[] FieldMedicineBuffs()
@@ -85,8 +95,8 @@ public class SkillManagerExt
         return new SkillManager.SkillBuffAbstractClass[]
         {
             FieldMedicineSpeedBuff
-                .Max(SkillData.MedicalSkills.MedicalSpeedBonus)
-                .Elite(SkillData.MedicalSkills.MedicalSpeedBonusElite),
+                .Max(SkillData.MedicalSkills.ItemSpeedBonus)
+                .Elite(SkillData.MedicalSkills.ItemSpeedBonusElite),
         };
     }
     

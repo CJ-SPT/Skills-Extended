@@ -28,17 +28,23 @@ namespace SkillsExtended.Models
         [JsonProperty("FIELDMEDICINE_XP_PER_ACTION")]
         public float FieldMedicineXpPerAction;
         
-        [JsonProperty("MEDKIT_HP_BONUS")]
-        public float MedkitHpBonus;
+        [JsonProperty("MEDKIT_USAGE_REDUCTION")]
+        public float MedkitUsageReduction;
 
-        [JsonProperty("MEDKIT_HP_BONUS_ELITE")]
-        public float MedkitHpBonusElite;
+        [JsonProperty("MEDKIT_USAGE_REDUCTION_ELITE")]
+        public float MedkitUsageReductionElite;
 
-        [JsonProperty("MEDICAL_SPEED_BONUS")]
-        public float MedicalSpeedBonus;
+        [JsonProperty("ITEM_SPEED_BONUS")]
+        public float ItemSpeedBonus;
 
-        [JsonProperty("MEDICAL_SPEED_BONUS_ELITE")]
-        public float MedicalSpeedBonusElite;
+        [JsonProperty("ITEM_SPEED_BONUS_ELITE")]
+        public float ItemSpeedBonusElite;
+        
+        [JsonProperty("MOVEMENT_SPEED_BONUS")]
+        public float MovementSpeedBonus;
+
+        [JsonProperty("MOVEMENT_SPEED_BONUS_ELITE")]
+        public float MovementSpeedBonusElite;
 
         [JsonProperty("FA_ITEM_LIST")]
         public List<string> FaItemList;

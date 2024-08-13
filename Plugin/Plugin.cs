@@ -40,8 +40,7 @@ public class Plugin : BaseUnityPlugin
     public static RealismConfig RealismConfig;
 
     private static GameObject Hook;
-
-    internal static FirstAidBehaviour FirstAidScript;
+    
     internal static FieldMedicineBehaviour FieldMedicineScript;
     internal static UsecRifleBehaviour NatoWeaponScript;
     internal static BearRifleBehaviour EasternWeaponScript;
@@ -70,6 +69,9 @@ public class Plugin : BaseUnityPlugin
         new KeycardDoorActionPatch().Enable();
 
         new DoMedEffectPatch().Enable();
+        new HealthEffectUseTimePatch().Enable();
+        new HealthEffectDamageEffectPatch().Enable();
+        
 #if DEBUG
         Logger.LogWarning("PRE RELEASE BUILD - NO SUPPORT");
         new LocationSceneAwakePatch().Enable();
@@ -104,12 +106,7 @@ public class Plugin : BaseUnityPlugin
             RealismConfig = JsonConvert.DeserializeObject<RealismConfig>(jsonString);
             Log.LogInfo("Realism mod detected");
         }
-
-        if (SkillData.MedicalSkills.EnableFirstAid)
-        {
-            FirstAidScript = Hook.AddComponent<FirstAidBehaviour>();
-        }
-
+        
         if (SkillData.MedicalSkills.EnableFieldMedicine)
         {
             FieldMedicineScript = Hook.AddComponent<FieldMedicineBehaviour>();

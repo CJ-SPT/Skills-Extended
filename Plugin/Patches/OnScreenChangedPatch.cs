@@ -23,13 +23,6 @@ namespace SkillsExtended.Patches
                 StaticManager.BeginCoroutine(Plugin.FieldMedicineScript.FieldMedicineUpdate());
             }
 
-            if (Plugin.SkillData.MedicalSkills.EnableFirstAid)
-            {
-                Plugin.FirstAidScript.FirstAidInstanceIDs.Clear();
-
-                StaticManager.BeginCoroutine(Plugin.FirstAidScript.FirstAidUpdate());
-            }
-
             if (Plugin.SkillData.NatoRifleSkill.Enabled)
             {
                 Plugin.NatoWeaponScript.WeaponInstanceIds.Clear();

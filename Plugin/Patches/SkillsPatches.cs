@@ -192,8 +192,16 @@ internal class BuffIconShowPatch : ModulePatch
                 ____icon.sprite = staticIcons.HealEffectSprites.GetValueOrDefault(EHealthFactorType.Energy);
                 break;
             
-            case EBuffId.FirstAidMaxHp:
+            case EBuffId.FirstAidResourceCost:
                 ____icon.sprite = staticIcons.HealEffectSprites.GetValueOrDefault(EHealthFactorType.Health);
+                break;
+            
+            case EBuffId.FirstAidMovementSpeed:
+                ____icon.sprite = staticIcons.BuffIdSprites.GetValueOrDefault(EBuffId.HealthEnergy);
+                break;
+            
+            case EBuffId.FirstAidMovementSpeedElite:
+                ____icon.sprite = staticIcons.BuffIdSprites.GetValueOrDefault(EBuffId.StressBerserk);
                 break;
             
             case EBuffId.FieldMedicineSpeed:
