@@ -41,7 +41,6 @@ public class Plugin : BaseUnityPlugin
 
     private static GameObject Hook;
     
-    internal static FieldMedicineBehaviour FieldMedicineScript;
     internal static UsecRifleBehaviour NatoWeaponScript;
     internal static BearRifleBehaviour EasternWeaponScript;
 
@@ -107,11 +106,6 @@ public class Plugin : BaseUnityPlugin
             Log.LogInfo("Realism mod detected");
         }
         
-        if (SkillData.MedicalSkills.EnableFieldMedicine)
-        {
-            FieldMedicineScript = Hook.AddComponent<FieldMedicineBehaviour>();
-        }
-
         if (SkillData.NatoRifleSkill.Enabled)
         {
             NatoWeaponScript = Hook.AddComponent<UsecRifleBehaviour>();

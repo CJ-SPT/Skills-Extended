@@ -16,13 +16,6 @@ namespace SkillsExtended.Patches
         [PatchPrefix]
         public static void Prefix(EEftScreenType eftScreenType)
         {
-            if (Plugin.SkillData.MedicalSkills.EnableFieldMedicine)
-            {
-                Plugin.FieldMedicineScript.FieldMedicineInstanceIDs.Clear();
-
-                StaticManager.BeginCoroutine(Plugin.FieldMedicineScript.FieldMedicineUpdate());
-            }
-
             if (Plugin.SkillData.NatoRifleSkill.Enabled)
             {
                 Plugin.NatoWeaponScript.WeaponInstanceIds.Clear();

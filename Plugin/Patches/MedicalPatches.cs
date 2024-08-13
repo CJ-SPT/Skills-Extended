@@ -35,7 +35,7 @@ internal class DoMedEffectPatch : ModulePatch
 
         if (Plugin.SkillData.MedicalSkills.FmItemList.Contains(item.TemplateId) && Plugin.SkillData.MedicalSkills.EnableFieldMedicine)
         {
-            __instance.Player.ExecuteSkill(Plugin.FieldMedicineScript.ApplyFieldMedicineExp);
+            __instance.Player.ExecuteSkill(ApplyFieldMedicineExp);
             return;
         }
 
@@ -50,6 +50,13 @@ internal class DoMedEffectPatch : ModulePatch
         var skillMgrExt = Singleton<SkillManagerExt>.Instance;
         var xpGain = Plugin.SkillData.MedicalSkills.FirstAidXpPerAction;
         skillMgrExt.FirstAidAction.Complete(xpGain);
+    }
+    
+    private static void ApplyFieldMedicineExp()
+    {
+        var skillMgrExt = Singleton<SkillManagerExt>.Instance;
+        var xpGain = Plugin.SkillData.MedicalSkills.FieldMedicineXpPerAction;
+        skillMgrExt.FieldMedicineAction.Complete(xpGain);
     }
 }
 
@@ -69,12 +76,16 @@ internal class HealthEffectUseTimePatch : ModulePatch
         
         if (skillData.FaItemList.Contains(__instance.Item.TemplateId))
         {
+            if (!skillData.EnableFirstAid) return;
+            
             __result *= (1f - skillMgrExt.FirstAidItemSpeedBuff);
             return;
         }
         
         if (skillData.FmItemList.Contains(__instance.Item.TemplateId))
         {
+            if (!skillData.EnableFieldMedicine) return;
+            
             __result *= (1f - skillMgrExt.FieldMedicineSpeedBuff);
         }
     }
