@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using Comfort.Common;
 using EFT.HealthSystem;
+using EFT.ObstacleCollision;
 using HarmonyLib;
 using SkillsExtended.Skills;
 using UnityEngine;
@@ -47,14 +48,14 @@ internal class DoMedEffectPatch : ModulePatch
     
     private static void ApplyFirstAidExp()
     {
-        var skillMgrExt = Singleton<SkillManagerExt>.Instance;
+        var skillMgrExt = Plugin.PlayerSkillManagerExt;
         var xpGain = Plugin.SkillData.MedicalSkills.FirstAidXpPerAction;
         skillMgrExt.FirstAidAction.Complete(xpGain);
     }
     
     private static void ApplyFieldMedicineExp()
     {
-        var skillMgrExt = Singleton<SkillManagerExt>.Instance;
+        var skillMgrExt = Plugin.PlayerSkillManagerExt;
         var xpGain = Plugin.SkillData.MedicalSkills.FieldMedicineXpPerAction;
         skillMgrExt.FieldMedicineAction.Complete(xpGain);
     }
@@ -70,7 +71,7 @@ internal class HealthEffectUseTimePatch : ModulePatch
     [PatchPostfix]
     public static void PostFix(ref float __result, HealthEffectsComponent __instance)
     {
-        var skillMgrExt = Singleton<SkillManagerExt>.Instance;
+        var skillMgrExt = Plugin.PlayerSkillManagerExt;
 
         var skillData = Plugin.SkillData.MedicalSkills;
         
@@ -104,23 +105,24 @@ internal class HealthEffectDamageEffectPatch : ModulePatch
     [PatchPostfix]
     public static void PostFix(Dictionary<EDamageEffectType, GClass1244> __result, HealthEffectsComponent __instance)
     {
-        var skillMgrExt = Singleton<SkillManagerExt>.Instance;
+        var skillMgrExt = Plugin.PlayerSkillManagerExt;
         var skillData = Plugin.SkillData.MedicalSkills;
         
         if (!skillData.EnableFirstAid) return;
         if (!skillData.FaItemList.Contains(__instance.Item.TemplateId)) return;
+        if (__instance.Item is not MedsClass meds) return;
         
-        if (_instanceIdsChangedAtLevel.TryGetValue(__instance.Item.TemplateId, out var level))
+        if (_instanceIdsChangedAtLevel.TryGetValue(meds.TemplateId, out var level))
         {
             // We've changed this item at this level
             if (level == Plugin.Session.Profile.Skills.FirstAid.Level) return;
             
-            _instanceIdsChangedAtLevel.Remove(__instance.Item.TemplateId);
+            _instanceIdsChangedAtLevel.Remove(meds.TemplateId);
         }
         
-        Logger.LogDebug($"Updating Template: {__instance.Item.TemplateId.LocalizedName()}");
+        Logger.LogDebug($"Updating Template: {meds.TemplateId.LocalizedName()}");
 
-        if (_originalCosts.TryGetValue(__instance.Item.TemplateId, out var originalCosts))
+        if (_originalCosts.TryGetValue(meds.TemplateId, out var originalCosts))
         { }
         
         if (__result.TryGetValue(EDamageEffectType.Fracture, out var fracture))
@@ -154,16 +156,42 @@ internal class HealthEffectDamageEffectPatch : ModulePatch
                 lightBleed?.Cost ?? 0,
                 heavyBleed?.Cost ?? 0);
             
-            _originalCosts.Add(__instance.Item.TemplateId, newOriginalCosts);
+            _originalCosts.Add(meds.TemplateId, newOriginalCosts);
         }
         
         _instanceIdsChangedAtLevel.Add(__instance.Item.TemplateId, Plugin.Session.Profile.Skills.FirstAid.Level);
     }
     
-    private struct OriginalCosts(int fracture, int lightBleed, int heavyBleed)
+    private struct OriginalCosts(int? fracture, int? lightBleed, int? heavyBleed)
     {
         public int? Fracture = fracture;
         public int? LightBleed = lightBleed;
         public int? HeavyBleed = heavyBleed;
+    }
+}
+
+internal class CanWalkPatch : ModulePatch
+{
+    protected override MethodBase GetTargetMethod()
+    {
+        return AccessTools.PropertyGetter(typeof(MovementContext), nameof(MovementContext.CanWalk));
+    }
+
+    [PatchPostfix]
+    public static void PostFix(
+        MovementContext __instance, 
+        Player ____player,
+        IObstacleCollisionFacade ____obstacleCollisionFacade,
+        ref bool __result)
+    {
+        if (!____player.IsYourPlayer) return;
+        
+        var skillMgrExt = Plugin.PlayerSkillManagerExt;
+        var skillData = Plugin.SkillData.MedicalSkills;
+
+        if (!skillData.EnableFirstAid) return;
+        if (!skillMgrExt.FirstAidMovementSpeedBuffElite) return;
+
+        __result = ____obstacleCollisionFacade.CanMove();
     }
 }

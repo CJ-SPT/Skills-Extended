@@ -17,7 +17,7 @@ public class UsecRifleBehaviour : MonoBehaviour
     public readonly Dictionary<string, int> WeaponInstanceIds = [];
     public IEnumerable<Item> UsecWeapons = null;
     private static SkillManager SkillManager => Utils.GetActiveSkillManager();
-    private static SkillManagerExt SkillMgrExt => Singleton<SkillManagerExt>.Instance;
+    private static SkillManagerExt SkillMgrExt => Plugin.PlayerSkillManagerExt;
     private static ISession Session => Plugin.Session;
     private static GameWorld GameWorld => Singleton<GameWorld>.Instance;
     private static int UsecARLevel => Session.Profile.Skills.UsecArsystems.Level;

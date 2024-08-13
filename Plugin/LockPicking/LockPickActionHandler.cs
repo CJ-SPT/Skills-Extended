@@ -67,7 +67,7 @@ public sealed class LockPickActionHandler
     {
         var levelDifference = _skills.Lockpicking.Level - doorLevel;
 
-        var skillMgrExt = Singleton<SkillManagerExt>.Instance;
+        var skillMgrExt = Plugin.PlayerSkillManagerExt;
         
         if (levelDifference >= 10 || skillMgrExt.LockPickingUseBuffElite.Value)
         {

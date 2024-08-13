@@ -17,8 +17,6 @@ internal static class Helpers
     public static readonly List<string> InspectedDoors = [];
 
     private static SkillManager _skills => Utils.GetActiveSkillManager();
-    private static Player _player => Singleton<GameWorld>.Instance.MainPlayer;
-
     private static LockPickingData _lockPicking => Plugin.SkillData.LockPickingSkill;
 
     private static readonly Dictionary<string, Dictionary<string, int>> LocationDoorIdLevels = new()
@@ -105,7 +103,7 @@ internal static class Helpers
     {
         if (xpToApply == 0.0f) return;
         
-        var skillMgrExt = Singleton<SkillManagerExt>.Instance;
+        var skillMgrExt = Plugin.PlayerSkillManagerExt;
         
         skillMgrExt.LockPickAction.Complete(xpToApply);
     }
@@ -160,7 +158,7 @@ internal static class Helpers
 
     public static float CalculateTimeForAction(float baseTime)
     {
-        var skillMgrExt = Singleton<SkillManagerExt>.Instance;
+        var skillMgrExt = Plugin.PlayerSkillManagerExt;
         
         return (baseTime * (1 - skillMgrExt.LockPickingTimeBuff));
     }

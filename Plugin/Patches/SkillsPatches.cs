@@ -14,6 +14,8 @@ namespace SkillsExtended.Patches;
 
 internal class SkillManagerConstructorPatch : ModulePatch
 {
+    public static EPlayerSide CurrentSide;
+    
     protected override MethodBase GetTargetMethod() =>
         typeof(SkillManager).GetConstructor(
             BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, 
@@ -22,7 +24,7 @@ internal class SkillManagerConstructorPatch : ModulePatch
             null);
 
     [PatchPostfix]
-    public static void Postfix(SkillManager __instance, ref SkillClass[] ___DisplayList, ref SkillClass[] ___Skills)
+    public static void Postfix(SkillManager __instance, ref SkillClass[] ___DisplayList, ref SkillClass[] ___Skills, EPlayerSide faction)
     {
         var insertIndex = 12;
         
@@ -113,7 +115,7 @@ internal class SkillClassCtorPatch : ModulePatch
     {
         // This is where we set all of our buffs and actions, done as a constructor patch, so they always exist when we need them
         
-        var skillMgrExt = Singleton<SkillManagerExt>.Instance;
+        var skillMgrExt = Plugin.PlayerSkillManagerExt;
         
         if (id == ESkillId.FirstAid)
         {
@@ -194,10 +196,6 @@ internal class BuffIconShowPatch : ModulePatch
             
             case EBuffId.FirstAidResourceCost:
                 ____icon.sprite = staticIcons.HealEffectSprites.GetValueOrDefault(EHealthFactorType.Health);
-                break;
-            
-            case EBuffId.FirstAidMovementSpeed:
-                ____icon.sprite = staticIcons.BuffIdSprites.GetValueOrDefault(EBuffId.HealthEnergy);
                 break;
             
             case EBuffId.FirstAidMovementSpeedElite:

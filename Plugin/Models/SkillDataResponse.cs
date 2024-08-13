@@ -34,17 +34,17 @@ namespace SkillsExtended.Models
         [JsonProperty("MEDKIT_USAGE_REDUCTION_ELITE")]
         public float MedkitUsageReductionElite;
 
-        [JsonProperty("ITEM_SPEED_BONUS")]
+        [JsonProperty("MEDKIT_SPEED_BONUS")]
         public float ItemSpeedBonus;
 
-        [JsonProperty("ITEM_SPEED_BONUS_ELITE")]
+        [JsonProperty("MEDKIT_SPEED_BONUS_ELITE")]
         public float ItemSpeedBonusElite;
         
-        [JsonProperty("MOVEMENT_SPEED_BONUS")]
-        public float MovementSpeedBonus;
+        [JsonProperty("MEDKIT_RESOURCE_RATE")]
+        public float MedkitResourceRateReduction;
 
-        [JsonProperty("MOVEMENT_SPEED_BONUS_ELITE")]
-        public float MovementSpeedBonusElite;
+        [JsonProperty("MEDKIT_RESOURCE_RATE_ELITE")]
+        public float MedkitResourceRateReductionElite;
 
         [JsonProperty("FA_ITEM_LIST")]
         public List<string> FaItemList;

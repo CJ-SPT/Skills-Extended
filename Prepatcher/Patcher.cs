@@ -63,30 +63,40 @@ public static class Patcher
     {
         // New Buffs Enums
         var buffEnums = assembly.MainModule.GetType("EFT.EBuffId");
-
+        var index = 1000;
+        
         var firstAidHealingSpeedEnum = CreateNewEnum(
             ref assembly, 
             "FirstAidHealingSpeed", 
             "FirstAidHealingSpeed", 
             buffEnums, 
-            1000);
+            index++);
         
-        var firstAidMaxHpEnum = CreateNewEnum(
+        var firstAidHealingCostEnum = CreateNewEnum(
             ref assembly, 
-            "FirstAidMaxHp", 
-            "FirstAidMaxHp",
+            "FirstAidResourceCost", 
+            "FirstAidResourceCost",
             buffEnums, 
-            1001);
+            index++);
+        
+        
+        var firstAidMovementSpeedElite = CreateNewEnum(
+            ref assembly, 
+            "FirstAidMovementSpeedElite", 
+            "FirstAidMovementSpeedElite",
+            buffEnums, 
+            index++);
         
         buffEnums.Fields.Add(firstAidHealingSpeedEnum);
-        buffEnums.Fields.Add(firstAidMaxHpEnum);
+        buffEnums.Fields.Add(firstAidHealingCostEnum);
+        buffEnums.Fields.Add(firstAidMovementSpeedElite);
         
         var fieldMedicineHealingSpeedEnum = CreateNewEnum(
             ref assembly, 
             "FieldMedicineSpeed", 
             "FieldMedicineSpeed", 
             buffEnums, 
-            1002);
+            index++);
         
         buffEnums.Fields.Add(fieldMedicineHealingSpeedEnum);
 
@@ -95,14 +105,14 @@ public static class Patcher
             "UsecArSystemsRecoil", 
             "UsecArSystemsRecoil", 
             buffEnums, 
-            1003);
+            index++);
         
         var usecArSystemsErgoEnum = CreateNewEnum(
             ref assembly, 
             "UsecArSystemsErgo", 
             "UsecArSystemsErgo", 
             buffEnums, 
-            1004);
+            index++);
         
         
         buffEnums.Fields.Add(usecArSystemsRecoilEnum);
@@ -113,14 +123,14 @@ public static class Patcher
             "BearAkSystemsRecoil", 
             "BearAkSystemsRecoil", 
             buffEnums, 
-            1005);
+            index++);
         
         var bearAkSystemsErgoEnum = CreateNewEnum(
             ref assembly, 
             "BearAkSystemsErgo", 
             "BearAkSystemsErgo", 
             buffEnums, 
-            1006);
+            index++);
         
         buffEnums.Fields.Add(bearAkSystemsRecoilEnum);
         buffEnums.Fields.Add(bearAkSystemsErgoEnum);
@@ -130,14 +140,14 @@ public static class Patcher
             "LockpickingTimeReduction", 
             "LockpickingTimeReduction", 
             buffEnums, 
-            1007);
+            index++);
         
         var lockpickingUseElite = CreateNewEnum(
             ref assembly, 
             "LockpickingUseElite", 
             "LockpickingUseElite", 
             buffEnums, 
-            1008);
+            index++);
         
         buffEnums.Fields.Add(lockpickingTimeReduction);
         buffEnums.Fields.Add(lockpickingUseElite);

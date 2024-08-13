@@ -17,11 +17,6 @@ public class SkillManagerExt
         Id = EBuffId.FirstAidResourceCost,
     };
     
-    public readonly SkillManager.SkillBuffClass FirstAidMovementSpeedBuff = new()
-    {
-        Id = EBuffId.FirstAidMovementSpeed,
-    };
-    
     public readonly SkillManager.GClass1790 FirstAidMovementSpeedBuffElite = new()
     {
         Id = EBuffId.FirstAidMovementSpeedElite,
@@ -81,10 +76,6 @@ public class SkillManagerExt
             FirstAidResourceCostBuff
                 .Max(SkillData.MedicalSkills.MedkitUsageReduction)
                 .Elite(SkillData.MedicalSkills.MedkitUsageReductionElite),
-            
-            FirstAidMovementSpeedBuff
-                .Max(SkillData.MedicalSkills.MovementSpeedBonus)
-                .Elite(SkillData.MedicalSkills.MovementSpeedBonusElite),
             
             FirstAidMovementSpeedBuffElite
         };

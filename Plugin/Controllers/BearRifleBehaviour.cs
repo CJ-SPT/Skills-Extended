@@ -20,7 +20,7 @@ internal class BearRifleBehaviour : MonoBehaviour
     private static SkillManager SkillManager => Utils.GetActiveSkillManager();
     private static ISession Session => Plugin.Session;
 
-    private static SkillManagerExt SkillMgrExt => Singleton<SkillManagerExt>.Instance;
+    private static SkillManagerExt SkillMgrExt => Plugin.PlayerSkillManagerExt;
     
     private static GameWorld GameWorld => Singleton<GameWorld>.Instance;
 

@@ -44,6 +44,9 @@ public class Plugin : BaseUnityPlugin
     internal static UsecRifleBehaviour NatoWeaponScript;
     internal static BearRifleBehaviour EasternWeaponScript;
 
+    internal static readonly SkillManagerExt PlayerSkillManagerExt = new();
+    internal static readonly SkillManagerExt ScavSkillManagerExt = new();
+    
     internal static AnimationClip[] AnimationClips { get; private set; }
     
     internal static ManualLogSource Log;
@@ -70,14 +73,12 @@ public class Plugin : BaseUnityPlugin
         new DoMedEffectPatch().Enable();
         new HealthEffectUseTimePatch().Enable();
         new HealthEffectDamageEffectPatch().Enable();
+        new CanWalkPatch().Enable();
         
 #if DEBUG
         Logger.LogWarning("PRE RELEASE BUILD - NO SUPPORT");
         new LocationSceneAwakePatch().Enable();
 #endif
-        
-        Logger.LogInfo("Creating SkillManagerExt Singleton");
-        Singleton<SkillManagerExt>.Create(new SkillManagerExt());
         
         Utils.GetTypes();
         

@@ -189,7 +189,7 @@ namespace SkillsExtended.Helpers
 
             if (player == null) { return; }
 
-            player.ActiveHealthController.ApplyDamage(EBodyPart.LeftArm, 50, Blunt);
+            player.ActiveHealthController.ApplyDamage(EBodyPart.LeftLeg, 20, Blunt);
         }
 
         public static void DoDie()
@@ -208,7 +208,7 @@ namespace SkillsExtended.Helpers
 
             if (player == null) { return; }
 
-            player.ActiveHealthController.DoFracture(EBodyPart.LeftArm);
+            player.ActiveHealthController.DoFracture(EBodyPart.LeftLeg);
         }
 
         #endregion HEALTH
