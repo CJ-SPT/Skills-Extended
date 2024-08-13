@@ -21,7 +21,7 @@ namespace SkillsExtended.Models
         [JsonProperty("ENABLED")]
         public bool Enabled;
 
-        [JsonProperty("FIRST_AID_XP_PER_ACTION")]
+        [JsonProperty("XP_PER_ACTION")]
         public float FirstAidXpPerAction;
         
         [JsonProperty("MEDKIT_USAGE_REDUCTION")]
@@ -35,9 +35,6 @@ namespace SkillsExtended.Models
 
         [JsonProperty("MEDKIT_SPEED_BONUS_ELITE")]
         public float ItemSpeedBonusElite;
-        
-        [JsonProperty("ITEM_LIST")]
-        public List<string> ItemList;
     }
 
     public struct FieldMedicineData
@@ -45,7 +42,7 @@ namespace SkillsExtended.Models
         [JsonProperty("ENABLED")]
         public bool Enabled;
         
-        [JsonProperty("FIELD_MEDICINE_XP_PER_ACTION")]
+        [JsonProperty("XP_PER_ACTION")]
         public float FieldMedicineXpPerAction;
         
         [JsonProperty("SKILL_BONUS")]
@@ -65,9 +62,6 @@ namespace SkillsExtended.Models
         
         [JsonProperty("POSITIVE_EFFECT_BONUS_ELITE")]
         public float PositiveEffectChanceBonusElite;
-        
-        [JsonProperty("ITEM_LIST")]
-        public List<string> ItemList;
     }
     
     public struct WeaponSkillData
@@ -117,10 +111,10 @@ namespace SkillsExtended.Models
         [JsonProperty("ATTEMPTS_BEFORE_BREAK")]
         public float AttemptsBeforeBreak;
 
-        [JsonProperty("TIME_REDUCTION_BONUS_PER_LEVEL")]
+        [JsonProperty("TIME_REDUCTION_BONUS")]
         public float TimeReduction;
 
-        [JsonProperty("TIME_REDUCTION_BONUS_PER_LEVEL_ELITE")]
+        [JsonProperty("TIME_REDUCTION_BONUS_ELITE")]
         public float TimeReductionElite;
 
         [JsonProperty("PICK_BASE_SUCCESS_CHANCE")]

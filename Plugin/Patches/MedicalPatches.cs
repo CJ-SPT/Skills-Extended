@@ -5,60 +5,11 @@ using EFT.InventoryLogic;
 using SPT.Reflection.Patching;
 using System.Reflection;
 using System.Text;
-using EFT.HealthSystem;
 using EFT.ObstacleCollision;
 using HarmonyLib;
 using UnityEngine;
 
 namespace SkillsExtended.Patches;
-
-internal class DoMedEffectPatch : ModulePatch
-{
-    protected override MethodBase GetTargetMethod()
-    {
-        return AccessTools.Method(typeof(ActiveHealthController), nameof(ActiveHealthController.DoMedEffect));
-    }
-
-    [PatchPrefix]
-    public static void Prefix(ActiveHealthController __instance, Item item)
-    {
-        // Don't give xp for surgery
-        if (item.TemplateId == "5d02778e86f774203e7dedbe" || item.TemplateId == "5d02797c86f774203f38e30a")
-        {
-            return;
-        }
-
-        if (!__instance.Player.IsYourPlayer || item is not MedsClass)
-        {
-            return;
-        }
-
-        if (Plugin.SkillData.FieldMedicine.ItemList.Contains(item.TemplateId) && Plugin.SkillData.FieldMedicine.Enabled)
-        {
-            __instance.Player.ExecuteSkill(ApplyFieldMedicineExp);
-            return;
-        }
-
-        if (Plugin.SkillData.FirstAid.ItemList.Contains(item.TemplateId) && Plugin.SkillData.FirstAid.Enabled)
-        {
-            __instance.Player.ExecuteSkill(ApplyFirstAidExp);
-        }
-    }
-    
-    private static void ApplyFirstAidExp()
-    {
-        var skillMgrExt = Plugin.PlayerSkillManagerExt;
-        var xpGain = Plugin.SkillData.FirstAid.FirstAidXpPerAction;
-        skillMgrExt.FirstAidAction.Complete(xpGain);
-    }
-    
-    private static void ApplyFieldMedicineExp()
-    {
-        var skillMgrExt = Plugin.PlayerSkillManagerExt;
-        var xpGain = Plugin.SkillData.FieldMedicine.FieldMedicineXpPerAction;
-        skillMgrExt.FieldMedicineAction.Complete(xpGain);
-    }
-}
 
 internal class HealthEffectUseTimePatch : ModulePatch
 {
@@ -96,7 +47,6 @@ internal class HealthEffectDamageEffectPatch : ModulePatch
         var skillData = Plugin.SkillData.FirstAid;
         
         if (!skillData.Enabled) return;
-        if (!skillData.ItemList.Contains(__instance.Item.TemplateId)) return;
         if (__instance.Item is not MedsClass meds) return;
         
         if (_instanceIdsChangedAtLevel.TryGetValue(meds.TemplateId, out var level))

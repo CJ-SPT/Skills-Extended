@@ -69,8 +69,7 @@ public class Plugin : BaseUnityPlugin
 
         new DoorActionPatch().Enable();
         new KeycardDoorActionPatch().Enable();
-
-        new DoMedEffectPatch().Enable();
+        
         new HealthEffectUseTimePatch().Enable();
         new HealthEffectDamageEffectPatch().Enable();
         new CanWalkPatch().Enable();
