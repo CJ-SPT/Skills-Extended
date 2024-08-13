@@ -23,9 +23,19 @@ public class SkillManagerExt
         BuffType = SkillManager.EBuffType.Elite
     };
     
-    public readonly SkillManager.SkillBuffClass FieldMedicineSpeedBuff = new()
+    public readonly SkillManager.SkillBuffClass FieldMedicineSkillCap = new()
     {
-        Id = EBuffId.FieldMedicineSpeed,
+        Id = EBuffId.FieldMedicineSkillCap,
+    };
+    
+    public readonly SkillManager.SkillBuffClass FieldMedicineDurationBonus = new()
+    {
+        Id = EBuffId.FieldMedicineDurationBonus,
+    };
+    
+    public readonly SkillManager.SkillBuffClass FieldMedicineChanceBonus = new()
+    {
+        Id = EBuffId.FieldMedicineChanceBonus,
     };
     
     public readonly SkillManager.SkillBuffClass UsecArSystemsErgoBuff = new()
@@ -85,7 +95,17 @@ public class SkillManagerExt
     {
         return new SkillManager.SkillBuffAbstractClass[]
         {
+            FieldMedicineSkillCap
+                .Max(SkillData.FieldMedicine.SkillBonus)
+                .Elite(SkillData.FieldMedicine.SkillBonusElite),
             
+            FieldMedicineDurationBonus
+                .Max(SkillData.FieldMedicine.DurationBonus)
+                .Elite(SkillData.FieldMedicine.DurationBonusElite),
+            
+            FieldMedicineChanceBonus
+                .Max(SkillData.FieldMedicine.PositiveEffectChanceBonus)
+                .Elite(SkillData.FieldMedicine.PositiveEffectChanceBonusElite)
         };
     }
     

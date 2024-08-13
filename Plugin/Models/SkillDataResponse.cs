@@ -48,6 +48,24 @@ namespace SkillsExtended.Models
         [JsonProperty("FIELD_MEDICINE_XP_PER_ACTION")]
         public float FieldMedicineXpPerAction;
         
+        [JsonProperty("SKILL_BONUS")]
+        public float SkillBonus;
+        
+        [JsonProperty("SKILL_BONUS_ELITE")]
+        public float SkillBonusElite;
+        
+        [JsonProperty("DURATION_BONUS")]
+        public float DurationBonus;
+        
+        [JsonProperty("DURATION_BONUS_ELITE")]
+        public float DurationBonusElite;
+        
+        [JsonProperty("POSITIVE_EFFECT_BONUS")]
+        public float PositiveEffectChanceBonus;
+        
+        [JsonProperty("POSITIVE_EFFECT_BONUS_ELITE")]
+        public float PositiveEffectChanceBonusElite;
+        
         [JsonProperty("ITEM_LIST")]
         public List<string> ItemList;
     }

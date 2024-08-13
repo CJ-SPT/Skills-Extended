@@ -74,6 +74,10 @@ public class Plugin : BaseUnityPlugin
         new HealthEffectUseTimePatch().Enable();
         new HealthEffectDamageEffectPatch().Enable();
         new CanWalkPatch().Enable();
+        new SummaryLevelPatch().Enable();
+        new PersonalBuffPatch().Enable();
+        new PersonalBuffFullStringPatch().Enable();
+        new PersonalBuffStringPatch().Enable();
         
 #if DEBUG
         Logger.LogWarning("PRE RELEASE BUILD - NO SUPPORT");

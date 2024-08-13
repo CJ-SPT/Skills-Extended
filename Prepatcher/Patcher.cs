@@ -91,15 +91,31 @@ public static class Patcher
         buffEnums.Fields.Add(firstAidHealingCostEnum);
         buffEnums.Fields.Add(firstAidMovementSpeedElite);
         
-        var fieldMedicineHealingSpeedEnum = CreateNewEnum(
+        var fieldMedicineSkillCap = CreateNewEnum(
             ref assembly, 
-            "FieldMedicineSpeed", 
-            "FieldMedicineSpeed", 
+            "FieldMedicineSkillCap", 
+            "FieldMedicineSkillCap", 
             buffEnums, 
             index++);
         
-        buffEnums.Fields.Add(fieldMedicineHealingSpeedEnum);
-
+        var fieldMedicineDurationBonus = CreateNewEnum(
+            ref assembly, 
+            "FieldMedicineDurationBonus", 
+            "FieldMedicineDurationBonus", 
+            buffEnums, 
+            index++);
+        
+        var fieldMedicineChanceBonus = CreateNewEnum(
+            ref assembly, 
+            "FieldMedicineChanceBonus", 
+            "FieldMedicineChanceBonus", 
+            buffEnums, 
+            index++);
+        
+        buffEnums.Fields.Add(fieldMedicineSkillCap);
+        buffEnums.Fields.Add(fieldMedicineDurationBonus);
+        buffEnums.Fields.Add(fieldMedicineChanceBonus);
+        
         var usecArSystemsRecoilEnum = CreateNewEnum(
             ref assembly, 
             "UsecArSystemsRecoil", 

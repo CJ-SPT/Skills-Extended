@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using EFT;
 using EFT.InventoryLogic;
 using SPT.Reflection.Patching;
 using System.Reflection;
+using System.Text;
 using EFT.HealthSystem;
 using EFT.ObstacleCollision;
 using HarmonyLib;
@@ -178,5 +180,159 @@ internal class CanWalkPatch : ModulePatch
         if (!skillMgrExt.FirstAidMovementSpeedBuffElite) return;
 
         __result = ____obstacleCollisionFacade.CanMove();
+    }
+}
+
+internal class SummaryLevelPatch : ModulePatch
+{
+    protected override MethodBase GetTargetMethod()
+    {
+        return AccessTools.PropertyGetter(typeof(GClass1778), nameof(GClass1778.SummaryLevel));
+    }
+
+    [PatchPostfix]
+    public static void PostFix(
+        GClass1778 __instance, 
+        ref int __result)
+    {
+        var buffLevel = __instance.Buff > 0 
+            ? Mathf.FloorToInt(60 * (1 + Plugin.PlayerSkillManagerExt.FieldMedicineSkillCap))
+            : 51;
+        
+        __result = Mathf.Min(buffLevel, __instance.Level + __instance.Buff);
+    }
+}
+
+internal class PersonalBuffPatch : ModulePatch
+{
+    protected override MethodBase GetTargetMethod()
+    {
+        return AccessTools.Method(typeof(GClass2438.GClass2463), nameof(GClass2438.GClass2463.GetPersonalBuffSettings));
+    }
+
+    [PatchPostfix]
+    public static void PostFix(GClass2438.GClass2463.GClass2464 __result)
+    {
+        var durationBuff = Plugin.PlayerSkillManagerExt.FieldMedicineDurationBonus;
+        var chanceBuff = Plugin.PlayerSkillManagerExt.FieldMedicineChanceBonus;
+        
+        __result.Duration *= 1f + durationBuff;
+        __result.Delay *= __result.Delay == 1f 
+            ? __result.Delay
+            : 1f + durationBuff;
+        
+        if (__result.Chance < 1f && !__result.Value.Negative())
+        {
+            __result.Chance *= 1f + chanceBuff;
+        }
+    }
+}
+
+internal class PersonalBuffFullStringPatch : ModulePatch
+{
+    protected override MethodBase GetTargetMethod()
+    {
+        return AccessTools.Method(typeof(GClass2438.GClass2463.GClass2464), nameof(GClass2438.GClass2463.GClass2464.GetStringValue));
+    }
+
+    [PatchPostfix]
+    public static void PostFix(
+        GClass2438.GClass2463.GClass2464 __instance,
+        HashSet<string> ___hashSet_0,
+        ref string __result)
+    {
+        var durationBuff = Plugin.PlayerSkillManagerExt.FieldMedicineDurationBonus;
+        var chanceBuff = Plugin.PlayerSkillManagerExt.FieldMedicineChanceBonus;
+        
+        var flag = __instance.Value.IsZero();
+        if (__instance.Delay.IsZero() && (__instance.Duration.IsZero() || __instance.Duration >= 7200f) && __instance.Value.IsZero())
+        {
+            __result = string.Empty;
+            return;
+        }
+        var stringBuilder = new StringBuilder();
+        var text = __instance.BuffName.Localized();
+        if (flag && !___hashSet_0.Contains(__instance.BuffName))
+        {
+            stringBuilder.Append("Applies".Localized() + " ");
+            text = text.ToLower();
+        }
+        stringBuilder.Append(text);
+        if (!flag)
+        {
+            stringBuilder.Append("\n");
+            stringBuilder.Append((__instance.Value.Positive() ? "Increase".Localized() : "Decrease".Localized()) + " ");
+            stringBuilder.Append(__instance.BuffAbsoluteStringValue());
+        }
+        if (__instance.Chance < 1f)
+        {
+            stringBuilder.Append(string.Format("\n{0} {1}%", "UI/ItemAttribute/Chance".Localized(), Math.Round(__instance.Chance * (1f + chanceBuff) * 100f)));
+        }
+        if (__instance.Delay > 1f)
+        {
+            stringBuilder.Append(string.Format("\n{0} {1}{2}", "Delay".Localized(), __instance.Delay * (1f + durationBuff), "sec".Localized()));
+        }
+        if (__instance.Duration > 0f && __instance.Duration < 7200f)
+        {
+            stringBuilder.AppendFormat("\n{0} {1}{2}", "Duration".Localized(), __instance.Duration * (1f + durationBuff), "sec".Localized());
+        }
+
+        __result = stringBuilder.ToString();
+    }
+}
+
+internal class PersonalBuffStringPatch : ModulePatch
+{
+    protected override MethodBase GetTargetMethod()
+    {
+        return AccessTools.Method(typeof(GClass2438.GClass2463.GClass2464), nameof(GClass2438.GClass2463.GClass2464.GetStringValue));
+    }
+
+    [PatchPostfix]
+    public static void PostFix(
+        GClass2438.GClass2463.GClass2464 __instance, 
+        HashSet<string> ___hashSet_0,
+        ref string __result)
+    {
+        var durationBuff = Plugin.PlayerSkillManagerExt.FieldMedicineDurationBonus;
+        var chanceBuff = Plugin.PlayerSkillManagerExt.FieldMedicineChanceBonus;
+        
+        var text = __instance.BuffColoredStringValue();
+        var flag = __instance.Value.IsZero();
+        var stringBuilder = new StringBuilder();
+        if (__instance.Chance < 1f)
+        {
+            stringBuilder.Append(string.Format("{0} {1}%", "UI/ItemAttribute/Chance".Localized(), Math.Round((__instance.Chance * (1f + chanceBuff) * 100f))));
+        }
+        if (__instance.Delay > 1f)
+        {
+            if (stringBuilder.Length > 0)
+            {
+                stringBuilder.Append(" / ");
+            }
+            stringBuilder.Append(string.Format("{0} {1}{2}", "Del.".Localized(), __instance.Delay * (1f + durationBuff), "sec".Localized()));
+        }
+        if (__instance.Duration > 0f && __instance.Duration < 7200f)
+        {
+            if (stringBuilder.Length > 0)
+            {
+                stringBuilder.Append(" / ");
+            }
+            stringBuilder.Append(string.Format("{0} {1}{2}", "Dur.".Localized(), __instance.Duration * (1f + durationBuff), "sec".Localized()));
+            if (!flag)
+            {
+                stringBuilder.Append(" (" + text + ")");
+            }
+        }
+        else if (!flag)
+        {
+            if (stringBuilder.Length > 0)
+            {
+                stringBuilder.Append(" / ");
+            }
+            stringBuilder.Append(" " + text);
+        }
+
+        __result = stringBuilder.ToString();
     }
 }

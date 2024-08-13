@@ -26,8 +26,15 @@
     "FieldMedicine": {        
         "ENABLED": true,                                    // Enables the field medicine skill
         "XP_PER_ACTION": 12.50,                             // XP gained per field medicine action
+        "SKILL_BONUS": 0.20,                                // Bonus to the hard cap of allowed skill boosts (60 * 1.20 = 72)
+        "SKILL_BONUS_ELITE": 0.35,                          // Elite bonus to the hard cap of allowed skill boosts
+        "DURATION_BONUS": 0.25,                             // Bonus to the duration of injectors and pain killers
+        "DURATION_BONUS_ELITE": 0.40,                       // Elite bonus to the duration of injectors and pain killers
+        "POSITIVE_EFFECT_BONUS": 0.20,                      // Bonus to the chance of positive effects
+        "POSITIVE_EFFECT_BONUS_ELITE": 0.35,                // Elite bonus to the chance of positive effects
         "ITEM_LIST": [                                      // Applicable items for Field medicine
-
+          "5c10c8fd86f7743d7d706df3",
+          "5c0e530286f7747fa1419862"
         ],
     },
     "NatoRifle": {

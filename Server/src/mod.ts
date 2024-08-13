@@ -285,7 +285,7 @@ class SkillsExtended implements IPreSptLoadMod, IPostDBLoadMod
 
     private addCraftsToDatabase(): void
     {
-        const crafts = this.SkillsConfig.LockPickingSkill.CRAFTING_RECIPES;
+        const crafts = this.SkillsConfig.LockPicking.CRAFTING_RECIPES;
 
         crafts.forEach((craft) => {
             this.Instance.database.hideout.production.push(craft);
