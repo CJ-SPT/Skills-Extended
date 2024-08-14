@@ -187,15 +187,15 @@ export class ProgressionManager
             randomRoll = pityBonusEnabled 
                 ? randomRoll * pityBonus 
                 : randomRoll;
-
-            const pityText = pityBonusEnabled
-                ? `(${(pool.PityBonus * (rolls - winningRolls) * 100).toFixed(3)}% Pity bonus)`
-                : "";
-                
+ 
             if (chance < randomRoll) continue;
 
             if (pityBonusEnabled)
             {
+                const pityText = pityBonusEnabled
+                    ? `(${(pool.PityBonus * (rolls - winningRolls) * 100).toFixed(3)}% Pity bonus)`
+                    : "";
+
                 this.logger.logWithColor(`Skills Extended: Rolled ${randomRoll.toFixed(2)}${pityText} on roll number ${rolls} for item ${itemName} with ${chance}% chance`, LogTextColor.YELLOW);
             }
 
