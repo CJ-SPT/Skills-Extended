@@ -1,0 +1,104 @@
+{
+    "ProgressionEnabled": true,
+    "RewardTiers": {
+        "Tier1": 5,
+        "Tier2": 10,
+        "Tier3": 15,
+        "Tier4": 20,
+        "Tier5": 25,
+        "Tier6": 30,
+        "Tier7": 35,
+        "Tier8": 40,
+        "Tier9": 45,
+        "Tier10": 51
+    },
+    "SkillRewards": {
+        "Endurance": [
+            {
+                "Tier": 1,
+                "Rewards": [
+                    "5c10c8fd86f7743d7d706df3",
+                    "5448fee04bdc2dbc018b4567"
+                ]
+            },
+            {
+                "Tier": 2,
+                "Rewards": []
+            },
+            {
+                "Tier": 3,
+                "Rewards": []
+            },
+            {
+                "Tier": 4,
+                "Rewards": []
+            },
+            {
+                "Tier": 5,
+                "Rewards": []
+            },
+            {
+                "Tier": 6,
+                "Rewards": []
+            },
+            {
+                "Tier": 7,
+                "Rewards": []
+            },
+            {
+                "Tier": 8,
+                "Rewards": []
+            },
+            {
+                "Tier": 9,
+                "Rewards": []
+            },
+            {
+                "Tier": 10,
+                "Rewards": []
+            }
+        ],
+        "Strength": [
+            {
+                "Tier": 1,
+                "Rewards": []
+            },
+            {
+                "Tier": 2,
+                "Rewards": []
+            },
+            {
+                "Tier": 3,
+                "Rewards": []
+            },
+            {
+                "Tier": 4,
+                "Rewards": []
+            },
+            {
+                "Tier": 5,
+                "Rewards": []
+            },
+            {
+                "Tier": 6,
+                "Rewards": []
+            },
+            {
+                "Tier": 7,
+                "Rewards": []
+            },
+            {
+                "Tier": 8,
+                "Rewards": []
+            },
+            {
+                "Tier": 9,
+                "Rewards": []
+            },
+            {
+                "Tier": 10,
+                "Rewards": []
+            }
+        ]
+    }
+}

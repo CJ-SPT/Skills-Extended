@@ -18,6 +18,7 @@ import { Money } from "@spt/models/enums/Money";
 import { Traders } from "@spt/models/enums/Traders";
 import { BaseClasses } from "@spt/models/enums/BaseClasses";
 import { LogTextColor } from "@spt/models/spt/logging/LogTextColor";
+import { ProgressionManager } from "./ProgressionManager";
 
 enum ItemIDS {
     Lockpick  = "6622c28aed7e3bc72e301e22",
@@ -27,9 +28,10 @@ enum ItemIDS {
 class SkillsExtended implements IPreSptLoadMod, IPostDBLoadMod
 {
     private Instance: InstanceManager = new InstanceManager();
+    private ProgressionManager: ProgressionManager = new ProgressionManager();
+    
     private locale: Record<string, Record<string, string>>; 
     private customItemService: CustomItemService;
-    private vfs: VFS;
     private SkillsConfigRaw;
     private SkillsConfig;
 
@@ -39,8 +41,7 @@ class SkillsExtended implements IPreSptLoadMod, IPostDBLoadMod
         
         this.Instance.logger.logWithColor("Skills Extended loading", LogTextColor.GREEN);
         
-        this.vfs = container.resolve<VFS>("VFS");
-        this.SkillsConfigRaw = this.vfs.readFile(path.join(path.dirname(__filename), "..", "config", "SkillsConfig.json5"));
+        this.SkillsConfigRaw = this.Instance.vfs.readFile(path.join(path.dirname(__filename), "..", "config", "SkillsConfig.json5"));
         this.SkillsConfig = JSON5.parse(this.SkillsConfigRaw);
 
         this.registerRoutes();
@@ -49,7 +50,8 @@ class SkillsExtended implements IPreSptLoadMod, IPostDBLoadMod
     public postDBLoad(container: DependencyContainer): void 
     {
         this.Instance.postDBLoad(container);
-        this.customItemService = container.resolve<CustomItemService>("CustomItemService");
+        this.ProgressionManager.init(this.Instance);
+        this.customItemService = this.Instance.customItemService;
 
         this.Instance.logger.logWithColor("Did you know, BSG has 10 faction specific skills they're too lazy to implement?", LogTextColor.BLUE);
 
@@ -122,6 +124,8 @@ class SkillsExtended implements IPreSptLoadMod, IPostDBLoadMod
                     // eslint-disable-next-line @typescript-eslint/no-unused-vars
                     action: async (url, info, sessionId, output) => 
                     {                     
+                        this.Instance.SessionId = sessionId;
+                        this.ProgressionManager.getActivePmcData(sessionId);
                         return this.SkillsConfigRaw;
                     }
                 }
@@ -138,6 +142,22 @@ class SkillsExtended implements IPreSptLoadMod, IPostDBLoadMod
                     action: async (url, info, sessionId, output) => 
                     {                     
                         return this.getKeys();
+                    }
+                }
+            ],
+            ""
+        );
+
+        this.Instance.staticRouter.registerStaticRouter(
+            "end",
+            [
+                {
+                    url: "/client/match/offline/end",
+                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                    action: async (url, info, sessionId, output) => 
+                    {                     
+                        this.ProgressionManager.checkForPendingRewards();
+                        return output;
                     }
                 }
             ],

@@ -16,11 +16,15 @@ import { RagfairPriceService } from "@spt/services/RagfairPriceService";
 import { ImporterUtil } from "@spt/utils/ImporterUtil";
 import { SaveServer } from "@spt/servers/SaveServer";
 import { ItemHelper } from "@spt/helpers/ItemHelper";
+import { MailSendService } from "@spt/services/MailSendService";
+import { VFS } from "@spt/utils/VFS";
+import { HashUtil } from "@spt/utils/HashUtil";
 
 export class InstanceManager 
 {
     //#region Accessible in or after preAkiLoad
     public modName: string;
+    public SessionId: string;
     public debug: boolean;
     // Useful Paths
     public modPath: string = path.join(process.cwd(), "\\user\\mods\\SkillsExtended\\");
@@ -34,6 +38,8 @@ export class InstanceManager
     public itemHelper: ItemHelper;
     public logger: ILogger;
     public staticRouter: StaticRouterModService;
+    public vfs: VFS;
+    public hashUtil: HashUtil;
     //#endregion
 
     //#region Acceessible in or after postDBLoad
@@ -44,6 +50,8 @@ export class InstanceManager
     public profileHelper: ProfileHelper;
     public ragfairPriceService: RagfairPriceService;
     public importerUtil: ImporterUtil;
+    public customItemService: CustomItemService;
+    public mailSendService: MailSendService;
     //#endregion
 
     // Call at the start of the mods postDBLoad method
@@ -59,6 +67,8 @@ export class InstanceManager
         this.itemHelper = container.resolve<ItemHelper>("ItemHelper");
         this.logger = container.resolve<ILogger>("WinstonLogger");
         this.staticRouter = container.resolve<StaticRouterModService>("StaticRouterModService");
+        this.vfs = container.resolve<VFS>("VFS");
+        this.hashUtil = container.resolve<HashUtil>("HashUtil");
     }
 
     public postDBLoad(container: DependencyContainer): void
@@ -69,6 +79,8 @@ export class InstanceManager
         this.profileHelper = container.resolve<ProfileHelper>("ProfileHelper");
         this.ragfairPriceService = container.resolve<RagfairPriceService>("RagfairPriceService");
         this.importerUtil = container.resolve<ImporterUtil>("ImporterUtil");
+        this.customItemService = container.resolve<CustomItemService>("CustomItemService");
+        this.mailSendService = container.resolve<MailSendService>("MailSendService");
     }
     
 
