@@ -166,31 +166,35 @@ export class ProgressionManager
 
         // Shuffle the keys so its entirely random each time
         const shuffledKeys = this.shuffleKeys(pool.Rewards);
-        const rollBonus = 0.05;
-
+        
         let rolls = 0;
         let winningRolls = 0;
 
         for (const reward of shuffledKeys)
         {
+            if (rolls > pool.Rolls) break;
+
             rolls++;
 
             const itemName = locale[`${reward} Name`];
             const chance = pool.Rewards[reward];
             const pityBonusEnabled = rolls > winningRolls
-            const pityBonus = 1 - (rollBonus * (rolls - winningRolls));
+            const pityBonus = 1 - (pool.PityBonus * (rolls - winningRolls));
 
             randomRoll = pityBonusEnabled 
                 ? randomRoll * pityBonus 
                 : randomRoll;
 
             const pityText = pityBonusEnabled
-                ? `(${(pityBonus * 100).toFixed(3)}% Pity bonus)`
+                ? `(${(pool.PityBonus * (rolls - winningRolls) * 100).toFixed(3)}% Pity bonus)`
                 : "";
-            
-            //this.logger.logWithColor(`Skills Extended: Rolled ${randomRoll}${pityText} on roll number ${rolls} for item ${itemName} with ${chance}% chance`, LogTextColor.YELLOW);
-            
+                
             if (chance < randomRoll) continue;
+
+            if (pityBonus)
+            {
+                this.logger.logWithColor(`Skills Extended: Rolled ${randomRoll.toFixed(2)}${pityText} on roll number ${rolls} for item ${itemName} with ${chance}% chance`, LogTextColor.YELLOW);
+            }
 
             const legendary = pool.Rewards[reward] < 10;
             const legendaryText = legendary ? " legendary" : "";
@@ -202,6 +206,11 @@ export class ProgressionManager
             if (itemHelper.isOfBaseclasses(reward, this.SkillRewards.BaseClassesThatCanRewardMultiple))
             {
                 numberToAward = Math.round(Math.random() * this.SkillRewards.MaximumNumberOfMultiples);
+
+                if (numberToAward === 0)
+                {
+                    numberToAward = 1;
+                }
             }
 
             for (let i = 0; i < numberToAward; i++)

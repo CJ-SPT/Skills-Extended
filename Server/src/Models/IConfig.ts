@@ -10,7 +10,8 @@ export interface ISkillRewards
 export interface IRewardTier
 {
     Tier: number;
-    Weight: number;
+    Rolls: number;
+    PityBonus: number;
     // Item Tpl, and the chance to get it from this tier
     Rewards: Record<string, number>;
 }

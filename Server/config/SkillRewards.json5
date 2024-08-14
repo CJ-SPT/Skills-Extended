@@ -3,12 +3,16 @@
     "BaseRoubleReward": 21500,                      // Base reward for roubles sent for each tier
     "RewardPool": [
         {
-            "Tier": 0,
+            "Tier": 0,          // Tier
+            "Rolls": 0,         // Maximum number of loot rolls on this tier
+            "PityBonus": 0,     // Pity bonus in percent per failure 0.05 = 5%
             "Rewards": {
             }
         },
         {
             "Tier": 1,
+            "Rolls": 7,
+            "PityBonus": 0.05,
             "Rewards": {
                 "5c10c8fd86f7743d7d706df3": 20,     // Injectors
                 "544fb3f34bdc2d03748b456a": 20,
@@ -45,6 +49,8 @@
         },
         {
             "Tier": 2,
+            "Rolls": 7,
+            "PityBonus": 0.05,
             "Rewards": {
                 "5c10c8fd86f7743d7d706df3": 30,     // Injectors
                 "544fb3f34bdc2d03748b456a": 30,
@@ -83,41 +89,57 @@
         },
         {
             "Tier": 3,
+            "Rolls": 6,
+            "PityBonus": 0.05,
             "Rewards": {
             }
         },
         {
             "Tier": 4,
+            "Rolls": 6,
+            "PityBonus": 0.05,
             "Rewards": {
             }
         },
         {
             "Tier": 5,
+            "Rolls": 5,
+            "PityBonus": 0.05,
             "Rewards": {
             }
         },
         {
             "Tier": 6,
+            "Rolls": 5,
+            "PityBonus": 0.05,
             "Rewards": {
             }
         },
         {
             "Tier": 7,
+            "Rolls": 4,
+            "PityBonus": 0.05,
             "Rewards": {
             }
         },
         {
             "Tier": 8,
+            "Rolls": 4,
+            "PityBonus": 0.05,
             "Rewards": {
             }
         },
         {
             "Tier": 9,
+            "Rolls": 3,
+            "PityBonus": 0.05,
             "Rewards": {
             }
         },
         {
             "Tier": 10,
+            "Rolls": 2,
+            "PityBonus": 0.05,
             "Rewards": {
             }   
         }
