@@ -128,7 +128,7 @@ export class ProgressionManager
 
         if (tierDiff <= 0) return;
 
-        this.logger.logWithColor(`Skills Extended: Pending rewards for ${skillId}. ${tierDiff} tiers!`, LogTextColor.GREEN);
+        this.logger.logWithColor(`Skills Extended: Pending rewards for ${skillId}. ${tierDiff} tiers!`, LogTextColor.CYAN);
 
         for (let i = startTier; i <= tier; i++)
         {    
