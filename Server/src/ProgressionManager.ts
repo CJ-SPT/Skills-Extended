@@ -194,7 +194,7 @@ export class ProgressionManager
                 
             if (chance < randomRoll) continue;
 
-            if (pityBonus)
+            if (pityBonusEnabled)
             {
                 this.logger.logWithColor(`Skills Extended: Rolled ${randomRoll.toFixed(2)}${pityText} on roll number ${rolls} for item ${itemName} with ${chance}% chance`, LogTextColor.YELLOW);
             }
