@@ -89,7 +89,7 @@ export class ProgressionManager
         {
             if (skill.Progress === 0) continue;
 
-            const tier = this.convertSkillProgressToRewardTier(skill.Progress);
+            const tier = Math.floor(this.convertSkillProgressToRewardTier(skill.Progress));
             const hasReward = this.hasRewardForSkillTier(skill.Id, tier);
             const rewardDiff = this.findDifferenceInRewardLevel(skill.Id, tier);
 
@@ -141,62 +141,66 @@ export class ProgressionManager
 
         if (tierDiff <= 0) return;
 
-        const rewards = this.SkillRewards.SkillRewards[skillId] as IRewardTier[];
-
-        if (rewards === undefined) return;
-
         this.logger.logWithColor(`Skills Extended: Pending rewards for ${skillId}. ${tierDiff} tiers!`, LogTextColor.GREEN);
 
         for (let i = startTier; i <= tier; i++)
-        {
-            this.logger.logWithColor(`Skills Extended: Sending tier ${i} for ${skillId}`, LogTextColor.GREEN);
-            
-            for (const reward of rewards)
-            {
-                if (reward.Tier !== i) continue;
-
-                this.sendMailReward(reward, skillId);
-            }
+        {    
+            this.sendMailReward(skillId, i);
         }
 
         this.Progression.Progress[skillId] = tier;
     }
 
-    private sendMailReward(reward: IRewardTier, skillId: string): void
+    private selectRewardFromTier(tier: number): Item[]
+    {
+        const items: Item[] = [];
+        const hashUtil = this.InstanceManager.hashUtil;
+        let randomRoll = Math.random() * 100;
+
+        const rewards = this.SkillRewards.RewardPool as IRewardTier[];
+        const pool = rewards.find(x => x.Tier === tier);
+
+        const alreadyReceived: string[] = [];
+
+        for (const reward in pool.Rewards)
+        {
+            if (pool.Rewards[reward] < randomRoll) continue;
+            if (alreadyReceived.includes(reward)) continue;
+
+            this.logger.logWithColor(`Skills Extended: Generating reward ${reward} at tier ${tier}`, LogTextColor.GREEN);
+
+            const newReward: Item = {
+                _id: hashUtil.generate(),
+                _tpl: reward
+            }
+
+            
+            // Roll another number
+            randomRoll = Math.random() * 100;
+            items.push(newReward);
+            alreadyReceived.push(reward);
+        }
+
+        return items;
+    }
+
+    private sendMailReward(skillId: string, tier: number): void
     {
         const mailService = this.InstanceManager.mailSendService;
-        const rewardIds = reward.Rewards;
 
-        const items = this.buildItemList(rewardIds);
+        const items = this.selectRewardFromTier(tier);
+
+        if (items.length <= 0) return;
 
         const message: ISendMessageDetails = {
             recipientId: this.PmcProfile._id,
             sender: MessageType.SYSTEM_MESSAGE,
-            messageText: `Here is your reward for tier ${reward.Tier} of ${skillId}`,
+            messageText: `Here is your reward for tier ${tier} of ${skillId}`,
             items: items,
-            itemsMaxStorageLifetimeSeconds: 7200
+            itemsMaxStorageLifetimeSeconds: 72000
         }
 
         mailService.sendMessageToPlayer(message);
-    }
-
-    private buildItemList(rewardIds: string[]): Item[]
-    {
-        const hashUtil = this.InstanceManager.hashUtil;
-
-        const rewards: Item[] = [];
-
-        for (const reward in rewardIds)
-        {
-            const newReward: Item = {
-                _id: hashUtil.generate(),
-                _tpl: rewardIds[reward]
-            }
-
-            rewards.push(newReward);
-        }
-
-        return rewards;
     }
 
     private saveProgressionFile(): void

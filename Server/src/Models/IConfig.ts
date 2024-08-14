@@ -1,18 +1,13 @@
 export interface ISkillRewards
 {
     ProgressionEnabled: boolean;
-    RewardTiers: Record<string, number>;
-    SkillRewards: IRewards;
-}
-
-export interface IRewards
-{
-    Endurance: IRewardTier[];
-    Strength: IRewardTier[];
+    RewardPool: IRewardTier[];
 }
 
 export interface IRewardTier
 {
     Tier: number;
-    Rewards: string[];
+    Weight: number;
+    // Item Tpl, and the chance to get it from this tier
+    Rewards: Record<string, number>;
 }

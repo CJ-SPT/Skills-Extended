@@ -1,104 +1,80 @@
 {
     "ProgressionEnabled": true,
-    "RewardTiers": {
-        "Tier1": 5,
-        "Tier2": 10,
-        "Tier3": 15,
-        "Tier4": 20,
-        "Tier5": 25,
-        "Tier6": 30,
-        "Tier7": 35,
-        "Tier8": 40,
-        "Tier9": 45,
-        "Tier10": 51
-    },
-    "SkillRewards": {
-        "Endurance": [
-            {
-                "Tier": 1,
-                "Rewards": [
-                    "5c10c8fd86f7743d7d706df3",
-                    "5448fee04bdc2dbc018b4567"
-                ]
-            },
-            {
-                "Tier": 2,
-                "Rewards": []
-            },
-            {
-                "Tier": 3,
-                "Rewards": []
-            },
-            {
-                "Tier": 4,
-                "Rewards": []
-            },
-            {
-                "Tier": 5,
-                "Rewards": []
-            },
-            {
-                "Tier": 6,
-                "Rewards": []
-            },
-            {
-                "Tier": 7,
-                "Rewards": []
-            },
-            {
-                "Tier": 8,
-                "Rewards": []
-            },
-            {
-                "Tier": 9,
-                "Rewards": []
-            },
-            {
-                "Tier": 10,
-                "Rewards": []
+    "RewardPool": [
+        {
+            "Tier": 0,
+            "Rewards": {
             }
-        ],
-        "Strength": [
-            {
-                "Tier": 1,
-                "Rewards": []
-            },
-            {
-                "Tier": 2,
-                "Rewards": []
-            },
-            {
-                "Tier": 3,
-                "Rewards": []
-            },
-            {
-                "Tier": 4,
-                "Rewards": []
-            },
-            {
-                "Tier": 5,
-                "Rewards": []
-            },
-            {
-                "Tier": 6,
-                "Rewards": []
-            },
-            {
-                "Tier": 7,
-                "Rewards": []
-            },
-            {
-                "Tier": 8,
-                "Rewards": []
-            },
-            {
-                "Tier": 9,
-                "Rewards": []
-            },
-            {
-                "Tier": 10,
-                "Rewards": []
+        },
+        {
+            "Tier": 1,
+            "Rewards": {
+                "5c10c8fd86f7743d7d706df3": 200,
+                "5448fee04bdc2dbc018b4567": 200
             }
-        ]
-    }
+        },
+        {
+            "Tier": 2,
+            "Rewards": {
+                "5c10c8fd86f7743d7d706df3": 2,
+                "5448fee04bdc2dbc018b4567": 2
+            }
+        },
+        {
+            "Tier": 3,
+            "Rewards": {
+                "5c10c8fd86f7743d7d706df3": 2,
+                "5448fee04bdc2dbc018b4567": 2
+            }
+        },
+        {
+            "Tier": 4,
+            "Rewards": {
+                "5c10c8fd86f7743d7d706df3": 2,
+                "5448fee04bdc2dbc018b4567": 2
+            }
+        },
+        {
+            "Tier": 5,
+            "Rewards": {
+                "5c10c8fd86f7743d7d706df3": 2,
+                "5448fee04bdc2dbc018b4567": 2
+            }
+        },
+        {
+            "Tier": 6,
+            "Rewards": {
+                "5c10c8fd86f7743d7d706df3": 2,
+                "5448fee04bdc2dbc018b4567": 2
+            }
+        },
+        {
+            "Tier": 7,
+            "Rewards": {
+                "5c10c8fd86f7743d7d706df3": 2,
+                "5448fee04bdc2dbc018b4567": 2
+            }
+        },
+        {
+            "Tier": 8,
+            "Rewards": {
+                "5c10c8fd86f7743d7d706df3": 2,
+                "5448fee04bdc2dbc018b4567": 2
+            }
+        },
+        {
+            "Tier": 9,
+            "Rewards": {
+                "5c10c8fd86f7743d7d706df3": 2,
+                "5448fee04bdc2dbc018b4567": 2
+            }
+        },
+        {
+            "Tier": 10,
+            "Rewards": {
+                "5c10c8fd86f7743d7d706df3": 2,
+                "5448fee04bdc2dbc018b4567": 2
+            }   
+        }
+    ]
 }
