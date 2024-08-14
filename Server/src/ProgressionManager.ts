@@ -82,7 +82,7 @@ export class ProgressionManager
             return;
         }
 
-        this.logger.logWithColor(`Skills Extended: Checking for pending rewards for ${this.Progression.PmcName}`, LogTextColor.GREEN);
+        this.logger.logWithColor(`Skills Extended: Checking for pending rewards for ${this.Progression.PmcName}`, LogTextColor.CYAN);
 
         const skills = this.PmcProfile.Skills.Common;
         for (const skill of skills)
@@ -90,15 +90,12 @@ export class ProgressionManager
             if (skill.Progress === 0) continue;
 
             const tier = Math.floor(this.convertSkillProgressToRewardTier(skill.Progress));
-            const hasReward = this.hasRewardForSkillTier(skill.Id, tier);
             const rewardDiff = this.findDifferenceInRewardLevel(skill.Id, tier);
 
             if (rewardDiff > 0)
             {
                 this.sendPendingSkillRewards(skill.Id, tier);
             }
-
-            this.logger.logWithColor(`${skill.Id} : ${skill.Progress / 100} : ${tier} : ${hasReward} : ${rewardDiff}`, LogTextColor.GREEN);
         }
 
         this.saveProgressionFile();
@@ -107,16 +104,6 @@ export class ProgressionManager
     private convertSkillProgressToRewardTier(progress: number): number
     {
         return (progress / 100) / 5;
-    }
-
-    private hasRewardForSkillTier(skillId: string, tier: number): boolean
-    {
-        if (this.Progression.Progress[skillId] !== undefined)
-        {
-            return this.Progression.Progress[skillId] >= tier;
-        }
-
-        return false;
     }
 
     private findDifferenceInRewardLevel(skillId: string, tier: number): number
