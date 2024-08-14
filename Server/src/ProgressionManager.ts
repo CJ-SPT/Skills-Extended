@@ -151,7 +151,7 @@ export class ProgressionManager
         this.Progression.Progress[skillId] = tier;
     }
 
-    private selectRewardFromTier(tier: number): Item[]
+    private selectRewardsFromTier(tier: number): Item[]
     {
         const items: Item[] = [];
         const hashUtil = this.InstanceManager.hashUtil;
@@ -241,7 +241,7 @@ export class ProgressionManager
     {
         const mailService = this.InstanceManager.mailSendService;
 
-        const items = this.selectRewardFromTier(tier);
+        const items = this.selectRewardsFromTier(tier);
 
         if (items.length <= 0) return;
 
