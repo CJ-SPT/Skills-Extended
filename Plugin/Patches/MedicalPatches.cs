@@ -191,6 +191,7 @@ internal class PersonalBuffPatch : ModulePatch
     public static void PostFix(GClass2438.GClass2463.GClass2464 __result)
     {
         if (!Plugin.SkillData.FieldMedicine.Enabled) return;
+        if (__result.BuffName == "Pain") return;
         
         var durationBuff = Plugin.PlayerSkillManagerExt.FieldMedicineDurationBonus;
         var chanceBuff = Plugin.PlayerSkillManagerExt.FieldMedicineChanceBonus;
@@ -221,6 +222,7 @@ internal class PersonalBuffFullStringPatch : ModulePatch
         ref string __result)
     {
         if (!Plugin.SkillData.FieldMedicine.Enabled) return;
+        if (__instance.BuffName == "Pain") return;
         
         var durationBuff = Plugin.PlayerSkillManagerExt.FieldMedicineDurationBonus;
         var chanceBuff = Plugin.PlayerSkillManagerExt.FieldMedicineChanceBonus;
@@ -276,6 +278,7 @@ internal class PersonalBuffStringPatch : ModulePatch
         ref string __result)
     {
         if (!Plugin.SkillData.FieldMedicine.Enabled) return;
+        if (__instance.BuffName == "Pain") return;
         
         var durationBuff = Plugin.PlayerSkillManagerExt.FieldMedicineDurationBonus;
         var chanceBuff = Plugin.PlayerSkillManagerExt.FieldMedicineChanceBonus;
