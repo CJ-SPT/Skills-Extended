@@ -145,10 +145,11 @@ export class ProgressionManager
 
         for (let i = startTier; i <= tier; i++)
         {    
-            this.sendMailReward(skillId, i);
-        }
-
-        this.Progression.Progress[skillId] = tier;
+            if (this.sendMailReward(skillId, i))
+            {
+                this.Progression.Progress[skillId] = i;
+            }
+        }   
     }
 
     private selectRewardsFromTier(tier: number): Item[]
@@ -167,6 +168,8 @@ export class ProgressionManager
         // Shuffle the keys so its entirely random each time
         const shuffledKeys = this.shuffleKeys(pool.Rewards);
         
+        if (shuffledKeys.length === 0) return [];
+
         let rolls = 0;
         let winningRolls = 0;
 
@@ -246,13 +249,13 @@ export class ProgressionManager
         return items;
     }
 
-    private sendMailReward(skillId: string, tier: number): void
+    private sendMailReward(skillId: string, tier: number): boolean
     {
         const mailService = this.InstanceManager.mailSendService;
 
         const items = this.selectRewardsFromTier(tier);
 
-        if (items.length <= 0) return;
+        if (items.length <= 0) return false;
 
         const message: ISendMessageDetails = {
             recipientId: this.PmcProfile._id,
@@ -263,6 +266,8 @@ export class ProgressionManager
         }
 
         mailService.sendMessageToPlayer(message);
+
+        return true;
     }
 
     private saveProgressionFile(): void
