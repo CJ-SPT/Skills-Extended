@@ -1,6 +1,7 @@
 export interface ISkillRewards
 {
     ProgressionEnabled: boolean;
+    BaseRoubleReward: number;
     RewardPool: IRewardTier[];
 }
 

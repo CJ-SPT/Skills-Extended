@@ -157,28 +157,54 @@ export class ProgressionManager
         const hashUtil = this.InstanceManager.hashUtil;
         let randomRoll = Math.random() * 100;
 
+        const locale = this.InstanceManager.database.locales.global["en"];
+
         const rewards = this.SkillRewards.RewardPool as IRewardTier[];
         const pool = rewards.find(x => x.Tier === tier);
 
-        const alreadyReceived: string[] = [];
+        // Shuffle the keys so its entirely random each time
+        const shuffledKeys = this.shuffleKeys(pool.Rewards);
+        const rollBonus = 0.05;
 
-        for (const reward in pool.Rewards)
+        let rolls = 0;
+        let winningRolls = 0;
+
+        for (const reward of shuffledKeys)
         {
-            if (pool.Rewards[reward] < randomRoll) continue;
-            if (alreadyReceived.includes(reward)) continue;
+            rolls++;
 
-            this.logger.logWithColor(`Skills Extended: Generating reward ${reward} at tier ${tier}`, LogTextColor.GREEN);
+            const itemName = locale[`${reward} Name`];
+            const chance = pool.Rewards[reward];
+            const pityBonusEnabled = rolls > winningRolls
+            const pityBonus = 1 - (rollBonus * (rolls - winningRolls));
+
+            randomRoll = pityBonusEnabled 
+                ? randomRoll * pityBonus 
+                : randomRoll;
+
+            const pityText = pityBonusEnabled
+                ? `(${(pityBonus * 100).toFixed(3)}% Pity bonus)`
+                : "";
+
+            this.logger.logWithColor(`Skills Extended: Rolled ${randomRoll}${pityText} on roll number ${rolls} for item ${itemName} with ${chance}% chance`, LogTextColor.YELLOW);
+
+            if (chance < randomRoll) continue;
+
+            const legendary = pool.Rewards[reward] < 10;
+            const legendaryText = legendary ? " legendary" : "";
+            const color = legendary ? LogTextColor.BLUE : LogTextColor.GREEN;
+
+            this.logger.logWithColor(`Skills Extended: Generating${legendaryText} reward ${itemName} from tier ${tier} pool`, color);
 
             const newReward: Item = {
                 _id: hashUtil.generate(),
                 _tpl: reward
             }
-
-            
+      
             // Roll another number
+            winningRolls++;
             randomRoll = Math.random() * 100;
             items.push(newReward);
-            alreadyReceived.push(reward);
         }
 
         return items;
@@ -219,5 +245,18 @@ export class ProgressionManager
         const progPath = path.join(this.ProgressPath, `${this.PmcProfile._id}.json`);
         const progressionRaw = this.InstanceManager.vfs.readFile(progPath);
         this.Progression = JSON5.parse(progressionRaw);
+    }
+
+    private shuffleKeys<T>(record: Record<string, T>): string[] 
+    {
+        const keys = Object.keys(record);
+        // Fisher-Yates shuffle algorithm
+        for (let i = keys.length - 1; i > 0; i--) 
+        {
+            const j = Math.floor(Math.random() * (i + 1));
+            [keys[i], keys[j]] = [keys[j], keys[i]];
+        }
+
+        return keys;
     }
 }

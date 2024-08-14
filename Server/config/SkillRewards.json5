@@ -1,5 +1,6 @@
 {
     "ProgressionEnabled": true,
+    "BaseRoubleReward": 21500,                      // Base reward for roubles sent for each tier
     "RewardPool": [
         {
             "Tier": 0,
@@ -9,71 +10,80 @@
         {
             "Tier": 1,
             "Rewards": {
-                "5c10c8fd86f7743d7d706df3": 200,
-                "5448fee04bdc2dbc018b4567": 200
+                "5c10c8fd86f7743d7d706df3": 20,     // Injectors
+                "544fb3f34bdc2d03748b456a": 20,
+                "5c0e530286f7747fa1419862": 20,
+                "5ed51652f6c34d2cc26336a1": 10,
+                "5fca138c2a7b221b2852a5c6": 10,
+                "590c678286f77426c9660122": 15,     // Medication
+                "60098ad7c2240c0fe85c570a": 15,
+                "544fb45d4bdc2dee738b4568": 15,
+                "5e8488fa988a8701445df1e4": 45,
+                "5af0454c86f7746bf20992e8": 45,
+                "5448fee04bdc2dbc018b4567": 35,     // Food
+                "590c5f0d86f77413997acfab": 35,
+                "656df4fec921ad01000481a2": 45,
+                "590c5d4b86f774784e1b9c45": 35,
+                "5448ba0b4bdc2d02308b456c": 10,     // Keys
+                "5938603e86f77435642354f4": 25,
+                "5780cfa52459777dfb276eb1": 25,
+                "5780d0532459777a5108b9a2": 20,
+                "5780d0652459777df90dcb74": 15,
+                "5d1b392c86f77425243e98fe": 20,     // Hideout Items
+                "5733279d245977289b77ec24": 15,
+                "590a3cd386f77436f20848cb": 35,
+                "57347c5b245977448d35f6e1": 35,
+                "57347c77245977448d35f6e2": 35,
+                "59faff1d86f7746c51718c9c": 1,      // MEME Items
+                "5c0530ee86f774697952d952": 1,
+                "619cbf7d23893217ec30b689": 3,
+                "638e0752ab150a5f56238962": 5,
+                "5b6d9ce188a4501afc1b2b25": 0.1
             }
         },
         {
             "Tier": 2,
             "Rewards": {
-                "5c10c8fd86f7743d7d706df3": 2,
-                "5448fee04bdc2dbc018b4567": 2
             }
         },
         {
             "Tier": 3,
             "Rewards": {
-                "5c10c8fd86f7743d7d706df3": 2,
-                "5448fee04bdc2dbc018b4567": 2
             }
         },
         {
             "Tier": 4,
             "Rewards": {
-                "5c10c8fd86f7743d7d706df3": 2,
-                "5448fee04bdc2dbc018b4567": 2
             }
         },
         {
             "Tier": 5,
             "Rewards": {
-                "5c10c8fd86f7743d7d706df3": 2,
-                "5448fee04bdc2dbc018b4567": 2
             }
         },
         {
             "Tier": 6,
             "Rewards": {
-                "5c10c8fd86f7743d7d706df3": 2,
-                "5448fee04bdc2dbc018b4567": 2
             }
         },
         {
             "Tier": 7,
             "Rewards": {
-                "5c10c8fd86f7743d7d706df3": 2,
-                "5448fee04bdc2dbc018b4567": 2
             }
         },
         {
             "Tier": 8,
             "Rewards": {
-                "5c10c8fd86f7743d7d706df3": 2,
-                "5448fee04bdc2dbc018b4567": 2
             }
         },
         {
             "Tier": 9,
             "Rewards": {
-                "5c10c8fd86f7743d7d706df3": 2,
-                "5448fee04bdc2dbc018b4567": 2
             }
         },
         {
             "Tier": 10,
             "Rewards": {
-                "5c10c8fd86f7743d7d706df3": 2,
-                "5448fee04bdc2dbc018b4567": 2
             }   
         }
     ]
