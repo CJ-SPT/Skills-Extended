@@ -13,7 +13,6 @@ import { IRewardTier, ISkillRewards } from "./Models/IConfig";
 import { ILogger } from '@spt/models/spt/utils/ILogger';
 import { IProgression } from './Models/IProgression';
 import { Item } from "@spt/models/eft/common/tables/IItem";
-import { ItemAddedResult } from '@spt/models/enums/ItemAddedResult';
 import { Money } from '@spt/models/enums/Money';
 
 export class ProgressionManager
@@ -234,7 +233,7 @@ export class ProgressionManager
             newReward.upd.StackObjectsCount = roubles;
             items.push(newReward);        
         }
-        
+
         return items;
     }
 
