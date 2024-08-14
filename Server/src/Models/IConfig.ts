@@ -2,6 +2,8 @@ export interface ISkillRewards
 {
     ProgressionEnabled: boolean;
     BaseRoubleReward: number;
+    BaseAmmoAmount: number;
+    AmmoRewardMultPerTier: number;
     RewardPool: IRewardTier[];
     BaseClassesThatCanRewardMultiple: string[];
     MaximumNumberOfMultiples: number;
