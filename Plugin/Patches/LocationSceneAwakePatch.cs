@@ -62,7 +62,7 @@ namespace SkillsExtended.Patches
 #endif
             LockPicking.Helpers.InspectedDoors.Clear();
             LockPicking.Helpers.DoorAttempts.Clear();
-
+            
             __instance.MainPlayer.ActiveHealthController.EffectStartedEvent += ApplyMedicalXp;
         }
         
@@ -73,6 +73,8 @@ namespace SkillsExtended.Patches
             
             if (_stimType.IsInstanceOfType(effect) || _painKillerType.IsInstanceOfType(effect))
             {
+                if (!Plugin.SkillData.FieldMedicine.Enabled) return;
+                
                 skillMgrExt.FieldMedicineAction.Complete(xpGain);
                 Logger.LogDebug("Applying Field Medicine XP");
                 return;
@@ -80,6 +82,8 @@ namespace SkillsExtended.Patches
 
             if (_medEffectType.IsInstanceOfType(effect))
             {
+                if (!Plugin.SkillData.FirstAid.Enabled) return;
+                
                 skillMgrExt.FirstAidAction.Complete(xpGain);
                 Logger.LogDebug("Applying First Aid XP");
             }
