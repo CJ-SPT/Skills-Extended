@@ -14,6 +14,7 @@ import { ILogger } from '@spt/models/spt/utils/ILogger';
 import { IProgression } from './Models/IProgression';
 import { Item } from "@spt/models/eft/common/tables/IItem";
 import { ItemAddedResult } from '@spt/models/enums/ItemAddedResult';
+import { Money } from '@spt/models/enums/Money';
 
 export class ProgressionManager
 {
@@ -159,6 +160,8 @@ export class ProgressionManager
 
         const locale = this.InstanceManager.database.locales.global["en"];
 
+        const itemHelper = this.InstanceManager.itemHelper;
+
         const rewards = this.SkillRewards.RewardPool as IRewardTier[];
         const pool = rewards.find(x => x.Tier === tier);
 
@@ -185,28 +188,53 @@ export class ProgressionManager
             const pityText = pityBonusEnabled
                 ? `(${(pityBonus * 100).toFixed(3)}% Pity bonus)`
                 : "";
-
-            this.logger.logWithColor(`Skills Extended: Rolled ${randomRoll}${pityText} on roll number ${rolls} for item ${itemName} with ${chance}% chance`, LogTextColor.YELLOW);
-
+            
+            //this.logger.logWithColor(`Skills Extended: Rolled ${randomRoll}${pityText} on roll number ${rolls} for item ${itemName} with ${chance}% chance`, LogTextColor.YELLOW);
+            
             if (chance < randomRoll) continue;
 
             const legendary = pool.Rewards[reward] < 10;
             const legendaryText = legendary ? " legendary" : "";
             const color = legendary ? LogTextColor.BLUE : LogTextColor.GREEN;
 
-            this.logger.logWithColor(`Skills Extended: Generating${legendaryText} reward ${itemName} from tier ${tier} pool`, color);
+            let numberToAward = 1;
 
-            const newReward: Item = {
-                _id: hashUtil.generate(),
-                _tpl: reward
+            // If the item is of a certain type randomize the amount to send
+            if (itemHelper.isOfBaseclasses(reward, this.SkillRewards.BaseClassesThatCanRewardMultiple))
+            {
+                numberToAward = Math.round(Math.random() * this.SkillRewards.MaximumNumberOfMultiples);
             }
-      
+
+            for (let i = 0; i < numberToAward; i++)
+            {
+                const newReward: Item = {
+                    _id: hashUtil.generate(),
+                    _tpl: reward
+                }
+
+                items.push(newReward);
+            }
+
+            this.logger.logWithColor(`Skills Extended: Generating${legendaryText} reward ${itemName} in the amount of ${numberToAward} from tier ${tier} pool`, color);
+
             // Roll another number
             winningRolls++;
             randomRoll = Math.random() * 100;
-            items.push(newReward);
         }
 
+        const roubles = this.SkillRewards.BaseRoubleReward * tier;
+
+        const newReward: Item = {
+            _id: hashUtil.generate(),
+            _tpl: Money.ROUBLES
+        }
+
+        if (itemHelper.addUpdObjectToItem(newReward))
+        {
+            newReward.upd.StackObjectsCount = roubles;
+            items.push(newReward);        
+        }
+        
         return items;
     }
 

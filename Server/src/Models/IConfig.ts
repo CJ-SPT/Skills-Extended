@@ -3,6 +3,8 @@ export interface ISkillRewards
     ProgressionEnabled: boolean;
     BaseRoubleReward: number;
     RewardPool: IRewardTier[];
+    BaseClassesThatCanRewardMultiple: string[];
+    MaximumNumberOfMultiples: number;
 }
 
 export interface IRewardTier
