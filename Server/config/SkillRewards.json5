@@ -17,7 +17,7 @@
         "57864a3d24597754843f8721"
     ],
     // Maximum multiples of items that can be given at any given tier, starting at 0 and ending at 10
-    "MaximumNumberOfMultiples": [0, 3, 3, 4, 4, 5, 5, 6, 6, 5, 5],
+    "MaximumNumberOfMultiples": [0, 3, 3, 3, 4, 4, 4, 5, 5, 5, 5],
     // Reward pools for each tier and some individual tier based settings
     "RewardPool": [
         {
@@ -30,7 +30,7 @@
         },
         {
             "Tier": 1,
-            "Rolls": 7,
+            "Rolls": 6,
             "PityBonus": 0.05,
             "Rewards": {
                 "6489b88bcf0cd80b7e749069": 5,     // Sealed Weapon Case
@@ -82,7 +82,7 @@
         },
         {
             "Tier": 2,
-            "Rolls": 7,
+            "Rolls": 6,
             "PityBonus": 0.05,
             "Rewards": {
                 "6489b88bcf0cd80b7e749069": 5,     // Sealed Weapon Case
@@ -144,7 +144,7 @@
         },
         {
             "Tier": 3,
-            "Rolls": 6,
+            "Rolls": 5,
             "PityBonus": 0.05,
             "Rewards": {
                 "6489b88bcf0cd80b7e749069": 10,         // Sealed Weapon Case
@@ -203,7 +203,7 @@
         },
         {
             "Tier": 4,
-            "Rolls": 6,
+            "Rolls": 5,
             "PityBonus": 0.05,
             "Rewards": {
                 "6489bed4a53c8c047c3dc361": 20,         // Sealed Weapon Case
@@ -253,7 +253,7 @@
         },
         {
             "Tier": 5,
-            "Rolls": 5,
+            "Rolls": 4,
             "PityBonus": 0.05,
             "Rewards": {
                 "6489bed4a53c8c047c3dc361": 25,         // Sealed Weapon Case
@@ -302,7 +302,7 @@
         },
         {
             "Tier": 6,
-            "Rolls": 5,
+            "Rolls": 4,
             "PityBonus": 0.05,
             "Rewards": {
                 "6489bed4a53c8c047c3dc361": 30,         // Sealed Weapon Case
@@ -342,7 +342,7 @@
         },
         {
             "Tier": 7,
-            "Rolls": 5,
+            "Rolls": 4,
             "PityBonus": 0.05,
             "Rewards": {
                 "6489bed4a53c8c047c3dc361": 55,         // Sealed Weapon Case
@@ -384,7 +384,7 @@
         },
         {
             "Tier": 8,
-            "Rolls": 4,
+            "Rolls": 3,
             "PityBonus": 0.05,
             "Rewards": {
                 "6489bed4a53c8c047c3dc361": 65,         // Sealed Weapon Case
@@ -425,7 +425,7 @@
         },
         {
             "Tier": 9,
-            "Rolls": 4,
+            "Rolls": 3,
             "PityBonus": 0.05,
             "Rewards": {
                 "6489bed4a53c8c047c3dc361": 75,         // Sealed Weapon Case
