@@ -180,15 +180,6 @@ export class ProgressionManager
  
             if (chance < randomRoll) continue;
 
-            if (pityBonusEnabled)
-            {
-                const pityText = pityBonusEnabled
-                    ? `(${(pool.PityBonus * (rolls - winningRolls) * 100).toFixed(3)}% Pity bonus)`
-                    : "";
-
-                //this.logger.logWithColor(`Skills Extended: Rolled ${randomRoll.toFixed(2)}${pityText} on roll number ${rolls} for item ${itemName} with ${chance}% chance`, LogTextColor.YELLOW);
-            }
-
             const legendary = pool.Rewards[reward] < 10;
             const legendaryText = legendary ? " legendary" : "";
             const color = legendary ? LogTextColor.BLUE : LogTextColor.GREEN;
