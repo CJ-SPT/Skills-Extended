@@ -14,6 +14,7 @@ import { ILogger } from '@spt/models/spt/utils/ILogger';
 import { IProgression } from './Models/IProgression';
 import { Item } from "@spt/models/eft/common/tables/IItem";
 import { Money } from '@spt/models/enums/Money';
+import { BaseClasses } from '@spt/models/enums/BaseClasses';
 
 export class ProgressionManager
 {
@@ -64,10 +65,6 @@ export class ProgressionManager
             }
 
             this.saveProgressionFile();
-
-            if (this.PmcProfile.Inventory === undefined) return;
-
-            //this.checkForPendingRewards();
             return;
         }
 
@@ -202,10 +199,31 @@ export class ProgressionManager
             if (itemHelper.isOfBaseclasses(reward, this.SkillRewards.BaseClassesThatCanRewardMultiple))
             {
                 numberToAward = Math.round(Math.random() * this.SkillRewards.MaximumNumberOfMultiples[tier]);
+            }
 
-                if (numberToAward === 0)
-                {
-                    numberToAward = 1;
+            // Handle Ammo as a special case
+            if (itemHelper.isOfBaseclass(reward, BaseClasses.AMMO))
+            {
+                const baseReward = this.SkillRewards.BaseAmmoAmount;
+                const multiplier = this.SkillRewards.AmmoRewardMultPerTier * tier;
+
+                numberToAward = Math.round(baseReward * (1 + multiplier));
+
+                const newReward: Item = {
+                    _id: hashUtil.generate(),
+                    _tpl: reward
+                }
+
+                if (itemHelper.addUpdObjectToItem(newReward))
+                {       
+                    newReward.upd.StackObjectsCount = numberToAward;
+                    items.push(newReward);
+
+                    this.logger.logWithColor(`Skills Extended: Generating${legendaryText} reward ${itemName} in the amount of ${numberToAward} from tier ${tier} pool`, color);
+
+                    winningRolls++;
+                    randomRoll = Math.random() * 100;
+                    continue;
                 }
             }
 
