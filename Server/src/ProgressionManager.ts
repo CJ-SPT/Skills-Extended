@@ -15,6 +15,9 @@ import { IProgression } from './Models/IProgression';
 import { Item } from "@spt/models/eft/common/tables/IItem";
 import { Money } from '@spt/models/enums/Money';
 import { BaseClasses } from '@spt/models/enums/BaseClasses';
+import { Traders } from '@spt/models/enums/Traders';
+import { join } from 'path';
+import { it } from 'node:test';
 
 export class ProgressionManager
 {
@@ -36,6 +39,8 @@ export class ProgressionManager
 
         const rewardsRaw = this.InstanceManager.vfs.readFile(path.join(path.dirname(__filename), "..", "config", "SkillRewards.json5"));
         this.SkillRewards = JSON5.parse(rewardsRaw);
+
+        this.debugTestGeneration();
     }
 
     public getActivePmcData(sessionId: string): void
@@ -58,6 +63,20 @@ export class ProgressionManager
             this.Progression.Progress = {};
             this.logger.logWithColor(`Skills Extended: Progress file for ${this.PmcProfile.Info.Nickname} wiped.`, LogTextColor.YELLOW);
             this.saveProgressionFile();
+        }
+    }
+
+    private debugTestGeneration(): void
+    {
+        if (this.SkillRewards.Debug.Enabled && this.SkillRewards.Debug.TestGeneration)
+        {
+            const runs = this.SkillRewards.Debug.NumberOfRuns;
+            const level = this.SkillRewards.Debug.GenerationLevel;
+
+            for (let i = 0; i < runs; i++)
+            {
+                this.generateReward(level, true);
+            }
         }
     }
 
@@ -155,120 +174,135 @@ export class ProgressionManager
         }   
     }
 
-    private selectRewardsFromTier(tier: number): Item[]
+    private generateReward(tier: number, debug: boolean = false): Item[]
     {
         const items: Item[] = [];
         const hashUtil = this.InstanceManager.hashUtil;
-        let randomRoll = Math.random() * 100;
+        const itemHelper = this.InstanceManager.itemHelper;
 
         const locale = this.InstanceManager.database.locales.global["en"];
 
-        const itemHelper = this.InstanceManager.itemHelper;
-
         const rewards = this.SkillRewards.RewardPool as IRewardTier[];
-        const pool = rewards.find(x => x.Tier === tier);
+        const tierData = rewards.find(x => x.Tier === tier);
 
-        // Shuffle the keys so its entirely random each time
-        const shuffledKeys = this.shuffleKeys(pool.Rewards);
+        const itemPrices: Record<string, number> = {};
+       
+        if (debug)
+        {
+            this.logger.logWithColor(`\nGenerating reward for tier ${tier}`, LogTextColor.YELLOW);
+            this.logger.logWithColor(`Settings:`, LogTextColor.YELLOW);
+            this.logger.logWithColor(`Min/Max Rewards: ${tierData.MinRewards}/${tierData.MaxRewards}`, LogTextColor.YELLOW);
+            this.logger.logWithColor(`Reward value: ${tierData.RewardValue}`, LogTextColor.YELLOW);
+            this.logger.logWithColor(`Max amount of same item: ${tierData.MaximumNumberOfMultiples}`, LogTextColor.YELLOW);
+        }
         
-        if (shuffledKeys.length === 0) return [];
-
-        let rolls = 0;
-        let winningRolls = 0;
-
-        for (const reward of shuffledKeys)
+        // Build a price map of all items in all categories
+        for (const category of tierData.RewardCategories)
         {
-            if (rolls > pool.Rolls) break;
+            const rewards = this.getItemsAndPricesOfCategory(category);
 
-            rolls++;
-
-            const itemName = locale[`${reward} Name`];
-            const chance = pool.Rewards[reward];
-            const pityBonusEnabled = rolls > winningRolls
-            const pityBonus = 1 - (pool.PityBonus * (rolls - winningRolls));
-
-            randomRoll = pityBonusEnabled 
-                ? randomRoll * pityBonus 
-                : randomRoll;
- 
-            if (chance < randomRoll) continue;
-
-            const legendary = pool.Rewards[reward] < 10;
-            const legendaryText = legendary ? " legendary" : "";
-            const color = legendary ? LogTextColor.BLUE : LogTextColor.GREEN;
-
-            let numberToAward = 1;
-
-            // If the item is of a certain type randomize the amount to send
-            if (itemHelper.isOfBaseclasses(reward, this.SkillRewards.BaseClassesThatCanRewardMultiple))
+            for (const reward in rewards)
             {
-                numberToAward = Math.round(Math.random() * this.SkillRewards.MaximumNumberOfMultiples[tier]);
+                itemPrices[reward] = rewards[reward];
             }
-
-            // Handle Ammo as a special case
-            if (itemHelper.isOfBaseclass(reward, BaseClasses.AMMO))
-            {
-                const baseReward = this.SkillRewards.BaseAmmoAmount;
-                const multiplier = this.SkillRewards.AmmoRewardMultPerTier * tier;
-
-                numberToAward = Math.round(baseReward * (1 + multiplier));
-
-                const newReward: Item = {
-                    _id: hashUtil.generate(),
-                    _tpl: reward
-                }
-
-                if (itemHelper.addUpdObjectToItem(newReward))
-                {       
-                    newReward.upd.StackObjectsCount = numberToAward;
-                    items.push(newReward);
-
-                    this.logger.logWithColor(`Skills Extended: Generating${legendaryText} reward ${itemName} in the amount of ${numberToAward} from tier ${tier} pool`, color);
-
-                    winningRolls++;
-                    randomRoll = Math.random() * 100;
-                    continue;
-                }
-            }
-
-            for (let i = 0; i < numberToAward; i++)
-            {
-                const newReward: Item = {
-                    _id: hashUtil.generate(),
-                    _tpl: reward
-                }
-
-                items.push(newReward);
-            }
-
-            this.logger.logWithColor(`Skills Extended: Generating${legendaryText} reward ${itemName} in the amount of ${numberToAward} from tier ${tier} pool`, color);
-
-            // Roll another number
-            winningRolls++;
-            randomRoll = Math.random() * 100;
         }
 
-        const roubles = this.SkillRewards.BaseRoubleReward * tier;
+        // Shuffle the category keys to ensure randomness
+        const randomShuffle = this.shuffleKeys(itemPrices);
 
-        const newReward: Item = {
-            _id: hashUtil.generate(),
-            _tpl: Money.ROUBLES
-        }
+        let rewardValue = 0;
+        let itemsReceived = 0;
 
-        if (itemHelper.addUpdObjectToItem(newReward))
+        const maxRewards = Math.round(Math.random() * tierData.MaxRewards)
+        const minRewards = Math.round(Math.random() * tierData.MinRewards)
+        const numRewards = Math.max(maxRewards, minRewards)
+
+        for (const key of randomShuffle)
         {
-            newReward.upd.StackObjectsCount = roubles;
-            items.push(newReward);        
+            // We have more rewards than allowed
+            if (itemsReceived > numRewards && rewardValue > tierData.RewardValue) break;
+
+            // We have more value than allowed
+            if (rewardValue > tierData.RewardValue) break;
+
+            // Item is over this tiers price cap
+            if (itemPrices[key] > tierData.RewardValue) continue;
+     
+            // Item has no price, skip it
+            if (itemPrices[key] === 0) continue;
+
+            // Skip dog tags and quest items
+            if (itemHelper.isDogtag(key) || itemHelper.isQuestItem(key)) continue;
+
+            const noDupes = itemHelper.isOfBaseclasses(key, this.SkillRewards.DisallowMultipleSameRoll);
+            
+            let roundedAmount = 0;
+
+            if (!noDupes)
+            {
+                roundedAmount = Math.round(Math.random() * tierData.MaximumNumberOfMultiples);
+            }
+            
+            let amount = roundedAmount == 0 
+                ? 1 
+                : roundedAmount;
+
+            if (itemHelper.isOfBaseclass(key, BaseClasses.AMMO))
+            {
+                amount = 20 * tier < 40 
+                    ? 40 
+                    : 20 * tier;
+            }
+
+            rewardValue += itemPrices[key] * amount;
+
+            const newItem: Item = {
+                _tpl: key,
+                _id: hashUtil.generate()
+            }
+
+            if (itemHelper.addUpdObjectToItem(newItem))
+            {
+                newItem.upd.StackObjectsCount = amount;
+            }
+
+            this.logger.logWithColor(`${locale[`${key} Name`]} amt: (${amount}) val: (${itemPrices[key] * amount})`, LogTextColor.GREEN);
+
+            itemsReceived += amount;
+            items.push(newItem);
         }
+
+        if (debug)
+        {
+            this.logger.logWithColor(`Total reward value: ${rewardValue} - Item count ${itemsReceived}`, LogTextColor.YELLOW);
+        }
+        
+        // Set the items found in raid
+        itemHelper.setFoundInRaid(items)
 
         return items;
+    }
+
+    private getItemsAndPricesOfCategory(parentId: string): Record<string, number>
+    {
+        const itemHelper = this.InstanceManager.itemHelper;
+        const itemPriceMap: Record<string, number> = {};
+
+        const items = itemHelper.getItemTplsOfBaseType(parentId);
+
+        for (const item of items)
+        {
+            itemPriceMap[item] = itemHelper.getItemMaxPrice(item);
+        }
+        
+        return itemPriceMap;
     }
 
     private sendMailReward(skillId: string, tier: number): boolean
     {
         const mailService = this.InstanceManager.mailSendService;
 
-        const items = this.selectRewardsFromTier(tier);
+        const items = this.generateReward(tier);
 
         if (items.length <= 0) return false;
 

@@ -1,19 +1,26 @@
 export interface ISkillRewards
 {
     ProgressionEnabled: boolean;
-    BaseRoubleReward: number;
-    BaseAmmoAmount: number;
-    AmmoRewardMultPerTier: number;
-    BaseClassesThatCanRewardMultiple: string[];
-    MaximumNumberOfMultiples: number[];
+    DisallowMultipleSameRoll: string[];
     RewardPool: IRewardTier[];
+    Debug: ProgressionDebug;
 }
 
 export interface IRewardTier
 {
     Tier: number;
-    Rolls: number;
-    PityBonus: number;
+    MinRewards: number;
+    MaxRewards: number;
+    RewardValue: number;
+    MaximumNumberOfMultiples: number;
     // Item Tpl, and the chance to get it from this tier
-    Rewards: Record<string, number>;
+    RewardCategories: string[];
+}
+
+export interface ProgressionDebug
+{
+    Enabled: boolean;
+    TestGeneration: boolean;
+    GenerationLevel: number;
+    NumberOfRuns: number;
 }
