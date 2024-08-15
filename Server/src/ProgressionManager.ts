@@ -275,7 +275,7 @@ export class ProgressionManager
         const message: ISendMessageDetails = {
             recipientId: this.PmcProfile._id,
             sender: MessageType.SYSTEM_MESSAGE,
-            messageText: `Here is your reward for tier ${tier} of ${skillId}`,
+            messageText: `Here is your reward for tier ${tier} of ${skillId}`, // TODO: Hook this up to achievements
             items: items,
             itemsMaxStorageLifetimeSeconds: 72000
         }
