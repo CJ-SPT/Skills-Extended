@@ -47,7 +47,21 @@ export class ProgressionManager
         this.checkForOrCreateProgressFile();
     }
 
-    private checkForOrCreateProgressFile(): void
+    public wipeProgressFile(sessionId: string): void
+    {
+        if (!this.SkillRewards.ProgressionEnabled) return;
+
+        this.PmcProfile = this.InstanceManager.profileHelper.getPmcProfile(sessionId);
+
+        if (!this.checkForOrCreateProgressFile())
+        {
+            this.Progression.Progress = {};
+            this.logger.logWithColor(`Skills Extended: Progress file for ${this.PmcProfile.Info.Nickname} wiped.`, LogTextColor.YELLOW);
+            this.saveProgressionFile();
+        }
+    }
+
+    private checkForOrCreateProgressFile(): boolean
     {
         const progPath = path.join(this.ProgressPath, `${this.PmcProfile._id}.json`);
 
@@ -65,14 +79,13 @@ export class ProgressionManager
             }
 
             this.saveProgressionFile();
-            return;
+            return true;
         }
 
         this.loadProgressionFile();
 
         this.logger.logWithColor(`Skills Extended: Progress file for ${this.Progression.PmcName} loaded.`, LogTextColor.GREEN);
-        
-        this.checkForPendingRewards();
+        return false;
     }
 
     public checkForPendingRewards(): void

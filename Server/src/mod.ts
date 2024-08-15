@@ -165,10 +165,10 @@ class SkillsExtended implements IPreSptLoadMod, IPostDBLoadMod
         );
 
         this.Instance.staticRouter.registerStaticRouter(
-            "create",
+            "select",
             [
                 {
-                    url: "/client/game/profile/create",
+                    url: "/client/game/profile/select",
                     // eslint-disable-next-line @typescript-eslint/no-unused-vars
                     action: async (url, info, sessionId, output) => 
                     {                     
@@ -181,14 +181,14 @@ class SkillsExtended implements IPreSptLoadMod, IPostDBLoadMod
         );
 
         this.Instance.staticRouter.registerStaticRouter(
-            "select",
+            "wipe",
             [
                 {
-                    url: "/client/game/profile/select",
+                    url: "/launcher/profile/change/wipe",
                     // eslint-disable-next-line @typescript-eslint/no-unused-vars
                     action: async (url, info, sessionId, output) => 
                     {                     
-                        this.ProgressionManager.checkForPendingRewards();
+                        this.ProgressionManager.wipeProgressFile(sessionId);
                         return output;
                     }
                 }
