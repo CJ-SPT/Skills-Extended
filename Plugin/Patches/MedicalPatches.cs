@@ -71,7 +71,7 @@ internal class HealthEffectDamageEffectPatch : ModulePatch
             
             if (template.DamageEffects.TryGetValue(EDamageEffectType.Fracture, out var fracture))
             {
-                if (fracture.Cost > 0)
+                if (fracture is not null && fracture.Cost > 0)
                 {
                     originalCosts.Fracture = originalCosts.Fracture == 0 && fracture.Cost > 0
                         ? fracture.Cost
@@ -86,7 +86,7 @@ internal class HealthEffectDamageEffectPatch : ModulePatch
                 
             if (template.DamageEffects.TryGetValue(EDamageEffectType.LightBleeding, out var lightBleed))
             {
-                if (lightBleed.Cost > 0)
+                if (lightBleed is not null && lightBleed.Cost > 0)
                 {
                     originalCosts.LightBleed = originalCosts.LightBleed == 0 && lightBleed.Cost > 0
                         ? lightBleed.Cost
@@ -101,7 +101,7 @@ internal class HealthEffectDamageEffectPatch : ModulePatch
                 
             if (template.DamageEffects.TryGetValue(EDamageEffectType.HeavyBleeding, out var heavyBleed))
             {
-                if (heavyBleed.Cost > 0)
+                if (heavyBleed is not null && heavyBleed.Cost > 0)
                 {
                     originalCosts.HeavyBleed = originalCosts.HeavyBleed == 0 && heavyBleed.Cost > 0
                         ? heavyBleed.Cost
