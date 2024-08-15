@@ -191,7 +191,6 @@ export class ProgressionManager
         {
             this.logger.logWithColor(`\nGenerating reward for tier ${tier}`, LogTextColor.YELLOW);
             this.logger.logWithColor(`Settings:`, LogTextColor.YELLOW);
-            this.logger.logWithColor(`Min/Max Rewards: ${tierData.MinRewards}/${tierData.MaxRewards}`, LogTextColor.YELLOW);
             this.logger.logWithColor(`Reward value: ${tierData.RewardValue}`, LogTextColor.YELLOW);
             this.logger.logWithColor(`Max amount of same item: ${tierData.MaximumNumberOfMultiples}`, LogTextColor.YELLOW);
         }
@@ -213,15 +212,8 @@ export class ProgressionManager
         let rewardValue = 0;
         let itemsReceived = 0;
 
-        const maxRewards = Math.round(Math.random() * tierData.MaxRewards)
-        const minRewards = Math.round(Math.random() * tierData.MinRewards)
-        const numRewards = Math.max(maxRewards, minRewards)
-
         for (const key of randomShuffle)
         {
-            // We have more rewards than allowed
-            if (itemsReceived > numRewards && rewardValue > tierData.RewardValue) break;
-
             // We have more value than allowed
             if (rewardValue > tierData.RewardValue) break;
 

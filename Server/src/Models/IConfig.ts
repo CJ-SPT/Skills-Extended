@@ -9,8 +9,6 @@ export interface ISkillRewards
 export interface IRewardTier
 {
     Tier: number;
-    MinRewards: number;
-    MaxRewards: number;
     RewardValue: number;
     MaximumNumberOfMultiples: number;
     // Item Tpl, and the chance to get it from this tier

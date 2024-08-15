@@ -8,16 +8,12 @@
     "RewardPool": [
         {
             "Tier": 0,                      // Tier
-            "MinRewards": 0,                // The minimum number of rewards this tier awards
-            "MaxRewards": 0,                // The maximum number of rewards this tier awards
             "RewardValue": 0,               // The over all value of the reward
             "MaximumNumberOfMultiples": 0,  // Maximum number of a selected item that can be awarded
             "RewardCategories": [],         // Item reward categories
         },
         {
             "Tier": 1,
-            "MinRewards": 2,    
-            "MaxRewards": 5,
             "RewardValue": 48000,
             "MaximumNumberOfMultiples": 2,
             "RewardCategories": [
@@ -26,13 +22,15 @@
                 "57864a66245977548f04a81f",
                 "57864ee62459775490116fc1",
                 "57864e4c24597754843f8723",
-                "5485a8684bdc2da71d8b4567"
+                "5485a8684bdc2da71d8b4567",
+                "5a341c4086f77401f2541505",
+                "5645bcb74bdc2ded0b8b4578",
+                "5448f39d4bdc2d0a728b4568",
+                "5448f3ac4bdc2dce718b4569",
             ]
         },
         {
             "Tier": 2,
-            "MinRewards": 2,    
-            "MaxRewards": 5,
             "RewardValue": 58000,
             "MaximumNumberOfMultiples": 2, 
             "RewardCategories": [
@@ -43,13 +41,23 @@
                 "57864e4c24597754843f8723",
                 "590c745b86f7743cc433c5f2",
                 "57864bb7245977548b3b66c2",
-                "5485a8684bdc2da71d8b4567"
+                "5485a8684bdc2da71d8b4567",
+                "5a341c4086f77401f2541505",
+                "5645bcb74bdc2ded0b8b4578",
+                "5448f39d4bdc2d0a728b4568",
+                "5448f3ac4bdc2dce718b4569",
+
+                "55818a594bdc2db9688b456a",
+                "55818ad54bdc2ddc698b4569",
+                "55818b164bdc2ddc698b456c",
+                "55818b084bdc2d5b648b4571",
+                "550aa4bf4bdc2dd6348b456b",
+                "550aa4dd4bdc2dc9348b4569",
+                "550aa4cd4bdc2dd8348b456c"
             ]
         },
         {
             "Tier": 3,
-            "MinRewards": 2,    
-            "MaxRewards": 5,
             "RewardValue": 70000,
             "MaximumNumberOfMultiples": 2,
             "RewardCategories": [
@@ -60,13 +68,23 @@
                 "590c745b86f7743cc433c5f2",
                 "57864bb7245977548b3b66c2",
                 "57864a3d24597754843f8721",
-                "5485a8684bdc2da71d8b4567"
+                "5485a8684bdc2da71d8b4567",
+                "5a341c4086f77401f2541505",
+                "5645bcb74bdc2ded0b8b4578",
+                "5448f39d4bdc2d0a728b4568",
+                "5448f3ac4bdc2dce718b4569",
+
+                "55818a594bdc2db9688b456a",
+                "55818ad54bdc2ddc698b4569",
+                "55818b164bdc2ddc698b456c",
+                "55818b084bdc2d5b648b4571",
+                "550aa4bf4bdc2dd6348b456b",
+                "550aa4dd4bdc2dc9348b4569",
+                "550aa4cd4bdc2dd8348b456c"
             ]
         },
         {
             "Tier": 4,
-            "MinRewards": 3,    
-            "MaxRewards": 4,
             "RewardValue": 82500,
             "MaximumNumberOfMultiples": 2,
             "RewardCategories": [
@@ -78,13 +96,23 @@
                 "57864bb7245977548b3b66c2",
                 "57864a3d24597754843f8721",
                 "5448ecbe4bdc2d60728b4568",
-                "5485a8684bdc2da71d8b4567"
+                "5485a8684bdc2da71d8b4567",
+                "5a341c4086f77401f2541505",
+                "5645bcb74bdc2ded0b8b4578",
+                "5448f39d4bdc2d0a728b4568",
+                "5448f3ac4bdc2dce718b4569",
+                
+                "55818a594bdc2db9688b456a",
+                "55818ad54bdc2ddc698b4569",
+                "55818b164bdc2ddc698b456c",
+                "55818b084bdc2d5b648b4571",
+                "550aa4bf4bdc2dd6348b456b",
+                "550aa4dd4bdc2dc9348b4569",
+                "550aa4cd4bdc2dd8348b456c"
             ]
         },
         {
             "Tier": 5,
-            "MinRewards": 3,    
-            "MaxRewards": 5,
             "RewardValue": 98500,
             "MaximumNumberOfMultiples": 2,
             "RewardCategories": [
@@ -96,13 +124,24 @@
                 "57864bb7245977548b3b66c2",
                 "57864a3d24597754843f8721",
                 "5448ecbe4bdc2d60728b4568",
-                "5485a8684bdc2da71d8b4567"
+                "5485a8684bdc2da71d8b4567",
+                "5a341c4086f77401f2541505",
+                "5645bcb74bdc2ded0b8b4578",
+                "55818aeb4bdc2ddc698b456a",
+                "5448f39d4bdc2d0a728b4568",
+                "5448f3ac4bdc2dce718b4569",
+
+                "55818a594bdc2db9688b456a",
+                "55818ad54bdc2ddc698b4569",
+                "55818b164bdc2ddc698b456c",
+                "55818b084bdc2d5b648b4571",
+                "550aa4bf4bdc2dd6348b456b",
+                "550aa4dd4bdc2dc9348b4569",
+                "550aa4cd4bdc2dd8348b456c"
             ]
         },
         {
             "Tier": 6,
-            "MinRewards": 3,    
-            "MaxRewards": 5,
             "RewardValue": 125000,
             "MaximumNumberOfMultiples": 3,
             "RewardCategories": [
@@ -114,13 +153,24 @@
                 "57864a3d24597754843f8721",
                 "5448ecbe4bdc2d60728b4568",
                 "5c164d2286f774194c5e69fa",
-                "57864c8c245977548867e7f1"
+                "57864c8c245977548867e7f1",
+                "5a341c4086f77401f2541505",
+                "5645bcb74bdc2ded0b8b4578",
+                "55818aeb4bdc2ddc698b456a",
+                "5448f39d4bdc2d0a728b4568",
+                "5448f3ac4bdc2dce718b4569",
+
+                "55818a594bdc2db9688b456a",
+                "55818ad54bdc2ddc698b4569",
+                "55818b164bdc2ddc698b456c",
+                "55818b084bdc2d5b648b4571",
+                "550aa4bf4bdc2dd6348b456b",
+                "550aa4dd4bdc2dc9348b4569",
+                "550aa4cd4bdc2dd8348b456c"
             ]
         },
         {
             "Tier": 7,
-            "MinRewards": 3,    
-            "MaxRewards": 5,
             "RewardValue": 155000,
             "MaximumNumberOfMultiples": 3,
             "RewardCategories": [
@@ -131,13 +181,25 @@
                 "5448ecbe4bdc2d60728b4568",
                 "5c164d2286f774194c5e69fa",
                 "57864c8c245977548867e7f1",
-                "5795f317245977243854e041"
+                "5795f317245977243854e041",
+                "5447e1d04bdc2dff2f8b4567",
+                "5a341c4086f77401f2541505",
+                "5645bcb74bdc2ded0b8b4578",
+                "55818aeb4bdc2ddc698b456a",
+                "5448f39d4bdc2d0a728b4568",
+                "5448f3ac4bdc2dce718b4569",
+
+                "55818a594bdc2db9688b456a",
+                "55818ad54bdc2ddc698b4569",
+                "55818b164bdc2ddc698b456c",
+                "55818b084bdc2d5b648b4571",
+                "550aa4bf4bdc2dd6348b456b",
+                "550aa4dd4bdc2dc9348b4569",
+                "550aa4cd4bdc2dd8348b456c"
             ]
         },
         {
             "Tier": 8,
-            "MinRewards": 4,    
-            "MaxRewards": 6,
             "RewardValue": 185000,
             "MaximumNumberOfMultiples": 3,
             "RewardCategories": [
@@ -148,13 +210,24 @@
                 "5448ecbe4bdc2d60728b4568",
                 "5c164d2286f774194c5e69fa",
                 "57864c8c245977548867e7f1",
-                "5795f317245977243854e041"
+                "5795f317245977243854e041",
+                "5a341c4086f77401f2541505",
+                "5645bcb74bdc2ded0b8b4578",
+                "55818aeb4bdc2ddc698b456a",
+                "5448f39d4bdc2d0a728b4568",
+                "5448f3ac4bdc2dce718b4569",
+
+                "55818a594bdc2db9688b456a",
+                "55818ad54bdc2ddc698b4569",
+                "55818b164bdc2ddc698b456c",
+                "55818b084bdc2d5b648b4571",
+                "550aa4bf4bdc2dd6348b456b",
+                "550aa4dd4bdc2dc9348b4569",
+                "550aa4cd4bdc2dd8348b456c"
             ]
         },
         {
             "Tier": 9,
-            "MinRewards": 3,    
-            "MaxRewards": 5,
             "RewardValue": 350000,
             "MaximumNumberOfMultiples": 2,
             "RewardCategories": [
@@ -170,8 +243,6 @@
         },
         {
             "Tier": 10,
-            "MinRewards": 3,    
-            "MaxRewards": 5,
             "RewardValue": 1000000,
             "MaximumNumberOfMultiples": 2,
             "RewardCategories": [
@@ -187,7 +258,7 @@
     Debug: {
         "Enabled": true,
         "TestGeneration": true,
-        "GenerationLevel": 5,
+        "GenerationLevel": 7,
         "NumberOfRuns": 25,
     }
 }
