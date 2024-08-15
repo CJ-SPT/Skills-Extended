@@ -4,9 +4,9 @@ export interface ISkillRewards
     BaseRoubleReward: number;
     BaseAmmoAmount: number;
     AmmoRewardMultPerTier: number;
-    RewardPool: IRewardTier[];
     BaseClassesThatCanRewardMultiple: string[];
-    MaximumNumberOfMultiples: number;
+    MaximumNumberOfMultiples: number[];
+    RewardPool: IRewardTier[];
 }
 
 export interface IRewardTier
