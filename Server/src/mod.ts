@@ -163,6 +163,38 @@ class SkillsExtended implements IPreSptLoadMod, IPostDBLoadMod
             ],
             ""
         );
+
+        this.Instance.staticRouter.registerStaticRouter(
+            "create",
+            [
+                {
+                    url: "/client/game/profile/create",
+                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                    action: async (url, info, sessionId, output) => 
+                    {                     
+                        this.ProgressionManager.checkForPendingRewards();
+                        return output;
+                    }
+                }
+            ],
+            ""
+        );
+
+        this.Instance.staticRouter.registerStaticRouter(
+            "select",
+            [
+                {
+                    url: "/client/game/profile/select",
+                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                    action: async (url, info, sessionId, output) => 
+                    {                     
+                        this.ProgressionManager.checkForPendingRewards();
+                        return output;
+                    }
+                }
+            ],
+            ""
+        );
     }
 
     private CreateItems(): void

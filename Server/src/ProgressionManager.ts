@@ -39,6 +39,8 @@ export class ProgressionManager
 
     public getActivePmcData(sessionId: string): void
     {
+        if (!this.SkillRewards.ProgressionEnabled) return;
+
         this.PmcProfile = this.InstanceManager.profileHelper.getPmcProfile(sessionId);
 
         this.checkForOrCreateProgressFile();
@@ -63,7 +65,9 @@ export class ProgressionManager
 
             this.saveProgressionFile();
 
-            this.checkForPendingRewards();
+            if (this.PmcProfile.Inventory === undefined) return;
+
+            //this.checkForPendingRewards();
             return;
         }
 
@@ -76,6 +80,8 @@ export class ProgressionManager
 
     public checkForPendingRewards(): void
     {
+        if (!this.SkillRewards.ProgressionEnabled) return;
+
         if (this.PmcProfile.Skills.Common === undefined)
         {
             this.logger.logWithColor("Skills Extended: No skills defined on profile, this is normal on new or wiped profiles.", LogTextColor.YELLOW);
@@ -183,7 +189,7 @@ export class ProgressionManager
                     ? `(${(pool.PityBonus * (rolls - winningRolls) * 100).toFixed(3)}% Pity bonus)`
                     : "";
 
-                this.logger.logWithColor(`Skills Extended: Rolled ${randomRoll.toFixed(2)}${pityText} on roll number ${rolls} for item ${itemName} with ${chance}% chance`, LogTextColor.YELLOW);
+                //this.logger.logWithColor(`Skills Extended: Rolled ${randomRoll.toFixed(2)}${pityText} on roll number ${rolls} for item ${itemName} with ${chance}% chance`, LogTextColor.YELLOW);
             }
 
             const legendary = pool.Rewards[reward] < 10;
@@ -195,7 +201,7 @@ export class ProgressionManager
             // If the item is of a certain type randomize the amount to send
             if (itemHelper.isOfBaseclasses(reward, this.SkillRewards.BaseClassesThatCanRewardMultiple))
             {
-                numberToAward = Math.round(Math.random() * this.SkillRewards.MaximumNumberOfMultiples);
+                numberToAward = Math.round(Math.random() * this.SkillRewards.MaximumNumberOfMultiples[tier]);
 
                 if (numberToAward === 0)
                 {
