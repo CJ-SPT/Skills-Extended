@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 
-import { InstanceManager } from "./InstanceManager";
+import { InstanceManager } from "./Managers/InstanceManager";
 
-import fs from 'fs';
+import fs from "fs";
 import path from "node:path";
 import JSON5 from "json5";
 
@@ -11,60 +11,53 @@ import type { IPostDBLoadMod } from "@spt/models/external/IPostDBLoadMod";
 import type { IPreSptLoadMod } from "@spt/models/external/IPreSptLoadMod";
 import type { CustomItemService } from "@spt/services/mod/CustomItemService";
 import type { NewItemFromCloneDetails } from "@spt/models/spt/mod/NewItemDetails";
-import type { VFS } from "@spt/utils/VFS";
-import type { IKeys } from "./Models/IKeys";
 
 import { Money } from "@spt/models/enums/Money";
 import { Traders } from "@spt/models/enums/Traders";
-import { BaseClasses } from "@spt/models/enums/BaseClasses";
 import { LogTextColor } from "@spt/models/spt/logging/LogTextColor";
-import { ProgressionManager } from "./ProgressionManager";
-
-enum ItemIDS {
-    Lockpick  = "6622c28aed7e3bc72e301e22",
-    Pda = "662400eb756ca8948fe64fe8"
-}
+import { ProgressionManager } from "./Managers/ProgressionManager";
+import { IOManager } from "./Managers/IOManager";
+import { CustomItemIds } from "./Models/CustomItemIds";
+import { RouteManager } from "./Managers/RouteManager";
 
 class SkillsExtended implements IPreSptLoadMod, IPostDBLoadMod
 {
-    private Instance: InstanceManager = new InstanceManager();
-    private ProgressionManager: ProgressionManager = new ProgressionManager();
+    private InstanceManager: InstanceManager = new InstanceManager();
     
-    private locale: Record<string, Record<string, string>>; 
+    private IOManager: IOManager = new IOManager(this.InstanceManager); 
+    private ProgressionManager: ProgressionManager = new ProgressionManager();   
+    private RouteManager: RouteManager = new RouteManager();
+    
     private customItemService: CustomItemService;
-    private SkillsConfigRaw;
-    private SkillsConfig;
+    public SkillsConfigRaw: any; // TODO: Type this
+    public SkillsConfig: any; // TODO: Type this
 
     public preSptLoad(container: DependencyContainer): void 
     {
-        this.Instance.preSptLoad(container, "Skills Extended");
-        
-        this.Instance.logger.logWithColor("Skills Extended loading", LogTextColor.GREEN);
-        
-        this.SkillsConfigRaw = this.Instance.vfs.readFile(path.join(path.dirname(__filename), "..", "config", "SkillsConfig.json5"));
-        this.SkillsConfig = JSON5.parse(this.SkillsConfigRaw);
+        this.InstanceManager.preSptLoad(container);
 
-        this.registerRoutes();
+        this.SkillsConfigRaw = this.IOManager.LoadConfigRaw("SkillsConfig.json5");
+        this.SkillsConfig = JSON5.parse(this.SkillsConfigRaw)
+
+        this.RouteManager.preSptLoad(this.InstanceManager, this.ProgressionManager, this.SkillsConfigRaw);
+
+        this.InstanceManager.logger.logWithColor("Skills Extended loading", LogTextColor.GREEN);    
     }
 
     public postDBLoad(container: DependencyContainer): void 
     {
-        this.Instance.postDBLoad(container);
-        this.ProgressionManager.init(this.Instance);
-        this.customItemService = this.Instance.customItemService;
-
-        this.Instance.logger.logWithColor("Did you know, BSG has 10 faction specific skills they're too lazy to implement?", LogTextColor.BLUE);
+        this.InstanceManager.postDBLoad(container);
+        this.ProgressionManager.init(this.InstanceManager, this.IOManager);
+        this.customItemService = this.InstanceManager.customItemService;
 
         this.setLocales();
         this.CreateItems();
         this.addCraftsToDatabase();
-        this.locale = this.Instance.database.locales.global;
     }
 
     private setLocales(): void
     {
-        const localePath = path.join(path.dirname(__filename), "..", "locale");
-        const files = fs.readdirSync(localePath);
+        const files = fs.readdirSync(this.IOManager.LocaleRootPath);
         
         const jsonFiles = files
             .filter(file => path.extname(file) === ".json")
@@ -77,11 +70,11 @@ class SkillsExtended implements IPreSptLoadMod, IPostDBLoadMod
             // Dont trust users to delete my mistake /BONK
             if (file === "pt") continue;
 
-            const filePath = path.join(path.dirname(__filename), "..", "locale", `${file}.json`);
-            const localeFile = this.Instance.loadStringDictionarySync(filePath);
-            const global = this.Instance.database.locales.global[file];
+            const filePath = path.join(this.IOManager.LocaleRootPath, `${file}.json`);
+            const localeFile = this.IOManager.loadLocaleFile(filePath);
+            const global = this.InstanceManager.database.locales.global[file];
 
-            this.Instance.logger.logWithColor(`Loading locale: ${file}`, LogTextColor.GREEN);
+            this.InstanceManager.logger.logWithColor(`Loading locale: ${file}`, LogTextColor.GREEN);
 
             for (const locale in localeFile)
             {
@@ -89,112 +82,7 @@ class SkillsExtended implements IPreSptLoadMod, IPostDBLoadMod
             }
         }
 
-        this.Instance.logger.logWithColor("Skills Extended: Locales dynamically loaded. Select your locale in-game on the settings page!", LogTextColor.GREEN);
-    }
-
-    private getKeys(): string
-    {
-        const items = Object.values(this.Instance.database.templates.items);
-
-        const keys: IKeys = {
-            keyLocale: {}
-        }
-
-        const ItemHelper = this.Instance.itemHelper;
-        
-        const keyItems = items.filter(x => 
-            x._type === "Item" 
-            && ItemHelper.isOfBaseclasses(x._id, [BaseClasses.KEY, BaseClasses.KEY_MECHANICAL, BaseClasses.KEYCARD]))
-            
-        for (const item of keyItems)
-        {
-            keys.keyLocale[item._id] = this.locale.en[`${item._id} Name`];
-        }
-
-        return JSON.stringify(keys);
-    }
-
-    private registerRoutes(): void
-    {
-        this.Instance.staticRouter.registerStaticRouter(
-            "GetSkillsConfig",
-            [
-                {
-                    url: "/skillsExtended/GetSkillsConfig", 
-                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                    action: async (url, info, sessionId, output) => 
-                    {                     
-                        this.Instance.SessionId = sessionId;
-                        this.ProgressionManager.getActivePmcData(sessionId);
-                        return this.SkillsConfigRaw;
-                    }
-                }
-            ],
-            ""
-        );
-
-        this.Instance.staticRouter.registerStaticRouter(
-            "GetKeys",
-            [
-                {
-                    url: "/skillsExtended/GetKeys",
-                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                    action: async (url, info, sessionId, output) => 
-                    {                     
-                        return this.getKeys();
-                    }
-                }
-            ],
-            ""
-        );
-
-        this.Instance.staticRouter.registerStaticRouter(
-            "end",
-            [
-                {
-                    url: "/client/match/offline/end",
-                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                    action: async (url, info, sessionId, output) => 
-                    {                     
-                        this.ProgressionManager.checkForPendingRewards();
-                        return output;
-                    }
-                }
-            ],
-            ""
-        );
-
-        this.Instance.staticRouter.registerStaticRouter(
-            "select",
-            [
-                {
-                    url: "/client/game/profile/select",
-                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                    action: async (url, info, sessionId, output) => 
-                    {                     
-                        this.ProgressionManager.checkForPendingRewards();
-                        return output;
-                    }
-                }
-            ],
-            ""
-        );
-
-        this.Instance.staticRouter.registerStaticRouter(
-            "wipe",
-            [
-                {
-                    url: "/launcher/profile/change/wipe",
-                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                    action: async (url, info, sessionId, output) => 
-                    {                     
-                        this.ProgressionManager.wipeProgressFile(sessionId);
-                        return output;
-                    }
-                }
-            ],
-            ""
-        );
+        this.InstanceManager.logger.logWithColor("Skills Extended: Locales dynamically loaded. Select your locale in-game on the settings page!", LogTextColor.GREEN);
     }
 
     private CreateItems(): void
@@ -227,7 +115,7 @@ class SkillsExtended implements IPreSptLoadMod, IPostDBLoadMod
             },
 
             parentId: "5c99f98d86f7745c314214b3",
-            newId: ItemIDS.Lockpick,
+            newId: CustomItemIds.Lockpick,
             fleaPriceRoubles: 120000,
             handbookPriceRoubles: 75000,
             handbookParentId: "5c518ec986f7743b68682ce2",
@@ -243,11 +131,11 @@ class SkillsExtended implements IPreSptLoadMod, IPostDBLoadMod
 
         this.customItemService.createItemFromClone(lockPick);
 
-        const mechanic = this.Instance.database.traders[Traders.MECHANIC];
+        const mechanic = this.InstanceManager.database.traders[Traders.MECHANIC];
         
         mechanic.assort.items.push({
-            _id: ItemIDS.Lockpick,
-            _tpl: ItemIDS.Lockpick,
+            _id: CustomItemIds.Lockpick,
+            _tpl: CustomItemIds.Lockpick,
             parentId: "hideout",
             slotId: "hideout",
             upd:
@@ -257,7 +145,7 @@ class SkillsExtended implements IPreSptLoadMod, IPostDBLoadMod
             }
         });
 
-        mechanic.assort.barter_scheme[ItemIDS.Lockpick] = [
+        mechanic.assort.barter_scheme[CustomItemIds.Lockpick] = [
             [
                 {
                     count: 75000,
@@ -266,9 +154,9 @@ class SkillsExtended implements IPreSptLoadMod, IPostDBLoadMod
             ]
         ];
         
-        mechanic.assort.loyal_level_items[ItemIDS.Lockpick] = 2;
+        mechanic.assort.loyal_level_items[CustomItemIds.Lockpick] = 2;
 
-        this.addItemToSpecSlots(ItemIDS.Lockpick);
+        this.addItemToSpecSlots(CustomItemIds.Lockpick);
     }
 
     private CreatePDA(): void
@@ -291,7 +179,7 @@ class SkillsExtended implements IPreSptLoadMod, IPostDBLoadMod
             },
 
             parentId: "5c164d2286f774194c5e69fa",
-            newId: ItemIDS.Pda,
+            newId: CustomItemIds.Pda,
             fleaPriceRoubles: 3650000,
             handbookPriceRoubles: 7560000,
             handbookParentId: "5c164d2286f774194c5e69fa",
@@ -307,11 +195,11 @@ class SkillsExtended implements IPreSptLoadMod, IPostDBLoadMod
 
         this.customItemService.createItemFromClone(Pda);
         
-        const peaceKeeper = this.Instance.database.traders[Traders.PEACEKEEPER];
+        const peaceKeeper = this.InstanceManager.database.traders[Traders.PEACEKEEPER];
 
         peaceKeeper.assort.items.push({
-            _id: ItemIDS.Pda,
-            _tpl: ItemIDS.Pda,
+            _id: CustomItemIds.Pda,
+            _tpl: CustomItemIds.Pda,
             parentId: "hideout",
             slotId: "hideout",
             upd:
@@ -321,7 +209,7 @@ class SkillsExtended implements IPreSptLoadMod, IPostDBLoadMod
             }
         });
 
-        peaceKeeper.assort.barter_scheme[ItemIDS.Pda] = [
+        peaceKeeper.assort.barter_scheme[CustomItemIds.Pda] = [
             [
                 {
                     count: 12600,
@@ -330,9 +218,9 @@ class SkillsExtended implements IPreSptLoadMod, IPostDBLoadMod
             ]
         ];
         
-        peaceKeeper.assort.loyal_level_items[ItemIDS.Pda] = 3;
+        peaceKeeper.assort.loyal_level_items[CustomItemIds.Pda] = 3;
 
-        this.addItemToSpecSlots(ItemIDS.Pda);
+        this.addItemToSpecSlots(CustomItemIds.Pda);
     }
 
     private addCraftsToDatabase(): void
@@ -340,14 +228,14 @@ class SkillsExtended implements IPreSptLoadMod, IPostDBLoadMod
         const crafts = this.SkillsConfig.LockPicking.CRAFTING_RECIPES;
 
         crafts.forEach((craft) => {
-            this.Instance.database.hideout.production.push(craft);
+            this.InstanceManager.database.hideout.production.push(craft);
         })
     }
 
     private addItemToSpecSlots(itemId: string): void
     {
         // Allow in spec slot
-        const items = this.Instance.database.templates.items;
+        const items = this.InstanceManager.database.templates.items;
 
         for (const item in items)
         {

@@ -2,7 +2,8 @@
     "ProgressionEnabled": true,
     // Dont allow multiple in the same reward
     "DisallowMultipleSameRoll": [
-        "5c99f98d86f7745c314214b3"
+        "5c99f98d86f7745c314214b3",
+        "5795f317245977243854e041"
     ],                                   
     // Reward pools for each tier and some individual tier based settings
     "RewardPool": [
@@ -243,7 +244,7 @@
         },
         {
             "Tier": 10,
-            "RewardValue": 1000000,
+            "RewardValue": 1250000,
             "MaximumNumberOfMultiples": 2,
             "RewardCategories": [
                 "5c99f98d86f7745c314214b3",
@@ -258,7 +259,7 @@
     Debug: {
         "Enabled": true,
         "TestGeneration": true,
-        "GenerationLevel": 7,
+        "GenerationLevel": 10,
         "NumberOfRuns": 25,
     }
 }

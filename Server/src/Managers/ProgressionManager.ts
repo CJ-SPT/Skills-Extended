@@ -1,44 +1,38 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import fs from 'fs';
+import fs from "fs";
 import path from "node:path";
 import JSON5 from "json5";
 
-
 import { LogTextColor } from "@spt/models/spt/logging/LogTextColor";
 import { IPmcData } from "@spt/models/eft/common/IPmcData";
-import { InstanceManager } from "./InstanceManager";
 import { ISendMessageDetails } from "@spt/models/spt/dialog/ISendMessageDetails";
 import { MessageType } from "@spt/models/enums/MessageType";
-import { IRewardTier, ISkillRewards } from "./Models/IConfig";
-import { ILogger } from '@spt/models/spt/utils/ILogger';
-import { IProgression } from './Models/IProgression';
+import { IRewardTier, ISkillRewards } from "../Models/IConfig";
+import { ILogger } from "@spt/models/spt/utils/ILogger";
 import { Item } from "@spt/models/eft/common/tables/IItem";
-import { Money } from '@spt/models/enums/Money';
-import { BaseClasses } from '@spt/models/enums/BaseClasses';
-import { Traders } from '@spt/models/enums/Traders';
-import { join } from 'path';
-import { it } from 'node:test';
+import { BaseClasses } from "@spt/models/enums/BaseClasses";
+
+import { InstanceManager } from "./InstanceManager";
+import { IOManager } from "./IOManager";
+import { IProgression } from "../Models/IProgression";
 
 export class ProgressionManager
 {
     private InstanceManager: InstanceManager;
+    private IOManager: IOManager;
     private logger: ILogger;
 
     private PmcProfile: IPmcData;
     private Progression: IProgression;
     private SkillRewards: ISkillRewards;
 
-    private ProgressPath: string;
-
-    public init(instanceManager: InstanceManager): void
+    public init(instanceManager: InstanceManager, ioManager: IOManager): void
     {
         this.InstanceManager = instanceManager;
+        this.IOManager = ioManager;
         this.logger = instanceManager.logger;
 
-        this.ProgressPath = path.join(path.dirname(__filename), "..", "progression");
-
-        const rewardsRaw = this.InstanceManager.vfs.readFile(path.join(path.dirname(__filename), "..", "config", "SkillRewards.json5"));
-        this.SkillRewards = JSON5.parse(rewardsRaw);
+        this.SkillRewards = this.IOManager.LoadConfigFile("SkillRewards.json5");
 
         this.debugTestGeneration();
     }
@@ -62,7 +56,7 @@ export class ProgressionManager
         {
             this.Progression.Progress = {};
             this.logger.logWithColor(`Skills Extended: Progress file for ${this.PmcProfile.Info.Nickname} wiped.`, LogTextColor.YELLOW);
-            this.saveProgressionFile();
+            this.IOManager.saveProgressionFile(this.Progression, `${this.PmcProfile._id}.json`);
         }
     }
 
@@ -82,7 +76,7 @@ export class ProgressionManager
 
     private checkForOrCreateProgressFile(): boolean
     {
-        const progPath = path.join(this.ProgressPath, `${this.PmcProfile._id}.json`);
+        const progPath = path.join(this.IOManager.ProgressPath, `${this.PmcProfile._id}.json`);
 
         if (!this.InstanceManager.vfs.exists(progPath))
         {
@@ -97,11 +91,11 @@ export class ProgressionManager
                 }
             }
 
-            this.saveProgressionFile();
+            this.IOManager.saveProgressionFile(this.Progression, `${this.PmcProfile._id}.json`);
             return true;
         }
 
-        this.loadProgressionFile();
+        this.Progression = this.IOManager.LoadProgressionFile(`${this.PmcProfile._id}.json`);
 
         this.logger.logWithColor(`Skills Extended: Progress file for ${this.Progression.PmcName} loaded.`, LogTextColor.GREEN);
         return false;
@@ -133,7 +127,7 @@ export class ProgressionManager
             }
         }
 
-        this.saveProgressionFile();
+        this.IOManager.saveProgressionFile(this.Progression, `${this.PmcProfile._id}.json`);
     }
 
     private convertSkillProgressToRewardTier(progress: number): number
@@ -190,7 +184,7 @@ export class ProgressionManager
         if (debug)
         {
             this.logger.logWithColor(`\nGenerating reward for tier ${tier}`, LogTextColor.YELLOW);
-            this.logger.logWithColor(`Settings:`, LogTextColor.YELLOW);
+            this.logger.logWithColor("Settings:", LogTextColor.YELLOW);
             this.logger.logWithColor(`Reward value: ${tierData.RewardValue}`, LogTextColor.YELLOW);
             this.logger.logWithColor(`Max amount of same item: ${tierData.MaximumNumberOfMultiples}`, LogTextColor.YELLOW);
         }
@@ -218,7 +212,7 @@ export class ProgressionManager
             if (rewardValue > tierData.RewardValue) break;
 
             // Item is over this tiers price cap
-            if (itemPrices[key] > tierData.RewardValue) continue;
+            if (itemPrices[key] > tierData.RewardValue && tier !== 10) continue;
      
             // Item has no price, skip it
             if (itemPrices[key] === 0) continue;
@@ -309,24 +303,6 @@ export class ProgressionManager
         mailService.sendMessageToPlayer(message);
 
         return true;
-    }
-
-    private saveProgressionFile(): void
-    {
-        const progPath = path.join(this.ProgressPath, `${this.PmcProfile._id}.json`);
-
-        const jsonData = JSON.stringify(this.Progression, null, 2);
-
-        fs.writeFileSync(progPath, jsonData, 'utf8');
-
-        this.logger.logWithColor(`Skills Extended: Progression file for ${this.PmcProfile.Info.Nickname} saved.`, LogTextColor.GREEN);
-    }
-
-    private loadProgressionFile(): void
-    {
-        const progPath = path.join(this.ProgressPath, `${this.PmcProfile._id}.json`);
-        const progressionRaw = this.InstanceManager.vfs.readFile(progPath);
-        this.Progression = JSON5.parse(progressionRaw);
     }
 
     private shuffleKeys<T>(record: Record<string, T>): string[] 

@@ -1,6 +1,3 @@
-import * as fs from "fs";
-import * as path from "path";
-
 import { ILogger } from "@spt/models/spt/utils/ILogger";
 import { DatabaseServer } from "@spt/servers/DatabaseServer";
 import { IDatabaseTables } from "@spt/models/spt/server/IDatabaseTables";
@@ -19,16 +16,12 @@ import { ItemHelper } from "@spt/helpers/ItemHelper";
 import { MailSendService } from "@spt/services/MailSendService";
 import { VFS } from "@spt/utils/VFS";
 import { HashUtil } from "@spt/utils/HashUtil";
+import { TraderHelper } from "@spt/helpers/TraderHelper";
 
 export class InstanceManager 
 {
     //#region Accessible in or after preAkiLoad
-    public modName: string;
-    public SessionId: string;
     public debug: boolean;
-    // Useful Paths
-    public modPath: string = path.join(process.cwd(), "\\user\\mods\\SkillsExtended\\");
-    public profilePath: string = path.join(process.cwd(), "\\user\\profiles");
 
     // Instances
     public container: DependencyContainer;
@@ -52,13 +45,12 @@ export class InstanceManager
     public importerUtil: ImporterUtil;
     public customItemService: CustomItemService;
     public mailSendService: MailSendService;
+    public traderHelper: TraderHelper;
     //#endregion
 
     // Call at the start of the mods postDBLoad method
-    public preSptLoad(container: DependencyContainer, mod: string): void
+    public preSptLoad(container: DependencyContainer): void
     {
-        this.modName = mod;
-
         this.container = container;
         this.preSptModLoader = container.resolve<PreSptModLoader>("PreSptModLoader");
         this.imageRouter = container.resolve<ImageRouter>("ImageRouter");
@@ -81,22 +73,6 @@ export class InstanceManager
         this.importerUtil = container.resolve<ImporterUtil>("ImporterUtil");
         this.customItemService = container.resolve<CustomItemService>("CustomItemService");
         this.mailSendService = container.resolve<MailSendService>("MailSendService");
-    }
-    
-
-    public loadStringDictionarySync(filePath: string): Record<string, string> 
-    {
-        try 
-        {
-            const data = fs.readFileSync(filePath, 'utf-8');
-            const jsonData = JSON.parse(data) as Record<string, string>; // Cast to desired type
-            return jsonData;
-        } 
-        catch (error) 
-        {
-            console.error(`Error reading file ${filePath}: ${error}`);
-            // Consider throwing a custom error here for better handling
-            throw new Error('Failed to load dictionary');
-        }
+        this.traderHelper = container.resolve<TraderHelper>("TraderHelper");
     }
 }
