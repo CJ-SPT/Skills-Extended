@@ -213,7 +213,7 @@ export class ProgressionManager
             if (rewardValue > tierData.RewardValue) break;
 
             // Item is over this tiers price cap
-            if (itemPrices[key] > tierData.RewardValue && tier !== 10) continue;
+            if (itemPrices[key] > tierData.RewardValue && tier < 10) continue;
      
             // Item has no price, skip it
             if (itemPrices[key] === 0) continue;
