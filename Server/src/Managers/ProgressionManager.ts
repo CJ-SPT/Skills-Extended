@@ -219,7 +219,9 @@ export class ProgressionManager
             if (itemPrices[key] === 0) continue;
 
             // Skip dog tags and quest items
-            if (itemHelper.isDogtag(key) || itemHelper.isQuestItem(key)) continue;
+            if (itemHelper.isDogtag(key) 
+                || itemHelper.isQuestItem(key)
+                || !itemHelper.isValidItem(key)) continue;
 
             const noDupes = itemHelper.isOfBaseclasses(key, this.SkillRewards.DisallowMultipleSameRoll);
             
