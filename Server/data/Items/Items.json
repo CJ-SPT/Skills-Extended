@@ -1,0 +1,180 @@
+[
+    {
+        "itemTplToClone": "5448ba0b4bdc2d02308b456c",
+        "overrideProperties": {
+            "CanSellOnRagfair": false,
+            "MaximumNumberOfUsage": 5,
+            "Unlootable": true,
+            "UnlootableFromSlot": "SpecialSlot",
+            "UnlootableFromSide": [
+                "Bear",
+                "Usec",
+                "Savage"
+            ],
+            "DiscardLimit": 5,
+            "Prefab": {
+                "path": "lockpick.bundle",
+                "rcid": ""
+            }
+        },
+        "parentId": "5c99f98d86f7745c314214b3",
+        "handbookParentId": "5c518ec986f7743b68682ce2",
+        "newId": "6622c28aed7e3bc72e301e22",
+        "fleaPriceRoubles": 120000,
+        "handbookPriceRoubles": 75000,
+
+        "locales": {
+            "en": {
+                "name": "Lockpick set",
+                "shortName": "Lockpick",
+                "description": "A set of tools used for picking locks"
+            }
+        }
+    },
+    {
+        "itemTplToClone": "5bc9b720d4351e450201234b",
+        "overrideProperties": {
+            "CanSellOnRagfair": false,
+            "Unlootable": true,
+            "UnlootableFromSlot": "SpecialSlot",
+            "UnlootableFromSide": [
+                "Bear",
+                "Usec",
+                "Savage"
+            ],
+            "DiscardLimit": 5,
+            "Prefab": {
+                "path": "pda.bundle",
+                "rcid": ""
+            }
+        },
+        "parentId": "5c164d2286f774194c5e69fa",
+        "handbookParentId": "5c164d2286f774194c5e69fa",
+        "newId": "662400eb756ca8948fe64fe8",
+        "fleaPriceRoubles": 3650000,
+        "handbookPriceRoubles": 7560000,
+
+        "locales": {
+            "en": {
+                "name": "Flipper zero",
+                "shortName": "Flipper",
+                "description": "A hacking device used for gaining access to key card doors. Requires Lockpicking level 25 to use."
+            }
+        }
+    },
+    {
+        "itemTplToClone": "5bc9c049d4351e44f824d360",
+        "overrideProperties": {
+            "CanSellOnRagfair": false,
+            "Prefab": {
+                "path": "skill_book_1.bundle",
+                "rcid": ""
+            }
+        },
+        "parentId": "590c745b86f7743cc433c5f2",
+        "handbookParentId": "5c164d2286f774194c5e69fa",
+        "newId": "66bf328e83340e52e2a046d4",
+        "fleaPriceRoubles": 25000,
+        "handbookPriceRoubles": 25000,
+
+        "locales": {
+            "en": {
+                "name": "Skill Book 1",
+                "shortName": "Skill Book",
+                "description": "A skill book."
+            }
+        }
+    },
+    {
+        "itemTplToClone": "5bc9c049d4351e44f824d360",
+        "overrideProperties": {
+            "CanSellOnRagfair": false,
+            "Prefab": {
+                "path": "skill_book_2.bundle",
+                "rcid": ""
+            }
+        },
+        "parentId": "590c745b86f7743cc433c5f2",
+        "handbookParentId": "5c164d2286f774194c5e69fa",
+        "newId": "66bf969b321a56fb499b4d8d",
+        "fleaPriceRoubles": 25000,
+        "handbookPriceRoubles": 25000,
+
+        "locales": {
+            "en": {
+                "name": "Skill Book 2",
+                "shortName": "Skill Book",
+                "description": "A skill book."
+            }
+        }
+    },
+    {
+        "itemTplToClone": "5bc9c049d4351e44f824d360",
+        "overrideProperties": {
+            "CanSellOnRagfair": false,
+            "Prefab": {
+                "path": "skill_book_3.bundle",
+                "rcid": ""
+            }
+        },
+        "parentId": "590c745b86f7743cc433c5f2",
+        "handbookParentId": "5c164d2286f774194c5e69fa",
+        "newId": "66bf9c72c40529b4e5b85fee",
+        "fleaPriceRoubles": 25000,
+        "handbookPriceRoubles": 25000,
+
+        "locales": {
+            "en": {
+                "name": "Skill Book 3",
+                "shortName": "Skill Book",
+                "description": "A skill book."
+            }
+        }
+    },
+    {
+        "itemTplToClone": "5bc9c049d4351e44f824d360",
+        "overrideProperties": {
+            "CanSellOnRagfair": false,
+            "Prefab": {
+                "path": "skill_book_4.bundle",
+                "rcid": ""
+            }
+        },
+        "parentId": "590c745b86f7743cc433c5f2",
+        "handbookParentId": "5c164d2286f774194c5e69fa",
+        "newId": "66bf9c5f2d690006ff5961b4",
+        "fleaPriceRoubles": 25000,
+        "handbookPriceRoubles": 25000,
+
+        "locales": {
+            "en": {
+                "name": "Skill Book 4",
+                "shortName": "Skill Book",
+                "description": "A skill book."
+            }
+        }
+    },
+    {
+        "itemTplToClone": "5bc9c049d4351e44f824d360",
+        "overrideProperties": {
+            "CanSellOnRagfair": false,
+            "Prefab": {
+                "path": "skill_book_5.bundle",
+                "rcid": ""
+            }
+        },
+        "parentId": "590c745b86f7743cc433c5f2",
+        "handbookParentId": "5c164d2286f774194c5e69fa",
+        "newId": "66bf9c51b8a6b39220ad6c5e",
+        "fleaPriceRoubles": 25000,
+        "handbookPriceRoubles": 25000,
+
+        "locales": {
+            "en": {
+                "name": "Skill Book 5",
+                "shortName": "Skill Book",
+                "description": "A skill book."
+            }
+        }
+    }
+]

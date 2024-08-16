@@ -27,6 +27,7 @@ export class IOManager
     public TraderRootPath: string = path.join(path.dirname(__filename), "..", "..", "Data", "Trader");
     public QuestsRootPath: string = path.join(path.dirname(__filename), "..", "..", "Data", "Quests");
     public ImageRootPath: string = path.join(path.dirname(__filename), "..", "..", "Data", "Images");
+    public ItemRootPath: string = path.join(path.dirname(__filename), "..", "..", "Data", "Items");
 
     /**
      * Loads and parses a config file from disk

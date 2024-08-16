@@ -95,90 +95,14 @@ class SkillsExtended implements IPreSptLoadMod, IPostDBLoadMod
 
     private CreateItems(): void
     {
-        this.CreateLockpick();
-        this.CreatePDA();
-    }
+        const items = this.IOManager.loadJsonFile<NewItemFromCloneDetails[]>(path.join(this.IOManager.ItemRootPath, "Items.json"));
 
-    // Clones factory key to be used as a blank for bump lock picking
-    private CreateLockpick(): void
-    {
-        const lockPick: NewItemFromCloneDetails = {
-            itemTplToClone: "5448ba0b4bdc2d02308b456c",
-            overrideProperties: {
-                CanSellOnRagfair: false,
-                MaximumNumberOfUsage: 5,
-                Unlootable: true,
-                UnlootableFromSlot: "SpecialSlot",
-                UnlootableFromSide: [
-                    "Bear",
-                    "Usec",
-                    "Savage"
-                ],
-                Prefab: {
-                    path: "lockpick.bundle",
-                    rcid: ""
-                },
-                BackgroundColor: "orange"
-                
-            },
-
-            parentId: "5c99f98d86f7745c314214b3",
-            newId: SkillsExtendedIds.Lockpick,
-            fleaPriceRoubles: 120000,
-            handbookPriceRoubles: 75000,
-            handbookParentId: "5c518ec986f7743b68682ce2",
-
-            locales: {
-                en: {
-                    name: "Lockpick set",
-                    shortName: "Lockpick",
-                    description: "A set of tools used for picking locks"
-                }
-            }
+        for (const item of items)
+        {
+            this.customItemService.createItemFromClone(item);
         }
 
-        this.customItemService.createItemFromClone(lockPick);
-
-        this.addItemToSpecSlots(SkillsExtendedIds.Lockpick);
-    }
-
-    private CreatePDA(): void
-    {
-        const Pda: NewItemFromCloneDetails = {
-            itemTplToClone: "5bc9b720d4351e450201234b",
-            overrideProperties: {
-                CanSellOnRagfair: false,
-                Unlootable: true,
-                UnlootableFromSlot: "SpecialSlot",
-                UnlootableFromSide: [
-                    "Bear",
-                    "Usec",
-                    "Savage"
-                ],
-                Prefab: {
-                    path: "pda.bundle",
-                    rcid: ""
-                }
-            },
-
-            parentId: "5c164d2286f774194c5e69fa",
-            newId: SkillsExtendedIds.Pda,
-            fleaPriceRoubles: 3650000,
-            handbookPriceRoubles: 7560000,
-            handbookParentId: "5c164d2286f774194c5e69fa",
-
-            locales: {
-                en: {
-                    name: "Flipper zero",
-                    shortName: "Flipper",
-                    description: "A hacking device used for gaining access to key card doors. Requires Lockpicking level 25 to use."
-                }
-            }
-        }
-
-        this.customItemService.createItemFromClone(Pda);
-
-        this.addItemToSpecSlots(SkillsExtendedIds.Pda);
+        this.InstanceManager.logger.logWithColor(`Skills Extended: Loaded ${items.length} custom items`, LogTextColor.GREEN);
     }
 
     private addCraftsToDatabase(): void
