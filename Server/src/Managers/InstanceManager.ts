@@ -17,11 +17,13 @@ import type { MailSendService } from "@spt/services/MailSendService";
 import type { VFS } from "@spt/utils/VFS";
 import type { HashUtil } from "@spt/utils/HashUtil";
 import type { TraderHelper } from "@spt/helpers/TraderHelper";
+import { LogTextColor } from "@spt/models/spt/logging/LogTextColor";
 
 export class InstanceManager 
 {
     //#region Accessible in or after preAkiLoad
-    public debug: boolean;
+    private alpha = true;
+    private version = "1.2.0 Alpha 2";
 
     // Instances
     public container: DependencyContainer;
@@ -74,5 +76,21 @@ export class InstanceManager
         this.customItemService = container.resolve<CustomItemService>("CustomItemService");
         this.mailSendService = container.resolve<MailSendService>("MailSendService");
         this.traderHelper = container.resolve<TraderHelper>("TraderHelper");
+
+        if (this.alpha)
+        {
+            this.displayAlphaWarning();
+        }
+    }
+
+    private displayAlphaWarning(): void
+    {
+        const logger = this.logger;
+
+        logger.logWithColor("===================================================================================", LogTextColor.RED);
+        logger.logWithColor(`Skills Extended: Pre-release development build. Version: ${this.version}`, LogTextColor.RED);
+        logger.logWithColor("Do not ask for support running this on your game. This is not an error.", LogTextColor.RED);
+        logger.logWithColor("Expect nothing to work. Report what doesn't. Everything is subject to change.", LogTextColor.RED);
+        logger.logWithColor("===================================================================================", LogTextColor.RED);
     }
 }

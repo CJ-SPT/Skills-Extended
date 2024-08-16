@@ -1,5 +1,5 @@
 {
-    "_id": "Locksmith",
+    "_id": "66bf1f65e1f3b83ea069a271",
     "working": true,
     "availableInRaid": false,
     "items_buy": {
@@ -15,7 +15,7 @@
     "surname": " ",
     "nickname": "The locksmith",
     "location": "Unknown",
-    "avatar": "/files/trader/avatar/locksmith.jpg",
+    "avatar": "/files/trader/avatar/66bf1f65e1f3b83ea069a271.jpg",
     "balance_rub": 5000000,
     "balance_dol": 0,
     "balance_eur": 0,

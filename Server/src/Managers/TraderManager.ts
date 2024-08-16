@@ -50,7 +50,7 @@ export class TraderManager
         const imageRouter = this.InstanceManager.imageRouter;
 
         // Reference the mod "res" folder
-        const imageFilepath = path.join(this.IOManager.ImageRootPath, "Trader", "locksmith.jpg");
+        const imageFilepath = path.join(this.IOManager.ImageRootPath, "Trader", "66bf1f65e1f3b83ea069a271.jpg");
         
         // Register a route to point to the profile picture - remember to remove the .jpg from it
         imageRouter.addRoute(this.BaseJson.avatar.replace(".jpg", ""), imageFilepath);

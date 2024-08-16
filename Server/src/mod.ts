@@ -10,15 +10,13 @@ import type { IPostDBLoadMod } from "@spt/models/external/IPostDBLoadMod";
 import type { IPreSptLoadMod } from "@spt/models/external/IPreSptLoadMod";
 import type { CustomItemService } from "@spt/services/mod/CustomItemService";
 import type { NewItemFromCloneDetails } from "@spt/models/spt/mod/NewItemDetails";
+import type { ISkillsConfig } from "./Models/ISkillsConfig";
 
-import { Money } from "@spt/models/enums/Money";
-import { Traders } from "@spt/models/enums/Traders";
 import { LogTextColor } from "@spt/models/spt/logging/LogTextColor";
 import { ProgressionManager } from "./Managers/ProgressionManager";
 import { IOManager } from "./Managers/IOManager";
-import { CustomItemIds } from "./enums/CustomItemIds";
+import { SkillsExtendedIds } from "./enums/SkillsExtendedIds";
 import { RouteManager } from "./Managers/RouteManager";
-import type { ISkillsConfig } from "./Models/ISkillsConfig";
 import { AchievementManager } from "./Managers/AchievementManager";
 import { TraderManager } from "./Managers/TraderManager";
 
@@ -33,7 +31,7 @@ class SkillsExtended implements IPreSptLoadMod, IPostDBLoadMod
     private RouteManager: RouteManager = new RouteManager();
     
     private customItemService: CustomItemService;
-    public SkillsConfig: ISkillsConfig; // TODO: Type this
+    public SkillsConfig: ISkillsConfig;
 
     public preSptLoad(container: DependencyContainer): void 
     {
@@ -125,7 +123,7 @@ class SkillsExtended implements IPreSptLoadMod, IPostDBLoadMod
             },
 
             parentId: "5c99f98d86f7745c314214b3",
-            newId: CustomItemIds.Lockpick,
+            newId: SkillsExtendedIds.Lockpick,
             fleaPriceRoubles: 120000,
             handbookPriceRoubles: 75000,
             handbookParentId: "5c518ec986f7743b68682ce2",
@@ -141,32 +139,7 @@ class SkillsExtended implements IPreSptLoadMod, IPostDBLoadMod
 
         this.customItemService.createItemFromClone(lockPick);
 
-        const mechanic = this.InstanceManager.database.traders[Traders.MECHANIC];
-        
-        mechanic.assort.items.push({
-            _id: CustomItemIds.Lockpick,
-            _tpl: CustomItemIds.Lockpick,
-            parentId: "hideout",
-            slotId: "hideout",
-            upd:
-            {
-                UnlimitedCount: false,
-                StackObjectsCount: 10
-            }
-        });
-
-        mechanic.assort.barter_scheme[CustomItemIds.Lockpick] = [
-            [
-                {
-                    count: 75000,
-                    _tpl: Money.ROUBLES
-                }
-            ]
-        ];
-        
-        mechanic.assort.loyal_level_items[CustomItemIds.Lockpick] = 2;
-
-        this.addItemToSpecSlots(CustomItemIds.Lockpick);
+        this.addItemToSpecSlots(SkillsExtendedIds.Lockpick);
     }
 
     private CreatePDA(): void
@@ -189,7 +162,7 @@ class SkillsExtended implements IPreSptLoadMod, IPostDBLoadMod
             },
 
             parentId: "5c164d2286f774194c5e69fa",
-            newId: CustomItemIds.Pda,
+            newId: SkillsExtendedIds.Pda,
             fleaPriceRoubles: 3650000,
             handbookPriceRoubles: 7560000,
             handbookParentId: "5c164d2286f774194c5e69fa",
@@ -204,33 +177,8 @@ class SkillsExtended implements IPreSptLoadMod, IPostDBLoadMod
         }
 
         this.customItemService.createItemFromClone(Pda);
-        
-        const peaceKeeper = this.InstanceManager.database.traders[Traders.PEACEKEEPER];
 
-        peaceKeeper.assort.items.push({
-            _id: CustomItemIds.Pda,
-            _tpl: CustomItemIds.Pda,
-            parentId: "hideout",
-            slotId: "hideout",
-            upd:
-            {
-                UnlimitedCount: false,
-                StackObjectsCount: 1
-            }
-        });
-
-        peaceKeeper.assort.barter_scheme[CustomItemIds.Pda] = [
-            [
-                {
-                    count: 12600,
-                    _tpl: Money.DOLLARS
-                }
-            ]
-        ];
-        
-        peaceKeeper.assort.loyal_level_items[CustomItemIds.Pda] = 3;
-
-        this.addItemToSpecSlots(CustomItemIds.Pda);
+        this.addItemToSpecSlots(SkillsExtendedIds.Pda);
     }
 
     private addCraftsToDatabase(): void
