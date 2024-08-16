@@ -16,35 +16,22 @@ export class IOManager
     }
 
     private InstanceManager: InstanceManager;
-    
 
+    public DataPath: string = path.join(path.dirname(__filename), "..", "..", "Data");
     public ConfigPath: string = path.join(path.dirname(__filename), "..", "..", "config");
     public ProgressPath: string = path.join(path.dirname(__filename), "..", "..", "progression");
     public LocaleRootPath: string = path.join(path.dirname(__filename), "..", "..", "locale");
-
-    
+ 
     /**
      * Loads and parses a config file from disk
      * @param fileName File name inside of config folder to load
      */
-    public LoadConfigFile<T>(fileName: string): T
+    public loadConfigFile<T>(fileName: string): T
     {
         const file = path.join(this.ConfigPath, fileName);
         const rewardsRaw = this.InstanceManager.vfs.readFile(file);
 
         return JSON5.parse(rewardsRaw) as T;
-    }
-
-    /**
-     * Loads and parses a config file from disk
-     * @param fileName File name inside of config folder to load
-     */
-    public LoadProgressionFile(fileName: string): any
-    {
-        const file = path.join(this.ProgressPath, fileName);
-        const progress = this.InstanceManager.vfs.readFile(file);
-
-        return JSON5.parse(progress);
     }
 
     public saveProgressionFile(progressFile: IProgression, fileName: string): void

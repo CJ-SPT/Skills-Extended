@@ -93,7 +93,7 @@ export class ProgressionManager
             return true;
         }
 
-        this.Progression = this.IOManager.LoadProgressionFile(`${this.PmcProfile._id}.json`);
+        this.Progression = this.IOManager.loadConfigFile<IProgression>(`${this.PmcProfile._id}.json`);
 
         this.logger.logWithColor(`Skills Extended: Progress file for ${this.Progression.PmcName} loaded.`, LogTextColor.GREEN);
         return false;
