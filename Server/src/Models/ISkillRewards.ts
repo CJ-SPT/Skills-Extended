@@ -1,8 +1,9 @@
 export interface ISkillRewards
 {
     ProgressionEnabled: boolean;
+    RewardCategories: string[];
     DisallowMultipleSameRoll: string[];
-    RewardPool: IRewardTier[];
+    Tiers: IRewardTier[];
     Debug: ProgressionDebug;
 }
 
@@ -11,8 +12,6 @@ export interface IRewardTier
     Tier: number;
     RewardValue: number;
     MaximumNumberOfMultiples: number;
-    // Item Tpl, and the chance to get it from this tier
-    RewardCategories: string[];
 }
 
 export interface ProgressionDebug

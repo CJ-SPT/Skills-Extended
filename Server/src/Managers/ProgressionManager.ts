@@ -174,10 +174,10 @@ export class ProgressionManager
 
         const locale = this.InstanceManager.database.locales.global.en;
 
-        const rewards = this.SkillRewards.RewardPool as IRewardTier[];
+        const rewards = this.SkillRewards.Tiers as IRewardTier[];
         const tierData = rewards.find(x => x.Tier === tier);
  
-        if (tierData?.RewardCategories === undefined) return;
+        if (this.SkillRewards.RewardCategories === undefined) return;
 
         if (debug)
         {
@@ -188,7 +188,7 @@ export class ProgressionManager
         }
 
         // Shuffle the category keys to ensure randomness
-        const itemPrices = this.generateItemPrices(tierData);
+        const itemPrices = this.generateItemPrices();
         const randomShuffle = this.shuffleKeys(itemPrices);
 
         let rewardValue = 0;
@@ -241,12 +241,12 @@ export class ProgressionManager
      * @param tierData Tier to get item price information for
      * @returns Record of items and prices
      */
-    private generateItemPrices(tierData: IRewardTier): Record<string, number>
+    private generateItemPrices(): Record<string, number>
     {
         const itemPrices: Record<string, number> = {};
 
         // Build a price map of all items in all categories
-        for (const category of tierData.RewardCategories)
+        for (const category of this.SkillRewards.RewardCategories)
         {
             const rewards = this.getItemsAndPricesOfCategory(category);
     

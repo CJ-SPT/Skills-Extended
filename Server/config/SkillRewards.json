@@ -1,263 +1,110 @@
 {
     "ProgressionEnabled": true,
+    "RewardCategories": [
+        "5448f39d4bdc2d0a728b4568",
+        "5448f3ac4bdc2dce718b4569",
+
+        "590c745b86f7743cc433c5f2",
+        "57864ada245977548638de91",
+        "57864a66245977548f04a81f",
+        "57864ee62459775490116fc1",
+        "57864c322459775490116fbf",
+        "57864c8c245977548867e7f1",
+        "57864bb7245977548b3b66c2",
+        "57864a3d24597754843f8721",
+        "5448ecbe4bdc2d60728b4568",
+
+        "55802f3e4bdc2de7118b4584",
+        "55818ad54bdc2ddc698b4569",
+        "55818add4bdc2d5b648b456f",
+        "55818a594bdc2db9688b456a",
+        "55818af64bdc2d5b648b4570",
+        "550aa4bf4bdc2dd6348b456b",
+        "550aa4cd4bdc2dd8348b456c",
+        "5448bc234bdc2d3c308b4569",
+
+        "5448e53e4bdc2d60728b4567",
+        "5448e5284bdc2dcb718b4567",
+        "5a2c3a9486f774688b05e574",
+        "5447e1d04bdc2dff2f8b4567",
+        "5b3f15d486f77432d0509248",
+        "644120aa86ffbe10ee032b6f",
+
+        "5795f317245977243854e041",
+        "62f109593b54472778797866",
+
+        "5c99f98d86f7745c314214b3",
+        "5c164d2286f774194c5e69fa",
+
+        "5485a8684bdc2da71d8b4567",
+        "543be6564bdc2df4348b4568"
+    ],
     "DisallowMultipleSameRoll": [
         "5c99f98d86f7745c314214b3",
-        "5795f317245977243854e041"
+        "5795f317245977243854e041",
+        "62f109593b54472778797866"
     ],                                   
-    "RewardPool": [
+    "Tiers": [
         {
             "Tier": 0,
             "RewardValue": 0,
-            "MaximumNumberOfMultiples": 0,
-            "RewardCategories": []
+            "MaximumNumberOfMultiples": 0
         },
         {
             "Tier": 1,
-            "RewardValue": 48000,
-            "MaximumNumberOfMultiples": 2,
-            "RewardCategories": [
-                "57864ada245977548638de91",
-                "5c99f98d86f7745c314214b3",
-                "57864a66245977548f04a81f",
-                "57864ee62459775490116fc1",
-                "57864e4c24597754843f8723",
-                "5485a8684bdc2da71d8b4567",
-                "5a341c4086f77401f2541505",
-                "5645bcb74bdc2ded0b8b4578",
-                "5448f39d4bdc2d0a728b4568",
-                "5448f3ac4bdc2dce718b4569"
-            ]
+            "RewardValue": 38000,
+            "MaximumNumberOfMultiples": 2    
         },
         {
             "Tier": 2,
-            "RewardValue": 58000,
-            "MaximumNumberOfMultiples": 2, 
-            "RewardCategories": [
-                "57864ada245977548638de91",
-                "5c99f98d86f7745c314214b3",
-                "57864a66245977548f04a81f",
-                "57864ee62459775490116fc1",
-                "57864e4c24597754843f8723",
-                "590c745b86f7743cc433c5f2",
-                "57864bb7245977548b3b66c2",
-                "5485a8684bdc2da71d8b4567",
-                "5a341c4086f77401f2541505",
-                "5645bcb74bdc2ded0b8b4578",
-                "5448f39d4bdc2d0a728b4568",
-                "5448f3ac4bdc2dce718b4569",
-
-                "55818a594bdc2db9688b456a",
-                "55818ad54bdc2ddc698b4569",
-                "55818b164bdc2ddc698b456c",
-                "55818b084bdc2d5b648b4571",
-                "550aa4bf4bdc2dd6348b456b",
-                "550aa4dd4bdc2dc9348b4569",
-                "550aa4cd4bdc2dd8348b456c"
-            ]
+            "RewardValue": 48000,
+            "MaximumNumberOfMultiples": 2
         },
         {
             "Tier": 3,
-            "RewardValue": 70000,
-            "MaximumNumberOfMultiples": 2,
-            "RewardCategories": [
-                "5c99f98d86f7745c314214b3",
-                "57864a66245977548f04a81f",
-                "57864ee62459775490116fc1",
-                "57864e4c24597754843f8723",
-                "590c745b86f7743cc433c5f2",
-                "57864bb7245977548b3b66c2",
-                "57864a3d24597754843f8721",
-                "5485a8684bdc2da71d8b4567",
-                "5a341c4086f77401f2541505",
-                "5645bcb74bdc2ded0b8b4578",
-                "5448f39d4bdc2d0a728b4568",
-                "5448f3ac4bdc2dce718b4569",
-
-                "55818a594bdc2db9688b456a",
-                "55818ad54bdc2ddc698b4569",
-                "55818b164bdc2ddc698b456c",
-                "55818b084bdc2d5b648b4571",
-                "550aa4bf4bdc2dd6348b456b",
-                "550aa4dd4bdc2dc9348b4569",
-                "550aa4cd4bdc2dd8348b456c"
-            ]
+            "RewardValue": 60000,
+            "MaximumNumberOfMultiples": 2
         },
         {
             "Tier": 4,
-            "RewardValue": 82500,
-            "MaximumNumberOfMultiples": 2,
-            "RewardCategories": [
-                "5c99f98d86f7745c314214b3",
-                "57864a66245977548f04a81f",
-                "57864ee62459775490116fc1",
-                "57864e4c24597754843f8723",
-                "590c745b86f7743cc433c5f2",
-                "57864bb7245977548b3b66c2",
-                "57864a3d24597754843f8721",
-                "5448ecbe4bdc2d60728b4568",
-                "5485a8684bdc2da71d8b4567",
-                "5a341c4086f77401f2541505",
-                "5645bcb74bdc2ded0b8b4578",
-                "5448f39d4bdc2d0a728b4568",
-                "5448f3ac4bdc2dce718b4569",
-                
-                "55818a594bdc2db9688b456a",
-                "55818ad54bdc2ddc698b4569",
-                "55818b164bdc2ddc698b456c",
-                "55818b084bdc2d5b648b4571",
-                "550aa4bf4bdc2dd6348b456b",
-                "550aa4dd4bdc2dc9348b4569",
-                "550aa4cd4bdc2dd8348b456c"
-            ]
+            "RewardValue": 72500,
+            "MaximumNumberOfMultiples": 2
         },
         {
             "Tier": 5,
-            "RewardValue": 98500,
-            "MaximumNumberOfMultiples": 2,
-            "RewardCategories": [
-                "5c99f98d86f7745c314214b3",
-                "57864a66245977548f04a81f",
-                "57864ee62459775490116fc1",
-                "57864e4c24597754843f8723",
-                "590c745b86f7743cc433c5f2",
-                "57864bb7245977548b3b66c2",
-                "57864a3d24597754843f8721",
-                "5448ecbe4bdc2d60728b4568",
-                "5485a8684bdc2da71d8b4567",
-                "5a341c4086f77401f2541505",
-                "5645bcb74bdc2ded0b8b4578",
-                "55818aeb4bdc2ddc698b456a",
-                "5448f39d4bdc2d0a728b4568",
-                "5448f3ac4bdc2dce718b4569",
-
-                "55818a594bdc2db9688b456a",
-                "55818ad54bdc2ddc698b4569",
-                "55818b164bdc2ddc698b456c",
-                "55818b084bdc2d5b648b4571",
-                "550aa4bf4bdc2dd6348b456b",
-                "550aa4dd4bdc2dc9348b4569",
-                "550aa4cd4bdc2dd8348b456c"
-            ]
+            "RewardValue": 85500,
+            "MaximumNumberOfMultiples": 2
         },
         {
             "Tier": 6,
-            "RewardValue": 125000,
-            "MaximumNumberOfMultiples": 3,
-            "RewardCategories": [
-                "5c99f98d86f7745c314214b3",
-                "57864a66245977548f04a81f",
-                "57864ee62459775490116fc1",
-                "57864e4c24597754843f8723",
-                "57864bb7245977548b3b66c2",
-                "57864a3d24597754843f8721",
-                "5448ecbe4bdc2d60728b4568",
-                "5c164d2286f774194c5e69fa",
-                "57864c8c245977548867e7f1",
-                "5a341c4086f77401f2541505",
-                "5645bcb74bdc2ded0b8b4578",
-                "55818aeb4bdc2ddc698b456a",
-                "5448f39d4bdc2d0a728b4568",
-                "5448f3ac4bdc2dce718b4569",
-
-                "55818a594bdc2db9688b456a",
-                "55818ad54bdc2ddc698b4569",
-                "55818b164bdc2ddc698b456c",
-                "55818b084bdc2d5b648b4571",
-                "550aa4bf4bdc2dd6348b456b",
-                "550aa4dd4bdc2dc9348b4569",
-                "550aa4cd4bdc2dd8348b456c"
-            ]
+            "RewardValue": 105000,
+            "MaximumNumberOfMultiples": 3
         },
         {
             "Tier": 7,
-            "RewardValue": 155000,
-            "MaximumNumberOfMultiples": 3,
-            "RewardCategories": [
-                "5c99f98d86f7745c314214b3",
-                "57864a66245977548f04a81f",
-                "57864e4c24597754843f8723",
-                "57864a3d24597754843f8721",
-                "5448ecbe4bdc2d60728b4568",
-                "5c164d2286f774194c5e69fa",
-                "57864c8c245977548867e7f1",
-                "5795f317245977243854e041",
-                "5447e1d04bdc2dff2f8b4567",
-                "5a341c4086f77401f2541505",
-                "5645bcb74bdc2ded0b8b4578",
-                "55818aeb4bdc2ddc698b456a",
-                "5448f39d4bdc2d0a728b4568",
-                "5448f3ac4bdc2dce718b4569",
-
-                "55818a594bdc2db9688b456a",
-                "55818ad54bdc2ddc698b4569",
-                "55818b164bdc2ddc698b456c",
-                "55818b084bdc2d5b648b4571",
-                "550aa4bf4bdc2dd6348b456b",
-                "550aa4dd4bdc2dc9348b4569",
-                "550aa4cd4bdc2dd8348b456c"
-            ]
+            "RewardValue": 125000,
+            "MaximumNumberOfMultiples": 3
         },
         {
             "Tier": 8,
-            "RewardValue": 185000,
-            "MaximumNumberOfMultiples": 3,
-            "RewardCategories": [
-                "5c99f98d86f7745c314214b3",
-                "57864a66245977548f04a81f",
-                "57864e4c24597754843f8723",
-                "57864a3d24597754843f8721",
-                "5448ecbe4bdc2d60728b4568",
-                "5c164d2286f774194c5e69fa",
-                "57864c8c245977548867e7f1",
-                "5795f317245977243854e041",
-                "5a341c4086f77401f2541505",
-                "5645bcb74bdc2ded0b8b4578",
-                "55818aeb4bdc2ddc698b456a",
-                "5448f39d4bdc2d0a728b4568",
-                "5448f3ac4bdc2dce718b4569",
-
-                "55818a594bdc2db9688b456a",
-                "55818ad54bdc2ddc698b4569",
-                "55818b164bdc2ddc698b456c",
-                "55818b084bdc2d5b648b4571",
-                "550aa4bf4bdc2dd6348b456b",
-                "550aa4dd4bdc2dc9348b4569",
-                "550aa4cd4bdc2dd8348b456c"
-            ]
+            "RewardValue": 155000,
+            "MaximumNumberOfMultiples": 3
         },
         {
             "Tier": 9,
-            "RewardValue": 350000,
-            "MaximumNumberOfMultiples": 2,
-            "RewardCategories": [
-                "5c99f98d86f7745c314214b3",
-                "57864a66245977548f04a81f",
-                "57864e4c24597754843f8723",
-                "57864a3d24597754843f8721",
-                "5448ecbe4bdc2d60728b4568",
-                "5c164d2286f774194c5e69fa",
-                "57864c8c245977548867e7f1",
-                "5795f317245977243854e041"
-            ]
+            "RewardValue": 250000,
+            "MaximumNumberOfMultiples": 2
         },
         {
             "Tier": 10,
             "RewardValue": 1250000,
-            "MaximumNumberOfMultiples": 2,
-            "RewardCategories": [
-                "5c99f98d86f7745c314214b3",
-                "57864a66245977548f04a81f",
-                "57864a3d24597754843f8721",
-                "5c164d2286f774194c5e69fa",
-                "57864c8c245977548867e7f1",
-                "5795f317245977243854e041"
-            ]   
+            "MaximumNumberOfMultiples": 2 
         }
     ],
     "Debug": {
         "Enabled": true,
         "TestGeneration": true,
-        "GenerationLevel": 10,
+        "GenerationLevel": 5,
         "NumberOfRuns": 25
     }
 }
