@@ -26,7 +26,8 @@ export class IOManager
     public LocaleRootPath: string = path.join(path.dirname(__filename), "..", "..", "Data", "Locales");
     public TraderRootPath: string = path.join(path.dirname(__filename), "..", "..", "Data", "Trader");
     public QuestsRootPath: string = path.join(path.dirname(__filename), "..", "..", "Data", "Quests");
-    
+    public ImageRootPath: string = path.join(path.dirname(__filename), "..", "..", "Data", "Images");
+
     /**
      * Loads and parses a config file from disk
      * @param fileName File name inside of config folder to load

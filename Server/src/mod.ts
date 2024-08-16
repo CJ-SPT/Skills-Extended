@@ -4,7 +4,6 @@ import { InstanceManager } from "./Managers/InstanceManager";
 
 import fs from "fs";
 import path from "node:path";
-import JSON5 from "json5";
 
 import type { DependencyContainer } from "tsyringe";
 import type { IPostDBLoadMod } from "@spt/models/external/IPostDBLoadMod";
@@ -21,6 +20,7 @@ import { CustomItemIds } from "./enums/CustomItemIds";
 import { RouteManager } from "./Managers/RouteManager";
 import type { ISkillsConfig } from "./Models/ISkillsConfig";
 import { AchievementManager } from "./Managers/AchievementManager";
+import { TraderManager } from "./Managers/TraderManager";
 
 class SkillsExtended implements IPreSptLoadMod, IPostDBLoadMod
 {
@@ -28,7 +28,8 @@ class SkillsExtended implements IPreSptLoadMod, IPostDBLoadMod
     
     private IOManager: IOManager = new IOManager(this.InstanceManager); 
     private ProgressionManager: ProgressionManager = new ProgressionManager();
-    private AchievementManager: AchievementManager = new AchievementManager();  
+    private AchievementManager: AchievementManager = new AchievementManager();
+    private TraderManager: TraderManager = new TraderManager();  
     private RouteManager: RouteManager = new RouteManager();
     
     private customItemService: CustomItemService;
@@ -41,6 +42,7 @@ class SkillsExtended implements IPreSptLoadMod, IPostDBLoadMod
         this.SkillsConfig = this.IOManager.loadJsonFile<ISkillsConfig>(path.join(this.IOManager.ConfigPath, "SkillsConfig.json5"));
 
         this.RouteManager.preSptLoad(this.InstanceManager, this.ProgressionManager, this.SkillsConfig);
+        this.TraderManager.preSptLoad(this.InstanceManager, this.IOManager);
 
         this.InstanceManager.logger.logWithColor("Skills Extended loading", LogTextColor.GREEN);    
     }
@@ -51,6 +53,7 @@ class SkillsExtended implements IPreSptLoadMod, IPostDBLoadMod
         this.ProgressionManager.init(this.InstanceManager, this.IOManager);
         this.customItemService = this.InstanceManager.customItemService;
         this.AchievementManager.postDbLoad(this.InstanceManager, this.IOManager);
+        this.TraderManager.postDbLoad();
 
         this.loadSkillLocales();
         this.CreateItems();
