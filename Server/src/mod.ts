@@ -20,13 +20,15 @@ import { IOManager } from "./Managers/IOManager";
 import { CustomItemIds } from "./enums/CustomItemIds";
 import { RouteManager } from "./Managers/RouteManager";
 import type { ISkillsConfig } from "./Models/ISkillsConfig";
+import { AchievementManager } from "./Managers/AchievementManager";
 
 class SkillsExtended implements IPreSptLoadMod, IPostDBLoadMod
 {
     private InstanceManager: InstanceManager = new InstanceManager();
     
     private IOManager: IOManager = new IOManager(this.InstanceManager); 
-    private ProgressionManager: ProgressionManager = new ProgressionManager();   
+    private ProgressionManager: ProgressionManager = new ProgressionManager();
+    private AchievementManager: AchievementManager = new AchievementManager();  
     private RouteManager: RouteManager = new RouteManager();
     
     private customItemService: CustomItemService;
@@ -36,7 +38,7 @@ class SkillsExtended implements IPreSptLoadMod, IPostDBLoadMod
     {
         this.InstanceManager.preSptLoad(container);
 
-        this.SkillsConfig = this.IOManager.loadConfigFile<ISkillsConfig>("SkillsConfig.json5");
+        this.SkillsConfig = this.IOManager.loadJsonFile<ISkillsConfig>(path.join(this.IOManager.ConfigPath, "SkillsConfig.json5"));
 
         this.RouteManager.preSptLoad(this.InstanceManager, this.ProgressionManager, this.SkillsConfig);
 
@@ -48,15 +50,18 @@ class SkillsExtended implements IPreSptLoadMod, IPostDBLoadMod
         this.InstanceManager.postDBLoad(container);
         this.ProgressionManager.init(this.InstanceManager, this.IOManager);
         this.customItemService = this.InstanceManager.customItemService;
+        this.AchievementManager.postDbLoad(this.InstanceManager, this.IOManager);
 
-        this.setLocales();
+        this.loadSkillLocales();
         this.CreateItems();
         this.addCraftsToDatabase();
     }
 
-    private setLocales(): void
+    private loadSkillLocales(): void
     {
-        const files = fs.readdirSync(this.IOManager.LocaleRootPath);
+        const skillLocalePath = path.join(this.IOManager.LocaleRootPath, "Skills");
+
+        const files = fs.readdirSync(skillLocalePath);
         
         const jsonFiles = files
             .filter(file => path.extname(file) === ".json")
@@ -69,13 +74,13 @@ class SkillsExtended implements IPreSptLoadMod, IPostDBLoadMod
             // Dont trust users to delete my mistake /BONK
             if (file === "pt") continue;
 
-            const filePath = path.join(this.IOManager.LocaleRootPath, `${file}.json`);
-            const localeFile = this.IOManager.loadLocaleFile(filePath);
+            const filePath = path.join(skillLocalePath, `${file}.json`);
+            const localeFile = this.IOManager.loadJsonFile<Record<string, string>>(filePath);
             const global = this.InstanceManager.database.locales.global[file];
 
             if (Object.keys(localeFile).length > 0)
             {
-                this.InstanceManager.logger.logWithColor(`Skills Extended: Loading locale '${file}'`, LogTextColor.GREEN);
+                this.InstanceManager.logger.logWithColor(`Skills Extended: Loading Skill locale '${file}'`, LogTextColor.GREEN);
             }
             
             for (const locale in localeFile)

@@ -114,7 +114,7 @@
     ],
     "Debug": {
         "Enabled": true,
-        "TestGeneration": true,
+        "TestGeneration": false,
         "GenerationLevel": 5,
         "NumberOfRuns": 25
     }

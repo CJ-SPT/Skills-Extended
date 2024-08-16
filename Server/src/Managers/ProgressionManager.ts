@@ -30,7 +30,7 @@ export class ProgressionManager
         this.IOManager = ioManager;
         this.logger = instanceManager.logger;
 
-        this.SkillRewards = this.IOManager.LoadConfigFile("SkillRewards.json");
+        this.SkillRewards = this.IOManager.loadJsonFile<ISkillRewards>(path.join(this.IOManager.ConfigPath, "SkillRewards.json"));
 
         this.debugTestGeneration();
     }

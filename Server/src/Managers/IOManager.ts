@@ -20,15 +20,20 @@ export class IOManager
     public DataPath: string = path.join(path.dirname(__filename), "..", "..", "Data");
     public ConfigPath: string = path.join(path.dirname(__filename), "..", "..", "config");
     public ProgressPath: string = path.join(path.dirname(__filename), "..", "..", "progression");
-    public LocaleRootPath: string = path.join(path.dirname(__filename), "..", "..", "locale");
- 
+
+    public AchievementsRootPath: string = path.join(path.dirname(__filename), "..", "..", "Data", "Achievements");
+    public AssortRootPath: string = path.join(path.dirname(__filename), "..", "..", "Data", "Assort");
+    public LocaleRootPath: string = path.join(path.dirname(__filename), "..", "..", "Data", "Locales");
+    public TraderRootPath: string = path.join(path.dirname(__filename), "..", "..", "Data", "Trader");
+    public QuestsRootPath: string = path.join(path.dirname(__filename), "..", "..", "Data", "Quests");
+    
     /**
      * Loads and parses a config file from disk
      * @param fileName File name inside of config folder to load
      */
-    public loadConfigFile<T>(fileName: string): T
+    public loadJsonFile<T>(filePath: string): T
     {
-        const file = path.join(this.ConfigPath, fileName);
+        const file = path.join(filePath);
         const rewardsRaw = this.InstanceManager.vfs.readFile(file);
 
         return JSON5.parse(rewardsRaw) as T;
