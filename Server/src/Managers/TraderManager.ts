@@ -1,13 +1,15 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 
-import path from "node:path";
 import type { IOManager } from "./IOManager";
-import { InstanceManager } from "./InstanceManager";
 import type { ITraderConfig, UpdateTime } from "@spt/models/spt/config/ITraderConfig";
-import { ConfigTypes } from "@spt/models/enums/ConfigTypes";
-import type { ITraderAssort, ITraderBase } from "@spt/models/eft/common/tables/ITrader";
-import { Traders } from "@spt/models/enums/Traders";
+import type { IBarterScheme, ITraderAssort, ITraderBase } from "@spt/models/eft/common/tables/ITrader";
 import type { IRagfairConfig } from "@spt/models/spt/config/IRagfairConfig";
+import type { Item } from "@spt/models/eft/common/tables/IItem";
+
+import path from "node:path";
+import { InstanceManager } from "./InstanceManager";
+import { Traders } from "@spt/models/enums/Traders";
+import { ConfigTypes } from "@spt/models/enums/ConfigTypes";
 
 export class TraderManager
 {
@@ -90,12 +92,17 @@ export class TraderManager
      */
     private createAssortTable(): ITraderAssort
     {
+        const ioMgr = this.IOManager;
+        const items = ioMgr.loadJsonFile<Item[]>(path.join(ioMgr.AssortRootPath, "Items.json"));
+        const barterScheme = ioMgr.loadJsonFile<Record<string, IBarterScheme[][]>>(path.join(ioMgr.AssortRootPath, "BarterScheme.json"));
+        const loyalLevelItems = ioMgr.loadJsonFile<Record<string, number>>(path.join(ioMgr.AssortRootPath, "LoyalLevelItems.json"));
+
         // Create a blank assort object, ready to have items added
         const assortTable: ITraderAssort = {
             nextResupply: 0,
-            items: [],
-            barter_scheme: {},
-            loyal_level_items: {},
+            items: items,
+            barter_scheme: barterScheme,
+            loyal_level_items: loyalLevelItems
         };
 
         return assortTable;

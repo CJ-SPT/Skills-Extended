@@ -1,0 +1,14 @@
+[
+    {
+        "_id": "661f33776b5151c024011d02",
+        "_tpl": "64b7af5a8532cf95ee0a0dbd",
+        "parentId": "hideout",
+        "slotId": "hideout",
+        "upd": {
+          "UnlimitedCount": false,
+          "StackObjectsCount": 9589,
+          "BuyRestrictionMax": 180,
+          "BuyRestrictionCurrent": 0
+        }
+    }
+]
