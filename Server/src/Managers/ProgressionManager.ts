@@ -176,9 +176,7 @@ export class ProgressionManager
 
         const rewards = this.SkillRewards.RewardPool as IRewardTier[];
         const tierData = rewards.find(x => x.Tier === tier);
-
-        const itemPrices: Record<string, number> = {};
-       
+ 
         if (tierData?.RewardCategories === undefined) return;
 
         if (debug)
@@ -189,63 +187,30 @@ export class ProgressionManager
             this.logger.logWithColor(`Max amount of same item: ${tierData.MaximumNumberOfMultiples}`, LogTextColor.YELLOW);
         }
 
-        // Build a price map of all items in all categories
-        for (const category of tierData.RewardCategories)
-        {
-            const rewards = this.getItemsAndPricesOfCategory(category);
-
-            for (const reward in rewards)
-            {
-                itemPrices[reward] = rewards[reward];
-            }
-        }
-
         // Shuffle the category keys to ensure randomness
+        const itemPrices = this.generateItemPrices(tierData);
         const randomShuffle = this.shuffleKeys(itemPrices);
 
         let rewardValue = 0;
         let itemsReceived = 0;
 
-        for (const key of randomShuffle)
+        for (const item of randomShuffle)
         {
             // We have more value than allowed
             if (rewardValue > tierData.RewardValue) break;
 
-            // Item is over this tiers price cap
-            if (itemPrices[key] > tierData.RewardValue && tier < 10) continue;
-     
-            // Item has no price, skip it
-            if (itemPrices[key] === 0) continue;
+            if (!this.checkForBaseConditions(
+                itemPrices[item], 
+                tierData.RewardValue,
+                tier,
+                item
+            )) continue;
 
-            // Skip dog tags and quest items
-            if (itemHelper.isDogtag(key) 
-                || itemHelper.isQuestItem(key)
-                || !itemHelper.isValidItem(key)) continue;
-
-            const noDupes = itemHelper.isOfBaseclasses(key, this.SkillRewards.DisallowMultipleSameRoll);
-            
-            let roundedAmount = 0;
-
-            if (!noDupes)
-            {
-                roundedAmount = Math.round(Math.random() * tierData.MaximumNumberOfMultiples);
-            }
-            
-            let amount = roundedAmount === 0 
-                ? 1 
-                : roundedAmount;
-
-            if (itemHelper.isOfBaseclass(key, BaseClasses.AMMO))
-            {
-                amount = 20 * tier < 40 
-                    ? 40 
-                    : 20 * tier;
-            }
-
-            rewardValue += itemPrices[key] * amount;
+            const amount = this.calculateItemAmountForReward(tierData, item);
+            rewardValue += itemPrices[item] * amount;
 
             const newItem: Item = {
-                _tpl: key,
+                _tpl: item,
                 _id: hashUtil.generate()
             }
 
@@ -254,7 +219,7 @@ export class ProgressionManager
                 newItem.upd.StackObjectsCount = amount;
             }
 
-            this.logger.logWithColor(`${locale[`${key} Name`]} amt: (${amount}) val: (${itemPrices[key] * amount})`, LogTextColor.GREEN);
+            this.logger.logWithColor(`${locale[`${item} Name`]} amt: (${amount}) val: (${itemPrices[item] * amount})`, LogTextColor.GREEN);
 
             itemsReceived += amount;
             items.push(newItem);
@@ -269,6 +234,84 @@ export class ProgressionManager
         itemHelper.setFoundInRaid(items)
 
         return items;
+    }
+
+    /**
+     * Builds a dictionary of itemId and price information
+     * @param tierData Tier to get item price information for
+     * @returns Record of items and prices
+     */
+    private generateItemPrices(tierData: IRewardTier): Record<string, number>
+    {
+        const itemPrices: Record<string, number> = {};
+
+        // Build a price map of all items in all categories
+        for (const category of tierData.RewardCategories)
+        {
+            const rewards = this.getItemsAndPricesOfCategory(category);
+    
+            for (const reward in rewards)
+            {
+                itemPrices[reward] = rewards[reward];
+            }
+        }
+
+        return itemPrices;
+    }
+
+
+    /**
+     * Check for basic filtering conditions of items
+     * @param itemPrice Item price to check
+     * @param maxRewardValue Max allowed item price
+     * @param tier Tier we are checking for
+     * @param itemTpl Item tpl to check
+     * @returns true if passes
+     */
+    private checkForBaseConditions(itemPrice: number, maxRewardValue: number, tier: number, itemTpl: string): boolean
+    {
+        const itemHelper = this.InstanceManager.itemHelper;
+
+        // Item has no price, skip it
+        if (itemPrice === 0) return false;
+
+        // Item is over this tiers price cap
+        if (itemPrice > maxRewardValue && tier < 10) return false;
+     
+        // Skip dog tags and quest items
+        if (itemHelper.isDogtag(itemTpl) 
+            || itemHelper.isQuestItem(itemTpl)
+            || !itemHelper.isValidItem(itemTpl)) return false;
+
+
+        return true;
+    }
+
+    private calculateItemAmountForReward(tierData: IRewardTier, itemTpl: string): number
+    {
+        const itemHelper = this.InstanceManager.itemHelper;
+        let roundedAmount = 0;
+
+        // Blacklisted from having multiple
+        if (!itemHelper.isOfBaseclasses(itemTpl, this.SkillRewards.DisallowMultipleSameRoll))
+        {
+            roundedAmount = Math.round(Math.random() * tierData.MaximumNumberOfMultiples);
+        }
+        
+        // Dont ever give a no items
+        let amount = roundedAmount === 0 
+            ? 1 
+            : roundedAmount;
+
+        // Handle stacks of ammo
+        if (itemHelper.isOfBaseclass(itemTpl, BaseClasses.AMMO))
+        {
+            amount = 20 * tierData.Tier < 40 
+                ? 40 
+                : 20 * tierData.Tier;
+        }
+
+        return amount;
     }
 
     private getItemsAndPricesOfCategory(parentId: string): Record<string, number>
