@@ -225,6 +225,11 @@ export class ProgressionManager
             items.push(newItem);
         }
 
+        if (tierData.LegaMedals > 0)
+        {
+            items.push(this.generateLegaMedals(tierData));
+        }
+
         if (debug)
         {
             this.logger.logWithColor(`Total reward value: ${rewardValue} - Item count ${itemsReceived}`, LogTextColor.YELLOW);
@@ -283,8 +288,27 @@ export class ProgressionManager
             || itemHelper.isQuestItem(itemTpl)
             || !itemHelper.isValidItem(itemTpl)) return false;
 
+        if (itemHelper.armorItemCanHoldMods(itemTpl)) return false;
 
         return true;
+    }
+
+    private generateLegaMedals(tierData: IRewardTier): Item
+    {
+        const hashUtil = this.InstanceManager.hashUtil;
+        const itemHelper = this.InstanceManager.itemHelper;
+
+        const newItem: Item = {
+            _tpl: "6656560053eaaa7a23349c86",
+            _id: hashUtil.generate()
+        }
+
+        if (itemHelper.addUpdObjectToItem(newItem))
+        {
+            newItem.upd.StackObjectsCount = tierData.LegaMedals;
+        }
+
+        return newItem;
     }
 
     private calculateItemAmountForReward(tierData: IRewardTier, itemTpl: string): number

@@ -11,6 +11,7 @@ export interface IRewardTier
 {
     Tier: number;
     RewardValue: number;
+    LegaMedals: number;
     MaximumNumberOfMultiples: number;
 }
 
