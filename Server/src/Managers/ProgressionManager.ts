@@ -15,6 +15,7 @@ import { BaseClasses } from "@spt/models/enums/BaseClasses";
 import { InstanceManager } from "./InstanceManager";
 import { IOManager } from "./IOManager";
 import { IProgression } from "../Models/IProgression";
+import { Traders } from "@spt/models/enums/Traders";
 
 export class ProgressionManager
 {
@@ -287,20 +288,20 @@ export class ProgressionManager
     private sendMailReward(skillId: string, tier: number): boolean
     {
         const mailService = this.InstanceManager.mailSendService;
+        const traderHelper = this.InstanceManager.traderHelper;
 
         const items = this.generateReward(tier);
 
         if (items.length <= 0) return false;
 
-        const message: ISendMessageDetails = {
-            recipientId: this.PmcProfile._id,
-            sender: MessageType.SYSTEM_MESSAGE,
-            messageText: `Here is your reward for tier ${tier} of ${skillId}`, // TODO: Hook this up to achievements
-            items: items,
-            itemsMaxStorageLifetimeSeconds: 72000
-        }
-
-        mailService.sendMessageToPlayer(message);
+        mailService.sendDirectNpcMessageToPlayer(
+            this.PmcProfile._id,
+            traderHelper.getTraderById(Traders.THERAPIST),
+            MessageType.MESSAGE_WITH_ITEMS,
+            `Here is your reward for tier ${tier} of ${skillId}`,
+            items,
+            720000
+        );
 
         return true;
     }
