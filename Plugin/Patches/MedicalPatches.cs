@@ -51,6 +51,7 @@ internal class HealthEffectDamageEffectPatch : ModulePatch
             if (!skillData.Enabled) return;
             if (template.DamageEffects is null) return;
             if (item is not MedsClass meds) return;
+            if (Plugin.Session?.Profile?.Skills is null) return;
             if (meds.TemplateId.LocalizedName().Contains("Name")) return;
             
             if (_instanceIdsChangedAtLevel.TryGetValue(meds.TemplateId, out var level))
