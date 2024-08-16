@@ -19,6 +19,7 @@ import { ProgressionManager } from "./Managers/ProgressionManager";
 import { IOManager } from "./Managers/IOManager";
 import { CustomItemIds } from "./enums/CustomItemIds";
 import { RouteManager } from "./Managers/RouteManager";
+import type { ISkillsConfig } from "./Models/ISkillsConfig";
 
 class SkillsExtended implements IPreSptLoadMod, IPostDBLoadMod
 {
@@ -29,17 +30,15 @@ class SkillsExtended implements IPreSptLoadMod, IPostDBLoadMod
     private RouteManager: RouteManager = new RouteManager();
     
     private customItemService: CustomItemService;
-    public SkillsConfigRaw: any; // TODO: Type this
-    public SkillsConfig: any; // TODO: Type this
+    public SkillsConfig: ISkillsConfig; // TODO: Type this
 
     public preSptLoad(container: DependencyContainer): void 
     {
         this.InstanceManager.preSptLoad(container);
 
-        this.SkillsConfigRaw = this.IOManager.LoadConfigRaw("SkillsConfig.json5");
-        this.SkillsConfig = JSON5.parse(this.SkillsConfigRaw)
+        this.SkillsConfig = this.IOManager.LoadConfigFile<ISkillsConfig>("SkillsConfig.json5");
 
-        this.RouteManager.preSptLoad(this.InstanceManager, this.ProgressionManager, this.SkillsConfigRaw);
+        this.RouteManager.preSptLoad(this.InstanceManager, this.ProgressionManager, this.SkillsConfig);
 
         this.InstanceManager.logger.logWithColor("Skills Extended loading", LogTextColor.GREEN);    
     }

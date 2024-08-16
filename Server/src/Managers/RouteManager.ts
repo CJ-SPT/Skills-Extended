@@ -1,25 +1,26 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 
 import { BaseClasses } from "@spt/models/enums/BaseClasses";
-import { InstanceManager } from "./InstanceManager";
-import { ProgressionManager } from "./ProgressionManager";
-import { IKeys } from "../Models/IKeys";
+import type { InstanceManager } from "./InstanceManager";
+import type { ProgressionManager } from "./ProgressionManager";
+import type { IKeys } from "../Models/IKeys";
+import type { ISkillsConfig } from "../Models/ISkillsConfig";
 
 export class RouteManager
 {
     private InstanceManager: InstanceManager;
     private ProgressionManager: ProgressionManager;
-    private SkillsConfigRaw: any;
+    private SkillsConfig: ISkillsConfig;
 
     public preSptLoad(
         instanceManager: InstanceManager,
         progressionManager: ProgressionManager,
-        skillsConfigRaw: any
+        skillsConfig: ISkillsConfig
     ): void
     {
         this.InstanceManager = instanceManager;
         this.ProgressionManager = progressionManager;
-        this.SkillsConfigRaw = skillsConfigRaw;
+        this.SkillsConfig = skillsConfig;
 
         this.registerRoutes();   
     }
@@ -37,7 +38,7 @@ export class RouteManager
                     action: async (url, info, sessionId, output) => 
                     {                     
                         this.ProgressionManager.getActivePmcData(sessionId);
-                        return this.SkillsConfigRaw;
+                        return JSON.stringify(this.SkillsConfig, null, 2);
                     }
                 }
             ],

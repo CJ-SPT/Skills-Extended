@@ -22,26 +22,17 @@ export class IOManager
     public ProgressPath: string = path.join(path.dirname(__filename), "..", "..", "progression");
     public LocaleRootPath: string = path.join(path.dirname(__filename), "..", "..", "locale");
 
-    /**
-     * Loads a config file from disk
-     * @param fileName File name inside of config folder to load
-     */
-    public LoadConfigRaw(fileName: string): any
-    {
-        const file = path.join(this.ConfigPath, fileName);
-        return this.InstanceManager.vfs.readFile(file);
-    }
-
+    
     /**
      * Loads and parses a config file from disk
      * @param fileName File name inside of config folder to load
      */
-    public LoadConfigFile(fileName: string): any
+    public LoadConfigFile<T>(fileName: string): T
     {
         const file = path.join(this.ConfigPath, fileName);
         const rewardsRaw = this.InstanceManager.vfs.readFile(file);
 
-        return JSON5.parse(rewardsRaw);
+        return JSON5.parse(rewardsRaw) as T;
     }
 
     /**

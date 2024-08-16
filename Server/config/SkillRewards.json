@@ -6,6 +6,12 @@
     ],                                   
     "RewardPool": [
         {
+            "Tier": 0,
+            "RewardValue": 0,
+            "MaximumNumberOfMultiples": 0,
+            "RewardCategories": []
+        },
+        {
             "Tier": 1,
             "RewardValue": 48000,
             "MaximumNumberOfMultiples": 2,

@@ -179,6 +179,8 @@ export class ProgressionManager
 
         const itemPrices: Record<string, number> = {};
        
+        if (tierData?.RewardCategories === undefined) return;
+
         if (debug)
         {
             this.logger.logWithColor(`\nGenerating reward for tier ${tier}`, LogTextColor.YELLOW);
@@ -186,7 +188,7 @@ export class ProgressionManager
             this.logger.logWithColor(`Reward value: ${tierData.RewardValue}`, LogTextColor.YELLOW);
             this.logger.logWithColor(`Max amount of same item: ${tierData.MaximumNumberOfMultiples}`, LogTextColor.YELLOW);
         }
-        
+
         // Build a price map of all items in all categories
         for (const category of tierData.RewardCategories)
         {
