@@ -17,7 +17,7 @@ import { Traders } from "@spt/models/enums/Traders";
 import { LogTextColor } from "@spt/models/spt/logging/LogTextColor";
 import { ProgressionManager } from "./Managers/ProgressionManager";
 import { IOManager } from "./Managers/IOManager";
-import { CustomItemIds } from "./Models/CustomItemIds";
+import { CustomItemIds } from "./enums/CustomItemIds";
 import { RouteManager } from "./Managers/RouteManager";
 
 class SkillsExtended implements IPreSptLoadMod, IPostDBLoadMod
@@ -74,8 +74,11 @@ class SkillsExtended implements IPreSptLoadMod, IPostDBLoadMod
             const localeFile = this.IOManager.loadLocaleFile(filePath);
             const global = this.InstanceManager.database.locales.global[file];
 
-            this.InstanceManager.logger.logWithColor(`Loading locale: ${file}`, LogTextColor.GREEN);
-
+            if (Object.keys(localeFile).length > 0)
+            {
+                this.InstanceManager.logger.logWithColor(`Skills Extended: Loading locale '${file}'`, LogTextColor.GREEN);
+            }
+            
             for (const locale in localeFile)
             {
                 global[locale] = localeFile[locale];
@@ -227,9 +230,10 @@ class SkillsExtended implements IPreSptLoadMod, IPostDBLoadMod
     {
         const crafts = this.SkillsConfig.LockPicking.CRAFTING_RECIPES;
 
-        crafts.forEach((craft) => {
-            this.InstanceManager.database.hideout.production.push(craft);
-        })
+        for (const craft of crafts)
+        {
+            this.InstanceManager.database.hideout.production.push(craft)
+        }
     }
 
     private addItemToSpecSlots(itemId: string): void

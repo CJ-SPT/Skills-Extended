@@ -1,18 +1,10 @@
 {
     "ProgressionEnabled": true,
-    // Dont allow multiple in the same reward
     "DisallowMultipleSameRoll": [
         "5c99f98d86f7745c314214b3",
         "5795f317245977243854e041"
     ],                                   
-    // Reward pools for each tier and some individual tier based settings
     "RewardPool": [
-        {
-            "Tier": 0,                      // Tier
-            "RewardValue": 0,               // The over all value of the reward
-            "MaximumNumberOfMultiples": 0,  // Maximum number of a selected item that can be awarded
-            "RewardCategories": [],         // Item reward categories
-        },
         {
             "Tier": 1,
             "RewardValue": 48000,
@@ -27,7 +19,7 @@
                 "5a341c4086f77401f2541505",
                 "5645bcb74bdc2ded0b8b4578",
                 "5448f39d4bdc2d0a728b4568",
-                "5448f3ac4bdc2dce718b4569",
+                "5448f3ac4bdc2dce718b4569"
             ]
         },
         {
@@ -256,10 +248,10 @@
             ]   
         }
     ],
-    Debug: {
+    "Debug": {
         "Enabled": true,
         "TestGeneration": true,
         "GenerationLevel": 10,
-        "NumberOfRuns": 25,
+        "NumberOfRuns": 25
     }
 }

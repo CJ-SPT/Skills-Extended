@@ -4,8 +4,8 @@ import fs from "fs";
 import path from "node:path";
 import JSON5 from "json5";
 
-import { InstanceManager } from "./InstanceManager";
-import { IProgression } from "../Models/IProgression";
+import type { InstanceManager } from "./InstanceManager";
+import type { IProgression } from "../Models/IProgression";
 import { LogTextColor } from "@spt/models/spt/logging/LogTextColor";
 
 export class IOManager 

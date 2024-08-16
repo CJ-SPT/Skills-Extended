@@ -1,22 +1,22 @@
-import { ILogger } from "@spt/models/spt/utils/ILogger";
-import { DatabaseServer } from "@spt/servers/DatabaseServer";
-import { IDatabaseTables } from "@spt/models/spt/server/IDatabaseTables";
-import { StaticRouterModService } from "@spt/services/mod/staticRouter/StaticRouterModService";
-import { DependencyContainer } from "tsyringe";
-import { CustomItemService } from "@spt/services/mod/CustomItemService";
-import { ImageRouter } from "@spt/routers/ImageRouter";
-import { PreSptModLoader } from "@spt/loaders/PreSptModLoader";
-import { ConfigServer } from "@spt/servers/ConfigServer";
-import { JsonUtil } from "@spt/utils/JsonUtil";
-import { ProfileHelper } from "@spt/helpers/ProfileHelper";
-import { RagfairPriceService } from "@spt/services/RagfairPriceService";
-import { ImporterUtil } from "@spt/utils/ImporterUtil";
-import { SaveServer } from "@spt/servers/SaveServer";
-import { ItemHelper } from "@spt/helpers/ItemHelper";
-import { MailSendService } from "@spt/services/MailSendService";
-import { VFS } from "@spt/utils/VFS";
-import { HashUtil } from "@spt/utils/HashUtil";
-import { TraderHelper } from "@spt/helpers/TraderHelper";
+import type { ILogger } from "@spt/models/spt/utils/ILogger";
+import type { DatabaseServer } from "@spt/servers/DatabaseServer";
+import type { IDatabaseTables } from "@spt/models/spt/server/IDatabaseTables";
+import type { StaticRouterModService } from "@spt/services/mod/staticRouter/StaticRouterModService";
+import type { DependencyContainer } from "tsyringe";
+import type { CustomItemService } from "@spt/services/mod/CustomItemService";
+import type { ImageRouter } from "@spt/routers/ImageRouter";
+import type { PreSptModLoader } from "@spt/loaders/PreSptModLoader";
+import type { ConfigServer } from "@spt/servers/ConfigServer";
+import type { JsonUtil } from "@spt/utils/JsonUtil";
+import type { ProfileHelper } from "@spt/helpers/ProfileHelper";
+import type { RagfairPriceService } from "@spt/services/RagfairPriceService";
+import type { ImporterUtil } from "@spt/utils/ImporterUtil";
+import type { SaveServer } from "@spt/servers/SaveServer";
+import type { ItemHelper } from "@spt/helpers/ItemHelper";
+import type { MailSendService } from "@spt/services/MailSendService";
+import type { VFS } from "@spt/utils/VFS";
+import type { HashUtil } from "@spt/utils/HashUtil";
+import type { TraderHelper } from "@spt/helpers/TraderHelper";
 
 export class InstanceManager 
 {

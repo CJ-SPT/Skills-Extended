@@ -1,20 +1,17 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import fs from "fs";
 import path from "node:path";
-import JSON5 from "json5";
 
 import { LogTextColor } from "@spt/models/spt/logging/LogTextColor";
-import { IPmcData } from "@spt/models/eft/common/IPmcData";
-import { ISendMessageDetails } from "@spt/models/spt/dialog/ISendMessageDetails";
+import type { IPmcData } from "@spt/models/eft/common/IPmcData";
 import { MessageType } from "@spt/models/enums/MessageType";
-import { IRewardTier, ISkillRewards } from "../Models/IConfig";
-import { ILogger } from "@spt/models/spt/utils/ILogger";
-import { Item } from "@spt/models/eft/common/tables/IItem";
+import type { IRewardTier, ISkillRewards } from "../Models/ISkillRewards";
+import type { ILogger } from "@spt/models/spt/utils/ILogger";
+import type { Item } from "@spt/models/eft/common/tables/IItem";
 import { BaseClasses } from "@spt/models/enums/BaseClasses";
 
-import { InstanceManager } from "./InstanceManager";
-import { IOManager } from "./IOManager";
-import { IProgression } from "../Models/IProgression";
+import type { InstanceManager } from "./InstanceManager";
+import type { IOManager } from "./IOManager";
+import type { IProgression } from "../Models/IProgression";
 import { Traders } from "@spt/models/enums/Traders";
 
 export class ProgressionManager
@@ -33,7 +30,7 @@ export class ProgressionManager
         this.IOManager = ioManager;
         this.logger = instanceManager.logger;
 
-        this.SkillRewards = this.IOManager.LoadConfigFile("SkillRewards.json5");
+        this.SkillRewards = this.IOManager.LoadConfigFile("SkillRewards.json");
 
         this.debugTestGeneration();
     }
@@ -169,13 +166,13 @@ export class ProgressionManager
         }   
     }
 
-    private generateReward(tier: number, debug: boolean = false): Item[]
+    private generateReward(tier: number, debug = false): Item[]
     {
         const items: Item[] = [];
         const hashUtil = this.InstanceManager.hashUtil;
         const itemHelper = this.InstanceManager.itemHelper;
 
-        const locale = this.InstanceManager.database.locales.global["en"];
+        const locale = this.InstanceManager.database.locales.global.en;
 
         const rewards = this.SkillRewards.RewardPool as IRewardTier[];
         const tierData = rewards.find(x => x.Tier === tier);
@@ -232,7 +229,7 @@ export class ProgressionManager
                 roundedAmount = Math.round(Math.random() * tierData.MaximumNumberOfMultiples);
             }
             
-            let amount = roundedAmount == 0 
+            let amount = roundedAmount === 0 
                 ? 1 
                 : roundedAmount;
 
