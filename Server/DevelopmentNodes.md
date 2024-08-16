@@ -1,0 +1,9 @@
+# Version 1.2.0 Design and development notes
+## Overview
+
+- Skill Milestone rewards - 75% Done
+- New trader, Scholars Security - 30% Done
+- 44 new achievements - 100% Done
+- 5 new custom items - 75% Done
+- 5 new quests (Lock picking introduction quest line) - Not started
+- Fix profile creation NRE - Done

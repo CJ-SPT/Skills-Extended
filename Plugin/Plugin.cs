@@ -27,10 +27,7 @@ public class Plugin : BaseUnityPlugin
     public const int TarkovVersion = 30626;
 
     public static ISession Session;
-
-    public static GameWorld GameWorld => Singleton<GameWorld>.Instance;
-    public static IEnumerable<Item> Items => Session?.Profile?.Inventory?.AllRealPlayerItems;
-
+    
     // Contains key information
     public static KeysResponse Keys;
 
@@ -77,6 +74,8 @@ public class Plugin : BaseUnityPlugin
         new PersonalBuffPatch().Enable();
         new PersonalBuffFullStringPatch().Enable();
         new PersonalBuffStringPatch().Enable();
+        
+        new QuestFinishPatch().Enable();
         
 #if DEBUG
         Logger.LogWarning("PRE RELEASE BUILD - NO SUPPORT");

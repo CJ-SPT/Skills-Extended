@@ -1,0 +1,12 @@
+{
+    "66bfc99c80d7fc529d9a0f7b acceptPlayerMessage": "",
+    "66bfc99c80d7fc529d9a0f7b changeQuestMessageText": "",
+    "66bfc99c80d7fc529d9a0f7b completePlayerMessage": "",
+    "66bfc99c80d7fc529d9a0f7b declinePlayerMessage": "",
+    "66bfc99c80d7fc529d9a0f7b description": "",
+    "66bfc99c80d7fc529d9a0f7b failMessageText": "",
+    "66bfc99c80d7fc529d9a0f7b name": "Welcome to the library!",
+    "66bfc99c80d7fc529d9a0f7b note": "",
+    "66bfc99c80d7fc529d9a0f7b startedMessageText": "Welcome to Scholar's Security, how can we help you satisfy your academic needs?",
+    "66bfc99c80d7fc529d9a0f7b successMessageText": "Now that you know a little bit about us, we have some work for you to do."
+}

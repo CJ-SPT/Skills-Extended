@@ -18,9 +18,7 @@ export class AchievementManager
         this.IOManager = ioManager;
 
         this.importAchievementData();
-        this.loadAchievementLocales();
         this.loadImages();
-        // this.validateData();
     }
 
     private importAchievementData(): void
@@ -50,7 +48,7 @@ export class AchievementManager
         }   
         
         this.InstanceManager.logger
-            .logWithColor(`Skills Extended: Loaded: ${loadedAchievements} achievements`, LogTextColor.GREEN);
+            .logWithColor(`Skills Extended: Loaded ${loadedAchievements} achievements`, LogTextColor.GREEN);
     }
 
     private loadImages(): void
@@ -66,60 +64,6 @@ export class AchievementManager
             const filenameWithoutExtension = path.basename(imagePath, path.extname(imagePath));
             
             imageRouter.addRoute(`/files/achievement/${filenameWithoutExtension}`, imagePath);
-        }
-    }
-
-    private loadAchievementLocales(): void
-    {
-        const localesPath = path.join(this.IOManager.LocaleRootPath, "Achievements");
-        const subDirs = fs.readdirSync(localesPath);
-
-        for (const lang of subDirs)
-        {
-            const langDir = path.join(localesPath, lang);
-            const localeFiles = fs.readdirSync(langDir);
-
-            const logger = this.InstanceManager.logger;
-
-            let entries = 0;
-
-            for (const file of localeFiles)
-            {
-                const localeData = this.IOManager.loadJsonFile<Record<string, string>>(path.join(langDir, file));
-      
-                entries += this.importLocaleData(lang, localeData);
-            }
-
-            if (entries === 0) continue;
-
-            logger.logWithColor(`Skills Extended: Loaded ${entries} achievement locales for lang '${lang}'`, LogTextColor.GREEN);
-        }
-    }
-
-    private importLocaleData(lang: string, localeData: Record<string, string>): number
-    {
-        const globalLocales = this.InstanceManager.database.locales.global;
-
-        for (const entry in localeData)
-        {
-            globalLocales[lang][entry] = localeData[entry];
-        }
-
-        return Object.keys(localeData).length;
-    }
-
-    private validateData(): void
-    {
-        const globalLocales = this.InstanceManager.database.locales.global;
-        const achievmentTable = this.InstanceManager.database.templates.achievements;
-        const logger = this.InstanceManager.logger;
-
-        for (const achievement of achievmentTable)
-        {
-            if (globalLocales.en[`${achievement.id} Name`] === undefined)
-            {
-                logger.logWithColor(`Achievement: ${achievement.id} is missing locale data.`, LogTextColor.YELLOW);
-            }
         }
     }
 }

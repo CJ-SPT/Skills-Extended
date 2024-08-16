@@ -29,6 +29,11 @@ export class IOManager
     public ImageRootPath: string = path.join(path.dirname(__filename), "..", "..", "Data", "Images");
     public ItemRootPath: string = path.join(path.dirname(__filename), "..", "..", "Data", "Items");
 
+    public postDbLoad(): void
+    {
+        this.importAllLocaleData();
+    }
+
     /**
      * Loads and parses a config file from disk
      * @param fileName File name inside of config folder to load
@@ -70,5 +75,44 @@ export class IOManager
         {
             throw new Error("Failed to load dictionary");
         }
+    }
+
+    private importAllLocaleData(): void
+    {
+        const localesPath = this.LocaleRootPath;
+        const subDirs = fs.readdirSync(localesPath);
+
+        for (const lang of subDirs)
+        {
+            const langDir = path.join(localesPath, lang);
+            const localeFiles = fs.readdirSync(langDir);
+
+            const logger = this.InstanceManager.logger;
+
+            let entries = 0;
+
+            for (const file of localeFiles)
+            {
+                const localeData = this.loadJsonFile<Record<string, string>>(path.join(langDir, file));
+      
+                entries += this.importLocaleData(lang, localeData);
+            }
+
+            if (entries === 0) continue;
+
+            logger.logWithColor(`Skills Extended: Loaded ${entries} locale entries for locale '${lang}'`, LogTextColor.GREEN);
+        }
+    }
+
+    private importLocaleData(lang: string, localeData: Record<string, string>): number
+    {
+        const globals = this.InstanceManager.database.locales.global;
+
+        for (const entry in localeData)
+        {
+            globals[lang][entry] = localeData[entry];
+        }
+
+        return Object.keys(localeData).length;
     }
 }

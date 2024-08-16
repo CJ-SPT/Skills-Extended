@@ -62,8 +62,8 @@ export class TraderManager
         const traderRefreshRecord: UpdateTime = {
             traderId: this.BaseJson._id,
             seconds: {
-                min: 600,
-                max: 12000
+                min: 1800,
+                max: 3600
             },
         };
 
@@ -116,11 +116,11 @@ export class TraderManager
         const locales = Object.values(global);
 
         for (const locale of locales) {
-            locale[`${this.BaseJson._id} FullName`] = "The Locksmith";
-            locale[`${this.BaseJson._id} FirstName`] = "Locksmith";
-            locale[`${this.BaseJson._id} Nickname`] = "Locksmith";
-            locale[`${this.BaseJson._id} Location`] = "Unknown";
-            locale[`${this.BaseJson._id} Description`] = "Once a distinqused locksmith, The Locksmith now spends his days wondering around war zones carrying out criminal activities.";
+            locale[`${this.BaseJson._id} FullName`] = "Scholars Security";
+            locale[`${this.BaseJson._id} FirstName`] = "Scholars Security";
+            locale[`${this.BaseJson._id} Nickname`] = "Scholars Security";
+            locale[`${this.BaseJson._id} Location`] = "Undisclosed";
+            locale[`${this.BaseJson._id} Description`] = "From the outside, Scholars Security appears to be a haven for bookworms, its shelves lined with an eclectic collection of titles. However, beneath the facade lies a secret: a discreet operation dealing in high-quality weaponry for high-end mercenaries.";
         }
     }
 }

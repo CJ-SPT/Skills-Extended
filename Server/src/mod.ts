@@ -2,7 +2,6 @@
 
 import { InstanceManager } from "./Managers/InstanceManager";
 
-import fs from "fs";
 import path from "node:path";
 
 import type { DependencyContainer } from "tsyringe";
@@ -15,10 +14,10 @@ import type { ISkillsConfig } from "./Models/ISkillsConfig";
 import { LogTextColor } from "@spt/models/spt/logging/LogTextColor";
 import { ProgressionManager } from "./Managers/ProgressionManager";
 import { IOManager } from "./Managers/IOManager";
-import { SkillsExtendedIds } from "./enums/SkillsExtendedIds";
 import { RouteManager } from "./Managers/RouteManager";
 import { AchievementManager } from "./Managers/AchievementManager";
 import { TraderManager } from "./Managers/TraderManager";
+import { QuestManager } from "./Managers/QuestManager";
 
 class SkillsExtended implements IPreSptLoadMod, IPostDBLoadMod
 {
@@ -28,6 +27,7 @@ class SkillsExtended implements IPreSptLoadMod, IPostDBLoadMod
     private ProgressionManager: ProgressionManager = new ProgressionManager();
     private AchievementManager: AchievementManager = new AchievementManager();
     private TraderManager: TraderManager = new TraderManager();  
+    private QuestManager: QuestManager = new QuestManager();
     private RouteManager: RouteManager = new RouteManager();
     
     private customItemService: CustomItemService;
@@ -48,49 +48,15 @@ class SkillsExtended implements IPreSptLoadMod, IPostDBLoadMod
     public postDBLoad(container: DependencyContainer): void 
     {
         this.InstanceManager.postDBLoad(container);
+        this.IOManager.postDbLoad();
         this.ProgressionManager.init(this.InstanceManager, this.IOManager);
         this.customItemService = this.InstanceManager.customItemService;
         this.AchievementManager.postDbLoad(this.InstanceManager, this.IOManager);
         this.TraderManager.postDbLoad();
+        this.QuestManager.postDbLoad(this.InstanceManager, this.IOManager);
 
-        this.loadSkillLocales();
         this.CreateItems();
         this.addCraftsToDatabase();
-    }
-
-    private loadSkillLocales(): void
-    {
-        const skillLocalePath = path.join(this.IOManager.LocaleRootPath, "Skills");
-
-        const files = fs.readdirSync(skillLocalePath);
-        
-        const jsonFiles = files
-            .filter(file => path.extname(file) === ".json")
-            .map(file => path.basename(file, ".json"));
-
-        for (const file of jsonFiles)
-        {
-            // Portugeese locale uses `po` not `pt`
-            // Skip because I originally set it as pt by mistake.
-            // Dont trust users to delete my mistake /BONK
-            if (file === "pt") continue;
-
-            const filePath = path.join(skillLocalePath, `${file}.json`);
-            const localeFile = this.IOManager.loadJsonFile<Record<string, string>>(filePath);
-            const global = this.InstanceManager.database.locales.global[file];
-
-            if (Object.keys(localeFile).length > 0)
-            {
-                this.InstanceManager.logger.logWithColor(`Skills Extended: Loading Skill locale '${file}'`, LogTextColor.GREEN);
-            }
-            
-            for (const locale in localeFile)
-            {
-                global[locale] = localeFile[locale];
-            }
-        }
-
-        this.InstanceManager.logger.logWithColor("Skills Extended: Locales dynamically loaded. Select your locale in-game on the settings page!", LogTextColor.GREEN);
     }
 
     private CreateItems(): void
