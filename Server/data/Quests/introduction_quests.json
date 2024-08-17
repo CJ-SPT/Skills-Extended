@@ -309,7 +309,7 @@
               "id": "66bffe3faae035b52f15d9e7",
               "index": 0,
               "type": "Experience",
-              "value": "2750"
+              "value": "3100"
             },
             {
               "findInRaid": true,
@@ -326,7 +326,7 @@
               ],
               "target": "66bffe3fbf620819b8c713d1",
               "type": "Item",
-              "value": "31000"
+              "value": "36000"
             },
             {
               "id": "66bffe3f77200ca7b15ebd20",
@@ -427,23 +427,6 @@
               "target": "66c00ada80a60fc64d3445cc",
               "type": "Item",
               "value": "42500"
-            },
-            {
-              "findInRaid": true,
-              "id": "66c011991ca11cb8ea4a3cc5",
-              "index": 3,
-              "items": [
-                {
-                  "_id": "66c01199f16442d51b85c624",
-                  "_tpl": "6622c28aed7e3bc72e301e22",
-                  "upd": {
-                    "StackObjectsCount": 5
-                  }
-                }
-              ],
-              "target": "66c01199f16442d51b85c624",
-              "type": "Item",
-              "value": "5"
             },
             {
               "id": "66c00ada07e643185360f328",
@@ -984,7 +967,43 @@
         "restartable": false,
         "rewards": {
           "Fail": [],
-          "Started": [],
+          "Started": [
+            {
+              "id": "66c12728b2b84a1f93112136",
+              "index": 0,
+              "items": [
+                {
+                  "_id": "66c12728835b9888c133eb7a",
+                  "_tpl": "6622c28aed7e3bc72e301e22",
+                  "upd": {
+                    "StackObjectsCount": 5
+                  }
+                }
+              ],
+              "target": "66c12728835b9888c133eb7a",
+              "type": "Item",
+              "value": "5"
+            },
+            {
+              "id": "66c128ffdf5ebe123f12afef",
+              "index": 1,
+              "items": [
+                {
+                  "_id": "66c128ff23bf1e9c7f23481f",
+                  "_tpl": "6622c28aed7e3bc72e301e22",
+                  "upd": {
+                    "SpawnedInSession": true,
+                    "StackObjectsCount": 1
+                  }
+                }
+              ],
+              "loyaltyLevel": 1,
+              "target": "66c128ff23bf1e9c7f23481f",
+              "traderId": "10",
+              "type": "ProductionScheme",
+              "unknown": true
+            }
+          ],
           "Success": [
             {
               "id": "66c01ef2307a9ea1b98fc959",

@@ -494,6 +494,10 @@
                     "type": "Area"
                   },
                   {
+                    "questId": "66c01dac468404852c442e8b",
+                    "type": "QuestComplete"
+                  },
+                  {
                     "templateId": "619cc01e0a7c3a1a2731940c",
                     "count": 2,
                     "isFunctional": false,
@@ -505,9 +509,9 @@
                     "type": "Tool"
                   }
                 ],
-                "productionTime": 10,
+                "productionTime": 600,
                 "needFuelForAllProductionTime": false,
-                "locked": false,
+                "locked": true,
                 "endProduct": "6622c28aed7e3bc72e301e22",
                 "continuous": false,
                 "count": 3,
