@@ -113,26 +113,29 @@ public class CustomQuestController : MonoBehaviour
                 continue;
             }
             
-            var customCondition = questRespCond
-                .FirstOrDefault(cond => cond.Locations
+            var customConditions = questRespCond
+                .Where(cond => cond.Locations
                     .Any(loc => loc == _player.Location || loc == "any"));
 
-            if (customCondition is null)
+            if (!customConditions.Any())
             {
                 Plugin.Log.LogWarning($"Custom Condition is null for `{quest.Id.LocalizedName()}`");
                 continue;
             }
-            
-            var condition = GetBsgConditionById(quest.Id, customCondition.ConditionId);
 
-            if (condition is null)
+            foreach (var condition in customConditions)
             {
-                Plugin.Log.LogWarning($"Condition is null for `{quest.Id.LocalizedName()}`");
-                continue;
+                var bsgCondition = GetBsgConditionById(quest.Id, condition.ConditionId);
+                
+                if (bsgCondition is null)
+                {
+                    Plugin.Log.LogWarning($"BSG Condition is null for `{quest.Id.LocalizedName()}`");
+                    continue;
+                }
+                
+                Plugin.Log.LogDebug($"Incremented condition {conditionType} on quest {quest.Id.LocalizedName()}");
+                IncrementConditionCounter(quest, bsgCondition);
             }
-            
-            IncrementConditionCounter(quest, condition);
-            Plugin.Log.LogDebug($"Incremented condition {conditionType} on quest {quest.Id.LocalizedName()}");
         }
     }
     

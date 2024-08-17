@@ -49,5 +49,10 @@
     "66c01dac468404852c442e8b note": "",
     "66c01dac468404852c442e8b startedMessageText": "",
     "66c01dac468404852c442e8b successMessageText": "I have important work to do, come back later.",
-    "66c0cea0167b5c76c85bcf1b": "Inspect 5 locks on Customs."
+    "66c0cea0167b5c76c85bcf1b": "Inspect 5 locks on Customs",
+    "66c11197ed98f68d45428a24": "Pick 5 locks on Customs",
+    "66c112944d2fcb705c47a448": "Inspect 5 locks on Shoreline",
+    "66c11294258e45ec32f612c2": "Pick 5 locks on Shoreline",
+    "66c11361620ceb06810379ee": "Pick 25 locks across all of tarkov",
+    "66c114a6cd9f4461033608fc": "Fail to Pick 10 locks across all of tarkov"
 }
