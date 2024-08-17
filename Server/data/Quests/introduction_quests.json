@@ -697,13 +697,13 @@
                     },
                     "distance": {
                       "compareMethod": ">=",
-                      "value": 10000
+                      "value": 5555
                     },
                     "dynamicLocale": false,
                     "enemyEquipmentExclusive": [],
                     "enemyEquipmentInclusive": [],
                     "enemyHealthEffects": [],
-                    "id": "66c01ed85347c10ca2218bc8",
+                    "id": "66c0cea03aaf5263ce0225c3",
                     "resetOnSessionEnd": false,
                     "savageRole": [],
                     "target": "AnyPmc",
@@ -714,12 +714,12 @@
                     "weaponModsInclusive": []
                   }
                 ],
-                "id": "66c01ed8d40c052225fb30ba"
+                "id": "66c0cea067a19fa6757573db"
               },
               "doNotResetIfCounterCompleted": false,
               "dynamicLocale": false,
               "globalQuestCounterId": "",
-              "id": "66c01ed808f1cb3e3d7b7070",
+              "id": "66c0cea0167b5c76c85bcf1b",
               "index": 0,
               "oneSessionOnly": false,
               "parentId": "",

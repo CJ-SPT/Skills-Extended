@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Comfort.Common;
 using EFT;
@@ -13,6 +14,12 @@ public sealed class LockPickActionHandler
     public GamePlayerOwner Owner;
     public WorldInteractiveObject InteractiveObject;
 
+    public static event PickLockEventHandler OnLockPicked;
+    public delegate void PickLockEventHandler(object sender, EventArgs e);
+    
+    public static event PickLockFailedEventHandler OnLockPickFailed;
+    public delegate void PickLockFailedEventHandler(object sender, EventArgs e);
+    
     private static SkillManager _skills => Utils.GetActiveSkillManager();
 
     public void PickLockAction(bool actionCompleted)
@@ -50,12 +57,22 @@ public sealed class LockPickActionHandler
                 Helpers.ApplyLockPickActionXp(InteractiveObject, Owner, isFailure: true);
                 RemoveUseFromLockPick(doorLevel);
 
+                if (OnLockPickFailed is not null)
+                {
+                    OnLockPickFailed(this, EventArgs.Empty);
+                }
+                
                 return;
             }
 
             RemoveUseFromLockPick(doorLevel);
             Helpers.ApplyLockPickActionXp(InteractiveObject, Owner);
             InteractiveObject.Unlock();
+            
+            if (OnLockPicked is not null)
+            {
+                OnLockPicked(this, EventArgs.Empty);
+            }
         }
         else
         {

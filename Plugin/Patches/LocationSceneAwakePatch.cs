@@ -7,6 +7,7 @@ using System.Reflection;
 using EFT.HealthSystem;
 using EFT.InventoryLogic;
 using HarmonyLib;
+using SkillsExtended.Controllers;
 using SkillsExtended.LockPicking;
 using SPT.Reflection.Utils;
 
@@ -62,6 +63,9 @@ namespace SkillsExtended.Patches
 #endif
             LockPicking.Helpers.InspectedDoors.Clear();
             LockPicking.Helpers.DoorAttempts.Clear();
+
+            // Add our custom quest controller
+            __instance.GetOrAddComponent<CustomQuestController>();
             
             __instance.MainPlayer.ActiveHealthController.EffectStartedEvent += ApplyMedicalXp;
         }

@@ -1,0 +1,10 @@
+[
+    {
+        "QuestId": "66c01dac468404852c442e8b",
+        "ConditionId": "66c0cea0167b5c76c85bcf1b",
+        "ConditionType": "InspectLock",
+        "Locations": [
+            "bigmap"
+        ]
+    }
+]

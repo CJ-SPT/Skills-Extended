@@ -39,7 +39,7 @@ class SkillsExtended implements IPreSptLoadMod, IPostDBLoadMod
 
         this.SkillsConfig = this.IOManager.loadJsonFile<ISkillsConfig>(path.join(this.IOManager.ConfigPath, "SkillsConfig.json5"));
 
-        this.RouteManager.preSptLoad(this.InstanceManager, this.ProgressionManager, this.SkillsConfig);
+        this.RouteManager.preSptLoad(this.InstanceManager, this.ProgressionManager, this.SkillsConfig, this.IOManager);
         this.TraderManager.preSptLoad(this.InstanceManager, this.IOManager);
 
         this.InstanceManager.logger.logWithColor("Skills Extended loading", LogTextColor.GREEN);    

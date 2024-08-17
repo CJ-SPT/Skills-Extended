@@ -23,6 +23,7 @@ export class IOManager
 
     public AchievementsRootPath: string = path.join(path.dirname(__filename), "..", "..", "Data", "Achievements");
     public AssortRootPath: string = path.join(path.dirname(__filename), "..", "..", "Data", "Assort");
+    public CustomQuestConditions: string = path.join(path.dirname(__filename), "..", "..", "Data", "CustomQuestConditions");
     public LocaleRootPath: string = path.join(path.dirname(__filename), "..", "..", "Data", "Locales");
     public TraderRootPath: string = path.join(path.dirname(__filename), "..", "..", "Data", "Trader");
     public QuestsRootPath: string = path.join(path.dirname(__filename), "..", "..", "Data", "Quests");
@@ -39,12 +40,14 @@ export class IOManager
      * Loads and parses a config file from disk
      * @param fileName File name inside of config folder to load
      */
-    public loadJsonFile<T>(filePath: string): T
+    public loadJsonFile<T>(filePath: string, readAsText = false): T
     {
         const file = path.join(filePath);
-        const rewardsRaw = this.InstanceManager.vfs.readFile(file);
+        const string = this.InstanceManager.vfs.readFile(file);
 
-        return JSON5.parse(rewardsRaw) as T;
+        return readAsText 
+            ? string as T
+            : JSON5.parse(string) as T;
     }
 
     public saveProgressionFile(progressFile: IProgression, fileName: string): void

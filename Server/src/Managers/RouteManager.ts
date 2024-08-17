@@ -5,22 +5,29 @@ import type { InstanceManager } from "./InstanceManager";
 import type { ProgressionManager } from "./ProgressionManager";
 import type { IKeys } from "../Models/IKeys";
 import type { ISkillsConfig } from "../Models/ISkillsConfig";
+import type { IOManager } from "./IOManager";
+
+import path from "node:path";
+import { ICustomQuestCondition } from "../Models/ICustomQuestConditions";
 
 export class RouteManager
 {
     private InstanceManager: InstanceManager;
     private ProgressionManager: ProgressionManager;
     private SkillsConfig: ISkillsConfig;
+    private IOManager: IOManager;
 
     public preSptLoad(
         instanceManager: InstanceManager,
         progressionManager: ProgressionManager,
-        skillsConfig: ISkillsConfig
+        skillsConfig: ISkillsConfig,
+        ioManager: IOManager
     ): void
     {
         this.InstanceManager = instanceManager;
         this.ProgressionManager = progressionManager;
         this.SkillsConfig = skillsConfig;
+        this.IOManager = ioManager;
 
         this.registerRoutes();   
     }
@@ -54,6 +61,22 @@ export class RouteManager
                     action: async (url, info, sessionId, output) => 
                     {                     
                         return this.getKeys();
+                    }
+                }
+            ],
+            ""
+        );
+
+        staticRouter.registerStaticRouter(
+            "GetCustomQuestConditions",
+            [
+                {
+                    url: "/skillsExtended/GetCustomQuestConditions",
+                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                    action: async (url, info, sessionId, output) => 
+                    {           
+                        const filePath = path.join(this.IOManager.CustomQuestConditions, "CustomQuestConditions.json");
+                        return this.IOManager.loadJsonFile<string>(filePath, true);
                     }
                 }
             ],

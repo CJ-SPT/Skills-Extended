@@ -31,7 +31,7 @@ namespace SkillsExtended.Helpers
         public static T Get<T>(string url)
         {
             var req = RequestHandler.GetJson(url);
-
+            
             if (string.IsNullOrEmpty(req))
             {
                 throw new InvalidOperationException("The response from the server is null or empty.");

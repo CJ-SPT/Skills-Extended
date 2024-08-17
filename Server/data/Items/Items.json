@@ -97,14 +97,14 @@
         "parentId": "590c745b86f7743cc433c5f2",
         "handbookParentId": "5c164d2286f774194c5e69fa",
         "newId": "66bf969b321a56fb499b4d8d",
-        "fleaPriceRoubles": 25000,
-        "handbookPriceRoubles": 25000,
+        "fleaPriceRoubles": 2500000,
+        "handbookPriceRoubles": 2500000,
 
         "locales": {
             "en": {
-                "name": "Skill Book 2",
-                "shortName": "Skill Book",
-                "description": "A skill book."
+                "name": "PLACEHOLDER_INTERNAL_OBJECT",
+                "shortName": "PLACEHOLDER_INTERNAL_OBJECT",
+                "description": "If you ever see this, it means I done fucked something up."
             }
         }
     },
