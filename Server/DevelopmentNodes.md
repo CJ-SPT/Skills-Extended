@@ -15,17 +15,22 @@
     - Prove your worth to gain entry
 
 - Welcome to the Library (Part 2)
-    - Explain what what this place is
-    - Introduction to the man in charge "The Scholar"
+    - Final introduction to the "Scholar's Society"
+    - Help fix a machine in the "Printing Press"
 
-- A True Scholar
+- The Man In Charge
+    - Meet "The man in charge"
     - dont provide alot of details of his character
-    - do tell the player that he was a master locksmith
+    - do tell the player this is a library that is a front for arms production
 
-- Hidden Treasure
-    - Introduction to the lockpicking skill
+- Tech Manual
+    - From Skier
+    - Skier needs something in exchange for the tech manual
+    - Tech manual is the reward
 
-- That door can't stop me
+- Lock Picking Lawyer
+    - Unlock the lock picking skill
+    - Unlock the lock pick as an LL1 assort item
     - Reach X level of lockpicking
 
 ## Side Quests

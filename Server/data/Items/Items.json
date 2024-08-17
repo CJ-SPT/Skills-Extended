@@ -67,7 +67,7 @@
         "overrideProperties": {
             "CanSellOnRagfair": false,
             "Prefab": {
-                "path": "skill_book_1.bundle",
+                "path": "skill_book_5.bundle",
                 "rcid": ""
             }
         },
@@ -79,9 +79,9 @@
 
         "locales": {
             "en": {
-                "name": "Skill Book 1",
-                "shortName": "Skill Book",
-                "description": "A skill book."
+                "name": "Technical Manual",
+                "shortName": "Technical Manual",
+                "description": "A technical Manual used for manufacturing complex machinery."
             }
         }
     },
@@ -159,7 +159,7 @@
         "overrideProperties": {
             "CanSellOnRagfair": false,
             "Prefab": {
-                "path": "skill_book_5.bundle",
+                "path": "skill_book_1.bundle",
                 "rcid": ""
             }
         },
