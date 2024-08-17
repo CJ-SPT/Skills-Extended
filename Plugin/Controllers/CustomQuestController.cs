@@ -123,6 +123,7 @@ public class CustomQuestController : MonoBehaviour
                 continue;
             }
 
+            // Make sure if there are conditions both specific to this map and across any map that we increment all of them
             foreach (var condition in customConditions)
             {
                 var bsgCondition = GetBsgConditionById(quest.Id, condition.ConditionId);
@@ -133,15 +134,10 @@ public class CustomQuestController : MonoBehaviour
                     continue;
                 }
                 
-                Plugin.Log.LogDebug($"Incremented condition {conditionType} on quest {quest.Id.LocalizedName()}");
+                Plugin.Log.LogDebug($"Incremented `{bsgCondition.id.LocalizedName()}` Type: `{conditionType}` Quest: `{quest.Id.LocalizedName()}`");
                 IncrementConditionCounter(quest, bsgCondition);
             }
         }
-    }
-    
-    private void HandleIncrementByLocation(QuestClass quest, IEnumerable<QuestResponse> questResponses)
-    {
-        
     }
     
     /// <summary>
