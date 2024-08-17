@@ -12,68 +12,8 @@
         }
     },
     {
-      "_id": "66bf203ef1a5f6945b88e728",
-      "_tpl": "662400eb756ca8948fe64fe8",
-      "parentId": "hideout",
-      "slotId": "hideout",
-      "upd": {
-        "UnlimitedCount": false,
-        "StackObjectsCount": 9589,
-        "BuyRestrictionMax": 180,
-        "BuyRestrictionCurrent": 0
-      }
-    },
-    {
       "_id": "66bf3299fd7a4ca65fd10bb6",
       "_tpl": "66bf328e83340e52e2a046d4",
-      "parentId": "hideout",
-      "slotId": "hideout",
-      "upd": {
-        "UnlimitedCount": false,
-        "StackObjectsCount": 9589,
-        "BuyRestrictionMax": 180,
-        "BuyRestrictionCurrent": 0
-      }
-    },
-    {
-      "_id": "66bf96dac4285d3369863c26",
-      "_tpl": "66bf969b321a56fb499b4d8d",
-      "parentId": "hideout",
-      "slotId": "hideout",
-      "upd": {
-        "UnlimitedCount": false,
-        "StackObjectsCount": 9589,
-        "BuyRestrictionMax": 180,
-        "BuyRestrictionCurrent": 0
-      }
-    },
-    {
-      "_id": "66bf9cd23bdf664230f567cd",
-      "_tpl": "66bf9c72c40529b4e5b85fee",
-      "parentId": "hideout",
-      "slotId": "hideout",
-      "upd": {
-        "UnlimitedCount": false,
-        "StackObjectsCount": 9589,
-        "BuyRestrictionMax": 180,
-        "BuyRestrictionCurrent": 0
-      }
-    },
-    {
-      "_id": "66bf9cbee9e33aa94dc8a055",
-      "_tpl": "66bf9c5f2d690006ff5961b4",
-      "parentId": "hideout",
-      "slotId": "hideout",
-      "upd": {
-        "UnlimitedCount": false,
-        "StackObjectsCount": 9589,
-        "BuyRestrictionMax": 180,
-        "BuyRestrictionCurrent": 0
-      }
-    },
-    {
-      "_id": "66bf9cda55ad2829b14377e9",
-      "_tpl": "66bf9c51b8a6b39220ad6c5e",
       "parentId": "hideout",
       "slotId": "hideout",
       "upd": {
