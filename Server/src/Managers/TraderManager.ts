@@ -116,11 +116,11 @@ export class TraderManager
         const locales = Object.values(global);
 
         for (const locale of locales) {
-            locale[`${this.BaseJson._id} FullName`] = "Scholars Security";
-            locale[`${this.BaseJson._id} FirstName`] = "Scholars Security";
-            locale[`${this.BaseJson._id} Nickname`] = "Scholars Security";
+            locale[`${this.BaseJson._id} FullName`] = "Scholars Society";
+            locale[`${this.BaseJson._id} FirstName`] = "Scholars Society";
+            locale[`${this.BaseJson._id} Nickname`] = "Scholars Society";
             locale[`${this.BaseJson._id} Location`] = "Undisclosed";
-            locale[`${this.BaseJson._id} Description`] = "From the outside, Scholars Security appears to be a haven for bookworms, its shelves lined with an eclectic collection of titles. However, beneath the facade lies a secret: a discreet operation dealing in high-quality weaponry for high-end mercenaries.";
+            locale[`${this.BaseJson._id} Description`] = "From the outside, Scholars Society appears to be a haven for bookworms, its shelves lined with an eclectic collection of titles. However, beneath the facade lies a secret: a discreet operation dealing in high-quality weaponry for high-end mercenaries.";
         }
     }
 }

@@ -18,7 +18,6 @@ export class AchievementManager
         this.IOManager = ioManager;
 
         this.importAchievementData();
-        this.loadImages();
     }
 
     private importAchievementData(): void
@@ -49,21 +48,5 @@ export class AchievementManager
         
         this.InstanceManager.logger
             .logWithColor(`Skills Extended: Loaded ${loadedAchievements} achievements`, LogTextColor.GREEN);
-    }
-
-    private loadImages(): void
-    {
-        const imagesPath = path.join(this.IOManager.DataPath, "Images", "Achievements");
-        const images = fs.readdirSync(imagesPath);
-
-        const imageRouter = this.InstanceManager.imageRouter;
-
-        for (const image of images)
-        {
-            const imagePath = path.join(imagesPath, image);
-            const filenameWithoutExtension = path.basename(imagePath, path.extname(imagePath));
-            
-            imageRouter.addRoute(`/files/achievement/${filenameWithoutExtension}`, imagePath);
-        }
     }
 }

@@ -32,6 +32,7 @@ export class IOManager
     public postDbLoad(): void
     {
         this.importAllLocaleData();
+        this.importAllImages();
     }
 
     /**
@@ -114,5 +115,52 @@ export class IOManager
         }
 
         return Object.keys(localeData).length;
+    }
+
+    private importAllImages(): void
+    {
+        const imageRouter = this.InstanceManager.imageRouter;
+        const logger = this.InstanceManager.logger;
+
+        const directories = [
+            path.join(this.ImageRootPath, "Achievements"),
+            path.join(this.ImageRootPath, "Quests"),
+            path.join(this.ImageRootPath, "Trader")
+        ];
+
+        let images = 0;
+
+        for (const directory of directories)
+        {
+            const files = fs.readdirSync(directory);
+
+            for (const image of files)
+            {
+                const imagePath = path.join(directory, image);
+                const filenameWithoutExtension = path.basename(imagePath, path.extname(imagePath));
+
+                if (imagePath.includes("Trader"))
+                {
+                    imageRouter.addRoute(`/files/trader/avatar/${filenameWithoutExtension}`, imagePath);
+                    images++;
+                    continue;
+                }
+
+                if (imagePath.includes("Achivements"))
+                {
+                    imageRouter.addRoute(`/files/achievement/${filenameWithoutExtension}`, imagePath);
+                    images++;
+                    continue;
+                }
+
+                if (imagePath.includes("Quests"))
+                {
+                    imageRouter.addRoute(`/files/quest/icon/${filenameWithoutExtension}`, imagePath);
+                    images++;
+                }
+            }
+        }
+
+        logger.logWithColor(`Skills Extended: Loaded ${images} images`, LogTextColor.GREEN);
     }
 }
