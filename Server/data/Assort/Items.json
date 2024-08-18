@@ -222,7 +222,31 @@
       "slotId": "hideout",
       "upd": {
         "UnlimitedCount": false,
-        "StackObjectsCount": 9589,
+        "StackObjectsCount": 10,
+        "BuyRestrictionMax": 3,
+        "BuyRestrictionCurrent": 0
+      }
+    },
+    {
+      "_id": "66c1fe7fbbdb2cd5eba67ab0",
+      "_tpl": "66bf9c5f2d690006ff5961b4",
+      "parentId": "hideout",
+      "slotId": "hideout",
+      "upd": {
+        "UnlimitedCount": false,
+        "StackObjectsCount": 10,
+        "BuyRestrictionMax": 3,
+        "BuyRestrictionCurrent": 0
+      }
+    },
+    {
+      "_id": "66c1fe8e233a78c7678841e6",
+      "_tpl": "66bf9c51b8a6b39220ad6c5e",
+      "parentId": "hideout",
+      "slotId": "hideout",
+      "upd": {
+        "UnlimitedCount": false,
+        "StackObjectsCount": 10,
         "BuyRestrictionMax": 3,
         "BuyRestrictionCurrent": 0
       }

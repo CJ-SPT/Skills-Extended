@@ -3,8 +3,22 @@
     {
       "ItemId": "66bf9c72c40529b4e5b85fee",
       "Name": "Lock Picking Book 1",
-      "DurationInSeconds": 60,
+      "DurationInSeconds": 480,
       "Strength": 5,
+      "SkillType": "Lockpicking"
+    },
+    {
+      "ItemId": "66bf9c5f2d690006ff5961b4",
+      "Name": "Lock Picking Book 2",
+      "DurationInSeconds": 900,
+      "Strength": 7,
+      "SkillType": "Lockpicking"
+    },
+    {
+      "ItemId": "66bf9c51b8a6b39220ad6c5e",
+      "Name": "Lock Picking Book 3",
+      "DurationInSeconds": 1800,
+      "Strength": 10,
       "SkillType": "Lockpicking"
     }
   ]

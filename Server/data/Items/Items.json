@@ -125,9 +125,9 @@
 
         "locales": {
             "en": {
-                "name": "A definitive guide to lockpicking",
-                "shortName": "Lock picking",
-                "description": "Discover the art of lock picking with this detailed manual. From understanding the mechanics of locks to mastering various picking techniques, this guide provides everything you need to become a skilled lockpicker."
+                "name": "A definitive guide to lockpicking Vol. 1",
+                "shortName": "Lock picking 1",
+                "description": "Provides a 5 level boost to Lock Picking for 8 minutes."
             }
         }
     },
@@ -148,9 +148,9 @@
 
         "locales": {
             "en": {
-                "name": "Skill Book 4",
-                "shortName": "Skill Book",
-                "description": "A skill book."
+                "name": "A definitive guide to lockpicking Vol. 2",
+                "shortName": "Lock picking 2",
+                "description": "Provides a 7 level boost to Lock Picking for 15 minutes."
             }
         }
     },
@@ -171,9 +171,9 @@
 
         "locales": {
             "en": {
-                "name": "Skill Book 5",
-                "shortName": "Skill Book",
-                "description": "A skill book."
+                "name": "A definitive guide to lockpicking Vol. 3",
+                "shortName": "Lock picking 3",
+                "description": "Provides a 10 level boost to Lock Picking for 30 minutes."
             }
         }
     }
