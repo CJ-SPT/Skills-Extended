@@ -2,7 +2,7 @@
 using HarmonyLib;
 using SPT.Reflection.Patching;
 
-namespace SkillsExtended.Patches;
+namespace SkillsExtended.Patches.UI;
 
 public class QuestFinishPatch : ModulePatch
 {

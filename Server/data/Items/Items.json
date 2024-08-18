@@ -120,14 +120,14 @@
         "parentId": "590c745b86f7743cc433c5f2",
         "handbookParentId": "5c164d2286f774194c5e69fa",
         "newId": "66bf9c72c40529b4e5b85fee",
-        "fleaPriceRoubles": 25000,
-        "handbookPriceRoubles": 25000,
+        "fleaPriceRoubles": 123000,
+        "handbookPriceRoubles": 123000,
 
         "locales": {
             "en": {
-                "name": "Skill Book 3",
-                "shortName": "Skill Book",
-                "description": "A skill book."
+                "name": "A definitive guide to lockpicking",
+                "shortName": "Lock picking",
+                "description": "Discover the art of lock picking with this detailed manual. From understanding the mechanics of locks to mastering various picking techniques, this guide provides everything you need to become a skilled lockpicker."
             }
         }
     },

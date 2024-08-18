@@ -59,43 +59,18 @@ public class Plugin : BaseUnityPlugin
 
         Log = Logger;
         
-        new SkillPanelDisablePatch().Enable();
-        new BuffIconShowPatch().Enable();
-        new SkillManagerConstructorPatch().Enable();
-        new SkillClassCtorPatch().Enable();
-        new OnScreenChangePatch().Enable();
-        new OnGameStartedPatch().Enable();
-
-        new DoorActionPatch().Enable();
-        new KeycardDoorActionPatch().Enable();
-        
-        new HealthEffectUseTimePatch().Enable();
-        new HealthEffectDamageEffectPatch().Enable();
-        new CanWalkPatch().Enable();
-        new SummaryLevelPatch().Enable();
-        new PersonalBuffPatch().Enable();
-        new PersonalBuffFullStringPatch().Enable();
-        new PersonalBuffStringPatch().Enable();
-        
-        new QuestFinishPatch().Enable();
+        PatchManager.PatchAll();
         
 #if DEBUG
         Logger.LogWarning("PRE RELEASE BUILD - NO SUPPORT");
-        new LocationSceneAwakePatch().Enable();
+        Logger.LogWarning("DEBUG BUILD FEATURES ENABLED");
+        ConsoleCommands.RegisterCommands();
 #endif
         
         Utils.GetTypes();
         
-        Logger.LogInfo("Creating Skill Controller Object");
-        
         Hook = new GameObject("Skills Controller Object");
         DontDestroyOnLoad(Hook);
-        
-#if DEBUG
-        Logger.LogWarning("DEBUG BUILD FEATURES ENABLED");
-        new LocationSceneAwakePatch().Enable();
-        ConsoleCommands.RegisterCommands();
-#endif
     }
 
     private void Start()
