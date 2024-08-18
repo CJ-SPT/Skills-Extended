@@ -86,25 +86,25 @@
         }
     },
     {
-        "itemTplToClone": "5bc9c049d4351e44f824d360",
+        "itemTplToClone": "5449016a4bdc2d6f028b456f",
         "overrideProperties": {
             "CanSellOnRagfair": false,
             "Prefab": {
-                "path": "skill_book_2.bundle",
+                "path": "old_russian_coin.bundle",
                 "rcid": ""
             }
         },
         "parentId": "590c745b86f7743cc433c5f2",
         "handbookParentId": "5c164d2286f774194c5e69fa",
         "newId": "66bf969b321a56fb499b4d8d",
-        "fleaPriceRoubles": 2500000,
-        "handbookPriceRoubles": 2500000,
+        "fleaPriceRoubles": 125000,
+        "handbookPriceRoubles": 125000,
 
         "locales": {
             "en": {
-                "name": "PLACEHOLDER_INTERNAL_OBJECT",
-                "shortName": "PLACEHOLDER_INTERNAL_OBJECT",
-                "description": "If you ever see this, it means I done fucked something up."
+                "name": "Scholars coin",
+                "shortName": "Scholars coin",
+                "description": "A repurposed old russian coin used in the Scholars Society as a currency for bartering books"
             }
         }
     },

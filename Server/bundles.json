@@ -55,6 +55,14 @@
                 "shaders",
                 "cubemaps"
             ]
+        },
+        {
+            "key": "old_russian_coin.bundle",
+            "dependencyKeys": [
+                "assets/commonassets/physics/physicsmaterials.bundle",
+                "shaders",
+                "cubemaps"
+            ]
         }
     ]
 }
