@@ -21,7 +21,7 @@ internal sealed class CustomInteractionsProvider : IItemCustomInteractionsProvid
         {
             Caption = () => "Read Book",
             Icon = () => StaticIcons.GetItemTypeIcon(EItemType.Info),
-            Enabled = () => ReadBookHandler.GetBuff(item) != null,
+            Enabled = () => ReadBookHandler.GetBuffModel(item) != null,
             Action = () => ReadBookHandler.ReadBook(item),
             Error = () => "You are incapable of reading."
         };

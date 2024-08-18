@@ -50,6 +50,7 @@ internal static class PatchManager
         new PersonalBuffFullStringPatch().Enable();
         new PersonalBuffStringPatch().Enable();
         new QuestFinishPatch().Enable();
+        new SkillLevelPanelPatch().Enable();
     }
 
     private static void Debug()

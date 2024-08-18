@@ -32,12 +32,26 @@ public class BuffController : MonoBehaviour
         _activeBuffs.Add(buff, routine);
     }
 
+    public static AbstractBuff GetActiveBuffForSkill(ESkillId skill)
+    {
+        foreach (var buff in _activeBuffs)
+        {
+            if (buff.Key.Buff.SkillType == skill)
+            {
+                return buff.Key;
+            }
+        }
+
+        return default;
+    }
+    
     private static IEnumerator StartBuff(AbstractBuff buff)
     {
         buff.ApplyBuff();
         
         yield return new WaitUntil(() => buff.IsExpired);
 
+        _activeBuffs.Remove(buff);
         buff.RemoveBuff();
     }
 }

@@ -60,14 +60,14 @@ internal static class ReadBookHandler
     [CanBeNull]
     private static AbstractBuff CreateBuff(Item item)
     {
-        var buff = GetBuff(item);
+        var buffModel = GetBuffModel(item);
 
-        if (buff is null) return null;
+        if (buffModel is null) return null;
         
-        switch (buff.SkillType)
+        switch (buffModel.SkillType)
         {
             case ESkillId.Lockpicking:
-                return new LockPickingBuff(buff.Strength, buff.DurationInSeconds);
+                return new LockPickingBuff(buffModel);
             
             default:
                 return null;
@@ -75,7 +75,7 @@ internal static class ReadBookHandler
     }
     
     [CanBeNull]
-    public static SkillBuffModel GetBuff(Item item)
+    public static SkillBuffModel GetBuffModel(Item item)
     {
         return BuffController.Buffs.SkillBuffs.FirstOrDefault(buff => buff.ItemId == item.TemplateId);
     }
