@@ -1,0 +1,11 @@
+﻿{
+  "SkillBuffs": [
+    {
+      "ItemId": "66bf9c72c40529b4e5b85fee",
+      "Name": "Lock Picking Book 1",
+      "DurationInSeconds": 60,
+      "Strength": 5,
+      "SkillType": "Lockpicking"
+    }
+  ]
+}

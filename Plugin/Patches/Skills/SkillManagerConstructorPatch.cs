@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Reflection;
 using EFT;
 using HarmonyLib;
@@ -21,6 +22,8 @@ internal class SkillManagerConstructorPatch : ModulePatch
     public static void Postfix(SkillManager __instance, ref SkillClass[] ___DisplayList, ref SkillClass[] ___Skills, EPlayerSide faction)
     {
         var insertIndex = 12;
+        
+        Logger.LogError($"SkillManager Created: {faction}");
         
         // Action and buff lists intentionally empty here, this is for display list purposes only
         

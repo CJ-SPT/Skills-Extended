@@ -1,10 +1,7 @@
 ﻿using BepInEx;
 using BepInEx.Bootstrap;
 using BepInEx.Logging;
-using Comfort.Common;
 using DrakiaXYZ.VersionChecker;
-using EFT;
-using EFT.InventoryLogic;
 using Newtonsoft.Json;
 using SkillsExtended.Controllers;
 using SkillsExtended.Helpers;
@@ -16,12 +13,15 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using IcyClawz.CustomInteractions;
+using SkillsExtended.ItemInteractions;
 using SkillsExtended.Skills;
 using UnityEngine;
 
 namespace SkillsExtended;
 
 [BepInPlugin("com.dirtbikercj.SkillsExtended", "Skills Extended", "1.2.0")]
+[BepInDependency("com.IcyClawz.CustomInteractions")]
 public class Plugin : BaseUnityPlugin
 {
     public const int TarkovVersion = 30626;
@@ -42,6 +42,7 @@ public class Plugin : BaseUnityPlugin
     
     internal static UsecRifleBehaviour NatoWeaponScript;
     internal static BearRifleBehaviour EasternWeaponScript;
+    internal static BuffController BuffController;
 
     internal static readonly SkillManagerExt PlayerSkillManagerExt = new();
     internal static readonly SkillManagerExt ScavSkillManagerExt = new();
@@ -60,6 +61,7 @@ public class Plugin : BaseUnityPlugin
         Log = Logger;
         
         PatchManager.PatchAll();
+        CustomInteractionsManager.Register(new CustomInteractionsProvider());
         
 #if DEBUG
         Logger.LogWarning("PRE RELEASE BUILD - NO SUPPORT");
@@ -70,6 +72,9 @@ public class Plugin : BaseUnityPlugin
         Utils.GetTypes();
         
         Hook = new GameObject("Skills Controller Object");
+        
+        BuffController = Hook.AddComponent<BuffController>();
+        
         DontDestroyOnLoad(Hook);
     }
 

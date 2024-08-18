@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net471</TargetFramework>
+    <TargetFramework>net472</TargetFramework>
     <AssemblyName>SkillsExtended</AssemblyName>
     <Description>New Skills!</Description>
     <Version>1.0.0</Version>
@@ -14,6 +14,9 @@
 	<ItemGroup>
 		<Reference Include="0Harmony">
 			<HintPath>..\..\..\BepinEx\Core\0Harmony.dll</HintPath>
+		</Reference>
+		<Reference Include="IcyClawz.CustomInteractions">
+			<HintPath>..\..\..\BepinEx\Plugins\IcyClawz.CustomInteractions.dll</HintPath>
 		</Reference>
 		<Reference Include="Spt.Common">
 			<HintPath>..\..\..\BepinEx\Plugins\spt\SPT-Common.dll</HintPath>
@@ -78,7 +81,7 @@
 	</ItemGroup>
 
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-	  <Exec Command="copy &quot;$(TargetPath)&quot; &quot;..\..\..\BepInEx\plugins\SkillsExtended\$(TargetName).dll&quot;&#xA;if $(ConfigurationName) == Debug (&#xA;    copy &quot;$(ProjectDir)$(OutDir)$(TargetName).pdb&quot; &quot;..\..\..\BepInEx\plugins\SkillsExtended\$(TargetName).pdb&quot;&#xA;) else (&#xA;    del &quot;..\..\..\BepInEx\plugins\SkillsExtended\$(TargetName).pdb&quot;&#xA;)&#xA;&#xA;xcopy &quot;$(ProjectDir)bundles\lockpicking_anim.bundle&quot; &quot;..\..\..\BepInEx\plugins\SkillsExtended\bundles\&quot; /Y&#xA;&#xA;del &quot;..\..\..\BepInEx\config\com.dirtbikercj.SkillsExtended.cfg&quot;" />
+	  <Exec Command="copy &quot;$(TargetPath)&quot; &quot;..\..\..\BepInEx\plugins\SkillsExtended\$(TargetName).dll&quot;&#xA;if $(ConfigurationName) == Debug (&#xA;    copy &quot;$(ProjectDir)$(OutDir)$(TargetName).pdb&quot; &quot;..\..\..\BepInEx\plugins\SkillsExtended\$(TargetName).pdb&quot;&#xA;) else (&#xA;    del &quot;..\..\..\BepInEx\plugins\SkillsExtended\$(TargetName).pdb&quot;&#xA;)&#xA;&#xA;xcopy &quot;$(ProjectDir)bundles\lockpicking_anim.bundle&quot; &quot;..\..\..\BepInEx\plugins\SkillsExtended\bundles\&quot; /Y&#xA;&#xA;xcopy &quot;$(ProjectDir)Buffs\buffs.json&quot; &quot;..\..\..\BepInEx\plugins\SkillsExtended\&quot; /Y&#xA;&#xA;del &quot;..\..\..\BepInEx\config\com.dirtbikercj.SkillsExtended.cfg&quot;" />
 	</Target>
 
 </Project>
