@@ -22,9 +22,7 @@ namespace SkillsExtended.Helpers
         // If the player is in the GameWorld, use the main players SkillManager
         public static SkillManager GetActiveSkillManager()
         {
-            return Singleton<GameWorld>.Instance?.MainPlayer is not null
-                ? Singleton<GameWorld>.Instance?.MainPlayer?.Skills
-                : ClientAppUtils.GetMainApp()?.GetClientBackEndSession()?.Profile?.Skills;
+            return ClientAppUtils.GetMainApp()?.GetClientBackEndSession()?.Profile?.Skills;
         }
 
         // Get Json from the server

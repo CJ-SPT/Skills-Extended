@@ -179,7 +179,7 @@ public class LpLockPicking : MonoBehaviour
     /// <summary>
     /// Deactivates the lock and stops the lock game. This is when we press the abort button
     /// </summary>
-    private void Deactivate()
+    private void Deactivate(bool succeed = false)
     {
         animator.Play("Deactivate");
         
@@ -191,6 +191,7 @@ public class LpLockPicking : MonoBehaviour
             CursorSettings.SetCursor(ECursorType.Invisible);
             Cursor.lockState = CursorLockMode.Locked;
             Singleton<GUISounds>.Instance.PlayUISound(EUISoundType.MenuDropdown);
+            _onUnlocked.Invoke(succeed);
         }
         
         cylinder!.eulerAngles = Vector3.zero;
@@ -200,7 +201,7 @@ public class LpLockPicking : MonoBehaviour
     private void MoveLockPick()
     {
         lockpick.eulerAngles = 
-            Vector3.forward * 180 * Mathf.Clamp((Input.mousePosition.x / Screen.width), 0.01f, 0.99f);
+            Mathf.Clamp((Input.mousePosition.x / Screen.width), 0.01f, 0.99f) * 180 * Vector3.forward;
 
         lockpick.eulerAngles = Vector3.forward * Mathf.Clamp(lockpick.eulerAngles.z, 0, 180);
             
@@ -211,6 +212,8 @@ public class LpLockPicking : MonoBehaviour
     {
         // If the lock pick is in the sweet spot, the cylinder can rotate
         if (!_inSweetSpot) return;
+
+        _sweetSpotAngle *= 1.02f * Time.deltaTime;
         
         // Play the cylinder sound
         if (!audioSource.isPlaying) 
@@ -233,7 +236,6 @@ public class LpLockPicking : MonoBehaviour
                 new Vector3(Random.Range(-3, 3), Random.Range(-3, 3), 0);
 
             _timeSpentWiggling += Time.deltaTime;
-            Plugin.Log.LogDebug($"WIGGLE TIME: {_timeSpentWiggling}");
             
             if (_timeSpentWiggling > _wiggleTimeLimit)
             {

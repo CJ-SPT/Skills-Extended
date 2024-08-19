@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using Comfort.Common;
 using EFT;
 using EFT.Interactive;
-using HarmonyLib;
 using SkillsExtended.Helpers;
-using SkillsExtended.Skills;
 
 namespace SkillsExtended.LockPicking;
 public sealed class LockPickActionHandler
