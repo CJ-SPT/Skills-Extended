@@ -60,3 +60,9 @@ export interface ILockpickingConfig
     DOOR_PICK_LEVELS: Record<string, Record<string, number>>;
     CRAFTING_RECIPES: IHideoutProduction[];
 }
+
+export interface IAdditionalWeapons
+{
+    AdditionalNatoWeapons: string[];
+    AdditionalEasternWeapons: string[];
+}

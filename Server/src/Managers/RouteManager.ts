@@ -4,11 +4,12 @@ import { BaseClasses } from "@spt/models/enums/BaseClasses";
 import type { InstanceManager } from "./InstanceManager";
 import type { ProgressionManager } from "./ProgressionManager";
 import type { IKeys } from "../Models/IKeys";
-import type { ISkillsConfig } from "../Models/ISkillsConfig";
+import { IAdditionalWeapons, type ISkillsConfig } from "../Models/ISkillsConfig";
 import type { IOManager } from "./IOManager";
 
 import path from "node:path";
 import { ICustomQuestCondition } from "../Models/ICustomQuestConditions";
+import { LogTextColor } from "@spt/models/spt/logging/LogTextColor";
 
 export class RouteManager
 {
@@ -45,6 +46,20 @@ export class RouteManager
                     action: async (url, info, sessionId, output) => 
                     {                     
                         this.ProgressionManager.getActivePmcData(sessionId);
+
+                        const addWeaponsPath = path.join(this.IOManager.ConfigPath, "AdditionalWeapons.json");
+
+                        if (this.InstanceManager.vfs.exists(addWeaponsPath))
+                        {
+                            const weapons = this.IOManager.loadJsonFile<IAdditionalWeapons>(addWeaponsPath);
+
+                            this.SkillsConfig.EasternRifle.WEAPONS.push(...weapons.AdditionalEasternWeapons);
+                            this.SkillsConfig.NatoRifle.WEAPONS.push(...weapons.AdditionalNatoWeapons);
+                            
+                            const logger = this.InstanceManager.logger;
+                            logger.logWithColor("Skills Extended: Found and loaded additional weapons", LogTextColor.GREEN);
+                        }
+
                         return JSON.stringify(this.SkillsConfig, null, 2);
                     }
                 }
