@@ -4,6 +4,8 @@ using EFT;
 using EFT.UI;
 using EFT.InputSystem;
 using EFT.Communications;
+using EFT.Console.Core;
+using EFT.Interactive;
 using SkillsExtended.Helpers;
 using UnityEngine;
 using UnityEngine.UI;
@@ -20,16 +22,15 @@ public class LpLockPicking : MonoBehaviour
 {
     // Holds all pieces of the safe lock for quicker access
     public RectTransform cylinder;
-    internal float cylinderSize;
     public RectTransform lockpick;
     
     /// <summary>
     /// How accurately close we need to be to the sweet spot.
-    /// If set to 1, we need to be exactly at the sweetspot position,
-    /// but if set to a higher number we can be farther from the center position of the sweetspot.
+    /// If set to 1, we need to be exactly at the sweet spot position,
+    /// but if set to a higher number we can be farther from the center position of the sweet spot.
     /// </summary>
     [Range(1, 90)]
-    public float sweetSpotRange = 20; 
+    public float sweetSpotRange = 4.25f; 
 
     /// <summary>
     /// The button that rotates the cylinder. The cylinder will only rotate if we are in the sweet spot.
@@ -39,18 +40,13 @@ public class LpLockPicking : MonoBehaviour
     /// <summary>
     /// How fast the cylinder rotates
     /// </summary>
-    public float rotateSpeed = 90;
+    public float rotateSpeed = 35;
 
     /// <summary>
     /// How much we need to rotate the cylinder in order to win
     /// </summary>
     public float rotateToWin = 330;
-
-    /// <summary>
-    /// How long to wait before deactivating the lock object when we exit the game, either after winning/losing
-    /// </summary>
-    public float deactivateDelay = 1;
-
+    
     /// <summary>
     /// The sound that plays when we rotate the cylinder
     /// </summary>
@@ -65,7 +61,7 @@ public class LpLockPicking : MonoBehaviour
     /// The sound that plays when the sequence resets
     /// </summary>
     public AudioClip resetSound;
-
+    
     /// <summary>
     /// The sound that plays when we win the lock game
     /// </summary>
@@ -91,6 +87,9 @@ public class LpLockPicking : MonoBehaviour
 
     //The sweet spot angle that we must reach with the lock pick
     private static float _sweetSpotAngle = 0;
+
+    private static float _wiggleTimeLimit = 1f;
+    private static float _timeSpentWiggling = 0;
     
     public void Start()
     {
@@ -100,10 +99,22 @@ public class LpLockPicking : MonoBehaviour
         _sweetSpotAngle = Random.Range(0, 180);
     }
 
+    public void OnEnable()
+    {
+        sweetSpotRange = 3;
+        rotateSpeed = 35;
+        rotateToWin = 330;
+        _wiggleTimeLimit = 1f;
+        _timeSpentWiggling = 0f;
+        _isUnlocked = false;
+        
+        _sweetSpotAngle = Random.Range(0, 180);
+    }
+
     public void Update()
     {
         if (_isUnlocked) return;
-
+        
         if (_player is not null)
         {
             GamePlayerOwner.SetIgnoreInputWithKeepResetLook(true);
@@ -131,11 +142,14 @@ public class LpLockPicking : MonoBehaviour
     /// <summary>
     /// Activates the lock and starts the lock game
     /// </summary>
-    public void Activate(Action<bool> action)
+    public void Activate(
+        GamePlayerOwner owner,
+        WorldInteractiveObject interactiveObject,
+        Action<bool> action)
     {
-        _sweetSpotAngle = Random.Range(0, 180);
         _onUnlocked = action;
-        _isUnlocked = false;
+        
+        var chanceForSuccess = Helpers.CalculateChanceForSuccess(interactiveObject, owner);
         
         _player.CurrentManagedState.ChangePose(-1f);
         
@@ -143,7 +157,25 @@ public class LpLockPicking : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Singleton<GUISounds>.Instance.PlayUISound(EUISoundType.MenuContextMenu);
     }
+    
+    public void ActivatePractice(float chance)
+    {
+        _sweetSpotAngle = Random.Range(0, 180);
 
+        var percent = 1 + chance / 100;
+        
+        sweetSpotRange *= percent;
+        rotateSpeed *= percent;
+        _wiggleTimeLimit *= percent;
+        rotateToWin = 330;
+        
+        Plugin.Log.LogDebug($"CHANCE:       {chance}");
+        Plugin.Log.LogDebug($"SWEET SPOT:   {sweetSpotRange}");
+        Plugin.Log.LogDebug($"ROTATE SPEED: {rotateSpeed}");
+        Plugin.Log.LogDebug($"TIME LIMIT:   {_wiggleTimeLimit}");
+        Plugin.Log.LogDebug($"WIN ANGLE:    {rotateToWin}");
+    }
+    
     /// <summary>
     /// Deactivates the lock and stops the lock game. This is when we press the abort button
     /// </summary>
@@ -151,15 +183,14 @@ public class LpLockPicking : MonoBehaviour
     {
         animator.Play("Deactivate");
         
-        _player.CurrentManagedState.ChangePose(1f);
-        
-        CursorSettings.SetCursor(ECursorType.Invisible);
-        Cursor.lockState = CursorLockMode.Locked;
-        Singleton<GUISounds>.Instance.PlayUISound(EUISoundType.MenuDropdown);
-
         if (_player is not null)
         {
+            _player.CurrentManagedState.ChangePose(1f);
             GamePlayerOwner.SetIgnoreInputWithKeepResetLook(false);
+            
+            CursorSettings.SetCursor(ECursorType.Invisible);
+            Cursor.lockState = CursorLockMode.Locked;
+            Singleton<GUISounds>.Instance.PlayUISound(EUISoundType.MenuDropdown);
         }
         
         cylinder!.eulerAngles = Vector3.zero;
@@ -182,7 +213,7 @@ public class LpLockPicking : MonoBehaviour
         if (!_inSweetSpot) return;
         
         // Play the cylinder sound
-        if (audioSource.isPlaying == false) 
+        if (!audioSource.isPlaying) 
             audioSource.PlayOneShot(rotateSound);
 
         HandleWin();
@@ -201,25 +232,34 @@ public class LpLockPicking : MonoBehaviour
             lockpick!.localPosition = 
                 new Vector3(Random.Range(-3, 3), Random.Range(-3, 3), 0);
 
+            _timeSpentWiggling += Time.deltaTime;
+            Plugin.Log.LogDebug($"WIGGLE TIME: {_timeSpentWiggling}");
+            
+            if (_timeSpentWiggling > _wiggleTimeLimit)
+            {
+                Plugin.Log.LogDebug($"Time limit reached");
+                Deactivate();
+            }
+            
             // Play the lock pick wiggle sound
-            if (audioSource.isPlaying == false) 
+            if (!audioSource.isPlaying) 
                 audioSource.PlayOneShot(clickSound);
-        }
-        else
-        {
-            // Reset the lock pick position
-            lockpick!.localPosition = Vector3.zero;
 
-            // Play the reset sound
-            audioSource.Stop();
+            return;
         }
+        
+        // Reset the lock pick position
+        lockpick!.localPosition = Vector3.zero;
+
+        // Play the reset sound
+        audioSource.Stop();
     }
     
     private void HandleWin()
     {
         // If the cylinder rotates beyond this angle, we win
         if (cylinder!.eulerAngles.z < rotateToWin) return;
-                
+        
         _isUnlocked = true;
                 
         animator.Play("Win");
@@ -230,14 +270,15 @@ public class LpLockPicking : MonoBehaviour
         if (EventSystem.current) 
             EventSystem.current.SetSelectedGameObject(null);
 
-        if (_player is not null)
-        {
-            GamePlayerOwner.SetIgnoreInputWithKeepResetLook(false);
-        }
         
         cylinder!.eulerAngles = Vector3.zero;
         gameObject.SetActive(false);
-        _onUnlocked.Invoke(true);
+        
+        if (_player is not null)
+        {
+            GamePlayerOwner.SetIgnoreInputWithKeepResetLook(false);
+            _onUnlocked.Invoke(true);
+        }
     }
 }
 

@@ -32,8 +32,6 @@ public static class LockPickActions
         // Only allow lockpicking if the player is stationary
         if (Utils.IdleStateType.IsInstanceOfType(owner.Player.CurrentState))
         {
-            var currentManagedState = owner.Player.CurrentManagedState;
-            var lpTime = Helpers.CalculateTimeForAction(Plugin.SkillData.LockPicking.PickBaseTime);
             var level = Helpers.GetLevelForDoor(owner.Player.Location, interactiveObject.Id);
 
             // Return out if the door level is not found
@@ -46,23 +44,6 @@ public static class LockPickActions
 
                 return;
             }
-
-            var chanceForSuccess = Helpers.CalculateChanceForSuccess(interactiveObject, owner);
-
-            owner.ShowObjectivesPanel("Picking lock {0:F1}", lpTime);
-
-            if (chanceForSuccess > 80f)
-            {
-                owner.DisplayPreloaderUiNotification("This lock is easy for your level");
-            }
-            else if (chanceForSuccess < 80f && chanceForSuccess > 0f)
-            {
-                owner.DisplayPreloaderUiNotification("This lock is hard for your level");
-            }
-            else if (chanceForSuccess == 0f)
-            {
-                owner.DisplayPreloaderUiNotification("This lock is impossible for your level");
-            }
             
             LockPickActionHandler handler = new()
             {
@@ -73,14 +54,12 @@ public static class LockPickActions
             Action<bool> action = new(handler.PickLockAction);
             
             Plugin.MiniGame.gameObject.SetActive(true);
-            Plugin.MiniGame.Activate(action);
-            
-            // currentManagedState.Plant(true, false, lpTime, action);
+            Plugin.MiniGame.Activate(owner, interactiveObject, action);
+
+            return;
         }
-        else
-        {
-            owner.DisplayPreloaderUiNotification("Cannot pick the lock while moving.");
-        }
+        
+        owner.DisplayPreloaderUiNotification("Cannot pick the lock while moving.");
     }
     
     public static void HackTerminal(KeycardDoor door, GamePlayerOwner owner)

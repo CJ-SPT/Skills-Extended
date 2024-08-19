@@ -22,49 +22,13 @@ public sealed class LockPickActionHandler
     
     private static SkillManager _skills => Utils.GetActiveSkillManager();
 
-    public void PickLockAction(bool actionCompleted)
+    public void PickLockAction(bool doorUnlocked)
     {
         var doorLevel = Helpers.GetLevelForDoor(Owner.Player.Location, InteractiveObject.Id);
 
         // If the player completed the full-timer uninterrupted
-        if (actionCompleted)
+        if (doorUnlocked)
         {
-            // Attempt was not successful
-            if (!Helpers.IsAttemptSuccessful(doorLevel, InteractiveObject, Owner))
-            {
-                Owner.DisplayPreloaderUiNotification("You failed to pick the lock...");
-
-                // Add to the counter
-                if (!Helpers.DoorAttempts.ContainsKey(InteractiveObject.Id))
-                {
-                    Helpers.DoorAttempts.Add(InteractiveObject.Id, 1);
-                }
-                else
-                {
-                    Helpers.DoorAttempts[InteractiveObject.Id]++;
-                }
-
-                // Break the lock if more than 3 failed attempts
-                if (Helpers.DoorAttempts[InteractiveObject.Id] > Plugin.SkillData.LockPicking.AttemptsBeforeBreak)
-                {
-                    Owner.DisplayPreloaderUiNotification("You broke the lock...");
-                    InteractiveObject.KeyId = string.Empty;
-                    InteractiveObject.Operatable = false;
-                    InteractiveObject.DoorStateChanged(EDoorState.None);
-                }
-
-                // Apply failure xp
-                Helpers.ApplyLockPickActionXp(InteractiveObject, Owner, isFailure: true);
-                RemoveUseFromLockPick(doorLevel);
-
-                if (OnLockPickFailed is not null)
-                {
-                    OnLockPickFailed(this, EventArgs.Empty);
-                }
-                
-                return;
-            }
-
             RemoveUseFromLockPick(doorLevel);
             Helpers.ApplyLockPickActionXp(InteractiveObject, Owner);
             InteractiveObject.Unlock();
@@ -73,13 +37,46 @@ public sealed class LockPickActionHandler
             {
                 OnLockPicked(this, EventArgs.Empty);
             }
+
+            return;
         }
-        else
+        
+        Owner.DisplayPreloaderUiNotification("You failed to pick the lock...");
+
+        AddFailedAttemptToCounter();
+                
+        // Apply failure xp
+        Helpers.ApplyLockPickActionXp(InteractiveObject, Owner, isFailure: true);
+        RemoveUseFromLockPick(doorLevel);
+
+        if (OnLockPickFailed is not null)
         {
-            Owner.CloseObjectivesPanel();
+            OnLockPickFailed(this, EventArgs.Empty);
         }
     }
 
+    private void AddFailedAttemptToCounter()
+    {
+        // Add to the counter
+        if (!Helpers.DoorAttempts.ContainsKey(InteractiveObject.Id))
+        {
+            Helpers.DoorAttempts.Add(InteractiveObject.Id, 1);
+        }
+        else
+        {
+            Helpers.DoorAttempts[InteractiveObject.Id]++;
+        }
+
+        // Break the lock if more than 3 failed attempts
+        if (Helpers.DoorAttempts[InteractiveObject.Id] > Plugin.SkillData.LockPicking.AttemptsBeforeBreak)
+        {
+            Owner.DisplayPreloaderUiNotification("You broke the lock...");
+            InteractiveObject.KeyId = string.Empty;
+            InteractiveObject.Operatable = false;
+            InteractiveObject.DoorStateChanged(EDoorState.None);
+        }
+    }
+    
     private void RemoveUseFromLockPick(int doorLevel)
     {
         var levelDifference = _skills.Lockpicking.Level - doorLevel;
