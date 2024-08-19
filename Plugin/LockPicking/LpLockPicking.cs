@@ -104,6 +104,13 @@ public class LpLockPicking : MonoBehaviour
     {
         if (_isUnlocked) return;
 
+        if (_player is not null)
+        {
+            GamePlayerOwner.SetIgnoreInputWithKeepResetLook(true);
+            _player.ResetLookDirection();
+            _player.Look(0f, 0f);
+        }
+        
         MoveLockPick();
         
         _isRotating = Input.GetKey(rotateButton);
@@ -149,6 +156,11 @@ public class LpLockPicking : MonoBehaviour
         CursorSettings.SetCursor(ECursorType.Invisible);
         Cursor.lockState = CursorLockMode.Locked;
         Singleton<GUISounds>.Instance.PlayUISound(EUISoundType.MenuDropdown);
+
+        if (_player is not null)
+        {
+            GamePlayerOwner.SetIgnoreInputWithKeepResetLook(false);
+        }
         
         cylinder!.eulerAngles = Vector3.zero;
         gameObject.SetActive(false);
@@ -218,6 +230,11 @@ public class LpLockPicking : MonoBehaviour
         if (EventSystem.current) 
             EventSystem.current.SetSelectedGameObject(null);
 
+        if (_player is not null)
+        {
+            GamePlayerOwner.SetIgnoreInputWithKeepResetLook(false);
+        }
+        
         cylinder!.eulerAngles = Vector3.zero;
         gameObject.SetActive(false);
         _onUnlocked.Invoke(true);
