@@ -171,11 +171,14 @@ public class LPLockpicking : MonoBehaviour
         isUnlocked = true;
                 
         animator.Play("Win");
-                
+        
         audioSource.PlayOneShot(winSound);
 
         // Unselect any buttons on the cylinder, so we don't press them when pressing 'SPACE' after closing the lock
-        if (EventSystem.current) EventSystem.current.SetSelectedGameObject(null);
+        if (EventSystem.current) 
+            EventSystem.current.SetSelectedGameObject(null);
+        
+        gameObject.SetActive(false);
     }
 }
 
