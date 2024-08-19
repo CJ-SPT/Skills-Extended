@@ -22,8 +22,8 @@ import { LogTextColor } from "@spt/models/spt/logging/LogTextColor";
 export class InstanceManager 
 {
     //#region Accessible in or after preAkiLoad
-    private alpha = true;
-    private version = "1.2.0 Alpha 2";
+    private alpha = false;
+    private version = "";
 
     // Instances
     public container: DependencyContainer;
@@ -88,7 +88,7 @@ export class InstanceManager
         const logger = this.logger;
 
         logger.logWithColor("===================================================================================", LogTextColor.RED);
-        logger.logWithColor(`Skills Extended: Pre-release development build. Version: ${this.version}`, LogTextColor.RED);
+        logger.logWithColor(`Skills Extended: Pre-release development build. Version: ${this.version ?? "None"}`, LogTextColor.RED);
         logger.logWithColor("Do not ask for support running this on your game. This is not an error.", LogTextColor.RED);
         logger.logWithColor("Expect nothing to work. Report what doesn't. Everything is subject to change.", LogTextColor.RED);
         logger.logWithColor("===================================================================================", LogTextColor.RED);
