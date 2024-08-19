@@ -21,6 +21,7 @@ using SkillsExtended.ItemInteractions;
 using SkillsExtended.LockPicking;
 using SkillsExtended.Skills;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace SkillsExtended;
 
@@ -52,7 +53,7 @@ public class Plugin : BaseUnityPlugin
     internal static readonly SkillManagerExt ScavSkillManagerExt = new();
 
     private static GameObject _miniGameObject;
-    internal static LPLockpicking MiniGame { get; private set; }
+    internal static LpLockPicking MiniGame { get; private set; }
     
     internal static ManualLogSource Log;
 
@@ -107,7 +108,7 @@ public class Plugin : BaseUnityPlugin
             EasternWeaponScript = Hook.AddComponent<BearRifleBehaviour>();
         }
         
-        LoadBundle();
+        LoadMiniGame();
     }
 
     private void Update()
@@ -120,7 +121,7 @@ public class Plugin : BaseUnityPlugin
         }
     }
 
-    private static void LoadBundle()
+    private static void LoadMiniGame()
     {
         var directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         
@@ -131,6 +132,8 @@ public class Plugin : BaseUnityPlugin
         var dataObject = dataBundle.LoadAssetWithSubAssets("lp_Game_Data").First();
 
         _miniGameObject = Instantiate(gameObject as GameObject);
+        _miniGameObject.SetActive(false);
+        
         var dataInstance = Instantiate(dataObject as GameObject);
         
         Log.LogError(_miniGameObject.name);
@@ -138,7 +141,6 @@ public class Plugin : BaseUnityPlugin
         DontDestroyOnLoad(_miniGameObject);
         
         var visualObjects = _miniGameObject.GetComponentsInChildren<MonoBehaviour>();
-        var audioObjects = dataInstance.GetComponent<AudioClip>();
         
         var doorComp = visualObjects
             .FirstOrDefault(x => x.gameObject.name == "DoorLock");
@@ -152,15 +154,20 @@ public class Plugin : BaseUnityPlugin
         var buttonRotate = visualObjects
             .FirstOrDefault(x => x?.gameObject?.name == "ButtonRotate");
         
+        var buttonAbort = visualObjects
+            .FirstOrDefault(x => x?.gameObject?.name == "ButtonAbort");
+        
         var audioSource = _miniGameObject.GetComponentsInChildren(typeof(AudioSource));
         
         buttonRotate?.gameObject.SetActive(false);
         
-        MiniGame = doorComp?.gameObject.GetOrAddComponent<LPLockpicking>();
+        MiniGame = doorComp?.gameObject.GetOrAddComponent<LpLockPicking>();
 
         MiniGame.cylinder = cylinderComp?.gameObject.GetComponent<RectTransform>();
         MiniGame.lockpick = lockPickComp?.gameObject.GetComponent<RectTransform>();
         MiniGame.audioSource = audioSource.First() as AudioSource;
+
+        MiniGame.abortButton = buttonAbort.gameObject.GetComponent<Button>();
         
         foreach (var data in dataInstance.gameObject.GetComponentsInChildren(typeof(AudioSource)))
         {

@@ -1,80 +1,103 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+
+namespace SkillsExtended.LockPicking;
 
 /// <summary>
 /// This class defines a lockpicking system that behaves similar to games such as Skyrim, Fallout, and Dying Light.
 /// Here you must rotate the lockpick until you find the sweetspot, and then press a button to rotate the cylinder and unlock it
 /// </summary>
-public class LPLockpicking : MonoBehaviour
+public class LpLockPicking : MonoBehaviour
 {
     // Holds all pieces of the safe lock for quicker access
     public RectTransform cylinder;
     internal float cylinderSize;
     public RectTransform lockpick;
-
-    [Tooltip("How accurately close we need to be to the sweetspot. If set to 1, we need to be exactly at the sweetspot position, but if set to a higher number we can be farther from the center position of the sweetspot.")]
+    
+    /// <summary>
+    /// How accurately close we need to be to the sweet spot.
+    /// If set to 1, we need to be exactly at the sweetspot position,
+    /// but if set to a higher number we can be farther from the center position of the sweetspot.
+    /// </summary>
     [Range(1, 90)]
-    public float sweetspotRange = 20; 
+    public float sweetSpotRange = 20; 
 
-    [Tooltip("The button that rotates the cylinder. The cylinder will only rotate if we are in the sweetspot.")]
+    /// <summary>
+    /// The button that rotates the cylinder. The cylinder will only rotate if we are in the sweet spot.
+    /// </summary>
     public string rotateButton = "a";
 
-    [Tooltip("How fast the cylinder rotates")]
+    /// <summary>
+    /// How fast the cylinder rotates
+    /// </summary>
     public float rotateSpeed = 90;
 
-    [Tooltip("How much we need to rotate the cylinder in order to win")]
+    /// <summary>
+    /// How much we need to rotate the cylinder in order to win
+    /// </summary>
     public float rotateToWin = 330;
 
-    [Tooltip("How long to wait before deactivating the lock object when we exit the game, either after winning/losing")]
+    /// <summary>
+    /// How long to wait before deactivating the lock object when we exit the game, either after winning/losing
+    /// </summary>
     public float deactivateDelay = 1;
 
-    [Tooltip("The sound that plays when we rotate the cylinder")]
+    /// <summary>
+    /// The sound that plays when we rotate the cylinder
+    /// </summary>
     public AudioClip rotateSound;
 
-    [Tooltip("The sound that plays when we reach a correct spot in one direction")]
+    /// <summary>
+    /// The sound that plays when we reach a correct spot in one direction
+    /// </summary>
     public AudioClip clickSound;
 
-    [Tooltip("The sound that plays when the sequence resets")]
+    /// <summary>
+    /// The sound that plays when the sequence resets
+    /// </summary>
     public AudioClip resetSound;
 
-    [Tooltip("The sound that plays when we win the lock game")]
+    /// <summary>
+    /// The sound that plays when we win the lock game
+    /// </summary>
     public AudioClip winSound;
 
     public AudioSource audioSource;
 
     public Animator animator;
+
+    public Button abortButton;
     
-    internal int index;
-
     // Is the cylinder rotating
-    internal bool isRotating = false;
+    private static bool _isRotating;
 
-    // If in the sweetspot, the cylinder can be rotated. If not, the cylinder will return to its original angle
-    internal bool inSweetspot = false;
+    // If in the sweet spot, the cylinder can be rotated. If not, the cylinder will return to its original angle
+    private static bool _inSweetSpot;
 
     // If the lock is unlocked, we win
-    internal bool isUnlocked = false;
+    private static bool _isUnlocked = false;
 
-    //The sweetspot angle that we must reach with the lockpick
-    internal float sweetspotAngle = 0;
+    //The sweet spot angle that we must reach with the lock pick
+    private static float _sweetSpotAngle = 0;
     
     public void Start()
     {
         animator = GetComponent<Animator>();
+
+        abortButton.onClick.AddListener(() => Deactivate());
+        Activate();
     }
 
     public void Update()
     {
-        if (isUnlocked) return;
+        if (_isUnlocked) return;
 
         MoveLockPick();
         
-        isRotating = Input.GetKey(rotateButton);
+        _isRotating = Input.GetKey(rotateButton);
 
-        if (isRotating)
+        if (_isRotating)
         {
             // Rotate the cylinder object in the direction we chose
             cylinder?.Rotate(Time.deltaTime * rotateSpeed * Vector3.forward, Space.World);
@@ -87,31 +110,22 @@ public class LPLockpicking : MonoBehaviour
         ResetCylinder();
     }
 
-    public void StartRotate()
-    {
-        isRotating = true;
-    }
-
-    public void StopRotate()
-    {
-        isRotating = false;
-    }
-    
     /// <summary>
     /// Activates the lock and starts the lock game
     /// </summary>
     public void Activate()
     {
         // Set a random sweetspot center, 
-        sweetspotAngle = Random.Range(0, 180);
+        _sweetSpotAngle = Random.Range(0, 180);
     }
 
     /// <summary>
     /// Deactivates the lock and stops the lock game. This is when we press the abort button
     /// </summary>
-    public void Deactivate()
+    private void Deactivate()
     {
         animator.Play("Deactivate");
+        gameObject.SetActive(false);
     }
 
     private void MoveLockPick()
@@ -121,13 +135,13 @@ public class LPLockpicking : MonoBehaviour
 
         lockpick.eulerAngles = Vector3.forward * Mathf.Clamp(lockpick.eulerAngles.z, 0, 180);
             
-        inSweetspot = Mathf.Abs(sweetspotAngle - lockpick.eulerAngles.z) < sweetspotRange;
+        _inSweetSpot = Mathf.Abs(_sweetSpotAngle - lockpick.eulerAngles.z) < sweetSpotRange;
     }
 
     private void MoveCylinder()
     {
         // If the lock pick is in the sweet spot, the cylinder can rotate
-        if (!inSweetspot) return;
+        if (!_inSweetSpot) return;
         
         // Play the cylinder sound
         if (audioSource.isPlaying == false) 
@@ -138,7 +152,7 @@ public class LPLockpicking : MonoBehaviour
 
     private void ResetCylinder(bool wiggle = false)
     {
-        if (inSweetspot) return;
+        if (_inSweetSpot) return;
         
         // Return to original rotation
         cylinder!.eulerAngles = 
@@ -168,7 +182,7 @@ public class LPLockpicking : MonoBehaviour
         // If the cylinder rotates beyond this angle, we win
         if (cylinder!.eulerAngles.z < rotateToWin) return;
                 
-        isUnlocked = true;
+        _isUnlocked = true;
                 
         animator.Play("Win");
         
