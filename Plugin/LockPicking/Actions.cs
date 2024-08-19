@@ -112,7 +112,7 @@ public static class LockPickActions
         }
     }
     
-    public static void InspectDoor(WorldInteractiveObject interactiveObject, GamePlayerOwner owner)
+    public static void InspectDoor(WorldInteractiveObject interactiveObject, GamePlayerOwner owner, Action action)
     {
         var level = LpHelpers.GetLevelForDoor(owner.Player.Location, interactiveObject.Id);
 
@@ -126,7 +126,8 @@ public static class LockPickActions
 
             return;
         }
-
+        
+        action.Invoke();
         LpHelpers.DisplayInspectInformation(interactiveObject, owner);
     }
 }

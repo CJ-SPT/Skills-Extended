@@ -203,10 +203,18 @@ public static class WorldInteractionUtils
         {
             if (Plugin.Keys.KeyLocale.ContainsKey(interactiveObject.KeyId))
             {
-                LockPickActions.InspectDoor(interactiveObject, owner);
+                InspectLockActionHandler handler = new()
+                {
+                    Owner = owner,
+                    InteractiveObject = interactiveObject,
+                };
+                
+                Action action = new(handler.InspectLockAction);
+                
+                LockPickActions.InspectDoor(interactiveObject, owner, action);
                 return;
             }
-
+            
             Plugin.Log.LogError($"Missing locale data for door {interactiveObject.Id} and key {interactiveObject.KeyId}");
         }
     }

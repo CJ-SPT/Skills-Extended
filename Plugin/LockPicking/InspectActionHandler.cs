@@ -11,28 +11,20 @@ public sealed class InspectLockActionHandler
     public static event InspectEventHandler OnLockInspected;
     public delegate void InspectEventHandler(object sender, EventArgs e); 
     
-    public void InspectLockAction(bool actionCompleted)
+    public void InspectLockAction()
     {
-        // If the player completed the full-timer uninterrupted
-        if (actionCompleted)
+        // Only apply xp once per door per raid
+        if (!LpHelpers.InspectedDoors.Contains(InteractiveObject.Id))
         {
-            // Only apply xp once per door per raid
-            if (!LpHelpers.InspectedDoors.Contains(InteractiveObject.Id))
+            LpHelpers.InspectedDoors.Add(InteractiveObject.Id);
+            LpHelpers.ApplyLockPickActionXp(InteractiveObject, Owner, true);
+
+            if (OnLockInspected is not null)
             {
-                LpHelpers.InspectedDoors.Add(InteractiveObject.Id);
-                LpHelpers.ApplyLockPickActionXp(InteractiveObject, Owner, true);
-
-                if (OnLockInspected is not null)
-                {
-                    OnLockInspected(this, EventArgs.Empty);
-                }
+                OnLockInspected(this, EventArgs.Empty);
             }
+        }
 
-            LpHelpers.DisplayInspectInformation(InteractiveObject, Owner);
-        }
-        else
-        {
-            Owner.CloseObjectivesPanel();
-        }
+        LpHelpers.DisplayInspectInformation(InteractiveObject, Owner);
     }
 }
