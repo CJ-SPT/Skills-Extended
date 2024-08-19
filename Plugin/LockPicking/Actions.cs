@@ -83,8 +83,6 @@ public static class LockPickActions
         // Only allow lockpicking if the player is stationary
         if (Utils.IdleStateType.IsInstanceOfType(owner.Player.CurrentState))
         {
-            var currentManagedState = owner.Player.CurrentManagedState;
-            var lpTime = LpHelpers.CalculateTimeForAction(Plugin.SkillData.LockPicking.PickBaseTime);
             var level = LpHelpers.GetLevelForDoor(owner.Player.Location, door.Id);
 
             // Return out if the door level is not found
@@ -97,32 +95,17 @@ public static class LockPickActions
 
                 return;
             }
-
-            var chanceForSuccess = LpHelpers.CalculateChanceForSuccess(door, owner);
-
-            owner.ShowObjectivesPanel("Hacking terminal {0:F1}", lpTime);
-
-            if (chanceForSuccess > 80f)
-            {
-                owner.DisplayPreloaderUiNotification("This terminal is easy for your level");
-            }
-            else if (chanceForSuccess < 80f && chanceForSuccess > 0f)
-            {
-                owner.DisplayPreloaderUiNotification("This terminal is hard for your level");
-            }
-            else if (chanceForSuccess == 0f)
-            {
-                owner.DisplayPreloaderUiNotification("This terminal is impossible for your level");
-            }
-
+            
             HackingActionHandler handler = new()
             {
                 Owner = owner,
                 InteractiveObject = door,
             };
 
+            /*
             Action<bool> action = new(handler.HackTerminalAction);
             currentManagedState.Plant(true, false, lpTime, action);
+            */
         }
         else
         {
@@ -159,10 +142,9 @@ public static class LockPickActions
 
                 Action<bool> action = new(handler.InspectLockAction);
                 var currentManagedState = owner.Player.CurrentManagedState;
-                var inspectTime = LpHelpers.CalculateTimeForAction(Plugin.SkillData.LockPicking.InspectBaseTime);
-
-                owner.ShowObjectivesPanel("Inspecting lock {0:F1}", inspectTime);
-                currentManagedState.Plant(true, false, inspectTime, action);
+                
+                owner.ShowObjectivesPanel("Inspecting lock {0:F1}", 5f); //TODO: FIX ME - TIME
+                currentManagedState.Plant(true, false, 5f, action);
                 return;
             }
 

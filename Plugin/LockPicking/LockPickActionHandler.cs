@@ -18,12 +18,11 @@ public sealed class LockPickActionHandler
     
     private static SkillManager _skills => Utils.GetActiveSkillManager();
 
-    public void PickLockAction(bool doorUnlocked)
+    public void PickLockAction(bool unlocked)
     {
         var doorLevel = LpHelpers.GetLevelForDoor(Owner.Player.Location, InteractiveObject.Id);
-
-        // If the player completed the full-timer uninterrupted
-        if (doorUnlocked)
+        
+        if (unlocked)
         {
             RemoveUseFromLockPick(doorLevel);
             LpHelpers.ApplyLockPickActionXp(InteractiveObject, Owner);

@@ -281,4 +281,14 @@ public class LpLockPicking : MonoBehaviour
             _onUnlocked.Invoke(true);
         }
     }
+
+    private float GetSweetSpotMod(int doorLevel)
+    {
+        return 0f;
+    }
+    
+    private float GetTimeMod(int doorLevel)
+    {
+        return 0f;
+    }
 }
