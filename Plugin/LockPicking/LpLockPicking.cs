@@ -114,9 +114,11 @@ public class LpLockPicking : MonoBehaviour
         
         if (_player is not null)
         {
-            GamePlayerOwner.SetIgnoreInputWithKeepResetLook(true);
-            _player.ResetLookDirection();
-            _player.Look(0f, 0f);
+            if (_player.IsYourPlayer)
+            {
+                GamePlayerOwner.SetIgnoreInputWithKeepResetLook(true);
+                _player.MovementContext.ToggleBlockInputPlayerRotation(true);
+            }
         }
         
         MoveLockPick();
@@ -189,6 +191,7 @@ public class LpLockPicking : MonoBehaviour
         {
             _player.CurrentManagedState.ChangePose(1f);
             GamePlayerOwner.SetIgnoreInputWithKeepResetLook(false);
+            _player.MovementContext.ToggleBlockInputPlayerRotation(false);
             
             CursorSettings.SetCursor(ECursorType.Invisible);
             Cursor.lockState = CursorLockMode.Locked;
