@@ -20,10 +20,12 @@ namespace SkillsExtended.LockPicking;
 /// </summary>
 public class LpLockPicking : MonoBehaviour
 {
+    #region FIELDS
+
     // Holds all pieces of the safe lock for quicker access
     public RectTransform cylinder;
     public RectTransform lockpick;
-    
+
     /// <summary>
     /// How accurately close we need to be to the sweet spot.
     /// If set to 1, we need to be exactly at the sweet spot position,
@@ -91,6 +93,8 @@ public class LpLockPicking : MonoBehaviour
     private static float _wiggleTimeLimit = 1f;
     private static float _timeSpentWiggling = 0;
     
+    #endregion
+    
     public void Start()
     {
         animator = GetComponent<Animator>();
@@ -142,14 +146,14 @@ public class LpLockPicking : MonoBehaviour
     /// <summary>
     /// Activates the lock and starts the lock game
     /// </summary>
-    public void Activate(
-        GamePlayerOwner owner,
-        WorldInteractiveObject interactiveObject,
-        Action<bool> action)
+    public void Activate(GamePlayerOwner owner, WorldInteractiveObject interactiveObject, Action<bool> action)
     {
         _onUnlocked = action;
         
-        var chanceForSuccess = LpHelpers.CalculateChanceForSuccess(interactiveObject, owner);
+        var doorLevel = LpHelpers.GetLevelForDoor(owner.Player.Location, interactiveObject.Id);
+        var levelDifference = _player.Skills.Lockpicking.Level - doorLevel;
+        
+        
         
         _player.CurrentManagedState.ChangePose(-1f);
         
@@ -161,12 +165,10 @@ public class LpLockPicking : MonoBehaviour
     public void ActivatePractice(float chance)
     {
         _sweetSpotAngle = Random.Range(0, 180);
-
-        var percent = 1 + chance / 100;
         
-        sweetSpotRange *= percent;
-        rotateSpeed *= percent;
-        _wiggleTimeLimit *= percent;
+        sweetSpotRange *= chance;
+        rotateSpeed *= chance;
+        _wiggleTimeLimit *= chance;
         rotateToWin = 330;
         
         Plugin.Log.LogDebug($"CHANCE:       {chance}");
@@ -176,9 +178,6 @@ public class LpLockPicking : MonoBehaviour
         Plugin.Log.LogDebug($"WIN ANGLE:    {rotateToWin}");
     }
     
-    /// <summary>
-    /// Deactivates the lock and stops the lock game. This is when we press the abort button
-    /// </summary>
     private void Deactivate(bool succeed = false)
     {
         animator.Play("Deactivate");
@@ -283,8 +282,3 @@ public class LpLockPicking : MonoBehaviour
         }
     }
 }
-
-
-    
-        
-        

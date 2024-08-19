@@ -15,10 +15,7 @@ internal static class LpHelpers
 {
     public static readonly Dictionary<string, int> DoorAttempts = [];
     public static readonly List<string> InspectedDoors = [];
-
-    private static SkillManager _skills => Utils.GetActiveSkillManager();
-    private static LockPickingData _lockPicking => Plugin.SkillData.LockPicking;
-
+    
     private static readonly Dictionary<string, Dictionary<string, int>> LocationDoorIdLevels = new()
     {
         {"factory4_day", Plugin.SkillData.LockPicking.DoorPickLevels.Factory},
@@ -57,9 +54,9 @@ internal static class LpHelpers
     }
 
     /// <summary>
-    /// Get any lockpick in the players equipment inventory
+    /// Get any lock pick in the players equipment inventory
     /// </summary>
-    /// <returns>All lockpick items in the players inventory</returns>
+    /// <returns>All lock pick items in the players inventory</returns>
     public static IEnumerable<Item> GetLockPicksInInventory()
     {
         return Plugin.Session.Profile.Inventory.GetPlayerItems(EPlayerItems.Equipment)
@@ -110,56 +107,10 @@ internal static class LpHelpers
     
     public static void DisplayInspectInformation(WorldInteractiveObject interactiveObject, GamePlayerOwner owner)
     {
-        int doorLevel = GetLevelForDoor(owner.Player.Location, interactiveObject.Id);
+        var doorLevel = GetLevelForDoor(owner.Player.Location, interactiveObject.Id);
 
         // Display inspection info
         NotificationManagerClass.DisplayMessageNotification($"Key for door is {Plugin.Keys.KeyLocale[interactiveObject.KeyId]}");
-        NotificationManagerClass.DisplayMessageNotification($"Lock level {doorLevel} chance for success {CalculateChanceForSuccess(interactiveObject, owner)}%");
-    }
-
-    public static float CalculateChanceForSuccess(WorldInteractiveObject interactiveObject, GamePlayerOwner owner)
-    {
-        var doorLevel = GetLevelForDoor(owner.Player.Location, interactiveObject.Id);
-
-        var levelDifference = _skills.Lockpicking.Level - doorLevel;
-
-        var baseSuccessChance = InspectedDoors.Contains(interactiveObject.Id)
-            ? _lockPicking.PickBaseSuccessChance + 10
-            : _lockPicking.PickBaseSuccessChance;
-
-        var difficultyModifier = _lockPicking.PickBaseDifficultyMod;
-
-        // Never below 0, never above 100
-        var successChance = UnityEngine.Mathf.Clamp(baseSuccessChance + (levelDifference * difficultyModifier), 0f, 100f);
-
-        return successChance;
-    }
-    
-    /// <summary>
-    /// Returns true if the pick attempt succeeded
-    /// </summary>
-    /// <returns></returns>
-    public static bool IsAttemptSuccessful(int doorLevel, WorldInteractiveObject interactiveObject, GamePlayerOwner owner)
-    {
-        var levelDifference = _skills.Lockpicking.Level - doorLevel;
-        
-        // Player level is high enough to always pick this lock
-        if (levelDifference > 10)
-        {
-            return true;
-        }
-
-        // Never below 0, never above 100
-        var successChance = LpHelpers.CalculateChanceForSuccess(interactiveObject, owner);
-        var roll = UnityEngine.Random.Range(0f, 100f);
-        
-        return successChance > roll;
-    }
-
-    public static float CalculateTimeForAction(float baseTime)
-    {
-        var skillMgrExt = Plugin.PlayerSkillManagerExt;
-        
-        return (baseTime * (1 - skillMgrExt.LockPickingTimeBuff));
+        NotificationManagerClass.DisplayMessageNotification($"Lock level {doorLevel}");
     }
 }
