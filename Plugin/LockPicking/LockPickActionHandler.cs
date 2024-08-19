@@ -26,7 +26,7 @@ public sealed class LockPickActionHandler
     {
         var doorLevel = Helpers.GetLevelForDoor(Owner.Player.Location, InteractiveObject.Id);
 
-        // If the player completed the full timer uninterrupted
+        // If the player completed the full-timer uninterrupted
         if (actionCompleted)
         {
             // Attempt was not successful

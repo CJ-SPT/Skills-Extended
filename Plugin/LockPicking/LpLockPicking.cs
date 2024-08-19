@@ -1,6 +1,14 @@
-﻿using UnityEngine;
+﻿using System;
+using Comfort.Common;
+using EFT;
+using EFT.UI;
+using EFT.InputSystem;
+using EFT.Communications;
+using SkillsExtended.Helpers;
+using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using Random = UnityEngine.Random;
 
 namespace SkillsExtended.LockPicking;
 
@@ -68,6 +76,9 @@ public class LpLockPicking : MonoBehaviour
     public Animator animator;
 
     public Button abortButton;
+
+    private static Player _player => Singleton<GameWorld>.Instance?.MainPlayer;
+    private Action<bool> _onUnlocked;
     
     // Is the cylinder rotating
     private static bool _isRotating;
@@ -86,7 +97,7 @@ public class LpLockPicking : MonoBehaviour
         animator = GetComponent<Animator>();
 
         abortButton.onClick.AddListener(() => Deactivate());
-        Activate();
+        _sweetSpotAngle = Random.Range(0, 180);
     }
 
     public void Update()
@@ -113,10 +124,17 @@ public class LpLockPicking : MonoBehaviour
     /// <summary>
     /// Activates the lock and starts the lock game
     /// </summary>
-    public void Activate()
+    public void Activate(Action<bool> action)
     {
-        // Set a random sweetspot center, 
         _sweetSpotAngle = Random.Range(0, 180);
+        _onUnlocked = action;
+        _isUnlocked = false;
+        
+        _player.CurrentManagedState.ChangePose(-1f);
+        
+        CursorSettings.SetCursor(ECursorType.Idle);
+        Cursor.lockState = CursorLockMode.None;
+        Singleton<GUISounds>.Instance.PlayUISound(EUISoundType.MenuContextMenu);
     }
 
     /// <summary>
@@ -125,6 +143,14 @@ public class LpLockPicking : MonoBehaviour
     private void Deactivate()
     {
         animator.Play("Deactivate");
+        
+        _player.CurrentManagedState.ChangePose(1f);
+        
+        CursorSettings.SetCursor(ECursorType.Invisible);
+        Cursor.lockState = CursorLockMode.Locked;
+        Singleton<GUISounds>.Instance.PlayUISound(EUISoundType.MenuDropdown);
+        
+        cylinder!.eulerAngles = Vector3.zero;
         gameObject.SetActive(false);
     }
 
@@ -191,8 +217,10 @@ public class LpLockPicking : MonoBehaviour
         // Unselect any buttons on the cylinder, so we don't press them when pressing 'SPACE' after closing the lock
         if (EventSystem.current) 
             EventSystem.current.SetSelectedGameObject(null);
-        
+
+        cylinder!.eulerAngles = Vector3.zero;
         gameObject.SetActive(false);
+        _onUnlocked.Invoke(true);
     }
 }
 

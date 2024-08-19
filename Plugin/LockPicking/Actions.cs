@@ -63,17 +63,19 @@ public static class LockPickActions
             {
                 owner.DisplayPreloaderUiNotification("This lock is impossible for your level");
             }
-
             
             LockPickActionHandler handler = new()
             {
                 Owner = owner,
                 InteractiveObject = interactiveObject,
             };
-
-            Action<bool> action = new(handler.PickLockAction);
-            currentManagedState.Plant(true, false, lpTime, action);
             
+            Action<bool> action = new(handler.PickLockAction);
+            
+            Plugin.MiniGame.gameObject.SetActive(true);
+            Plugin.MiniGame.Activate(action);
+            
+            // currentManagedState.Plant(true, false, lpTime, action);
         }
         else
         {

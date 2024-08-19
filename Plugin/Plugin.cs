@@ -132,7 +132,6 @@ public class Plugin : BaseUnityPlugin
         var dataObject = dataBundle.LoadAssetWithSubAssets("lp_Game_Data").First();
 
         _miniGameObject = Instantiate(gameObject as GameObject);
-        _miniGameObject.SetActive(false);
         
         var dataInstance = Instantiate(dataObject as GameObject);
         
@@ -195,5 +194,7 @@ public class Plugin : BaseUnityPlugin
                 MiniGame!.winSound = source!.clip;
             }
         }
+        
+        MiniGame.gameObject.SetActive(false);
     }
 }

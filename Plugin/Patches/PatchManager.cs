@@ -34,6 +34,7 @@ internal static class PatchManager
     {
         new DoorActionPatch().Enable();
         new KeyCardDoorActionPatch().Enable();
+        new LookPatch().Enable();
     }
 
     private static void Medical()

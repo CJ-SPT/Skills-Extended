@@ -21,6 +21,12 @@ internal class CanWalkPatch : ModulePatch
         ref bool __result)
     {
         if (!____player.IsYourPlayer) return;
+
+        if (Plugin.MiniGame.gameObject.activeSelf)
+        {
+            __result = false;
+            return;
+        }
         
         var skillMgrExt = Plugin.PlayerSkillManagerExt;
         var skillData = Plugin.SkillData.FirstAid;
