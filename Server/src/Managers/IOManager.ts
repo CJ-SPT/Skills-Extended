@@ -60,7 +60,7 @@ export class IOManager
 
         this.InstanceManager.logger
             .logWithColor(
-                `Skills Extended: Progression file for ${progressFile.PmcName} saved.`, 
+                `Skills Extended: Progression file for ${progressFile.Id} saved.`, 
                 LogTextColor.GREEN);
     }
 

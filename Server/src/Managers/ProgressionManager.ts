@@ -78,24 +78,21 @@ export class ProgressionManager
 
         if (!this.InstanceManager.vfs.exists(progPath))
         {
-            this.logger.logWithColor(`Skills Extended: Progress file for ${this.PmcProfile.Info.Nickname} does not exist.`, LogTextColor.YELLOW);
+            this.logger.logWithColor(`Skills Extended: Progress file for ${this.PmcProfile._id} does not exist.`, LogTextColor.YELLOW);
             this.logger.logWithColor("Skills Extended: This is normal, creating a new one now.", LogTextColor.YELLOW);
 
             this.Progression = {
                 Id: this.PmcProfile._id,
-                PmcName: this.PmcProfile.Info.Nickname,
-                Progress: {
-
-                }
+                Progress: {}
             }
 
             this.IOManager.saveProgressionFile(this.Progression, `${this.PmcProfile._id}.json`);
             return true;
         }
 
-        this.Progression = this.IOManager.loadConfigFile<IProgression>(`${this.PmcProfile._id}.json`);
+        this.Progression = this.IOManager.loadJsonFile<IProgression>(`${this.PmcProfile._id}.json`);
 
-        this.logger.logWithColor(`Skills Extended: Progress file for ${this.Progression.PmcName} loaded.`, LogTextColor.GREEN);
+        this.logger.logWithColor(`Skills Extended: Progress file for ${this.Progression.Id} loaded.`, LogTextColor.GREEN);
         return false;
     }
 
@@ -109,7 +106,7 @@ export class ProgressionManager
             return;
         }
 
-        this.logger.logWithColor(`Skills Extended: Checking for pending rewards for ${this.Progression.PmcName}`, LogTextColor.CYAN);
+        this.logger.logWithColor(`Skills Extended: Checking for pending rewards for ${this.Progression.Id}`, LogTextColor.CYAN);
 
         const skills = this.PmcProfile.Skills.Common;
         for (const skill of skills)
