@@ -18,6 +18,7 @@ import { RouteManager } from "./Managers/RouteManager";
 import { AchievementManager } from "./Managers/AchievementManager";
 import { TraderManager } from "./Managers/TraderManager";
 import { QuestManager } from "./Managers/QuestManager";
+import { SkillsExtendedIds } from "./enums/SkillsExtendedIds";
 
 class SkillsExtended implements IPreSptLoadMod, IPostDBLoadMod
 {
@@ -57,6 +58,9 @@ class SkillsExtended implements IPreSptLoadMod, IPostDBLoadMod
 
         this.CreateItems();
         this.addCraftsToDatabase();
+
+        this.addItemToSpecSlots(SkillsExtendedIds.Lockpick);
+        this.addItemToSpecSlots(SkillsExtendedIds.Pda);
     }
 
     private CreateItems(): void
