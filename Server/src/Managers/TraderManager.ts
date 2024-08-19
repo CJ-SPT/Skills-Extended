@@ -73,16 +73,15 @@ export class TraderManager
     private addTraderToDb(): void
     {
         const database = this.InstanceManager.database;
+        const ioMgr = this.IOManager;
+
+        const questAssort = ioMgr.loadJsonFile<Record<string, Record<string, string>>>(path.join(ioMgr.AssortRootPath, "QuestAssort.json"));
 
         // Add trader to trader table, key is the traders id
         database.traders[this.BaseJson._id] = {
             assort: this.createAssortTable(),
             base: this.BaseJson,
-            questassort: {
-                started: {},
-                success: {},
-                fail: {}
-            }, // questassort is empty as trader has no assorts unlocked by quests
+            questassort: questAssort
         };
     }
 

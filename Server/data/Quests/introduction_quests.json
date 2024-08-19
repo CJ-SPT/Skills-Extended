@@ -1030,10 +1030,24 @@
             },
             {
               "id": "66c01ef26eb05fcb2c88fc2a",
-              "index": 3,
+              "index": 2,
               "target": "66bf1f65e1f3b83ea069a271",
               "type": "TraderStanding",
               "value": "0.04"
+            },
+            {
+              "id": "66c38f1be97972da115c23a6",
+              "index": 3,
+              "items": [
+                {
+                  "_id": "661f33776b5151c024011d02",
+                  "_tpl": "6622c28aed7e3bc72e301e22"
+                }
+              ],
+              "loyaltyLevel": 1,
+              "target": "661f33776b5151c024011d02",
+              "traderId": "66bf1f65e1f3b83ea069a271",
+              "type": "AssortmentUnlock"
             }
           ]
         },

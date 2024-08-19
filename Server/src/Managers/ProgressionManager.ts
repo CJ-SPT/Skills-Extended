@@ -100,7 +100,7 @@ export class ProgressionManager
     {
         if (!this.SkillRewards.ProgressionEnabled) return;
 
-        if (this.PmcProfile.Skills.Common === undefined)
+        if (this.PmcProfile?.Skills?.Common === undefined)
         {
             this.logger.logWithColor("Skills Extended: No skills defined on profile, this is normal on new or wiped profiles.", LogTextColor.YELLOW);
             return;
