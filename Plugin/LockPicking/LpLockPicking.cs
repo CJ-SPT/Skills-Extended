@@ -149,7 +149,7 @@ public class LpLockPicking : MonoBehaviour
     {
         _onUnlocked = action;
         
-        var chanceForSuccess = Helpers.CalculateChanceForSuccess(interactiveObject, owner);
+        var chanceForSuccess = LpHelpers.CalculateChanceForSuccess(interactiveObject, owner);
         
         _player.CurrentManagedState.ChangePose(-1f);
         

@@ -11,7 +11,7 @@ using SkillsExtended.Skills;
 
 namespace SkillsExtended.LockPicking;
 
-internal static class Helpers
+internal static class LpHelpers
 {
     public static readonly Dictionary<string, int> DoorAttempts = [];
     public static readonly List<string> InspectedDoors = [];
@@ -150,7 +150,7 @@ internal static class Helpers
         }
 
         // Never below 0, never above 100
-        var successChance = Helpers.CalculateChanceForSuccess(interactiveObject, owner);
+        var successChance = LpHelpers.CalculateChanceForSuccess(interactiveObject, owner);
         var roll = UnityEngine.Random.Range(0f, 100f);
         
         return successChance > roll;

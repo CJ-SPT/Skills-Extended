@@ -14,28 +14,28 @@ public class HackingActionHandler
     
     public void HackTerminalAction(bool actionCompleted)
     {
-        var doorLevel = Helpers.GetLevelForDoor(Owner.Player.Location, InteractiveObject.Id);
+        var doorLevel = LpHelpers.GetLevelForDoor(Owner.Player.Location, InteractiveObject.Id);
 
         // If the player completed the full timer uninterrupted
         if (actionCompleted)
         {
             // Attempt was not successful
-            if (!Helpers.IsAttemptSuccessful(doorLevel, InteractiveObject, Owner))
+            if (!LpHelpers.IsAttemptSuccessful(doorLevel, InteractiveObject, Owner))
             {
                 Owner.DisplayPreloaderUiNotification("You failed to hack the terminal...");
 
                 // Add to the counter
-                if (!Helpers.DoorAttempts.ContainsKey(InteractiveObject.Id))
+                if (!LpHelpers.DoorAttempts.ContainsKey(InteractiveObject.Id))
                 {
-                    Helpers.DoorAttempts.Add(InteractiveObject.Id, 1);
+                    LpHelpers.DoorAttempts.Add(InteractiveObject.Id, 1);
                 }
                 else
                 {
-                    Helpers.DoorAttempts[InteractiveObject.Id]++;
+                    LpHelpers.DoorAttempts[InteractiveObject.Id]++;
                 }
 
                 // Break the lock if more than 3 failed attempts
-                if (Helpers.DoorAttempts[InteractiveObject.Id] > Plugin.SkillData.LockPicking.AttemptsBeforeBreak)
+                if (LpHelpers.DoorAttempts[InteractiveObject.Id] > Plugin.SkillData.LockPicking.AttemptsBeforeBreak)
                 {
                     Owner.DisplayPreloaderUiNotification("You triggered security protocols..");
                     InteractiveObject.KeyId = string.Empty;
@@ -44,13 +44,13 @@ public class HackingActionHandler
                 }
 
                 // Apply failure xp
-                Helpers.ApplyLockPickActionXp(InteractiveObject, Owner);
+                LpHelpers.ApplyLockPickActionXp(InteractiveObject, Owner);
                 
                 return;
             }
 
 
-            Helpers.ApplyLockPickActionXp(InteractiveObject, Owner);
+            LpHelpers.ApplyLockPickActionXp(InteractiveObject, Owner);
             AccessTools.Method(typeof(WorldInteractiveObject), "Unlock").Invoke(InteractiveObject, null);
         }
         else

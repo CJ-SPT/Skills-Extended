@@ -34,8 +34,8 @@ internal class OnGameStartedPatch : ModulePatch
 
         Plugin.Log.LogDebug($"Player map id: {__instance.MainPlayer.Location}");
 
-        LockPicking.Helpers.InspectedDoors.Clear();
-        LockPicking.Helpers.DoorAttempts.Clear();
+        LockPicking.LpHelpers.InspectedDoors.Clear();
+        LockPicking.LpHelpers.DoorAttempts.Clear();
 
         // Add our custom quest controller
         __instance.GetOrAddComponent<CustomQuestController>();

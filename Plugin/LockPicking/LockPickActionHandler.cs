@@ -20,13 +20,13 @@ public sealed class LockPickActionHandler
 
     public void PickLockAction(bool doorUnlocked)
     {
-        var doorLevel = Helpers.GetLevelForDoor(Owner.Player.Location, InteractiveObject.Id);
+        var doorLevel = LpHelpers.GetLevelForDoor(Owner.Player.Location, InteractiveObject.Id);
 
         // If the player completed the full-timer uninterrupted
         if (doorUnlocked)
         {
             RemoveUseFromLockPick(doorLevel);
-            Helpers.ApplyLockPickActionXp(InteractiveObject, Owner);
+            LpHelpers.ApplyLockPickActionXp(InteractiveObject, Owner);
             InteractiveObject.Unlock();
             
             if (OnLockPicked is not null)
@@ -42,7 +42,7 @@ public sealed class LockPickActionHandler
         AddFailedAttemptToCounter();
                 
         // Apply failure xp
-        Helpers.ApplyLockPickActionXp(InteractiveObject, Owner, isFailure: true);
+        LpHelpers.ApplyLockPickActionXp(InteractiveObject, Owner, isFailure: true);
         RemoveUseFromLockPick(doorLevel);
 
         if (OnLockPickFailed is not null)
@@ -54,17 +54,17 @@ public sealed class LockPickActionHandler
     private void AddFailedAttemptToCounter()
     {
         // Add to the counter
-        if (!Helpers.DoorAttempts.ContainsKey(InteractiveObject.Id))
+        if (!LpHelpers.DoorAttempts.ContainsKey(InteractiveObject.Id))
         {
-            Helpers.DoorAttempts.Add(InteractiveObject.Id, 1);
+            LpHelpers.DoorAttempts.Add(InteractiveObject.Id, 1);
         }
         else
         {
-            Helpers.DoorAttempts[InteractiveObject.Id]++;
+            LpHelpers.DoorAttempts[InteractiveObject.Id]++;
         }
 
         // Break the lock if more than 3 failed attempts
-        if (Helpers.DoorAttempts[InteractiveObject.Id] > Plugin.SkillData.LockPicking.AttemptsBeforeBreak)
+        if (LpHelpers.DoorAttempts[InteractiveObject.Id] > Plugin.SkillData.LockPicking.AttemptsBeforeBreak)
         {
             Owner.DisplayPreloaderUiNotification("You broke the lock...");
             InteractiveObject.KeyId = string.Empty;
@@ -85,7 +85,7 @@ public sealed class LockPickActionHandler
         }
 
         // Remove a use from a lockpick in the inventory
-        var lockPicks = Helpers.GetLockPicksInInventory();
+        var lockPicks = LpHelpers.GetLockPicksInInventory();
         
         var lockPick = lockPicks.First();
 

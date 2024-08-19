@@ -17,10 +17,10 @@ public sealed class InspectLockActionHandler
         if (actionCompleted)
         {
             // Only apply xp once per door per raid
-            if (!Helpers.InspectedDoors.Contains(InteractiveObject.Id))
+            if (!LpHelpers.InspectedDoors.Contains(InteractiveObject.Id))
             {
-                Helpers.InspectedDoors.Add(InteractiveObject.Id);
-                Helpers.ApplyLockPickActionXp(InteractiveObject, Owner, true);
+                LpHelpers.InspectedDoors.Add(InteractiveObject.Id);
+                LpHelpers.ApplyLockPickActionXp(InteractiveObject, Owner, true);
 
                 if (OnLockInspected is not null)
                 {
@@ -28,7 +28,7 @@ public sealed class InspectLockActionHandler
                 }
             }
 
-            Helpers.DisplayInspectInformation(InteractiveObject, Owner);
+            LpHelpers.DisplayInspectInformation(InteractiveObject, Owner);
         }
         else
         {
