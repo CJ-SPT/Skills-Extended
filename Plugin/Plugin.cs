@@ -12,9 +12,13 @@ using SPT.Reflection.Utils;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
+using EFT;
+using HarmonyLib;
 using IcyClawz.CustomInteractions;
 using SkillsExtended.ItemInteractions;
+using SkillsExtended.LockPicking;
 using SkillsExtended.Skills;
 using UnityEngine;
 
@@ -46,8 +50,9 @@ public class Plugin : BaseUnityPlugin
 
     internal static readonly SkillManagerExt PlayerSkillManagerExt = new();
     internal static readonly SkillManagerExt ScavSkillManagerExt = new();
-    
-    internal static AnimationClip[] AnimationClips { get; private set; }
+
+    private static GameObject _miniGameObject;
+    internal static LPLockpicking MiniGame { get; private set; }
     
     internal static ManualLogSource Log;
 
@@ -107,10 +112,10 @@ public class Plugin : BaseUnityPlugin
 
     private void Update()
     {
-        if (Session == null && ClientAppUtils.GetMainApp().GetClientBackEndSession() != null)
+        if (Session == null && ClientAppUtils.GetClientApp().GetClientBackEndSession() != null)
         {
-            Session = ClientAppUtils.GetMainApp().GetClientBackEndSession();
-
+            Session = ClientAppUtils.GetClientApp().GetClientBackEndSession();
+            
             Log.LogDebug("Session set");
         }
     }
@@ -118,6 +123,70 @@ public class Plugin : BaseUnityPlugin
     private static void LoadBundle()
     {
         var directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-        AnimationClips = AssetBundle.LoadFromFile($"{directory}/bundles/lockpicking_anim.bundle").LoadAllAssets<AnimationClip>();
+        
+        var assetBundle = AssetBundle.LoadFromFile($"{directory}/bundles/lp_door.bundle");
+        var dataBundle = AssetBundle.LoadFromFile($"{directory}/bundles/lp_game_data.bundle");
+        
+        var gameObject = assetBundle.LoadAssetWithSubAssets("lp_door").First();
+        var dataObject = dataBundle.LoadAssetWithSubAssets("lp_Game_Data").First();
+
+        _miniGameObject = Instantiate(gameObject as GameObject);
+        var dataInstance = Instantiate(dataObject as GameObject);
+        
+        Log.LogError(_miniGameObject.name);
+        
+        DontDestroyOnLoad(_miniGameObject);
+        
+        var visualObjects = _miniGameObject.GetComponentsInChildren<MonoBehaviour>();
+        var audioObjects = dataInstance.GetComponent<AudioClip>();
+        
+        var doorComp = visualObjects
+            .FirstOrDefault(x => x.gameObject.name == "DoorLock");
+
+        var cylinderComp = visualObjects
+            .FirstOrDefault(x => x?.gameObject?.name == "Cylinder");
+
+        var lockPickComp = visualObjects
+            .FirstOrDefault(x => x?.gameObject?.name == "Lockpick");
+        
+        var buttonRotate = visualObjects
+            .FirstOrDefault(x => x?.gameObject?.name == "ButtonRotate");
+        
+        var audioSource = _miniGameObject.GetComponentsInChildren(typeof(AudioSource));
+        
+        buttonRotate?.gameObject.SetActive(false);
+        
+        MiniGame = doorComp?.gameObject.GetOrAddComponent<LPLockpicking>();
+
+        MiniGame.cylinder = cylinderComp?.gameObject.GetComponent<RectTransform>();
+        MiniGame.lockpick = lockPickComp?.gameObject.GetComponent<RectTransform>();
+        MiniGame.audioSource = audioSource.First() as AudioSource;
+        
+        foreach (var data in dataInstance.gameObject.GetComponentsInChildren(typeof(AudioSource)))
+        {
+            if (data.gameObject.name == "Sound_Reset")
+            {
+                var source = data as AudioSource;
+                MiniGame!.resetSound = source!.clip;
+            }
+            
+            if (data.gameObject.name == "Sound_Stuck")
+            {
+                var source = data as AudioSource;
+                MiniGame!.clickSound = source!.clip;
+            }
+            
+            if (data.gameObject.name == "Sound_Turn")
+            {
+                var source = data as AudioSource;
+                MiniGame!.rotateSound = source!.clip;
+            }
+            
+            if (data.gameObject.name == "Sound_Unlocked")
+            {
+                var source = data as AudioSource;
+                MiniGame!.winSound = source!.clip;
+            }
+        }
     }
 }
