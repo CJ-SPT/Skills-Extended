@@ -16,15 +16,10 @@ public sealed class LockPickActionHandler
     public static event PickLockFailedEventHandler OnLockPickFailed;
     public delegate void PickLockFailedEventHandler(object sender, EventArgs e);
     
-    private static SkillManager _skills => Utils.GetActiveSkillManager();
-
     public void PickLockAction(bool unlocked)
     {
-        var doorLevel = LpHelpers.GetLevelForDoor(Owner.Player.Location, InteractiveObject.Id);
-        
         if (unlocked)
         {
-            RemoveUseFromLockPick(doorLevel);
             LpHelpers.ApplyLockPickActionXp(InteractiveObject, Owner);
             InteractiveObject.Unlock();
             
@@ -42,7 +37,7 @@ public sealed class LockPickActionHandler
                 
         // Apply failure xp
         LpHelpers.ApplyLockPickActionXp(InteractiveObject, Owner, isFailure: true);
-        RemoveUseFromLockPick(doorLevel);
+        RemoveUseFromLockPick();
 
         if (OnLockPickFailed is not null)
         {
@@ -72,18 +67,13 @@ public sealed class LockPickActionHandler
         }
     }
     
-    private void RemoveUseFromLockPick(int doorLevel)
+    private void RemoveUseFromLockPick()
     {
-        var levelDifference = _skills.Lockpicking.Level - doorLevel;
-
         var skillMgrExt = Plugin.PlayerSkillManagerExt;
         
-        if (levelDifference >= 10 || skillMgrExt.LockPickingUseBuffElite.Value)
-        {
-            return;
-        }
-
-        // Remove a use from a lockpick in the inventory
+        if (skillMgrExt.LockPickingUseBuffElite.Value) return;
+        
+        // Remove a use from a lock pick in the inventory
         var lockPicks = LpHelpers.GetLockPicksInInventory();
         
         var lockPick = lockPicks.First();
