@@ -49,15 +49,13 @@ export interface IWeaponConfig
 export interface ILockpickingConfig
 {
     ENABLED: boolean;
-    INSPECT_BASE_TIME: number;
-    INSPECT_CHANCE_BONUS: number;
-    PICK_BASE_TIME: number;
+    PICK_STRENGTH: number;
+    PICK_STRENGTH_PER_LEVEL: number;
+    SWEET_SPOT_ANGLE: number;
+    SWEET_SPOT_ANGLE_PER_LEVEL: number;
     ATTEMPTS_BEFORE_BREAK: number;
-    TIME_REDUCTION_BONUS: number;
-    TIME_REDUCTION_BONUS_ELITE: number;
-    PICK_BASE_SUCCESS_CHANCE: number;
-    PICK_BASE_DIFFICULTY_MOD: number;
     INSPECT_LOCK_XP_RATIO: number;
+    FAILURE_LOCK_XP_RATIO: number;
     XP_TABLE: Record<string, number>;
     DOOR_PICK_LEVELS: Record<string, Record<string, number>>;
     CRAFTING_RECIPES: IHideoutProduction[];

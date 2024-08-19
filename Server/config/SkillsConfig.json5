@@ -109,15 +109,13 @@
     },
     "LockPicking": {
         "ENABLED": true,                                    // Enable lock picking skill
-        "INSPECT_BASE_TIME": 4,                             // Base time before bonuses to inspect a door
-        "INSPECT_CHANCE_BONUS": 10,                         // Bonus chance added for inspecting a door
-        "PICK_BASE_TIME": 10,                               // Base time before bonuses to pick a door
+        "PICK_STRENGTH": 2.25,                              // The amount of time in seconds the lock pick can be turned on while out of position before breaking
+        "PICK_STRENGTH_PER_LEVEL": 0.015,                   // Bonus per level in percent to the amount of time before a lock pick breaks
+        "SWEET_SPOT_RANGE": 5,                              // Angle in degrees that will allow movement of the cylinder
+        "SWEET_SPOT_RANGE_PER_LEVEL": 0.005,                // Bonus per level in percent to the sweet spot angle to allow movement of the cylinder
         "ATTEMPTS_BEFORE_BREAK": 3,                         // Failed attempts before a lock breaks
-        "TIME_REDUCTION_BONUS": 0.3,                        // Time reduction at level 50 in percent
-        "TIME_REDUCTION_BONUS_ELITE": 0.45,                 // Time reduction at elite in percent
-        "PICK_BASE_SUCCESS_CHANCE": 85,                     // Base chance to pick a lock
-        "PICK_BASE_DIFFICULTY_MOD": 8,                      // Difficulty modifier
         "INSPECT_LOCK_XP_RATIO": 0.15,                      // Ratio of lock xp given for inspecting a lock
+        "FAILURE_LOCK_XP_RATIO": 0.25,                      // Ratio of lock xp given for inspecting a lock
         "XP_TABLE": {                                       // Door XP map
             "0": 0.01,
             "1": 0.15,

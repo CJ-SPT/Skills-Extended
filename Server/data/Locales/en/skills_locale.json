@@ -23,7 +23,8 @@
     "BearAkSystemsRecoil": "Reduces the recoil of Eastern weapons by [{0:0.#%}]",
     "Lockpicking": "Lockpicking",
     "LockpickingDescription": "Pick locks and gain access to rooms even if you don't have the key. At level 25 you can use a \"Flipper Zero\" to attempt to hack into keycard doors.",
-    "LockpickingLevelingUpDescription": "Improved by inspecting and picking locks.",
-    "LockpickingTimeReduction": "Reduces time it takes to inspect and pick locks by [{0:0.#%}]",
-    "LockpickingUseElite": "You no longer break Lockpicks."
+    "LockpickingLevelingUpDescription": "Improved by picking locks.",
+    "LockpickingTimeIncrease": "Increases the strength of lockpicks by [{0:0.#%}]",
+    "LockpickingForgivenessAngle": "Reduces the difficulty of locks by [{0:0.#%}]",
+    "LockpickingUseElite": "You no longer break lockpicks."
 }
