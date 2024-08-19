@@ -6,6 +6,7 @@ using EFT.InputSystem;
 using EFT.Communications;
 using EFT.Console.Core;
 using EFT.Interactive;
+using SkillsExtended.Config;
 using SkillsExtended.Helpers;
 using UnityEngine;
 using UnityEngine.UI;
@@ -31,13 +32,12 @@ public class LpLockPicking : MonoBehaviour
     /// If set to 1, we need to be exactly at the sweet spot position,
     /// but if set to a higher number we can be farther from the center position of the sweet spot.
     /// </summary>
-    [Range(1, 90)]
-    public float sweetSpotRange = 4.25f; 
+    private static float _sweetSpotRange = 0f;
 
     /// <summary>
     /// The button that rotates the cylinder. The cylinder will only rotate if we are in the sweet spot.
     /// </summary>
-    public string rotateButton = "a";
+    private KeyCode _rotateButton => ConfigManager.LpMiniGameTurnKey.Value;
 
     /// <summary>
     /// How fast the cylinder rotates
@@ -76,6 +76,8 @@ public class LpLockPicking : MonoBehaviour
     public Button abortButton;
 
     private static Player _player => Singleton<GameWorld>.Instance?.MainPlayer;
+    
+    // Callback action
     private Action<bool> _onUnlocked;
     
     // Is the cylinder rotating
@@ -87,9 +89,10 @@ public class LpLockPicking : MonoBehaviour
     // If the lock is unlocked, we win
     private static bool _isUnlocked = false;
 
-    //The sweet spot angle that we must reach with the lock pick
-    private static float _sweetSpotAngle = 0;
-
+    // The sweet spot angle that we must reach with the lock pick
+    private static float _lockPickSetAngle = 0;
+    
+    // Time fields to measure when a pick should break
     private static float _wiggleTimeLimit = 1f;
     private static float _timeSpentWiggling = 0;
     
@@ -100,24 +103,14 @@ public class LpLockPicking : MonoBehaviour
         animator = GetComponent<Animator>();
 
         abortButton.onClick.AddListener(() => Deactivate());
-        _sweetSpotAngle = Random.Range(0, 180);
+        _lockPickSetAngle = Random.Range(0, 180);
     }
-
-    public void OnEnable()
-    {
-        sweetSpotRange = 3;
-        rotateSpeed = 35;
-        rotateToWin = 330;
-        _wiggleTimeLimit = 1f;
-        _timeSpentWiggling = 0f;
-        _isUnlocked = false;
-        
-        _sweetSpotAngle = Random.Range(0, 180);
-    }
-
+    
     public void Update()
     {
         if (_isUnlocked) return;
+       
+        if (Input.GetKey(KeyCode.Escape)) Deactivate();
         
         if (_player is not null)
         {
@@ -128,8 +121,8 @@ public class LpLockPicking : MonoBehaviour
         
         MoveLockPick();
         
-        _isRotating = Input.GetKey(rotateButton);
-
+        _isRotating = Input.GetKey(_rotateButton);
+        
         if (_isRotating)
         {
             // Rotate the cylinder object in the direction we chose
@@ -148,31 +141,41 @@ public class LpLockPicking : MonoBehaviour
     /// </summary>
     public void Activate(GamePlayerOwner owner, WorldInteractiveObject interactiveObject, Action<bool> action)
     {
+        _lockPickSetAngle = Random.Range(0, 180);
+        _isUnlocked = false;
+        _timeSpentWiggling = 0f;
+        
         _onUnlocked = action;
         
         var doorLevel = LpHelpers.GetLevelForDoor(owner.Player.Location, interactiveObject.Id);
-        var levelDifference = _player.Skills.Lockpicking.Level - doorLevel;
         
-        
+        SetSweetSpotRange(doorLevel);
+        SetTimeLimit(doorLevel);
         
         _player.CurrentManagedState.ChangePose(-1f);
         
         CursorSettings.SetCursor(ECursorType.Idle);
         Cursor.lockState = CursorLockMode.None;
         Singleton<GUISounds>.Instance.PlayUISound(EUISoundType.MenuContextMenu);
+        
+        Plugin.Log.LogDebug($"LEVEL:        {doorLevel}");
+        Plugin.Log.LogDebug($"SWEET SPOT:   {_sweetSpotRange}");
+        Plugin.Log.LogDebug($"ROTATE SPEED: {rotateSpeed}");
+        Plugin.Log.LogDebug($"TIME LIMIT:   {_wiggleTimeLimit}");
+        Plugin.Log.LogDebug($"WIN ANGLE:    {rotateToWin}");
     }
     
-    public void ActivatePractice(float chance)
+    public void ActivatePractice(int doorLevel)
     {
-        _sweetSpotAngle = Random.Range(0, 180);
+        _lockPickSetAngle = Random.Range(0, 180);
+        _isUnlocked = false;
+        _timeSpentWiggling = 0f;
         
-        sweetSpotRange *= chance;
-        rotateSpeed *= chance;
-        _wiggleTimeLimit *= chance;
-        rotateToWin = 330;
+        SetSweetSpotRange(doorLevel);
+        SetTimeLimit(doorLevel);
         
-        Plugin.Log.LogDebug($"CHANCE:       {chance}");
-        Plugin.Log.LogDebug($"SWEET SPOT:   {sweetSpotRange}");
+        Plugin.Log.LogDebug($"LEVEL:        {doorLevel}");
+        Plugin.Log.LogDebug($"SWEET SPOT:   {_sweetSpotRange}");
         Plugin.Log.LogDebug($"ROTATE SPEED: {rotateSpeed}");
         Plugin.Log.LogDebug($"TIME LIMIT:   {_wiggleTimeLimit}");
         Plugin.Log.LogDebug($"WIN ANGLE:    {rotateToWin}");
@@ -204,7 +207,7 @@ public class LpLockPicking : MonoBehaviour
 
         lockpick.eulerAngles = Vector3.forward * Mathf.Clamp(lockpick.eulerAngles.z, 0, 180);
             
-        _inSweetSpot = Mathf.Abs(_sweetSpotAngle - lockpick.eulerAngles.z) < sweetSpotRange;
+        _inSweetSpot = Mathf.Abs(_lockPickSetAngle - lockpick.eulerAngles.z) < _sweetSpotRange;
     }
 
     private void MoveCylinder()
@@ -212,7 +215,7 @@ public class LpLockPicking : MonoBehaviour
         // If the lock pick is in the sweet spot, the cylinder can rotate
         if (!_inSweetSpot) return;
 
-        _sweetSpotAngle *= 1.02f * Time.deltaTime;
+        _lockPickSetAngle *= 1.02f * Time.deltaTime;
         
         // Play the cylinder sound
         if (!audioSource.isPlaying) 
@@ -282,13 +285,25 @@ public class LpLockPicking : MonoBehaviour
         }
     }
 
-    private float GetSweetSpotMod(int doorLevel)
+    private static void SetSweetSpotRange(int doorLevel)
     {
-        return 0f;
+        var skillMod = 1 + Plugin.PlayerSkillManagerExt.LockPickingForgiveness;
+        var doorMod = Mathf.Clamp(doorLevel / 35f, 0.05f, 1.5f);
+
+        var configVal = Plugin.SkillData.LockPicking.SweetSpotRange;
+        _sweetSpotRange = Mathf.Clamp((configVal - doorMod) * skillMod, 0f, 20f);
+        
+        Plugin.Log.LogDebug($"Sweet Spot Range: {_sweetSpotRange}");
     }
     
-    private float GetTimeMod(int doorLevel)
+    private static void SetTimeLimit(int doorLevel)
     {
-        return 0f;
+        var skillMod = 1 + Plugin.PlayerSkillManagerExt.LockPickingTimeBuff;
+        var doorMod = Mathf.Clamp(doorLevel / 50f, 0.05f, 1f);
+        
+        var configVal = Plugin.SkillData.LockPicking.PickStrength;
+        _wiggleTimeLimit = Mathf.Clamp((configVal - doorMod) * skillMod, 1f, 20f);
+        
+        Plugin.Log.LogDebug($"Wiggle Time Limit: {_wiggleTimeLimit}");
     }
 }

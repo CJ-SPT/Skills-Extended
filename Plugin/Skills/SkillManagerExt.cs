@@ -60,7 +60,12 @@ public class SkillManagerExt
     
     public readonly SkillManager.SkillBuffClass LockPickingTimeBuff = new()
     {
-        Id = EBuffId.LockpickingTimeReduction,
+        Id = EBuffId.LockpickingTimeIncrease,
+    };
+    
+    public readonly SkillManager.SkillBuffClass LockPickingForgiveness = new()
+    {
+        Id = EBuffId.LockpickingForgivenessAngle,
     };
     
     public readonly SkillManager.GClass1790 LockPickingUseBuffElite = new()
@@ -142,8 +147,10 @@ public class SkillManagerExt
         return new SkillManager.SkillBuffAbstractClass[]
         {
             LockPickingTimeBuff
-                .Max(SkillData.LockPicking.TimeReduction)
-                .Elite(SkillData.LockPicking.TimeReductionElite),
+                .PerLevel(SkillData.LockPicking.PickStrengthPerLevel),
+            
+            LockPickingForgiveness
+                .PerLevel(SkillData.LockPicking.SweetSpotAnglePerLevel),
             
             LockPickingUseBuffElite
         };

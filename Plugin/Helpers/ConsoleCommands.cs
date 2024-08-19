@@ -25,7 +25,7 @@ namespace SkillsExtended.Helpers
         internal class Commands
         {
             [ConsoleCommand("minigame", "", "Mini game practice")]
-            public static void StartMiniGame([ConsoleArgument(50)] float chance)
+            public static void StartMiniGame([ConsoleArgument(50)] int chance)
             {
                 Plugin.MiniGame.gameObject.SetActive(true);
                 Plugin.MiniGame.ActivatePractice(chance);

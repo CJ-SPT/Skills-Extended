@@ -98,33 +98,27 @@ namespace SkillsExtended.Models
     {
         [JsonProperty("ENABLED")]
         public bool Enabled;
+        
+        [JsonProperty("PICK_STRENGTH")]
+        public float PickStrength;
 
-        [JsonProperty("INSPECT_BASE_TIME")]
-        public float InspectBaseTime;
-
-        [JsonProperty("INSPECT_CHANCE_BONUS")]
-        public float InspectChanceBonus;
-
-        [JsonProperty("PICK_BASE_TIME")]
-        public float PickBaseTime;
-
+        [JsonProperty("PICK_STRENGTH_PER_LEVEL")]
+        public float PickStrengthPerLevel;
+        
+        [JsonProperty("SWEET_SPOT_ANGLE")]
+        public float SweetSpotRange;
+        
+        [JsonProperty("SWEET_SPOT_ANGLE_PER_LEVEL")]
+        public float SweetSpotAnglePerLevel;
+        
         [JsonProperty("ATTEMPTS_BEFORE_BREAK")]
         public float AttemptsBeforeBreak;
-
-        [JsonProperty("TIME_REDUCTION_BONUS")]
-        public float TimeReduction;
-
-        [JsonProperty("TIME_REDUCTION_BONUS_ELITE")]
-        public float TimeReductionElite;
-
-        [JsonProperty("PICK_BASE_SUCCESS_CHANCE")]
-        public float PickBaseSuccessChance;
-
-        [JsonProperty("PICK_BASE_DIFFICULTY_MOD")]
-        public float PickBaseDifficultyMod;
-
+        
         [JsonProperty("INSPECT_LOCK_XP_RATIO")]
         public float InspectLockXpRatio;
+        
+        [JsonProperty("FAILURE_LOCK_XP_RATIO")]
+        public float FailureLockXpRatio;
 
         [JsonProperty("XP_TABLE")]
         public Dictionary<string, float> XpTable;

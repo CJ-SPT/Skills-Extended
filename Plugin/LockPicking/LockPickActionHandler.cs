@@ -49,7 +49,7 @@ public sealed class LockPickActionHandler
             OnLockPickFailed(this, EventArgs.Empty);
         }
     }
-
+    
     private void AddFailedAttemptToCounter()
     {
         // Add to the counter

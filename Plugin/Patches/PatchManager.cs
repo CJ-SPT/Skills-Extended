@@ -33,7 +33,7 @@ internal static class PatchManager
     private static void InRaid()
     {
         new DoorActionPatch().Enable();
-        new KeyCardDoorActionPatch().Enable();
+        // new KeyCardDoorActionPatch().Enable(); // TODO
     }
 
     private static void Medical()

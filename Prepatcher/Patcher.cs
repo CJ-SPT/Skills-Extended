@@ -151,10 +151,17 @@ public static class Patcher
         buffEnums.Fields.Add(bearAkSystemsRecoilEnum);
         buffEnums.Fields.Add(bearAkSystemsErgoEnum);
         
-        var lockpickingTimeReduction = CreateNewEnum(
+        var lockpickingTimeIncrease = CreateNewEnum(
             ref assembly, 
-            "LockpickingTimeReduction", 
-            "LockpickingTimeReduction", 
+            "LockpickingTimeIncrease", 
+            "LockpickingTimeIncrease", 
+            buffEnums, 
+            index++);
+        
+        var lockpickingForgivenessAngle = CreateNewEnum(
+            ref assembly, 
+            "LockpickingForgivenessAngle", 
+            "LockpickingForgivenessAngle", 
             buffEnums, 
             index++);
         
@@ -165,7 +172,8 @@ public static class Patcher
             buffEnums, 
             index++);
         
-        buffEnums.Fields.Add(lockpickingTimeReduction);
+        buffEnums.Fields.Add(lockpickingTimeIncrease);
+        buffEnums.Fields.Add(lockpickingForgivenessAngle);
         buffEnums.Fields.Add(lockpickingUseElite);
     }
 

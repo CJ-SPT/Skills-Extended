@@ -60,8 +60,12 @@ internal class BuffIconShowPatch : ModulePatch
                 ____icon.sprite = staticIcons.BuffIdSprites.GetValueOrDefault(EBuffId.WeaponRecoilBuff);
                 break;
             
-            case EBuffId.LockpickingTimeReduction:
+            case EBuffId.LockpickingTimeIncrease:
                 ____icon.sprite = staticIcons.BuffIdSprites.GetValueOrDefault(EBuffId.CraftingContinueTimeReduce);
+                break;
+            
+            case EBuffId.LockpickingForgivenessAngle:
+                ____icon.sprite = staticIcons.BuffIdSprites.GetValueOrDefault(EBuffId.HideoutExtraSlots);
                 break;
             
             case EBuffId.LockpickingUseElite:

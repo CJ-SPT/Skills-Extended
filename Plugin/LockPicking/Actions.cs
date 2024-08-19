@@ -101,11 +101,10 @@ public static class LockPickActions
                 Owner = owner,
                 InteractiveObject = door,
             };
-
-            /*
+            
             Action<bool> action = new(handler.HackTerminalAction);
-            currentManagedState.Plant(true, false, lpTime, action);
-            */
+            
+            // TODO RE-IMPLEMENT THIS
         }
         else
         {
@@ -121,38 +120,13 @@ public static class LockPickActions
         if (level == -1)
         {
             NotificationManagerClass.DisplayMessageNotification(
-                $"ERROR: Door {interactiveObject.Id} on map {owner.Player.Location} not found in lookup table, sceenshot and report this error to the developer.",
+                $"ERROR: Door {interactiveObject.Id} on map {owner.Player.Location} not found in lookup table, screen shot and report this error to the developer.",
                 EFT.Communications.ENotificationDurationType.Long,
                 EFT.Communications.ENotificationIconType.Alert);
 
             return;
         }
 
-        // Only allow inspecting if the player is stationary
-        if (Utils.IdleStateType.IsInstanceOfType(owner.Player.CurrentState))
-        {
-            // If we have not inspected this door yet, inspect it
-            if (!LpHelpers.InspectedDoors.Contains(interactiveObject.Id))
-            {
-                InspectLockActionHandler handler = new()
-                {
-                    Owner = owner,
-                    InteractiveObject = interactiveObject,
-                };
-
-                Action<bool> action = new(handler.InspectLockAction);
-                var currentManagedState = owner.Player.CurrentManagedState;
-                
-                owner.ShowObjectivesPanel("Inspecting lock {0:F1}", 5f); //TODO: FIX ME - TIME
-                currentManagedState.Plant(true, false, 5f, action);
-                return;
-            }
-
-            LpHelpers.DisplayInspectInformation(interactiveObject, owner);
-        }
-        else
-        {
-            owner.DisplayPreloaderUiNotification("Cannot inspect the lock while moving.");
-        }
+        LpHelpers.DisplayInspectInformation(interactiveObject, owner);
     }
 }

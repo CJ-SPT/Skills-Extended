@@ -17,6 +17,7 @@ using System.Reflection;
 using EFT;
 using HarmonyLib;
 using IcyClawz.CustomInteractions;
+using SkillsExtended.Config;
 using SkillsExtended.ItemInteractions;
 using SkillsExtended.LockPicking;
 using SkillsExtended.Skills;
@@ -68,6 +69,7 @@ public class Plugin : BaseUnityPlugin
         
         PatchManager.PatchAll();
         CustomInteractionsManager.Register(new CustomInteractionsProvider());
+        ConfigManager.RegisterConfig(Config);
         
 #if DEBUG
         Logger.LogWarning("PRE RELEASE BUILD - NO SUPPORT");
