@@ -23,7 +23,7 @@ internal class SkillManagerConstructorPatch : ModulePatch
     {
         var insertIndex = 12;
         
-        Logger.LogError($"SkillManager Created: {faction}");
+        // Logger.LogError($"SkillManager Created: {faction}");
         
         // Action and buff lists intentionally empty here, this is for display list purposes only
         

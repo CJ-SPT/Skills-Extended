@@ -105,11 +105,11 @@ namespace SkillsExtended.Models
         [JsonProperty("PICK_STRENGTH_PER_LEVEL")]
         public float PickStrengthPerLevel;
         
-        [JsonProperty("SWEET_SPOT_ANGLE")]
+        [JsonProperty("SWEET_SPOT_RANGE")]
         public float SweetSpotRange;
         
-        [JsonProperty("SWEET_SPOT_ANGLE_PER_LEVEL")]
-        public float SweetSpotAnglePerLevel;
+        [JsonProperty("SWEET_SPOT_RANGE_PER_LEVEL")]
+        public float SweetSpotRangePerLevel;
         
         [JsonProperty("ATTEMPTS_BEFORE_BREAK")]
         public float AttemptsBeforeBreak;

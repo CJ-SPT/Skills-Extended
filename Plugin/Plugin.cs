@@ -137,8 +137,6 @@ public class Plugin : BaseUnityPlugin
         
         var dataInstance = Instantiate(dataObject as GameObject);
         
-        Log.LogError(_miniGameObject.name);
-        
         DontDestroyOnLoad(_miniGameObject);
         
         var visualObjects = _miniGameObject.GetComponentsInChildren<MonoBehaviour>();

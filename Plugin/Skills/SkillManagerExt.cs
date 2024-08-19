@@ -150,7 +150,7 @@ public class SkillManagerExt
                 .PerLevel(SkillData.LockPicking.PickStrengthPerLevel),
             
             LockPickingForgiveness
-                .PerLevel(SkillData.LockPicking.SweetSpotAnglePerLevel),
+                .PerLevel(SkillData.LockPicking.SweetSpotRangePerLevel),
             
             LockPickingUseBuffElite
         };

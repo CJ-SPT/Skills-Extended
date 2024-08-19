@@ -42,12 +42,12 @@ public class LpLockPicking : MonoBehaviour
     /// <summary>
     /// How fast the cylinder rotates
     /// </summary>
-    public float rotateSpeed = 35;
+    public float rotateSpeed = 75;
 
     /// <summary>
     /// How much we need to rotate the cylinder in order to win
     /// </summary>
-    public float rotateToWin = 330;
+    public float rotateToWin = 95;
     
     /// <summary>
     /// The sound that plays when we rotate the cylinder
@@ -293,10 +293,14 @@ public class LpLockPicking : MonoBehaviour
         var skillMod = 1 + Plugin.PlayerSkillManagerExt.LockPickingForgiveness;
         var doorMod = Mathf.Clamp(doorLevel / 35f, 0.05f, 1.5f);
 
-        var configVal = Plugin.SkillData.LockPicking.SweetSpotRange;
-        _sweetSpotRange = Mathf.Clamp((configVal - doorMod) * skillMod, 0f, 20f);
+        Plugin.Log.LogWarning($"SKILL: {skillMod}");
+        Plugin.Log.LogWarning($"DOOR: {doorMod}");
         
-        Plugin.Log.LogDebug($"Sweet Spot Range: {_sweetSpotRange}");
+        var configVal = Plugin.SkillData.LockPicking.SweetSpotRange;
+        
+        Plugin.Log.LogWarning($"CONFIG: {configVal}");
+        
+        _sweetSpotRange = Mathf.Clamp((configVal - doorMod) * skillMod, 0f, 20f);
     }
     
     private static void SetTimeLimit(int doorLevel)
@@ -305,8 +309,7 @@ public class LpLockPicking : MonoBehaviour
         var doorMod = Mathf.Clamp(doorLevel / 50f, 0.05f, 1f);
         
         var configVal = Plugin.SkillData.LockPicking.PickStrength;
-        _wiggleTimeLimit = Mathf.Clamp((configVal - doorMod) * skillMod, 1f, 20f);
         
-        Plugin.Log.LogDebug($"Wiggle Time Limit: {_wiggleTimeLimit}");
+        _wiggleTimeLimit = Mathf.Clamp((configVal - doorMod) * skillMod, 1f, 20f);
     }
 }
