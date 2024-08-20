@@ -26,7 +26,7 @@ using UnityEngine.UI;
 
 namespace SkillsExtended;
 
-[BepInPlugin("com.dirtbikercj.SkillsExtended", "Skills Extended", "1.2.2")]
+[BepInPlugin("com.dirtbikercj.SkillsExtended", "Skills Extended", "1.2.3")]
 [BepInDependency("com.IcyClawz.CustomInteractions")]
 public class Plugin : BaseUnityPlugin
 {
@@ -182,6 +182,6 @@ public class Plugin : BaseUnityPlugin
         lpComp.pickStrengthRemainingUpper = LockPickingGame.GetComponentsInChildren<Image>()
             .FirstOrDefault(x => x.gameObject.name == "PickStrengthBarUpper");
         
-        LockPickingGame.SetActive(true);
+        LockPickingGame.SetActive(false);
     }
 }

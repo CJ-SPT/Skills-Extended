@@ -31,7 +31,7 @@ export class IOManager
     public ImageRootPath: string = path.join(path.dirname(__filename), "..", "..", "Data", "Images");
     public ItemRootPath: string = path.join(path.dirname(__filename), "..", "..", "Data", "Items");
 
-    public postDbLoad(): void
+    public importData(): void
     {
         this.importAllLocaleData();
         this.importAllImages();

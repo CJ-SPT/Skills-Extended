@@ -115,7 +115,10 @@
         "itemTplToClone": "5bc9c049d4351e44f824d360",
         "overrideProperties": {
             "CanSellOnRagfair": false,
-            "Prefab": {}
+            "Prefab": {
+                "path": "skill_book_4.bundle",
+                "rcid": ""
+            }
         },
         "parentId": "590c745b86f7743cc433c5f2",
         "handbookParentId": "5c164d2286f774194c5e69fa",

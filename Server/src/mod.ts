@@ -49,15 +49,18 @@ class SkillsExtended implements IPreSptLoadMod, IPostDBLoadMod
     public postDBLoad(container: DependencyContainer): void 
     {
         this.InstanceManager.postDBLoad(container);
-        this.IOManager.postDbLoad();
+        
         this.ProgressionManager.init(this.InstanceManager, this.IOManager);
         this.customItemService = this.InstanceManager.customItemService;
         this.AchievementManager.postDbLoad(this.InstanceManager, this.IOManager);
         this.TraderManager.postDbLoad();
         this.QuestManager.postDbLoad(this.InstanceManager, this.IOManager);
 
-        this.CreateItems();
         this.addCraftsToDatabase();
+        this.CreateItems();
+        // Do this after so we dont wipe locales with create items
+        this.IOManager.importData();
+        
 
         this.addItemToSpecSlots(SkillsExtendedIds.Lockpick);
         this.addItemToSpecSlots(SkillsExtendedIds.Pda);
