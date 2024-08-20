@@ -169,11 +169,19 @@ public class Plugin : BaseUnityPlugin
 
         lpComp.lockpick = children
             .First(x => x.gameObject.name == "Lockpick");
-
-        lpComp.abortButton = children
-            .First(x => x.gameObject.name == "ButtonAbort")
-            .GetComponent<Button>();
         
-        LockPickingGame.SetActive(false);
+        lpComp.levelText = LockPickingGame.GetComponentsInChildren<Text>()
+            .FirstOrDefault(x => x.gameObject.name == "LockLevelText");
+        
+        lpComp.keyText = LockPickingGame.GetComponentsInChildren<Text>()
+            .FirstOrDefault(x => x.gameObject.name == "KeyNameText");
+        
+        lpComp.pickStrengthRemainingLower = LockPickingGame.GetComponentsInChildren<Image>()
+            .FirstOrDefault(x => x.gameObject.name == "PickStrengthBarLower");
+        
+        lpComp.pickStrengthRemainingUpper = LockPickingGame.GetComponentsInChildren<Image>()
+            .FirstOrDefault(x => x.gameObject.name == "PickStrengthBarUpper");
+        
+        LockPickingGame.SetActive(true);
     }
 }

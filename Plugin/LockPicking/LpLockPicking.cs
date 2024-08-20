@@ -71,11 +71,16 @@ public class LpLockPicking : MonoBehaviour
     /// </summary>
     public AudioClip winSound;
 
+    public Text levelText;
+
+    public Text keyText;
+
+    public Image pickStrengthRemainingLower;
+    public Image pickStrengthRemainingUpper;
+    
     public AudioSource audioSource;
 
     public Animator animator;
-
-    public Button abortButton;
 
     private static Player _player => Singleton<GameWorld>.Instance?.MainPlayer;
     
@@ -158,6 +163,8 @@ public class LpLockPicking : MonoBehaviour
             HandleWin(false);
             return;
         }
+
+        AdjustPickStrengthImage();
         
         MoveLockPick();
         
@@ -198,6 +205,9 @@ public class LpLockPicking : MonoBehaviour
         
         var doorLevel = LpHelpers.GetLevelForDoor(owner.Player.Location, interactiveObject.Id);
         
+        levelText.text = $"DOOR LEVEL: {doorLevel.ToString()}";
+        keyText.text = $"DOOR KEY: {Plugin.Keys.KeyLocale[interactiveObject.KeyId]}";
+        
         SetSweetSpotRange(doorLevel);
         SetTimeLimit(doorLevel);
         
@@ -229,6 +239,19 @@ public class LpLockPicking : MonoBehaviour
         return Input.GetMouseButtonDown(0) 
                || Input.GetMouseButtonDown(1) 
                || Input.GetKey(KeyCode.Escape); 
+    }
+
+    private void AdjustPickStrengthImage()
+    {
+        var rectTransform = pickStrengthRemainingUpper.gameObject.RectTransform();
+        
+        // Calculate the ratio of time spent wiggling to the time limit
+        var ratio = Mathf.Clamp(_timeSpentWiggling / _wiggleTimeLimit, 0f, 1f);
+        
+        var scaleFactor = 1f - ratio;
+        
+        rectTransform.localScale = 
+            new Vector3(1f, Mathf.Min(scaleFactor, rectTransform.rect.height), 0f);
     }
     
     private void MoveLockPick()
