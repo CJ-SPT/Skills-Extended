@@ -390,7 +390,7 @@ export class ProgressionManager
 
         mailService.sendDirectNpcMessageToPlayer(
             this.PmcProfile._id,
-            traderHelper.getTraderById(Traders.THERAPIST),
+            traderHelper.getTraderById("66bf1f65e1f3b83ea069a271"),
             MessageType.MESSAGE_WITH_ITEMS,
             `Here is your reward for tier ${tier} of ${skillId}`,
             items,
