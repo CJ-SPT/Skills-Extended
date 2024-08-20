@@ -22,7 +22,7 @@ internal class CanWalkPatch : ModulePatch
     {
         if (!____player.IsYourPlayer) return;
 
-        if (Plugin.MiniGame.gameObject.activeSelf)
+        if (Plugin.LockPickingGame.activeSelf)
         {
             __result = false;
             return;

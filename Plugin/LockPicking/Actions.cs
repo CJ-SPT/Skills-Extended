@@ -53,8 +53,10 @@ public static class LockPickActions
             
             Action<bool> action = new(handler.PickLockAction);
             
-            Plugin.MiniGame.gameObject.SetActive(true);
-            Plugin.MiniGame.Activate(owner, interactiveObject, action);
+            Plugin.LockPickingGame.SetActive(true);
+            
+            Plugin.LockPickingGame.GetComponent<LpLockPicking>()
+                .Activate(owner, interactiveObject, action);
 
             return;
         }

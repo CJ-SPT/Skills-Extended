@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Comfort.Common;
 using EFT;
 using EFT.UI;
@@ -8,6 +9,7 @@ using EFT.Console.Core;
 using EFT.Interactive;
 using SkillsExtended.Config;
 using SkillsExtended.Helpers;
+using SkillsExtended.Patches.UI;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
@@ -95,33 +97,78 @@ public class LpLockPicking : MonoBehaviour
     // Time fields to measure when a pick should break
     private static float _wiggleTimeLimit = 1f;
     private static float _timeSpentWiggling = 0;
+
+    private static bool _disabled = true;
     
     #endregion
     
-    public void Start()
+    public void OnEnable()
+    {
+        _disabled = false;
+        
+        if (_player is null) return;
+        if (!_player.IsYourPlayer) return;
+        
+        _player.MovementContext.ToggleBlockInputPlayerRotation(true);
+                
+        _player.CurrentManagedState.ChangePose(-1f);
+        
+        Singleton<GUISounds>.Instance.PlayUISound(EUISoundType.MenuContextMenu);
+    }
+
+    public void OnDisable()
+    {
+        _disabled = true;
+        
+        if (_player is null) return;
+        if (!_player.IsYourPlayer) return;
+        
+        _player.MovementContext.ToggleBlockInputPlayerRotation(false);
+        
+        _player.CurrentManagedState.ChangePose(1f);
+
+        Singleton<GUISounds>.Instance.PlayUISound(EUISoundType.MenuContextMenu);
+        
+        CursorSettings.SetCursor(ECursorType.Invisible);
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+            
+        if (GamePlayerOwner.MyPlayer is not null)
+        {
+            GamePlayerOwner.IgnoreInputWithKeepResetLook = false;
+            GamePlayerOwner.IgnoreInputInNPCDialog = false;
+        }
+        
+        Singleton<GUISounds>.Instance.PlayUISound(EUISoundType.MenuDropdown);
+    }
+    
+    private void Start()
     {
         animator = GetComponent<Animator>();
-
-        abortButton.onClick.AddListener(() => Deactivate());
+        
         _lockPickSetAngle = Random.Range(0, 180);
     }
     
     public void Update()
     {
-        if (_isUnlocked) return;
-       
-        if (Input.GetKey(KeyCode.Escape)) Deactivate();
-        
-        if (_player is not null)
+        if (_isUnlocked || _disabled) return;
+
+        if (ShouldClose())
         {
-            if (_player.IsYourPlayer)
-            {
-                GamePlayerOwner.SetIgnoreInputWithKeepResetLook(true);
-                _player.MovementContext.ToggleBlockInputPlayerRotation(true);
-            }
+            HandleWin(false);
+            return;
         }
         
         MoveLockPick();
+        
+        CursorSettings.SetCursor(ECursorType.Idle);
+        Cursor.lockState = CursorLockMode.None;
+
+        if (GamePlayerOwner.MyPlayer is not null)
+        {
+            GamePlayerOwner.IgnoreInputWithKeepResetLook = true;
+            GamePlayerOwner.IgnoreInputInNPCDialog = true;
+        }
         
         _isRotating = Input.GetKey(_rotateButton);
         
@@ -154,12 +201,6 @@ public class LpLockPicking : MonoBehaviour
         SetSweetSpotRange(doorLevel);
         SetTimeLimit(doorLevel);
         
-        _player.CurrentManagedState.ChangePose(-1f);
-        
-        CursorSettings.SetCursor(ECursorType.Idle);
-        Cursor.lockState = CursorLockMode.None;
-        Singleton<GUISounds>.Instance.PlayUISound(EUISoundType.MenuContextMenu);
-        
         Plugin.Log.LogDebug($"LEVEL:        {doorLevel}");
         Plugin.Log.LogDebug($"SWEET SPOT:   {_sweetSpotRange}");
         Plugin.Log.LogDebug($"ROTATE SPEED: {rotateSpeed}");
@@ -182,27 +223,14 @@ public class LpLockPicking : MonoBehaviour
         Plugin.Log.LogDebug($"TIME LIMIT:   {_wiggleTimeLimit}");
         Plugin.Log.LogDebug($"WIN ANGLE:    {rotateToWin}");
     }
-    
-    private void Deactivate(bool succeed = false)
-    {
-        animator.Play("Deactivate");
-        
-        if (_player is not null)
-        {
-            _player.CurrentManagedState.ChangePose(1f);
-            GamePlayerOwner.SetIgnoreInputWithKeepResetLook(false);
-            _player.MovementContext.ToggleBlockInputPlayerRotation(false);
-            
-            CursorSettings.SetCursor(ECursorType.Invisible);
-            Cursor.lockState = CursorLockMode.Locked;
-            Singleton<GUISounds>.Instance.PlayUISound(EUISoundType.MenuDropdown);
-            _onUnlocked.Invoke(succeed);
-        }
-        
-        cylinder!.eulerAngles = Vector3.zero;
-        gameObject.SetActive(false);
-    }
 
+    private bool ShouldClose()
+    {
+        return Input.GetMouseButtonDown(0) 
+               || Input.GetMouseButtonDown(1) 
+               || Input.GetKey(KeyCode.Escape); 
+    }
+    
     private void MoveLockPick()
     {
         lockpick.eulerAngles = 
@@ -217,13 +245,14 @@ public class LpLockPicking : MonoBehaviour
     {
         // If the lock pick is in the sweet spot, the cylinder can rotate
         if (!_inSweetSpot) return;
-
-        _lockPickSetAngle *= 1.02f * Time.deltaTime;
         
         // Play the cylinder sound
         if (!audioSource.isPlaying) 
             audioSource.PlayOneShot(rotateSound);
-
+        
+        // If the cylinder rotates beyond this angle, we win
+        if (cylinder!.eulerAngles.z < rotateToWin) return;
+        
         HandleWin();
     }
 
@@ -245,7 +274,7 @@ public class LpLockPicking : MonoBehaviour
             if (_timeSpentWiggling > _wiggleTimeLimit)
             {
                 Plugin.Log.LogDebug($"Time limit reached");
-                Deactivate();
+                HandleWin(false);
             }
             
             // Play the lock pick wiggle sound
@@ -262,30 +291,38 @@ public class LpLockPicking : MonoBehaviour
         audioSource.Stop();
     }
     
-    private void HandleWin()
+    private void HandleWin(bool won = true)
     {
-        // If the cylinder rotates beyond this angle, we win
-        if (cylinder!.eulerAngles.z < rotateToWin) return;
-        
         _isUnlocked = true;
-                
-        animator.Play("Win");
         
-        audioSource.PlayOneShot(winSound);
-
+        if (won)
+        {
+            animator.Play("Win");
+            audioSource.PlayOneShot(winSound);
+        }
+        
         // Unselect any buttons on the cylinder, so we don't press them when pressing 'SPACE' after closing the lock
         if (EventSystem.current) 
             EventSystem.current.SetSelectedGameObject(null);
-
         
         cylinder!.eulerAngles = Vector3.zero;
-        gameObject.SetActive(false);
         
         if (_player is not null)
         {
             GamePlayerOwner.SetIgnoreInputWithKeepResetLook(false);
-            _onUnlocked.Invoke(true);
+            _player.MovementContext.ToggleBlockInputPlayerRotation(false);
+            
+            Cursor.visible = false;
+            CursorSettings.SetCursor(ECursorType.Invisible);
+            Cursor.lockState = CursorLockMode.Locked;
+
+            if (won)
+            {
+                _onUnlocked.Invoke(true);
+            }
         }
+        
+        gameObject.SetActive(false);
     }
 
     private static void SetSweetSpotRange(int doorLevel)

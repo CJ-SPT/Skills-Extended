@@ -5,6 +5,7 @@ using EFT.UI;
 using System;
 using System.Linq;
 using EFT.Console.Core;
+using SkillsExtended.LockPicking;
 
 namespace SkillsExtended.Helpers
 {
@@ -27,8 +28,10 @@ namespace SkillsExtended.Helpers
             [ConsoleCommand("minigame", "", "Mini game practice")]
             public static void StartMiniGame([ConsoleArgument(50)] int chance)
             {
-                Plugin.MiniGame.gameObject.SetActive(true);
-                Plugin.MiniGame.ActivatePractice(chance);
+                Plugin.LockPickingGame.SetActive(true);
+                
+                Plugin.LockPickingGame.GetComponent<LpLockPicking>()
+                    .ActivatePractice(chance);
             }
         }
         

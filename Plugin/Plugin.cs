@@ -14,6 +14,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Comfort.Common;
+using EFT.UI;
 using IcyClawz.CustomInteractions;
 using SkillsExtended.Config;
 using SkillsExtended.ItemInteractions;
@@ -51,8 +53,7 @@ public class Plugin : BaseUnityPlugin
     internal static readonly SkillManagerExt PlayerSkillManagerExt = new();
     internal static readonly SkillManagerExt ScavSkillManagerExt = new();
 
-    private static GameObject _miniGameObject;
-    internal static LpLockPicking MiniGame { get; private set; }
+    public static GameObject LockPickingGame;
     
     internal static ManualLogSource Log;
 
@@ -125,74 +126,54 @@ public class Plugin : BaseUnityPlugin
     {
         var directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         
-        var assetBundle = AssetBundle.LoadFromFile($"{directory}/bundles/lp_door.bundle");
-        var dataBundle = AssetBundle.LoadFromFile($"{directory}/bundles/lp_game_data.bundle");
-        
-        var gameObject = assetBundle.LoadAssetWithSubAssets("lp_door").First();
-        var dataObject = dataBundle.LoadAssetWithSubAssets("lp_Game_Data").First();
+        var assetBundle = AssetBundle.LoadFromFile($"{directory}/bundles/doorlock.bundle");
+        var gameObject = assetBundle.LoadAssetWithSubAssets("DoorLock").First();
+        LockPickingGame = Instantiate(gameObject as GameObject);
 
-        _miniGameObject = Instantiate(gameObject as GameObject);
+        DontDestroyOnLoad(LockPickingGame);
+        var lpComp = LockPickingGame.GetOrAddComponent<LpLockPicking>();
         
-        var dataInstance = Instantiate(dataObject as GameObject);
+        var audioSources = LockPickingGame.GetComponents(typeof(AudioSource));
         
-        DontDestroyOnLoad(_miniGameObject);
+        lpComp.audioSource = audioSources.First() as AudioSource;
         
-        var visualObjects = _miniGameObject.GetComponentsInChildren<MonoBehaviour>();
-        
-        var doorComp = visualObjects
-            .FirstOrDefault(x => x.gameObject.name == "DoorLock");
-
-        var cylinderComp = visualObjects
-            .FirstOrDefault(x => x?.gameObject?.name == "Cylinder");
-
-        var lockPickComp = visualObjects
-            .FirstOrDefault(x => x?.gameObject?.name == "Lockpick");
-        
-        var buttonRotate = visualObjects
-            .FirstOrDefault(x => x?.gameObject?.name == "ButtonRotate");
-        
-        var buttonAbort = visualObjects
-            .FirstOrDefault(x => x?.gameObject?.name == "ButtonAbort");
-        
-        var audioSource = _miniGameObject.GetComponentsInChildren(typeof(AudioSource));
-        
-        buttonRotate?.gameObject.SetActive(false);
-        
-        MiniGame = doorComp?.gameObject.GetOrAddComponent<LpLockPicking>();
-
-        MiniGame.cylinder = cylinderComp?.gameObject.GetComponent<RectTransform>();
-        MiniGame.lockpick = lockPickComp?.gameObject.GetComponent<RectTransform>();
-        MiniGame.audioSource = audioSource.First() as AudioSource;
-
-        MiniGame.abortButton = buttonAbort.gameObject.GetComponent<Button>();
-        
-        foreach (var data in dataInstance.gameObject.GetComponentsInChildren(typeof(AudioSource)))
+        foreach (var source in audioSources)
         {
-            if (data.gameObject.name == "Sound_Reset")
+            var audio = source as AudioSource;
+
+            switch (audio!.name)
             {
-                var source = data as AudioSource;
-                MiniGame!.resetSound = source!.clip;
-            }
-            
-            if (data.gameObject.name == "Sound_Stuck")
-            {
-                var source = data as AudioSource;
-                MiniGame!.clickSound = source!.clip;
-            }
-            
-            if (data.gameObject.name == "Sound_Turn")
-            {
-                var source = data as AudioSource;
-                MiniGame!.rotateSound = source!.clip;
-            }
-            
-            if (data.gameObject.name == "Sound_Unlocked")
-            {
-                var source = data as AudioSource;
-                MiniGame!.winSound = source!.clip;
+                case "LockpickingReset":
+                    lpComp.resetSound = audio.clip;
+                    break;
+                
+                case "LockpickingStuck":
+                    lpComp.clickSound = audio.clip;
+                    break;
+                
+                case "LockpickingTurn":
+                    lpComp.rotateSound = audio.clip;
+                    break;
+                    
+                case "LockpickingUnlocked":
+                    lpComp.winSound = audio.clip;
+                    break;
             }
         }
+
+        var children = LockPickingGame
+            .GetComponentsInChildren<RectTransform>();
         
-        MiniGame.gameObject.SetActive(false);
+        lpComp.cylinder = children
+            .First(x => x.gameObject.name == "Cylinder");
+
+        lpComp.lockpick = children
+            .First(x => x.gameObject.name == "Lockpick");
+
+        lpComp.abortButton = children
+            .First(x => x.gameObject.name == "ButtonAbort")
+            .GetComponent<Button>();
+        
+        LockPickingGame.SetActive(false);
     }
 }
