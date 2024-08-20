@@ -24,11 +24,7 @@
         "handbookPriceRoubles": 75000,
 
         "locales": {
-            "en": {
-                "name": "Lockpick set",
-                "shortName": "Lockpick",
-                "description": "A set of tools used for picking locks"
-            }
+            "en": {}
         }
     },
     {
@@ -55,11 +51,7 @@
         "handbookPriceRoubles": 7560000,
 
         "locales": {
-            "en": {
-                "name": "Flipper zero",
-                "shortName": "Flipper",
-                "description": "A hacking device used for gaining access to key card doors. Requires Lockpicking level 25 to use."
-            }
+            "en": {}
         }
     },
     {
@@ -78,11 +70,7 @@
         "handbookPriceRoubles": 25000,
 
         "locales": {
-            "en": {
-                "name": "Technical Manual",
-                "shortName": "Technical Manual",
-                "description": "A technical Manual used for manufacturing complex machinery."
-            }
+            "en": {}
         }
     },
     {
@@ -101,11 +89,7 @@
         "handbookPriceRoubles": 125000,
 
         "locales": {
-            "en": {
-                "name": "Scholars coin",
-                "shortName": "Scholars coin",
-                "description": "A repurposed old russian coin used in the Scholars Society as a currency for bartering books"
-            }
+            "en": {}
         }
     },
     {
@@ -124,21 +108,14 @@
         "handbookPriceRoubles": 123000,
 
         "locales": {
-            "en": {
-                "name": "A definitive guide to lockpicking Vol. 1",
-                "shortName": "Lock picking 1",
-                "description": "Provides a 5 level boost to Lock Picking for 8 minutes."
-            }
+            "en": {}
         }
     },
     {
         "itemTplToClone": "5bc9c049d4351e44f824d360",
         "overrideProperties": {
             "CanSellOnRagfair": false,
-            "Prefab": {
-                "path": "skill_book_4.bundle",
-                "rcid": ""
-            }
+            "Prefab": {}
         },
         "parentId": "590c745b86f7743cc433c5f2",
         "handbookParentId": "5c164d2286f774194c5e69fa",
@@ -147,11 +124,7 @@
         "handbookPriceRoubles": 25000,
 
         "locales": {
-            "en": {
-                "name": "A definitive guide to lockpicking Vol. 2",
-                "shortName": "Lock picking 2",
-                "description": "Provides a 7 level boost to Lock Picking for 15 minutes."
-            }
+            "en": {}
         }
     },
     {
@@ -170,11 +143,7 @@
         "handbookPriceRoubles": 25000,
 
         "locales": {
-            "en": {
-                "name": "A definitive guide to lockpicking Vol. 3",
-                "shortName": "Lock picking 3",
-                "description": "Provides a 10 level boost to Lock Picking for 30 minutes."
-            }
+            "en": {}
         }
     }
 ]

@@ -1,15 +1,10 @@
 ﻿using System;
-using System.Linq;
 using Comfort.Common;
 using EFT;
 using EFT.UI;
-using EFT.InputSystem;
-using EFT.Communications;
-using EFT.Console.Core;
 using EFT.Interactive;
 using SkillsExtended.Config;
 using SkillsExtended.Helpers;
-using SkillsExtended.Patches.UI;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
