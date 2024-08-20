@@ -13,18 +13,16 @@ public sealed class InspectLockActionHandler
     
     public void InspectLockAction()
     {
-        // Only apply xp once per door per raid
+        // Only apply xp once per door per raid and only allow one quest objective per door per raid
         if (!LpHelpers.InspectedDoors.Contains(InteractiveObject.Id))
         {
             LpHelpers.InspectedDoors.Add(InteractiveObject.Id);
-            LpHelpers.ApplyLockPickActionXp(InteractiveObject, Owner, true);
-
+            
             if (OnLockInspected is not null)
             {
+                LpHelpers.ApplyLockPickActionXp(InteractiveObject, Owner, true);
                 OnLockInspected(this, EventArgs.Empty);
             }
         }
-
-        LpHelpers.DisplayInspectInformation(InteractiveObject, Owner);
     }
 }

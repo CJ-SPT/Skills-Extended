@@ -86,10 +86,9 @@ internal static class LpHelpers
         xpToApply = isInspect
             ? xp * Plugin.SkillData.LockPicking.InspectLockXpRatio
             : xp;
-
-        // Failures recieve 25% xp
+        
         xpToApply = isFailure
-            ? xpToApply * 0.25f
+            ? xpToApply * Plugin.SkillData.LockPicking.FailureLockXpRatio
             : xpToApply;
             
         
