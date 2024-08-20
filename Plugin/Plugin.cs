@@ -14,8 +14,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using EFT;
-using HarmonyLib;
 using IcyClawz.CustomInteractions;
 using SkillsExtended.Config;
 using SkillsExtended.ItemInteractions;
@@ -26,7 +24,7 @@ using UnityEngine.UI;
 
 namespace SkillsExtended;
 
-[BepInPlugin("com.dirtbikercj.SkillsExtended", "Skills Extended", "1.2.0")]
+[BepInPlugin("com.dirtbikercj.SkillsExtended", "Skills Extended", "1.2.1")]
 [BepInDependency("com.IcyClawz.CustomInteractions")]
 public class Plugin : BaseUnityPlugin
 {
