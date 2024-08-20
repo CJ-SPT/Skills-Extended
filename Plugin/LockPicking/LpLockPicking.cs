@@ -253,7 +253,7 @@ public class LpLockPicking : MonoBehaviour
         // If the cylinder rotates beyond this angle, we win
         if (cylinder!.eulerAngles.z < rotateToWin) return;
         
-        HandleWin();
+        HandleWin(true, true);
     }
 
     private void ResetCylinder(bool wiggle = false)
@@ -274,7 +274,7 @@ public class LpLockPicking : MonoBehaviour
             if (_timeSpentWiggling > _wiggleTimeLimit)
             {
                 Plugin.Log.LogDebug($"Time limit reached");
-                HandleWin(false);
+                HandleWin(false, true);
             }
             
             // Play the lock pick wiggle sound
@@ -291,7 +291,7 @@ public class LpLockPicking : MonoBehaviour
         audioSource.Stop();
     }
     
-    private void HandleWin(bool won = true)
+    private void HandleWin(bool won = true, bool bypass = false)
     {
         _isUnlocked = true;
         
@@ -316,9 +316,9 @@ public class LpLockPicking : MonoBehaviour
             CursorSettings.SetCursor(ECursorType.Invisible);
             Cursor.lockState = CursorLockMode.Locked;
 
-            if (won)
+            if (bypass)
             {
-                _onUnlocked.Invoke(true);
+                _onUnlocked.Invoke(won);
             }
         }
         
