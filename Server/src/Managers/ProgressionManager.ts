@@ -203,23 +203,31 @@ export class ProgressionManager
                 item
             )) continue;
 
+            if (itemHelper.isOfBaseclass(item, BaseClasses.AMMO))
+            {
+                const ammoItem = this.generateAmmoReward(item, tierData);
+    
+                itemsReceived += ammoItem?.upd?.StackObjectsCount;
+                items.push(ammoItem);
+                continue;
+            }
+
             const amount = this.calculateItemAmountForReward(tierData, item);
             rewardValue += itemPrices[item] * amount;
 
-            const newItem: Item = {
-                _tpl: item,
-                _id: hashUtil.generate()
-            }
-
-            if (itemHelper.addUpdObjectToItem(newItem))
+            for (let i = 0; i < amount; i++)
             {
-                newItem.upd.StackObjectsCount = amount;
+                const newItem: Item = {
+                    _tpl: item,
+                    _id: hashUtil.generate()
+                }
+
+                items.push(newItem);
             }
 
             this.logger.logWithColor(`${locale[`${item} Name`]} amt: (${amount}) val: (${itemPrices[item] * amount})`, LogTextColor.GREEN);
 
             itemsReceived += amount;
-            items.push(newItem);
         }
 
         if (tierData.LegaMedals > 0)
@@ -272,7 +280,11 @@ export class ProgressionManager
      */
     private checkForBaseConditions(itemPrice: number, maxRewardValue: number, tier: number, itemTpl: string): boolean
     {
+        const config = this.SkillRewards;
         const itemHelper = this.InstanceManager.itemHelper;
+
+        // Item is black listed, skip it
+        if (config.BlackListedItems.includes(itemTpl)) return false;
 
         // Item has no price, skip it
         if (itemPrice === 0) return false;
@@ -308,6 +320,28 @@ export class ProgressionManager
         return newItem;
     }
 
+    private generateAmmoReward(itemTpl: string, tierData: IRewardTier): Item
+    {
+        const hashUtil = this.InstanceManager.hashUtil;
+        const itemHelper = this.InstanceManager.itemHelper;
+
+        const newItem: Item = {
+            _tpl: itemTpl,
+            _id: hashUtil.generate()
+        }
+
+        const amount = 20 * tierData.Tier < 40 
+            ? 40 
+            : 20 * tierData.Tier;
+
+        if (itemHelper.addUpdObjectToItem(newItem))
+        {
+            newItem.upd.StackObjectsCount = amount;
+        }
+
+        return newItem;
+    }
+
     private calculateItemAmountForReward(tierData: IRewardTier, itemTpl: string): number
     {
         const itemHelper = this.InstanceManager.itemHelper;
@@ -320,17 +354,9 @@ export class ProgressionManager
         }
         
         // Dont ever give a no items
-        let amount = roundedAmount === 0 
+        const amount = roundedAmount === 0 
             ? 1 
             : roundedAmount;
-
-        // Handle stacks of ammo
-        if (itemHelper.isOfBaseclass(itemTpl, BaseClasses.AMMO))
-        {
-            amount = 20 * tierData.Tier < 40 
-                ? 40 
-                : 20 * tierData.Tier;
-        }
 
         return amount;
     }

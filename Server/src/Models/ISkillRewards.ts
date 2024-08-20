@@ -3,6 +3,7 @@ export interface ISkillRewards
     ProgressionEnabled: boolean;
     RewardCategories: string[];
     DisallowMultipleSameRoll: string[];
+    BlackListedItems: string[];
     Tiers: IRewardTier[];
     Debug: ProgressionDebug;
 }

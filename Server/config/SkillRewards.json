@@ -43,7 +43,17 @@
         "5c99f98d86f7745c314214b3",
         "5795f317245977243854e041",
         "62f109593b54472778797866"
-    ],                                   
+    ],   
+    "BlackListedItems": [
+        "62389bc9423ed1685422dc57",
+        "62389be94d5d474bf712e709",
+        "62389aaba63f32501b1b444f",
+        "62389ba9a63f32501b1b4451",
+        "624c09da2cec124eb67c1046",
+        "624c09e49b98e019a3315b66",
+        "624c0570c9b794431568f5d5",
+        "624c09cfbc2e27219346d955"
+    ],                             
     "Tiers": [
         {
             "Tier": 0,
@@ -72,37 +82,37 @@
         {
             "Tier": 4,
             "RewardValue": 67000,
-            "LegaMedals": 2,
+            "LegaMedals": 1,
             "MaximumNumberOfMultiples": 2
         },
         {
             "Tier": 5,
             "RewardValue": 79000,
-            "LegaMedals": 2,
+            "LegaMedals": 1,
             "MaximumNumberOfMultiples": 2
         },
         {
             "Tier": 6,
             "RewardValue": 94000,
-            "LegaMedals": 2,
+            "LegaMedals": 1,
             "MaximumNumberOfMultiples": 3
         },
         {
             "Tier": 7,
             "RewardValue": 110000,
-            "LegaMedals": 3,
+            "LegaMedals": 2,
             "MaximumNumberOfMultiples": 3
         },
         {
             "Tier": 8,
             "RewardValue": 125000,
-            "LegaMedals": 3,
+            "LegaMedals": 2,
             "MaximumNumberOfMultiples": 3
         },
         {
             "Tier": 9,
             "RewardValue": 250000,
-            "LegaMedals": 3,
+            "LegaMedals": 2,
             "MaximumNumberOfMultiples": 2
         },
         {
@@ -113,9 +123,9 @@
         }
     ],
     "Debug": {
-        "Enabled": false,
-        "TestGeneration": false,
-        "GenerationLevel": 2,
-        "NumberOfRuns": 10
+        "Enabled": true,
+        "TestGeneration": true,
+        "GenerationLevel": 5,
+        "NumberOfRuns": 20
     }
 }
