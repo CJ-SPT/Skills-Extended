@@ -324,6 +324,7 @@ export class ProgressionManager
     {
         const hashUtil = this.InstanceManager.hashUtil;
         const itemHelper = this.InstanceManager.itemHelper;
+        const locale = this.InstanceManager.database.locales.global.en;
 
         const newItem: Item = {
             _tpl: itemTpl,
@@ -338,6 +339,8 @@ export class ProgressionManager
         {
             newItem.upd.StackObjectsCount = amount;
         }
+
+        this.logger.logWithColor(`${locale[`${itemTpl} Name`]} amt: (${amount})`, LogTextColor.GREEN);
 
         return newItem;
     }
