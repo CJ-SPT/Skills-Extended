@@ -113,6 +113,8 @@ public class QuestProgressController : MonoBehaviour
     
     /// <summary>
     /// Increments a provided condition counter
+    ///
+    /// Credits: Terkoiz for this code
     /// </summary>
     /// <param name="quest"></param>
     /// <param name="condition"></param>
