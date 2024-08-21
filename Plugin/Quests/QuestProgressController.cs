@@ -58,22 +58,6 @@ public class QuestProgressController : MonoBehaviour
     }
     
     /// <summary>
-    /// Gets all active quests that are started,
-    /// and we have custom conditions for
-    /// </summary>
-    /// <returns></returns>
-    public IEnumerable<QuestClass> GetActiveQuests()
-    {
-        var activeQuests = _questController.Quests
-            .Where(q => q.QuestStatus == EQuestStatus.Started)
-            .Where(q => _questsWithCustomConditions.Contains(q.Id));
-        
-        Plugin.Log.LogDebug($"Custom conditions active: {activeQuests.Any()}");
-        
-        return activeQuests;
-    }
-    
-    /// <summary>
     /// Get active conditions for a specific type
     /// </summary>
     /// <param name="conditionType"></param>
@@ -146,6 +130,22 @@ public class QuestProgressController : MonoBehaviour
                     
         AccessTools.DeclaredMethod(conditionController.GetType().BaseType, "SetConditionCurrentValue")
             .Invoke(conditionController, new object[] { quest, EQuestStatus.AvailableForFinish, condition, currentVal + 1, true });
+    }
+    
+    /// <summary>
+    /// Gets all active quests that are started,
+    /// and we have custom conditions for
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerable<QuestClass> GetActiveQuests()
+    {
+        var activeQuests = _questController.Quests
+            .Where(q => q.QuestStatus == EQuestStatus.Started)
+            .Where(q => _questsWithCustomConditions.Contains(q.Id));
+        
+        Plugin.Log.LogDebug($"Custom conditions active: {activeQuests.Any()}");
+        
+        return activeQuests;
     }
     
     /// <summary>
