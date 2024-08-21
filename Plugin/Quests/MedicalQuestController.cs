@@ -2,6 +2,7 @@
 using EFT;
 using EFT.InventoryLogic;
 using SkillsExtended.Helpers;
+using SkillsExtended.Models;
 
 namespace SkillsExtended.Quests;
 
@@ -45,16 +46,22 @@ public class MedicalQuestController
 
     private void HandleRemoveFracture()
     {
+        var conditions = _questController.GetActiveConditions(EQuestCondition.FixFracture);
         
+        IncrementConditions(conditions);
     }
     
     private void HandleRemoveLightBleed()
     {
+        var conditions = _questController.GetActiveConditions(EQuestCondition.FixLightBleed);
         
+        IncrementConditions(conditions);
     }
     
     private void HandleRemoveHeavyBleed()
     {
+        var conditions = _questController.GetActiveConditions(EQuestCondition.FixHeavyBleed);
         
+        IncrementConditions(conditions);
     }
 }

@@ -1,0 +1,27 @@
+{
+    "66c52c277ee97564e59e985b completePlayerMessage": "",
+    "66c52c277ee97564e59e985b declinePlayerMessage": "",
+    "66c52c277ee97564e59e985b description": "I'm \"Flatline\", I'm a medic around here. I noticed you must be new around here. Your kit isn't exactly well prepared. You're not going to last long here without some good meds. Why don't you go gather me some medical items and I can put you together a few of the best med kits you will find around here.",
+    "66c52c277ee97564e59e985b failMessageText": "",
+    "66c52c277ee97564e59e985b name": "The Medics Path",
+    "66c52c277ee97564e59e985b note": "",
+    "66c52c277ee97564e59e985b startedMessageText": "",
+    "66c52c277ee97564e59e985b successMessageText": "This should hopefully keep you alive long enough for me to teach you how to use it properly. Come back and meet with me if you want to learn more.",
+    "66c52f47be299006b22d9f2f": "Find 5 Piles of meds in raid",
+    "66c52f4be425e1c55542be83": "Handover 5 found in raid piles of meds",
+    "66c53046dbb4ce9a67af445f": "Find 3 CALOK-B's in raid",
+    "66c5304e98e677caba8e5cf8": "Handover 3 found in raid CALOK-B's",
+    "66c530b68289e0f16e731655": "Find 3 Army Bandages in raid",
+    "66c530be769735e438df3d90": "Handover 3 found in raid Army Bandages",
+
+    "66c54530e0294fe5a1e049b0 completePlayerMessage": "",
+    "66c54530e0294fe5a1e049b0 declinePlayerMessage": "",
+    "66c54530e0294fe5a1e049b0 description": "Not satisified you wont bleed to death out there yet huh? I've got you covered. Knowing when to use what equipment can be touch. You dont want to try to bandage a bullet hole or use a tourniquet for a scratch. You should use bandages for light bleeds and tourniquets for heavy bleeds.",
+    "66c54530e0294fe5a1e049b0 failMessageText": "",
+    "66c54530e0294fe5a1e049b0 name": "Specialized Medicine (NOT FINISHED)",
+    "66c54530e0294fe5a1e049b0 note": "TODO: REQUIRES CUSTOM QUEST OBJECTIVES",
+    "66c54530e0294fe5a1e049b0 startedMessageText": "",
+    "66c54530e0294fe5a1e049b0 successMessageText": "So now you know how to stop a light bleed vs a heavy bleed. Hopefully you should never need to.",
+    "66c549ca323390e34dcb85a2": "Heal 5 Heavy bleeds (WIP)",
+    "66c54a54229c873c27b3f7cf": "Heal 10 Light bleeds (WIP)"
+}

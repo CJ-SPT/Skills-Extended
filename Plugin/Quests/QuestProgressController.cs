@@ -107,7 +107,8 @@ public class QuestProgressController : MonoBehaviour
                 ConditionPair pair = new()
                 {
                     Quest = quest,
-                    Condition = bsgCondition
+                    Condition = bsgCondition,
+                    CustomCondition = condition
                 };
                 
                 pairs.Add(pair);
@@ -217,4 +218,5 @@ public class ConditionPair
 {
     public QuestClass Quest;
     public Condition Condition;
+    public CustomCondition CustomCondition;
 }

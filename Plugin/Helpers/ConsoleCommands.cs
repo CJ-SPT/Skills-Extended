@@ -60,7 +60,7 @@ namespace SkillsExtended.Helpers
         {
             var player = Singleton<GameWorld>.Instance.MainPlayer;
             DamageInfo Blunt = new DamageInfo();
-
+            
             if (player is null) { return; }
 
             player.ActiveHealthController.ApplyDamage(EBodyPart.Head, int.MaxValue, Blunt);

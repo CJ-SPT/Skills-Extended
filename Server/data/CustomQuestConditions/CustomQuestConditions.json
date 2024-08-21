@@ -45,5 +45,24 @@
                 ]
             }
         ]
+    },
+    "66c54530e0294fe5a1e049b0": {
+        "QuestId": "66c54530e0294fe5a1e049b0",
+        "Conditions": [
+            {
+                "ConditionId": "66c549ca323390e34dcb85a2",
+                "ConditionType": "FixHeavyBleed",
+                "Locations": [
+                    "any"
+                ]
+            },
+            {
+                "ConditionId": "66c54a54229c873c27b3f7cf",
+                "ConditionType": "FixLightBleed",
+                "Locations": [
+                    "any"
+                ]
+            }
+        ]
     }
 }

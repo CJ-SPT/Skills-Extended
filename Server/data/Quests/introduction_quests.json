@@ -38,6 +38,15 @@
                     "weaponCaliber": [],
                     "weaponModsExclusive": [],
                     "weaponModsInclusive": []
+                  },
+                  {
+                    "conditionType": "Location",
+                    "dynamicLocale": false,
+                    "id": "5c0be31986f774467a116592",
+                    "target": [
+                      "Sandbox",
+                      "Sandbox_high"
+                    ]
                   }
                 ],
                 "id": "66bffc7fc42cd90839959e3a"
