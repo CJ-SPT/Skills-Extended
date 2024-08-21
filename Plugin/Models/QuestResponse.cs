@@ -1,18 +1,31 @@
 ﻿using System.Collections.Generic;
+using AnimationEventSystem;
+using JetBrains.Annotations;
 
 namespace SkillsExtended.Models;
 
-public class QuestResponse
+public struct QuestResponse
 {
     // Quest to search for the condition on
     public string QuestId;
-    
+
+    public List<CustomCondition> Conditions;
+}
+
+public struct CustomCondition
+{
     // Quest to search for the condition on
     public string ConditionId;
-    
-    // Condition type to invoke
-    public string ConditionType;
+    public EQuestCondition ConditionType;
+    [CanBeNull] public List<string> Locations;
+}
 
-    // Location where the objective must be completed
-    public List<string> Locations = [];
+public enum EQuestCondition
+{
+    InspectLock,
+    PickLock,
+    PickLockFailed,
+    BreakLock,
+    HackDoor,
+    HackDoorFailed
 }

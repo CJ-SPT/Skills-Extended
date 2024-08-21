@@ -18,7 +18,6 @@ namespace SkillsExtended.Helpers
             ConsoleScreen.Processor.RegisterCommand("damage", new Action(DoDamage));
             ConsoleScreen.Processor.RegisterCommand("die", new Action(DoDie));
             ConsoleScreen.Processor.RegisterCommand("fracture", new Action(DoFracture));
-            ConsoleScreen.Processor.RegisterCommand("fracture", new Action(DoFracture));
 
             ConsoleScreen.Processor.RegisterCommandGroup<Commands>();
         }
@@ -51,8 +50,8 @@ namespace SkillsExtended.Helpers
         {
             var player = Singleton<GameWorld>.Instance.MainPlayer;
             DamageInfo Blunt = new DamageInfo();
-
-            if (player == null) { return; }
+            
+            if (player is null) { return; }
 
             player.ActiveHealthController.ApplyDamage(EBodyPart.LeftLeg, 20, Blunt);
         }
@@ -62,7 +61,7 @@ namespace SkillsExtended.Helpers
             var player = Singleton<GameWorld>.Instance.MainPlayer;
             DamageInfo Blunt = new DamageInfo();
 
-            if (player == null) { return; }
+            if (player is null) { return; }
 
             player.ActiveHealthController.ApplyDamage(EBodyPart.Head, int.MaxValue, Blunt);
         }
@@ -71,10 +70,11 @@ namespace SkillsExtended.Helpers
         {
             var player = Singleton<GameWorld>.Instance.MainPlayer;
 
-            if (player == null) { return; }
+            if (player is null) { return; }
 
             player.ActiveHealthController.DoFracture(EBodyPart.LeftLeg);
         }
+        
         #endregion HEALTH
     }
 }

@@ -4,10 +4,10 @@ using System.Linq;
 using System.Reflection;
 using Comfort.Common;
 using EFT;
+using EFT.InventoryLogic;
 using EFT.Quests;
 using HarmonyLib;
 using JetBrains.Annotations;
-using SkillsExtended.LockPicking;
 using SkillsExtended.Models;
 using UnityEngine;
 
@@ -19,7 +19,7 @@ public class CustomQuestController : MonoBehaviour
     private Player _player;
     private AbstractQuestControllerClass _questController;
     
-    private List<QuestResponse> CustomConditions => Plugin.Quests;
+    private Dictionary<string, QuestResponse> CustomConditions => Plugin.Quests;
 
     private readonly List<string> _questsWithCustomConditions = [];
     
@@ -47,7 +47,7 @@ public class CustomQuestController : MonoBehaviour
 
         foreach (var condition in CustomConditions)
         {
-            _questsWithCustomConditions.Add(condition.QuestId);
+            _questsWithCustomConditions.Add(condition.Key);
         }
         
         QuestEvents.Instance.OnLockInspected += InspectLockHandler;
@@ -57,6 +57,8 @@ public class CustomQuestController : MonoBehaviour
         QuestEvents.Instance.OnBreakLock += BreakLockHandler;
         QuestEvents.Instance.OnHackDoor += HackDoorHandler;
         QuestEvents.Instance.OnHackDoorFailed += HackDoorFailedHandler;
+
+        _player.ActiveHealthController.EffectRemovedEvent += HealthControllerTest;
     }
 
     private void OnDestroy()
@@ -69,42 +71,52 @@ public class CustomQuestController : MonoBehaviour
         QuestEvents.Instance.OnHackDoor -= HackDoorHandler;
         QuestEvents.Instance.OnHackDoorFailed -= HackDoorFailedHandler;
     }
-    
+
+    private void HealthControllerTest(IEffect effect)
+    {
+        if (typeof(MedKitComponent).IsInstanceOfType(effect))
+        {
+            Plugin.Log.LogError("FRACTURE");
+        }
+        
+        Plugin.Log.LogWarning(effect.Type.Name);
+    }
+
     private void InspectLockHandler(object sender, EventArgs e)
     {
-        CheckActiveConditionForEvent("InspectLock");
+        CheckActiveConditionForEvent(EQuestCondition.InspectLock);
     }
     
     private void PickLockHandler(object sender, EventArgs e)
     {
-        CheckActiveConditionForEvent("PickLock");
+        CheckActiveConditionForEvent(EQuestCondition.PickLock);
     }
     
     private void PickLockFailedHandler(object sender, EventArgs e)
     {
-        CheckActiveConditionForEvent("PickLockFailed");
+        CheckActiveConditionForEvent(EQuestCondition.PickLockFailed);
     }
     
     private void BreakLockHandler(object sender, EventArgs e)
     {
-        CheckActiveConditionForEvent("BreakLock");
+        CheckActiveConditionForEvent(EQuestCondition.BreakLock);
     }
     
     private void HackDoorHandler(object sender, EventArgs e)
     {
-        CheckActiveConditionForEvent("HackDoor");
+        CheckActiveConditionForEvent(EQuestCondition.HackDoor);
     }
     
     private void HackDoorFailedHandler(object sender, EventArgs e)
     {
-        CheckActiveConditionForEvent("HackDoorFailed");
+        CheckActiveConditionForEvent(EQuestCondition.HackDoorFailed);
     }
 
     /// <summary>
     /// Check for and increment an active condition by type on a map
     /// </summary>
     /// <param name="conditionType"></param>
-    private void CheckActiveConditionForEvent(string conditionType)
+    private void CheckActiveConditionForEvent(EQuestCondition conditionType)
     {
         var quests = GetActiveQuests();
         
@@ -113,7 +125,7 @@ public class CustomQuestController : MonoBehaviour
 
         foreach (var quest in quests)
         {
-            var questRespCond = GetCustomConditionsById(quest.Id, conditionType);
+            var questRespCond = GetCustomConditionsByCondition(quest.Id, conditionType);
 
             if (questRespCond is null)
             {
@@ -220,10 +232,14 @@ public class CustomQuestController : MonoBehaviour
     /// <param name="conditionType"></param>
     /// <returns></returns>
     [CanBeNull]
-    private IEnumerable<QuestResponse> GetCustomConditionsById(string questId, string conditionType)
+    private IEnumerable<CustomCondition> GetCustomConditionsByCondition(string questId, EQuestCondition conditionType)
     {
-        var customConditions = CustomConditions
-            .Where(cond => cond.QuestId == questId)
+        if (!CustomConditions.TryGetValue(questId, out var quest))
+        {
+            return null;
+        }
+        
+        var customConditions = quest.Conditions
             .Where(cond => cond.ConditionType == conditionType);
             
         return customConditions;
