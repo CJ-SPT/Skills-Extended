@@ -461,6 +461,213 @@
         "startedMessageText": "66c54530e0294fe5a1e049b0 startedMessageText",
         "successMessageText": "66c54530e0294fe5a1e049b0 successMessageText",
         "traderId": "66bf1f65e1f3b83ea069a271",
-        "type": "Elimination"
+        "type": "Completion"
+      },
+      {
+        "QuestName": "Walkin' with a limp",
+        "_id": "66c5d1e628a46d18f6443131",
+        "acceptPlayerMessage": "66c5d1e628a46d18f6443131 acceptPlayerMessage",
+        "canShowNotificationsInGame": true,
+        "changeQuestMessageText": "66c5d1e628a46d18f6443131 changeQuestMessageText",
+        "completePlayerMessage": "66c5d1e628a46d18f6443131 completePlayerMessage",
+        "conditions": {
+          "AvailableForFinish": [
+            {
+                "completeInSeconds": 0,
+                "conditionType": "CounterCreator",
+                "counter": {
+                  "conditions": [
+                    {
+                      "bodyPart": [],
+                      "compareMethod": ">=",
+                      "conditionType": "Kills",
+                      "daytime": {
+                        "from": 0,
+                        "to": 0
+                      },
+                      "distance": {
+                        "compareMethod": ">=",
+                        "value": 5555
+                      },
+                      "dynamicLocale": false,
+                      "enemyEquipmentExclusive": [],
+                      "enemyEquipmentInclusive": [],
+                      "enemyHealthEffects": [],
+                      "id": "66c5e1409e502151b866e421",
+                      "resetOnSessionEnd": false,
+                      "savageRole": [],
+                      "target": "AnyPmc",
+                      "value": 1,
+                      "weapon": [],
+                      "weaponCaliber": [],
+                      "weaponModsExclusive": [],
+                      "weaponModsInclusive": []
+                    }
+                  ],
+                  "id": "66c5e143ee47c47620443313"
+                },
+                "doNotResetIfCounterCompleted": false,
+                "dynamicLocale": false,
+                "globalQuestCounterId": "",
+                "id": "66c5e14753d23d96c676e170",
+                "index": 0,
+                "oneSessionOnly": false,
+                "parentId": "",
+                "type": "Elimination",
+                "value": 5,
+                "visibilityConditions": []
+              },
+              {
+                "completeInSeconds": 0,
+                "conditionType": "CounterCreator",
+                "counter": {
+                  "conditions": [
+                    {
+                      "bodyPart": [],
+                      "compareMethod": ">=",
+                      "conditionType": "Kills",
+                      "daytime": {
+                        "from": 0,
+                        "to": 0
+                      },
+                      "distance": {
+                        "compareMethod": ">=",
+                        "value": 5555
+                      },
+                      "dynamicLocale": false,
+                      "enemyEquipmentExclusive": [],
+                      "enemyEquipmentInclusive": [],
+                      "enemyHealthEffects": [],
+                      "id": "66c5e14c2df2a9823485c488",
+                      "resetOnSessionEnd": false,
+                      "savageRole": [],
+                      "target": "AnyPmc",
+                      "value": 1,
+                      "weapon": [],
+                      "weaponCaliber": [],
+                      "weaponModsExclusive": [],
+                      "weaponModsInclusive": []
+                    }
+                  ],
+                  "id": "66c5e1517a7c4c16e6e13e4f"
+                },
+                "doNotResetIfCounterCompleted": false,
+                "dynamicLocale": false,
+                "globalQuestCounterId": "",
+                "id": "66c5e154e6f5ef3037b8d7cd",
+                "index": 0,
+                "oneSessionOnly": false,
+                "parentId": "",
+                "type": "Elimination",
+                "value": 900,
+                "visibilityConditions": []
+              }
+          ],
+          "AvailableForStart": [
+            {
+                "availableAfter": 0,
+                "conditionType": "Quest",
+                "dispersion": 0,
+                "dynamicLocale": false,
+                "globalQuestCounterId": "",
+                "id": "66c549a3e569dcb090c61784",
+                "index": 0,
+                "parentId": "",
+                "status": [
+                  4,
+                  5
+                ],
+                "target": "66c54530e0294fe5a1e049b0",
+                "visibilityConditions": []
+              }
+          ],
+          "Fail": []
+        },
+        "declinePlayerMessage": "66c5d1e628a46d18f6443131 declinePlayerMessage",
+        "description": "66c5d1e628a46d18f6443131 description",
+        "failMessageText": "66c5d1e628a46d18f6443131 failMessageText",
+        "image": "/files/quest/icon/66c5d1e628a46d18f6443131.jpg",
+        "instantComplete": false,
+        "isKey": false,
+        "location": "any",
+        "name": "66c5d1e628a46d18f6443131 name",
+        "note": "66c5d1e628a46d18f6443131 note",
+        "restartable": false,
+        "rewards": {
+          "Fail": [],
+          "Started": [],
+          "Success": [
+            {
+              "id": "66c549366872d00c5cb21049",
+              "index": 0,
+              "type": "Experience",
+              "value": "4500"
+            },
+            {
+              "findInRaid": true,
+              "id": "66c54931b450993d91bc4f17",
+              "index": 1,
+              "items": [
+                {
+                  "_id": "66c5492cf455eab9de0142b6",
+                  "_tpl": "5449016a4bdc2d6f028b456f",
+                  "upd": {
+                    "StackObjectsCount": 70000
+                  }
+                }
+              ],
+              "target": "66c5492cf455eab9de0142b6",
+              "type": "Item",
+              "value": "70000"
+            },
+            {
+                "findInRaid": true,
+                "id": "66c54926da96945b2f911a01",
+                "index": 2,
+                "items": [
+                  {
+                    "_id": "66c5491fa257ba06ec115889",
+                    "_tpl": "544fb45d4bdc2dee738b4568",
+                    "upd": {
+                      "StackObjectsCount": 1
+                    }
+                  }
+                ],
+                "target": "66c5491fa257ba06ec115889",
+                "type": "Item",
+                "value": "4"
+            },
+            {
+                "findInRaid": true,
+                "id": "66c5493fa7fc5d3b50e6bc16",
+                "index": 3,
+                "items": [
+                  {
+                    "_id": "66c5317248147476cc20577d",
+                    "_tpl": "5af0454c86f7746bf20992e8",
+                    "upd": {
+                      "StackObjectsCount": 1
+                    }
+                  }
+                ],
+                "target": "66c5317248147476cc20577d",
+                "type": "Item",
+                "value": "3"
+            },
+            {
+              "id": "66c549636e431662db01aa15",
+              "index": 4,
+              "target": "66bf1f65e1f3b83ea069a271",
+              "type": "TraderStanding",
+              "value": "0.02"
+            }
+          ]
+        },
+        "secretQuest": false,
+        "side": "Pmc",
+        "startedMessageText": "66c5d1e628a46d18f6443131 startedMessageText",
+        "successMessageText": "66c5d1e628a46d18f6443131 successMessageText",
+        "traderId": "66bf1f65e1f3b83ea069a271",
+        "type": "Completion"
       }
 ]

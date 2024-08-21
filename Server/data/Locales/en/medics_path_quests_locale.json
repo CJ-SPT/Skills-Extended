@@ -18,10 +18,21 @@
     "66c54530e0294fe5a1e049b0 declinePlayerMessage": "",
     "66c54530e0294fe5a1e049b0 description": "Not satisified you wont bleed to death out there yet huh? I've got you covered. Knowing when to use what equipment can be touch. You dont want to try to bandage a bullet hole or use a tourniquet for a scratch. You should use bandages for light bleeds and tourniquets for heavy bleeds.",
     "66c54530e0294fe5a1e049b0 failMessageText": "",
-    "66c54530e0294fe5a1e049b0 name": "Specialized Medicine (NOT FINISHED)",
-    "66c54530e0294fe5a1e049b0 note": "TODO: REQUIRES CUSTOM QUEST OBJECTIVES",
+    "66c54530e0294fe5a1e049b0 name": "Specialized Medicine",
+    "66c54530e0294fe5a1e049b0 note": "",
     "66c54530e0294fe5a1e049b0 startedMessageText": "",
     "66c54530e0294fe5a1e049b0 successMessageText": "So now you know how to stop a light bleed vs a heavy bleed. Hopefully you should never need to.",
-    "66c549ca323390e34dcb85a2": "Heal 5 Heavy bleeds (WIP)",
-    "66c54a54229c873c27b3f7cf": "Heal 10 Light bleeds (WIP)"
+    "66c549ca323390e34dcb85a2": "Stop 5 Heavy bleeds",
+    "66c54a54229c873c27b3f7cf": "Stop 10 Light bleeds",
+
+    "66c5d1e628a46d18f6443131 completePlayerMessage": "",
+    "66c5d1e628a46d18f6443131 declinePlayerMessage": "",
+    "66c5d1e628a46d18f6443131 description": "Take a couple tumbles since our last encounter huh? Doesn't look like you're moving around here to good. That tourniquet you used to stop bleeding out from that bullet did nothing for that busted leg. Not taking care of that busted leg will kill you just as much as bleeding will. You should come back to me when you understand that.",
+    "66c5d1e628a46d18f6443131 failMessageText": "",
+    "66c5d1e628a46d18f6443131 name": "Walkin' with a limp",
+    "66c5d1e628a46d18f6443131 note": "",
+    "66c5d1e628a46d18f6443131 startedMessageText": "",
+    "66c5d1e628a46d18f6443131 successMessageText": "Think you have enough of an understanding now? Now wobble your ass out of here.",
+    "66c5e14753d23d96c676e170": "Fix 5 Fractures while in raid",
+    "66c5e154e6f5ef3037b8d7cd": "Heal 900 Points of health using any means while in raid."
 }

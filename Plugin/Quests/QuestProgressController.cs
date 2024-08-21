@@ -63,6 +63,10 @@ public class QuestProgressController : MonoBehaviour
         _medController.Dispose();
     }
 
+    private void Update()
+    {
+    }
+
     /// <summary>
     /// Get active conditions for a specific type
     /// </summary>
@@ -125,11 +129,12 @@ public class QuestProgressController : MonoBehaviour
     /// </summary>
     /// <param name="quest"></param>
     /// <param name="condition"></param>
-    public void IncrementConditionCounter(QuestClass quest, Condition condition)
+    /// /// <param name="value"></param>
+    public void IncrementConditionCounter(QuestClass quest, Condition condition, float value)
     {
         // This line will increment the condition counter by 1
         var currentVal = quest.ProgressCheckers[condition].CurrentValue;
-        quest.ProgressCheckers[condition].SetCurrentValueGetter(_ => currentVal + 1);
+        quest.ProgressCheckers[condition].SetCurrentValueGetter(_ => currentVal + value);
                     
         // We call 'SetConditionCurrentValue' to trigger all the code needed to make the condition completion appear visually in-game
         var conditionController = AccessTools.Field(
@@ -138,7 +143,7 @@ public class QuestProgressController : MonoBehaviour
             .GetValue(_questController);
                     
         AccessTools.DeclaredMethod(conditionController.GetType().BaseType, "SetConditionCurrentValue")
-            .Invoke(conditionController, new object[] { quest, EQuestStatus.AvailableForFinish, condition, currentVal + 1, true });
+            .Invoke(conditionController, new object[] { quest, EQuestStatus.AvailableForFinish, condition, currentVal + value, true });
     }
     
     /// <summary>

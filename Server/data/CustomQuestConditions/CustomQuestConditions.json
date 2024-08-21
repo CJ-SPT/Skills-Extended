@@ -64,5 +64,24 @@
                 ]
             }
         ]
+    },
+    "66c5d1e628a46d18f6443131": {
+        "QuestId": "66c5d1e628a46d18f6443131",
+        "Conditions": [
+            {
+                "ConditionId": "66c5e14c2df2a9823485c488",
+                "ConditionType": "FixFracture",
+                "Locations": [
+                    "any"
+                ]
+            },
+            {
+                "ConditionId": "66c5e154e6f5ef3037b8d7cd",
+                "ConditionType": "HealthGain",
+                "Locations": [
+                    "any"
+                ]
+            }
+        ]
     }
 }
