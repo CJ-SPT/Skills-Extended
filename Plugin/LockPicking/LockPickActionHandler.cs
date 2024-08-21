@@ -3,18 +3,13 @@ using System.Linq;
 using EFT;
 using EFT.Interactive;
 using SkillsExtended.Helpers;
+using SkillsExtended.Quests;
 
 namespace SkillsExtended.LockPicking;
 public sealed class LockPickActionHandler
 {
     public GamePlayerOwner Owner;
     public WorldInteractiveObject InteractiveObject;
-
-    public static event PickLockEventHandler OnLockPicked;
-    public delegate void PickLockEventHandler(object sender, EventArgs e);
-    
-    public static event PickLockFailedEventHandler OnLockPickFailed;
-    public delegate void PickLockFailedEventHandler(object sender, EventArgs e);
     
     public void PickLockAction(bool unlocked)
     {
@@ -23,11 +18,8 @@ public sealed class LockPickActionHandler
             LpHelpers.ApplyLockPickActionXp(InteractiveObject, Owner);
             InteractiveObject.Unlock();
             
-            if (OnLockPicked is not null)
-            {
-                OnLockPicked(this, EventArgs.Empty);
-            }
-
+            
+            QuestEvents.Instance.OnLockPickedEvent(this, EventArgs.Empty);
             return;
         }
         
@@ -38,11 +30,8 @@ public sealed class LockPickActionHandler
         // Apply failure xp
         LpHelpers.ApplyLockPickActionXp(InteractiveObject, Owner, isFailure: true);
         RemoveUseFromLockPick();
-
-        if (OnLockPickFailed is not null)
-        {
-            OnLockPickFailed(this, EventArgs.Empty);
-        }
+        
+        QuestEvents.Instance.OnLockPickedFailedEvent(this, EventArgs.Empty);
     }
     
     private void AddFailedAttemptToCounter()

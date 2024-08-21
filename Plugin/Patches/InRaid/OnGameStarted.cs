@@ -4,7 +4,7 @@ using System.Reflection;
 using EFT;
 using EFT.HealthSystem;
 using HarmonyLib;
-using SkillsExtended.Controllers;
+using SkillsExtended.Quests;
 using SPT.Reflection.Patching;
 using SPT.Reflection.Utils;
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using EFT;
 using EFT.Interactive;
+using SkillsExtended.Quests;
 
 namespace SkillsExtended.LockPicking;
 
@@ -8,8 +9,6 @@ public sealed class InspectLockActionHandler
 {
     public GamePlayerOwner Owner;
     public WorldInteractiveObject InteractiveObject;
-    public static event InspectEventHandler OnLockInspected;
-    public delegate void InspectEventHandler(object sender, EventArgs e); 
     
     public void InspectLockAction()
     {
@@ -17,12 +16,9 @@ public sealed class InspectLockActionHandler
         if (!LpHelpers.InspectedDoors.Contains(InteractiveObject.Id))
         {
             LpHelpers.InspectedDoors.Add(InteractiveObject.Id);
+            LpHelpers.ApplyLockPickActionXp(InteractiveObject, Owner, true);
             
-            if (OnLockInspected is not null)
-            {
-                LpHelpers.ApplyLockPickActionXp(InteractiveObject, Owner, true);
-                OnLockInspected(this, EventArgs.Empty);
-            }
+            QuestEvents.Instance.OnLockInspectedEvent(this, EventArgs.Empty);
         }
     }
 }

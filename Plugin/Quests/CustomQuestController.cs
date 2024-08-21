@@ -11,7 +11,7 @@ using SkillsExtended.LockPicking;
 using SkillsExtended.Models;
 using UnityEngine;
 
-namespace SkillsExtended.Controllers;
+namespace SkillsExtended.Quests;
 
 public class CustomQuestController : MonoBehaviour
 {
@@ -50,16 +50,16 @@ public class CustomQuestController : MonoBehaviour
             _questsWithCustomConditions.Add(condition.QuestId);
         }
         
-        InspectLockActionHandler.OnLockInspected += InspectLockHandler;
-        LockPickActionHandler.OnLockPicked += PickLockHandler;
-        LockPickActionHandler.OnLockPickFailed += PickLockFailedHandler;
+        QuestEvents.Instance.OnLockInspected += InspectLockHandler;
+        QuestEvents.Instance.OnLockPicked += PickLockHandler;
+        QuestEvents.Instance.OnLockPickFailed += PickLockFailedHandler;
     }
 
     private void OnDestroy()
     {
-        InspectLockActionHandler.OnLockInspected -= InspectLockHandler;
-        LockPickActionHandler.OnLockPicked -= PickLockHandler;
-        LockPickActionHandler.OnLockPickFailed -= PickLockFailedHandler;
+        QuestEvents.Instance.OnLockInspected -= InspectLockHandler;
+        QuestEvents.Instance.OnLockPicked -= PickLockHandler;
+        QuestEvents.Instance.OnLockPickFailed -= PickLockFailedHandler;
     }
     
     private void InspectLockHandler(object sender, EventArgs e)
