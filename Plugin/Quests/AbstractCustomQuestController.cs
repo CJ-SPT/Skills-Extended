@@ -74,6 +74,9 @@ public abstract class AbstractCustomQuestController
         if (condition.CustomCondition.IncludeBodyParts is null) 
             return true;
         
+        Plugin.Log.LogWarning(condition.CustomCondition.IncludeBodyParts.Contains(partToCheckFor));
+        Plugin.Log.LogWarning(partToCheckFor);
+        
         return condition.CustomCondition.IncludeBodyParts.Contains(partToCheckFor);
     }
 
@@ -87,7 +90,7 @@ public abstract class AbstractCustomQuestController
     {
         // Condition passes because it doesn't exist
         if (condition.CustomCondition.ExcludeBodyParts is null) 
-            return false;
+            return true;
         
         return condition.CustomCondition.ExcludeBodyParts.Contains(partToCheckFor);
     }

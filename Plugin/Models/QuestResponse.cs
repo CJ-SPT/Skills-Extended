@@ -17,12 +17,12 @@ public struct CustomCondition
     // Quest to search for the condition on
     public string ConditionId;
     public EQuestCondition ConditionType;
-    [CanBeNull] public HashSet<string> Locations;
-    [CanBeNull] public HashSet<string> AllowedItems;
-    [CanBeNull] public HashSet<string> ForbiddenItems;
-    [CanBeNull] public HashSet<string> Zones;
-    [CanBeNull] public HashSet<EBodyPart> IncludeBodyParts;
-    [CanBeNull] public HashSet<EBodyPart> ExcludeBodyParts;
+    [CanBeNull] public List<string> Locations;
+    [CanBeNull] public List<string> AllowedItems;
+    [CanBeNull] public List<string> ForbiddenItems;
+    [CanBeNull] public List<string> Zones;
+    [CanBeNull] public List<EBodyPart> IncludeBodyParts;
+    [CanBeNull] public List<EBodyPart> ExcludeBodyParts;
 }
 
 public enum EQuestCondition
