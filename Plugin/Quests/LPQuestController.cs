@@ -16,6 +16,17 @@ public class LPQuestController : AbstractCustomQuestController
         QuestEvents.Instance.OnHackDoor += HackDoorHandler;
         QuestEvents.Instance.OnHackDoorFailed += HackDoorFailedHandler;
     }
+
+    public void Dispose()
+    {
+        QuestEvents.Instance.OnLockInspected -= InspectLockHandler;
+        QuestEvents.Instance.OnLockPicked -= PickLockHandler;
+        QuestEvents.Instance.OnLockPickFailed -= PickLockFailedHandler;
+        
+        QuestEvents.Instance.OnBreakLock -= BreakLockHandler;
+        QuestEvents.Instance.OnHackDoor -= HackDoorHandler;
+        QuestEvents.Instance.OnHackDoorFailed -= HackDoorFailedHandler;
+    }
     
     private void InspectLockHandler(object sender, EventArgs e)
     {

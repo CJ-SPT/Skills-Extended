@@ -56,7 +56,13 @@ public class QuestProgressController : MonoBehaviour
             _questsWithCustomConditions.Add(condition.Key);
         }
     }
-    
+
+    private void OnDestroy()
+    {
+        _lpController.Dispose();
+        _medController.Dispose();
+    }
+
     /// <summary>
     /// Get active conditions for a specific type
     /// </summary>

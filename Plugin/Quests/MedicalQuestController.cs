@@ -14,6 +14,11 @@ public class MedicalQuestController
         _player.ActiveHealthController.EffectRemovedEvent += RemoveHealthConditionTest;
     }
     
+    public void Dispose()
+    {
+        _player.ActiveHealthController.EffectRemovedEvent -= RemoveHealthConditionTest;
+    }
+    
     private void RemoveHealthConditionTest(IEffect effect)
     {
         if (RE.FractureType.IsInstanceOfType(effect))
