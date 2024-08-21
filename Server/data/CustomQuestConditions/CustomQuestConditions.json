@@ -1,50 +1,49 @@
-[
-    {
+{
+    "66c01dac468404852c442e8b": {
         "QuestId": "66c01dac468404852c442e8b",
-        "ConditionId": "66c0cea0167b5c76c85bcf1b",
-        "ConditionType": "InspectLock",
-        "Locations": [
-            "bigmap"
-        ]
-    },
-    {
-        "QuestId": "66c01dac468404852c442e8b",
-        "ConditionId": "66c11197ed98f68d45428a24",
-        "ConditionType": "PickLock",
-        "Locations": [
-            "bigmap"
-        ]
-    },
-    {
-        "QuestId": "66c01dac468404852c442e8b",
-        "ConditionId": "66c112944d2fcb705c47a448",
-        "ConditionType": "InspectLock",
-        "Locations": [
-            "Shoreline"
-        ]
-    },
-    {
-        "QuestId": "66c01dac468404852c442e8b",
-        "ConditionId": "66c11294258e45ec32f612c2",
-        "ConditionType": "PickLock",
-        "Locations": [
-            "Shoreline"
-        ]
-    },
-    {
-        "QuestId": "66c01dac468404852c442e8b",
-        "ConditionId": "66c11361620ceb06810379ee",
-        "ConditionType": "PickLock",
-        "Locations": [
-            "any"
-        ]
-    },
-    {
-        "QuestId": "66c01dac468404852c442e8b",
-        "ConditionId": "66c114a6cd9f4461033608fc",
-        "ConditionType": "PickLockFailed",
-        "Locations": [
-            "any"
+        "Conditions": [
+            {
+                "ConditionId": "66c0cea0167b5c76c85bcf1b",
+                "ConditionType": "InspectLock",
+                "Locations": [
+                    "bigmap"
+                ]
+            },
+            {
+                "ConditionId": "66c11197ed98f68d45428a24",
+                "ConditionType": "PickLock",
+                "Locations": [
+                    "bigmap"
+                ]
+            },
+            {
+                "ConditionId": "66c112944d2fcb705c47a448",
+                "ConditionType": "InspectLock",
+                "Locations": [
+                    "Shoreline"
+                ]
+            },
+            {
+                "ConditionId": "66c11294258e45ec32f612c2",
+                "ConditionType": "PickLock",
+                "Locations": [
+                    "Shoreline"
+                ]
+            },
+            {
+                "ConditionId": "66c11361620ceb06810379ee",
+                "ConditionType": "PickLock",
+                "Locations": [
+                    "any"
+                ]
+            },
+            {
+                "ConditionId": "66c114a6cd9f4461033608fc",
+                "ConditionType": "PickLockFailed",
+                "Locations": [
+                    "any"
+                ]
+            }
         ]
     }
-]
+}

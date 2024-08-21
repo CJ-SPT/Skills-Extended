@@ -38,7 +38,7 @@ internal class OnGameStartedPatch : ModulePatch
         LockPicking.LpHelpers.DoorAttempts.Clear();
 
         // Add our custom quest controller
-        __instance.GetOrAddComponent<CustomQuestController>();
+        __instance.GetOrAddComponent<QuestProgressController>();
         
         __instance.MainPlayer.ActiveHealthController.EffectStartedEvent += ApplyMedicalXp;
     }

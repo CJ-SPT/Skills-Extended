@@ -4,7 +4,7 @@ import { BaseClasses } from "@spt/models/enums/BaseClasses";
 import type { InstanceManager } from "./InstanceManager";
 import type { ProgressionManager } from "./ProgressionManager";
 import type { IKeys } from "../Models/IKeys";
-import { IAdditionalWeapons, type ISkillsConfig } from "../Models/ISkillsConfig";
+import type { IAdditionalWeapons, ISkillsConfig } from "../Models/ISkillsConfig";
 import type { IOManager } from "./IOManager";
 
 import path from "node:path";

@@ -18,6 +18,9 @@ public struct CustomCondition
     public string ConditionId;
     public EQuestCondition ConditionType;
     [CanBeNull] public List<string> Locations;
+    [CanBeNull] public List<string> AllowedItems;
+    [CanBeNull] public List<string> ForbiddenItems;
+    [CanBeNull] public List<string> Zones;
 }
 
 public enum EQuestCondition
@@ -27,5 +30,8 @@ public enum EQuestCondition
     PickLockFailed,
     BreakLock,
     HackDoor,
-    HackDoorFailed
+    HackDoorFailed,
+    FixLightBleed,
+    FixHeavyBleed,
+    FixFracture
 }

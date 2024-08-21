@@ -89,6 +89,4 @@ public sealed class QuestEvents
     }
     
     #endregion
-    
-    
 }

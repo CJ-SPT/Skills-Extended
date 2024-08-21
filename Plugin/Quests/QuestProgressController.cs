@@ -13,7 +13,7 @@ using UnityEngine;
 
 namespace SkillsExtended.Quests;
 
-public class CustomQuestController : MonoBehaviour
+public class QuestProgressController : MonoBehaviour
 {
     private static string UnderlyingQuestControllerClassName;
     private Player _player;
@@ -22,11 +22,17 @@ public class CustomQuestController : MonoBehaviour
     private Dictionary<string, QuestResponse> CustomConditions => Plugin.Quests;
 
     private readonly List<string> _questsWithCustomConditions = [];
+
+    private static MedicalQuestController _medController;
+    private static LPQuestController _lpController;
     
     void Awake()
     {
         _player = Singleton<GameWorld>.Instance.MainPlayer;
         _questController = _player?.AbstractQuestControllerClass;
+        
+        _medController = new MedicalQuestController(this);
+        _lpController = new LPQuestController(this);
         
         if (UnderlyingQuestControllerClassName == null)
         {
@@ -49,80 +55,37 @@ public class CustomQuestController : MonoBehaviour
         {
             _questsWithCustomConditions.Add(condition.Key);
         }
-        
-        QuestEvents.Instance.OnLockInspected += InspectLockHandler;
-        QuestEvents.Instance.OnLockPicked += PickLockHandler;
-        QuestEvents.Instance.OnLockPickFailed += PickLockFailedHandler;
-        
-        QuestEvents.Instance.OnBreakLock += BreakLockHandler;
-        QuestEvents.Instance.OnHackDoor += HackDoorHandler;
-        QuestEvents.Instance.OnHackDoorFailed += HackDoorFailedHandler;
-
-        _player.ActiveHealthController.EffectRemovedEvent += HealthControllerTest;
-    }
-
-    private void OnDestroy()
-    {
-        QuestEvents.Instance.OnLockInspected -= InspectLockHandler;
-        QuestEvents.Instance.OnLockPicked -= PickLockHandler;
-        QuestEvents.Instance.OnLockPickFailed -= PickLockFailedHandler;
-        
-        QuestEvents.Instance.OnBreakLock -= BreakLockHandler;
-        QuestEvents.Instance.OnHackDoor -= HackDoorHandler;
-        QuestEvents.Instance.OnHackDoorFailed -= HackDoorFailedHandler;
-    }
-
-    private void HealthControllerTest(IEffect effect)
-    {
-        if (typeof(MedKitComponent).IsInstanceOfType(effect))
-        {
-            Plugin.Log.LogError("FRACTURE");
-        }
-        
-        Plugin.Log.LogWarning(effect.Type.Name);
-    }
-
-    private void InspectLockHandler(object sender, EventArgs e)
-    {
-        CheckActiveConditionForEvent(EQuestCondition.InspectLock);
     }
     
-    private void PickLockHandler(object sender, EventArgs e)
-    {
-        CheckActiveConditionForEvent(EQuestCondition.PickLock);
-    }
-    
-    private void PickLockFailedHandler(object sender, EventArgs e)
-    {
-        CheckActiveConditionForEvent(EQuestCondition.PickLockFailed);
-    }
-    
-    private void BreakLockHandler(object sender, EventArgs e)
-    {
-        CheckActiveConditionForEvent(EQuestCondition.BreakLock);
-    }
-    
-    private void HackDoorHandler(object sender, EventArgs e)
-    {
-        CheckActiveConditionForEvent(EQuestCondition.HackDoor);
-    }
-    
-    private void HackDoorFailedHandler(object sender, EventArgs e)
-    {
-        CheckActiveConditionForEvent(EQuestCondition.HackDoorFailed);
-    }
-
     /// <summary>
-    /// Check for and increment an active condition by type on a map
+    /// Gets all active quests that are started,
+    /// and we have custom conditions for
+    /// </summary>
+    /// <returns></returns>
+    public IEnumerable<QuestClass> GetActiveQuests()
+    {
+        var activeQuests = _questController.Quests
+            .Where(q => q.QuestStatus == EQuestStatus.Started)
+            .Where(q => _questsWithCustomConditions.Contains(q.Id));
+        
+        Plugin.Log.LogDebug($"Custom conditions active: {activeQuests.Any()}");
+        
+        return activeQuests;
+    }
+    
+    /// <summary>
+    /// Get active conditions for a specific type
     /// </summary>
     /// <param name="conditionType"></param>
-    private void CheckActiveConditionForEvent(EQuestCondition conditionType)
+    public List<ConditionPair> GetActiveConditions(EQuestCondition conditionType)
     {
         var quests = GetActiveQuests();
         
-        // No quests, return
-        if (!quests.Any()) return;
+        // No quests, return empty
+        if (!quests.Any()) return [];
 
+        List<ConditionPair> pairs = [];
+        
         foreach (var quest in quests)
         {
             var questRespCond = GetCustomConditionsByCondition(quest.Id, conditionType);
@@ -133,10 +96,11 @@ public class CustomQuestController : MonoBehaviour
                 continue;
             }
             
+            // Grab all custom conditions for our location
             var customConditions = questRespCond
-                .Where(cond => cond.Locations
+                .Where(cond => cond.Locations is not null && cond.Locations
                     .Any(loc => loc == _player.Location || loc == "any"));
-
+            
             if (!customConditions.Any())
             {
                 Plugin.Log.LogWarning($"Custom Condition is null for `{quest.Id.LocalizedName()}`");
@@ -148,16 +112,19 @@ public class CustomQuestController : MonoBehaviour
             {
                 var bsgCondition = GetBsgConditionById(quest.Id, condition.ConditionId);
                 
-                if (bsgCondition is null)
+                if (bsgCondition is null) continue;
+
+                ConditionPair pair = new()
                 {
-                    Plugin.Log.LogWarning($"BSG Condition is null for `{quest.Id.LocalizedName()}`");
-                    continue;
-                }
+                    Quest = quest,
+                    Condition = bsgCondition
+                };
                 
-                Plugin.Log.LogDebug($"Incremented `{bsgCondition.id.LocalizedName()}` Type: `{conditionType}` Quest: `{quest.Id.LocalizedName()}`");
-                IncrementConditionCounter(quest, bsgCondition);
+                pairs.Add(pair);
             }
         }
+
+        return pairs;
     }
     
     /// <summary>
@@ -165,7 +132,7 @@ public class CustomQuestController : MonoBehaviour
     /// </summary>
     /// <param name="quest"></param>
     /// <param name="condition"></param>
-    private void IncrementConditionCounter(QuestClass quest, Condition condition)
+    public void IncrementConditionCounter(QuestClass quest, Condition condition)
     {
         // This line will increment the condition counter by 1
         var currentVal = quest.ProgressCheckers[condition].CurrentValue;
@@ -179,21 +146,6 @@ public class CustomQuestController : MonoBehaviour
                     
         AccessTools.DeclaredMethod(conditionController.GetType().BaseType, "SetConditionCurrentValue")
             .Invoke(conditionController, new object[] { quest, EQuestStatus.AvailableForFinish, condition, currentVal + 1, true });
-    }
-
-    /// <summary>
-    /// Gets all active quests that are started, and we have custom conditions for
-    /// </summary>
-    /// <returns></returns>
-    private IEnumerable<QuestClass> GetActiveQuests()
-    {
-        var activeQuests = _questController.Quests
-            .Where(q => q.QuestStatus == EQuestStatus.Started)
-            .Where(q => _questsWithCustomConditions.Contains(q.Id));
-        
-        Plugin.Log.LogDebug($"Custom conditions active: {activeQuests.Any()}");
-        
-        return activeQuests;
     }
     
     /// <summary>
@@ -251,4 +203,10 @@ public class CustomQuestController : MonoBehaviour
         return _questController?.Quests?
             .FirstOrDefault(x => x is not null && x.Id == questId);
     }
+}
+
+public class ConditionPair
+{
+    public QuestClass Quest;
+    public Condition Condition;
 }
