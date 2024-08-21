@@ -18,6 +18,19 @@ public abstract class AbstractCustomQuestController
     }
 
     /// <summary>
+    /// Check base conditions for medical conditions
+    /// </summary>
+    /// <param name="condition"></param>
+    /// <param name="bodyPart"></param>
+    /// <returns>True if all pass</returns>
+    protected bool CheckBaseMedicalConditions(ConditionPair condition, EBodyPart bodyPart)
+    {
+        return IsInZone(condition) 
+               && BodyPartIncludeCheck(condition, bodyPart) 
+               && !BodyPartExcludeCheck(condition, bodyPart);
+    }
+    
+    /// <summary>
     /// Loop over and increment all provided condition pairs
     /// </summary>
     /// <param name="conditions"></param>

@@ -1,5 +1,6 @@
 ﻿using Comfort.Common;
 using EFT;
+using EFT.HealthSystem;
 using EFT.InventoryLogic;
 using SkillsExtended.Helpers;
 using SkillsExtended.Models;
@@ -15,12 +16,16 @@ public class MedicalQuestController
     {
         _player.ActiveHealthController.EffectRemovedEvent += RemoveHealthConditionTest;
         _player.ActiveHealthController.HealthChangedEvent += HealthChangeTest;
+        _player.ActiveHealthController.BodyPartDestroyedEvent += HandleBodyPartDestroyed;
+        _player.ActiveHealthController.BodyPartRestoredEvent += HandleBodyPartRestored;
     }
     
     public void Dispose()
     {
         _player.ActiveHealthController.EffectRemovedEvent -= RemoveHealthConditionTest;
         _player.ActiveHealthController.HealthChangedEvent -= HealthChangeTest;
+        _player.ActiveHealthController.BodyPartDestroyedEvent -= HandleBodyPartDestroyed;
+        _player.ActiveHealthController.BodyPartRestoredEvent += HandleBodyPartRestored;
     }
     
     private void RemoveHealthConditionTest(IEffect effect)
@@ -56,6 +61,35 @@ public class MedicalQuestController
             HandleHealthLoss(bodyPart, change, damage);
         }
     }
+
+    private void HandleBodyPartDestroyed(EBodyPart bodyPart, EDamageType damageType)
+    {
+        var conditions = _questController.GetActiveConditions(EQuestCondition.DestroyBodyPart);
+        
+        foreach (var condition in conditions)
+        {
+            if (!IsInZone(condition)) continue;
+            
+            if (BodyPartIncludeCheck(condition, bodyPart))
+                IncrementCondition(condition, 1f);
+            
+            if (!BodyPartExcludeCheck(condition, bodyPart))
+                IncrementCondition(condition, 1f);
+        }
+    }
+
+    private void HandleBodyPartRestored(EBodyPart bodyPart, ValueStruct value)
+    {
+        var conditions = _questController.GetActiveConditions(EQuestCondition.RestoreBodyPart);
+        
+        foreach (var condition in conditions)
+        {
+            if (!CheckBaseMedicalConditions(condition, bodyPart)) 
+                continue;
+            
+            IncrementCondition(condition, 1f);
+        }
+    }
     
     private void HandleRemoveFracture(IEffect effect)
     {
@@ -63,13 +97,10 @@ public class MedicalQuestController
         
         foreach (var condition in conditions)
         {
-            if (!IsInZone(condition)) continue;
+            if (!CheckBaseMedicalConditions(condition, effect.BodyPart)) 
+                continue;
             
-            if (BodyPartIncludeCheck(condition, effect.BodyPart))
-                IncrementCondition(condition, 1f);
-            
-            if (!BodyPartExcludeCheck(condition, effect.BodyPart))
-                IncrementCondition(condition, 1f);
+            IncrementCondition(condition, 1f);
         }
     }
     
@@ -79,13 +110,10 @@ public class MedicalQuestController
         
         foreach (var condition in conditions)
         {
-            if (!IsInZone(condition)) continue;
+            if (!CheckBaseMedicalConditions(condition, effect.BodyPart)) 
+                continue;
             
-            if (BodyPartIncludeCheck(condition, effect.BodyPart))
-                IncrementCondition(condition, 1f);
-            
-            if (!BodyPartExcludeCheck(condition, effect.BodyPart))
-                IncrementCondition(condition, 1f);
+            IncrementCondition(condition, 1f);
         }
     }
     
@@ -95,13 +123,10 @@ public class MedicalQuestController
         
         foreach (var condition in conditions)
         {
-            if (!IsInZone(condition)) continue;
+            if (!CheckBaseMedicalConditions(condition, effect.BodyPart)) 
+                continue;
             
-            if (BodyPartIncludeCheck(condition, effect.BodyPart))
-                IncrementCondition(condition, 1f);
-            
-            if (!BodyPartExcludeCheck(condition, effect.BodyPart))
-                IncrementCondition(condition, 1f);
+            IncrementCondition(condition, 1f);
         }
     }
 
@@ -111,13 +136,10 @@ public class MedicalQuestController
         
         foreach (var condition in conditions)
         {
-            if (!IsInZone(condition)) continue;
+            if (!CheckBaseMedicalConditions(condition, bodyPart)) 
+                continue;
             
-            if (BodyPartIncludeCheck(condition, bodyPart))
-                IncrementCondition(condition, change);
-            
-            if (!BodyPartExcludeCheck(condition, bodyPart))
-                IncrementCondition(condition, change);
+            IncrementCondition(condition, Mathf.Abs(change));
         }
     }
 
@@ -127,13 +149,10 @@ public class MedicalQuestController
 
         foreach (var condition in conditions)
         {
-            if (!IsInZone(condition)) continue;
+            if (!CheckBaseMedicalConditions(condition, bodyPart)) 
+                continue;
             
-            if (BodyPartIncludeCheck(condition, bodyPart))
-                IncrementCondition(condition, change);
-            
-            if (!BodyPartExcludeCheck(condition, bodyPart))
-                IncrementCondition(condition, change);
+            IncrementCondition(condition, change);
         }
     }
 }

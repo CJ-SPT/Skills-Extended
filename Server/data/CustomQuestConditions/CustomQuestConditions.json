@@ -80,6 +80,10 @@
                 "ConditionType": "HealthGain",
                 "Locations": [
                     "any"
+                ],
+                "ExcludeBodyParts": [
+                    "LeftLeg",
+                    "RightLeg"
                 ]
             }
         ]

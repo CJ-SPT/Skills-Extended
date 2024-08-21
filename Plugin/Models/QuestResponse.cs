@@ -39,5 +39,7 @@ public enum EQuestCondition
     FixHeavyBleed,
     FixFracture,
     HealthLoss,
-    HealthGain
+    HealthGain,
+    DestroyBodyPart,
+    RestoreBodyPart
 }
