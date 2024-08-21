@@ -53,6 +53,10 @@ public class CustomQuestController : MonoBehaviour
         QuestEvents.Instance.OnLockInspected += InspectLockHandler;
         QuestEvents.Instance.OnLockPicked += PickLockHandler;
         QuestEvents.Instance.OnLockPickFailed += PickLockFailedHandler;
+        
+        QuestEvents.Instance.OnBreakLock += BreakLockHandler;
+        QuestEvents.Instance.OnHackDoor += HackDoorHandler;
+        QuestEvents.Instance.OnHackDoorFailed += HackDoorFailedHandler;
     }
 
     private void OnDestroy()
@@ -60,6 +64,10 @@ public class CustomQuestController : MonoBehaviour
         QuestEvents.Instance.OnLockInspected -= InspectLockHandler;
         QuestEvents.Instance.OnLockPicked -= PickLockHandler;
         QuestEvents.Instance.OnLockPickFailed -= PickLockFailedHandler;
+        
+        QuestEvents.Instance.OnBreakLock -= BreakLockHandler;
+        QuestEvents.Instance.OnHackDoor -= HackDoorHandler;
+        QuestEvents.Instance.OnHackDoorFailed -= HackDoorFailedHandler;
     }
     
     private void InspectLockHandler(object sender, EventArgs e)
