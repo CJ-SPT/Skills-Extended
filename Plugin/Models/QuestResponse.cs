@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using AnimationEventSystem;
 using JetBrains.Annotations;
 
 namespace SkillsExtended.Models;

@@ -1,7 +1,5 @@
-﻿using System;
-using EFT;
+﻿using EFT;
 using EFT.Interactive;
-using SkillsExtended.Quests;
 
 namespace SkillsExtended.LockPicking;
 
@@ -18,7 +16,7 @@ public sealed class InspectLockActionHandler
             LpHelpers.InspectedDoors.Add(InteractiveObject.Id);
             LpHelpers.ApplyLockPickActionXp(InteractiveObject, Owner, true);
             
-            QuestEvents.Instance.OnLockInspectedEvent(this, EventArgs.Empty);
+            //QuestEvents.Instance.OnLockInspectedEvent(this, EventArgs.Empty);
         }
     }
 }

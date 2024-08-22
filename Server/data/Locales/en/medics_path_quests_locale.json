@@ -34,5 +34,16 @@
     "66c5d1e628a46d18f6443131 startedMessageText": "",
     "66c5d1e628a46d18f6443131 successMessageText": "Think you have enough of an understanding now? Now wobble your ass out of here.",
     "66c5e14753d23d96c676e170": "Fix 5 Fractures while in raid",
-    "66c5e154e6f5ef3037b8d7cd": "Heal 900 Points of health using any means while in raid."
+    "66c5e154e6f5ef3037b8d7cd": "Heal 900 Points of health using any means while in raid.",
+
+    "66c66f3f59adcef221beddd2 completePlayerMessage": "",
+    "66c66f3f59adcef221beddd2 declinePlayerMessage": "",
+    "66c66f3f59adcef221beddd2 description": "Would you look at that mangled thing. I'm pretty sure that's going to need more than just a regular old med kit. I'm no doctor, but that thing is fucked. We're going to have to teach you how to do field surgery, well to the best I know how anyway... Don't worry you're in good hands.",
+    "66c66f3f59adcef221beddd2 failMessageText": "",
+    "66c66f3f59adcef221beddd2 name": "Putting yourself back together",
+    "66c66f3f59adcef221beddd2 note": "",
+    "66c66f3f59adcef221beddd2 startedMessageText": "",
+    "66c66f3f59adcef221beddd2 successMessageText": "Getting shot is starting to be not so fun isnt it?",
+    "66c671633d11e6fbe958ac92": "Restore 10 Blacked out limbs",
+    "66c67170577fb869afa7e5fa": "Heal 1500 Points of health using any means while in raid."
 }

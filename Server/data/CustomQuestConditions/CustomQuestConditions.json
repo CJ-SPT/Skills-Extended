@@ -80,10 +80,25 @@
                 "ConditionType": "HealthGain",
                 "Locations": [
                     "any"
-                ],
-                "ExcludeBodyParts": [
-                    "LeftLeg",
-                    "RightLeg"
+                ]
+            }
+        ]
+    },
+    "66c66f3f59adcef221beddd2": {
+        "QuestId": "66c66f3f59adcef221beddd2",
+        "Conditions": [
+            {
+                "ConditionId": "66c671633d11e6fbe958ac92",
+                "ConditionType": "FixFracture",
+                "Locations": [
+                    "any"
+                ]
+            },
+            {
+                "ConditionId": "66c67170577fb869afa7e5fa",
+                "ConditionType": "RestoreBodyPart",
+                "Locations": [
+                    "any"
                 ]
             }
         ]

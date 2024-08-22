@@ -4,7 +4,6 @@ using System.Reflection;
 using EFT;
 using EFT.HealthSystem;
 using HarmonyLib;
-using SkillsExtended.Quests;
 using SPT.Reflection.Patching;
 using SPT.Reflection.Utils;
 
@@ -36,9 +35,6 @@ internal class OnGameStartedPatch : ModulePatch
 
         LockPicking.LpHelpers.InspectedDoors.Clear();
         LockPicking.LpHelpers.DoorAttempts.Clear();
-
-        // Add our custom quest controller
-        __instance.GetOrAddComponent<QuestProgressController>();
         
         __instance.MainPlayer.ActiveHealthController.EffectStartedEvent += ApplyMedicalXp;
     }
