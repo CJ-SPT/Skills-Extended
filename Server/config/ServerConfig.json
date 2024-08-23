@@ -1,0 +1,10 @@
+{
+    "EnableTrader": true,
+    "EnableProgression": true,
+    "ProgressionDebug": {
+        "Enabled": false,
+        "TestGeneration": true,
+        "GenerationLevel": 5,
+        "NumberOfRuns": 20
+    }
+}

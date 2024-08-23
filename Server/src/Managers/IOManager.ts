@@ -6,6 +6,7 @@ import JSON5 from "json5";
 
 import type { InstanceManager } from "./InstanceManager";
 import type { IProgression } from "../Models/IProgression";
+import type { IServerConfig } from "../Models/IServerConfig";
 import { LogTextColor } from "@spt/models/spt/logging/LogTextColor";
 
 export class IOManager 
@@ -16,6 +17,7 @@ export class IOManager
     }
 
     private InstanceManager: InstanceManager;
+    public ServerConfig: IServerConfig;
 
     public RootPath: string = path.join(path.dirname(__filename), "..", "..");
     public DataPath: string = path.join(path.dirname(__filename), "..", "..", "data");
@@ -33,6 +35,9 @@ export class IOManager
 
     public importData(): void
     {
+        const confPath = path.join(this.ConfigPath, "ServerConfig.json");
+        this.ServerConfig = this.loadJsonFile<IServerConfig>(confPath);
+
         this.importAllLocaleData();
         this.importAllImages();
 

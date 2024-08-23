@@ -12,7 +12,7 @@ import { BaseClasses } from "@spt/models/enums/BaseClasses";
 import type { InstanceManager } from "./InstanceManager";
 import type { IOManager } from "./IOManager";
 import type { IProgression } from "../Models/IProgression";
-import { Traders } from "@spt/models/enums/Traders";
+import type { IServerConfig } from "../Models/IServerConfig";
 
 export class ProgressionManager
 {
@@ -23,12 +23,14 @@ export class ProgressionManager
     private PmcProfile: IPmcData;
     private Progression: IProgression;
     private SkillRewards: ISkillRewards;
+    private ServerConfig: IServerConfig;
 
     public init(instanceManager: InstanceManager, ioManager: IOManager): void
     {
         this.InstanceManager = instanceManager;
         this.IOManager = ioManager;
         this.logger = instanceManager.logger;
+        this.ServerConfig = ioManager.ServerConfig;
 
         this.SkillRewards = this.IOManager.loadJsonFile<ISkillRewards>(path.join(this.IOManager.ConfigPath, "SkillRewards.json"));
 
@@ -37,7 +39,7 @@ export class ProgressionManager
 
     public getActivePmcData(sessionId: string): void
     {
-        if (!this.SkillRewards.ProgressionEnabled) return;
+        if (!this.ServerConfig.EnableProgression) return;
 
         this.PmcProfile = this.InstanceManager.profileHelper.getPmcProfile(sessionId);
 
@@ -46,7 +48,7 @@ export class ProgressionManager
 
     public wipeProgressFile(sessionId: string): void
     {
-        if (!this.SkillRewards.ProgressionEnabled) return;
+        if (!this.ServerConfig.EnableProgression) return;
 
         this.PmcProfile = this.InstanceManager.profileHelper.getPmcProfile(sessionId);
 
@@ -60,10 +62,10 @@ export class ProgressionManager
 
     private debugTestGeneration(): void
     {
-        if (this.SkillRewards.Debug.Enabled && this.SkillRewards.Debug.TestGeneration)
+        if (this.ServerConfig.ProgressionDeug.Enabled && this.ServerConfig.ProgressionDeug.TestGeneration)
         {
-            const runs = this.SkillRewards.Debug.NumberOfRuns;
-            const level = this.SkillRewards.Debug.GenerationLevel;
+            const runs = this.ServerConfig.ProgressionDeug.NumberOfRuns;
+            const level = this.ServerConfig.ProgressionDeug.GenerationLevel;
 
             for (let i = 0; i < runs; i++)
             {
@@ -98,7 +100,7 @@ export class ProgressionManager
 
     public checkForPendingRewards(): void
     {
-        if (!this.SkillRewards.ProgressionEnabled) return;
+        if (!this.ServerConfig.EnableProgression) return;
 
         if (this.PmcProfile?.Skills?.Common === undefined)
         {

@@ -121,11 +121,5 @@
             "LegaMedals": 3,
             "MaximumNumberOfMultiples": 2 
         }
-    ],
-    "Debug": {
-        "Enabled": false,
-        "TestGeneration": true,
-        "GenerationLevel": 5,
-        "NumberOfRuns": 20
-    }
+    ]
 }

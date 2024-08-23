@@ -1,11 +1,9 @@
 export interface ISkillRewards
 {
-    ProgressionEnabled: boolean;
     RewardCategories: string[];
     DisallowMultipleSameRoll: string[];
     BlackListedItems: string[];
     Tiers: IRewardTier[];
-    Debug: ProgressionDebug;
 }
 
 export interface IRewardTier
@@ -14,12 +12,4 @@ export interface IRewardTier
     RewardValue: number;
     LegaMedals: number;
     MaximumNumberOfMultiples: number;
-}
-
-export interface ProgressionDebug
-{
-    Enabled: boolean;
-    TestGeneration: boolean;
-    GenerationLevel: number;
-    NumberOfRuns: number;
 }
