@@ -201,6 +201,7 @@ export class ProgressionManager
         {
             // We have more value than allowed
             if (rewardValue > tierData.RewardValue) break;
+            if (itemsReceived > tierData.ItemAmountRange[1]) break;
 
             if (!this.checkForBaseConditions(
                 itemPrices[item], 

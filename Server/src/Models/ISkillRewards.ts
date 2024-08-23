@@ -10,6 +10,7 @@ export interface IRewardTier
 {
     Tier: number;
     RewardValue: number;
+    ItemAmountRange: number[];
     LegaMedals: number;
     MaximumNumberOfMultiples: number;
 }
