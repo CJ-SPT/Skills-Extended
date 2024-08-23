@@ -36,7 +36,7 @@ export class IOManager
         this.importAllLocaleData();
         this.importAllImages();
 
-        //this.extractLocalesToSingleFile();
+        this.extractLocalesToSingleFile();
     }
 
     /**
@@ -198,5 +198,10 @@ export class IOManager
 
         
         this.InstanceManager.logger.logWithColor(`Skills Debug: Exported ${locales.length} entries for translation.`, LogTextColor.BLUE);
+    }
+
+    private cleanUpLocaleDirectory(): void
+    {
+        
     }
 }
