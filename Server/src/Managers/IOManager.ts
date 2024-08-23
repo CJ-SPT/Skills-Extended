@@ -33,11 +33,14 @@ export class IOManager
     public ImageRootPath: string = path.join(path.dirname(__filename), "..", "..", "data", "Images");
     public ItemRootPath: string = path.join(path.dirname(__filename), "..", "..", "data", "Items");
 
-    public importData(): void
+    public postDbLoad(): void
     {
         const confPath = path.join(this.ConfigPath, "ServerConfig.json");
         this.ServerConfig = this.loadJsonFile<IServerConfig>(confPath);
+    }
 
+    public importData(): void
+    {
         this.importAllLocaleData();
         this.importAllImages();
 

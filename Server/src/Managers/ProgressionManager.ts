@@ -62,10 +62,10 @@ export class ProgressionManager
 
     private debugTestGeneration(): void
     {
-        if (this.ServerConfig.ProgressionDeug.Enabled && this.ServerConfig.ProgressionDeug.TestGeneration)
+        if (this.ServerConfig.ProgressionDebug.Enabled && this.ServerConfig.ProgressionDebug.TestGeneration)
         {
-            const runs = this.ServerConfig.ProgressionDeug.NumberOfRuns;
-            const level = this.ServerConfig.ProgressionDeug.GenerationLevel;
+            const runs = this.ServerConfig.ProgressionDebug.NumberOfRuns;
+            const level = this.ServerConfig.ProgressionDebug.GenerationLevel;
 
             for (let i = 0; i < runs; i++)
             {

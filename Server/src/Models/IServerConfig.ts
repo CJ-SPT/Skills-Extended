@@ -2,7 +2,7 @@ export interface IServerConfig
 {
     EnableTrader: boolean;
     EnableProgression: boolean;
-    ProgressionDeug: ProgressionDebug;
+    ProgressionDebug: ProgressionDebug;
 }
 
 export interface ProgressionDebug
