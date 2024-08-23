@@ -3,7 +3,7 @@
     "EnableProgression": true,
     "ProgressionDebug": {
         "Enabled": true,
-        "TestGeneration": true,
+        "TestGeneration": false,
         "GenerationLevel": 9,
         "NumberOfRuns": 2500
     }
