@@ -2,9 +2,9 @@
     "EnableTrader": false,
     "EnableProgression": true,
     "ProgressionDebug": {
-        "Enabled": false,
+        "Enabled": true,
         "TestGeneration": true,
-        "GenerationLevel": 5,
-        "NumberOfRuns": 20
+        "GenerationLevel": 9,
+        "NumberOfRuns": 2500
     }
 }
