@@ -13,6 +13,7 @@ import type { InstanceManager } from "./InstanceManager";
 import type { IOManager } from "./IOManager";
 import type { IProgression } from "../Models/IProgression";
 import type { IServerConfig } from "../Models/IServerConfig";
+import { Traders } from "@spt/models/enums/Traders";
 
 export class ProgressionManager
 {
@@ -386,13 +387,16 @@ export class ProgressionManager
         const mailService = this.InstanceManager.mailSendService;
         const traderHelper = this.InstanceManager.traderHelper;
 
+        const traderEnabled = this.IOManager.ServerConfig.EnableTrader;
+        const traderToSend = traderEnabled ? "66bf1f65e1f3b83ea069a271" : Traders.THERAPIST;
+
         const items = this.generateReward(tier);
 
         if (items.length <= 0) return false;
 
         mailService.sendDirectNpcMessageToPlayer(
             this.PmcProfile._id,
-            traderHelper.getTraderById("66bf1f65e1f3b83ea069a271"),
+            traderHelper.getTraderById(traderToSend),
             MessageType.MESSAGE_WITH_ITEMS,
             `Here is your reward for tier ${tier} of ${skillId}`,
             items,

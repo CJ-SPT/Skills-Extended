@@ -26,6 +26,8 @@ export class TraderManager
         this.InstanceManager = instanceManager;
         this.IOManager = iOManager;
 
+        if (!this.IOManager.ServerConfig.EnableTrader) return;
+
         this.TraderConfig = instanceManager.configServer.getConfig<ITraderConfig>(ConfigTypes.TRADER);
         this.RagfairConfig = instanceManager.configServer.getConfig<IRagfairConfig>(ConfigTypes.RAGFAIR);
 
@@ -41,6 +43,8 @@ export class TraderManager
 
     public postDbLoad(): void
     {
+        if (!this.IOManager.ServerConfig.EnableTrader) return;
+
         this.addTraderToDb();
         this.addTraderToLocales();
     }

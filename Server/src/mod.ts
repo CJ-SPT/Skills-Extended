@@ -37,6 +37,7 @@ class SkillsExtended implements IPreSptLoadMod, IPostDBLoadMod
     public preSptLoad(container: DependencyContainer): void 
     {
         this.InstanceManager.preSptLoad(container);
+        this.IOManager.preSptLoad();
 
         this.SkillsConfig = this.IOManager.loadJsonFile<ISkillsConfig>(path.join(this.IOManager.ConfigPath, "SkillsConfig.json5"));
 
@@ -49,7 +50,6 @@ class SkillsExtended implements IPreSptLoadMod, IPostDBLoadMod
     public postDBLoad(container: DependencyContainer): void 
     {
         this.InstanceManager.postDBLoad(container);
-        this.IOManager.postDbLoad();
 
         this.ProgressionManager.init(this.InstanceManager, this.IOManager);
         this.customItemService = this.InstanceManager.customItemService;

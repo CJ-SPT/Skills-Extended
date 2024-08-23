@@ -33,7 +33,7 @@ export class IOManager
     public ImageRootPath: string = path.join(path.dirname(__filename), "..", "..", "data", "Images");
     public ItemRootPath: string = path.join(path.dirname(__filename), "..", "..", "data", "Items");
 
-    public postDbLoad(): void
+    public preSptLoad(): void
     {
         const confPath = path.join(this.ConfigPath, "ServerConfig.json");
         this.ServerConfig = this.loadJsonFile<IServerConfig>(confPath);
