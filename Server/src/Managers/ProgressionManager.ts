@@ -14,6 +14,7 @@ import type { IOManager } from "./IOManager";
 import type { IProgression } from "../Models/IProgression";
 import type { IServerConfig } from "../Models/IServerConfig";
 import { Traders } from "@spt/models/enums/Traders";
+import { it } from "node:test";
 
 export class ProgressionManager
 {
@@ -172,6 +173,8 @@ export class ProgressionManager
         const hashUtil = this.InstanceManager.hashUtil;
         const itemHelper = this.InstanceManager.itemHelper;
 
+        itemHelper.getSoftInsertSlotIds();
+
         const locale = this.InstanceManager.database.locales.global.en;
 
         const rewards = this.SkillRewards.Tiers as IRewardTier[];
@@ -212,6 +215,18 @@ export class ProgressionManager
     
                 itemsReceived += ammoItem?.upd?.StackObjectsCount;
                 items.push(ammoItem);
+                this.logger.logWithColor(`${locale[`${item} Name`]} amt: (${ammoItem?.upd?.StackObjectsCount}) val: (${itemPrices[item] * ammoItem?.upd?.StackObjectsCount})`, LogTextColor.GREEN);
+                continue;
+            }
+
+            if (itemHelper.itemRequiresSoftInserts(item))
+            {
+                const armorItem = this.generateArmorReward(item);
+
+                items.push(...armorItem[0]);
+                itemsReceived += 1;
+                rewardValue += armorItem[1];
+                this.logger.logWithColor(`${locale[`${item} Name`]} amt: (1) val: (${armorItem[1]})`, LogTextColor.GREEN);
                 continue;
             }
 
@@ -300,8 +315,6 @@ export class ProgressionManager
             || itemHelper.isQuestItem(itemTpl)
             || !itemHelper.isValidItem(itemTpl)) return false;
 
-        if (itemHelper.armorItemCanHoldMods(itemTpl)) return false;
-
         return true;
     }
 
@@ -346,6 +359,68 @@ export class ProgressionManager
         this.logger.logWithColor(`${locale[`${itemTpl} Name`]} amt: (${amount})`, LogTextColor.GREEN);
 
         return newItem;
+    }
+
+    private generateArmorReward(itemTpl: string): [Item[], number]
+    {
+        const hashUtil = this.InstanceManager.hashUtil;
+        const itemHelper = this.InstanceManager.itemHelper;
+        
+        const armor: Item[] = [];
+        const id: string = hashUtil.generate();
+
+        const newItem: Item = {
+            _tpl: itemTpl,
+            _id: id
+        }
+
+        armor.push(newItem);
+        itemHelper.addUpdObjectToItem(newItem);
+
+        const inserts = this.generateSoftArmorInserts(itemTpl, id);
+
+        const price = itemHelper.getItemPrice(itemTpl);
+
+        armor.push(...inserts[0]);
+
+        return [armor, price + inserts[1]];
+    }
+
+    private generateSoftArmorInserts(itemTpl: string, itemId: string): [Item[], number]
+    {
+        const hashUtil = this.InstanceManager.hashUtil;
+        const itemHelper = this.InstanceManager.itemHelper;
+
+        const items: Item[] = [];
+        
+        const db = this.InstanceManager.database.templates.items;
+        
+        const slots = db[itemTpl]._props?.Slots;
+        const slotIds = itemHelper.getSoftInsertSlotIds();
+
+        if (slots === undefined) return [items, 0];
+
+        let platePrices = 0;
+
+        for (const slot of slots)
+        {
+            if (!slotIds.includes(slot?._name.toLocaleLowerCase())) continue;
+    
+            const plate = slot._props.filters[0].Plate;
+
+            const insert: Item = {
+                _tpl: plate,
+                _id: hashUtil.generate(),
+                parentId: itemId,
+                slotId: slot._name
+            }
+
+            platePrices += itemHelper.getItemPrice(plate);
+
+            items.push(insert);
+        }
+
+        return [items, platePrices];
     }
 
     private calculateItemAmountForReward(tierData: IRewardTier, itemTpl: string): number
