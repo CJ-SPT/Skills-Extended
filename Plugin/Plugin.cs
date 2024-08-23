@@ -39,8 +39,6 @@ public class Plugin : BaseUnityPlugin
     // Contains skill data
     public static SkillDataResponse SkillData;
     
-    public static Dictionary<string, QuestResponse> Quests;
-    
     public static RealismConfig RealismConfig;
 
     private static GameObject Hook;
@@ -88,7 +86,6 @@ public class Plugin : BaseUnityPlugin
     {
         Keys = Utils.Get<KeysResponse>("/skillsExtended/GetKeys");
         SkillData = Utils.Get<SkillDataResponse>("/skillsExtended/GetSkillsConfig");
-        Quests = Utils.Get<Dictionary<string, QuestResponse>>("/skillsExtended/GetCustomQuestConditions");
         
         // If realism is installed, load its config
         if (Chainloader.PluginInfos.ContainsKey("RealismMod"))

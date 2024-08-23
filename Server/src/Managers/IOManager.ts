@@ -36,7 +36,7 @@ export class IOManager
         this.importAllLocaleData();
         this.importAllImages();
 
-        this.extractLocalesToSingleFile();
+        //this.extractLocalesToSingleFile();
     }
 
     /**
@@ -172,7 +172,7 @@ export class IOManager
 
     private extractLocalesToSingleFile(): void
     {
-        const enPath = path.join(this.LocaleRootPath, "en");
+        const enPath = path.join(this.LocaleRootPath, "fr");
         const localeFiles = fs.readdirSync(enPath);
 
         const locales: Record<string, string> = {};
@@ -189,7 +189,7 @@ export class IOManager
             }
         }
 
-        const outPath = path.join(this.RootPath, "en.json");
+        const outPath = path.join(this.RootPath, "fr.json");
         const data = JSON.stringify(locales);
 
         this.InstanceManager.logger.logWithColor(outPath, LogTextColor.BLUE);

@@ -83,22 +83,6 @@ export class RouteManager
         );
 
         staticRouter.registerStaticRouter(
-            "GetCustomQuestConditions",
-            [
-                {
-                    url: "/skillsExtended/GetCustomQuestConditions",
-                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                    action: async (url, info, sessionId, output) => 
-                    {           
-                        const filePath = path.join(this.IOManager.CustomQuestConditions, "CustomQuestConditions.json");
-                        return this.IOManager.loadJsonFile<string>(filePath, true);
-                    }
-                }
-            ],
-            ""
-        );
-
-        staticRouter.registerStaticRouter(
             "end",
             [
                 {
