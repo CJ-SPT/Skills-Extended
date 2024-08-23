@@ -10,21 +10,26 @@ import path from "node:path";
 import { InstanceManager } from "./InstanceManager";
 import { Traders } from "@spt/models/enums/Traders";
 import { ConfigTypes } from "@spt/models/enums/ConfigTypes";
+import { SkillsExtendedIds } from "../enums/SkillsExtendedIds";
+import type { ISkillsConfig } from "../Models/ISkillsConfig";
+import { LogTextColor } from "@spt/models/spt/logging/LogTextColor";
 
 export class TraderManager
 {
     private InstanceManager: InstanceManager = new InstanceManager(); 
     private IOManager: IOManager;
+    private SkillsConfig: ISkillsConfig;
 
     private TraderConfig: ITraderConfig;
     private RagfairConfig: IRagfairConfig;
 
     private BaseJson: ITraderBase;
 
-    public preSptLoad(instanceManager: InstanceManager, iOManager: IOManager): void
+    public preSptLoad(instanceManager: InstanceManager, iOManager: IOManager, skillsConfig: ISkillsConfig): void
     {
         this.InstanceManager = instanceManager;
         this.IOManager = iOManager;
+        this.SkillsConfig = skillsConfig;
 
         if (!this.IOManager.ServerConfig.EnableTrader) return;
 
@@ -43,7 +48,12 @@ export class TraderManager
 
     public postDbLoad(): void
     {
-        if (!this.IOManager.ServerConfig.EnableTrader) return;
+        if (!this.IOManager.ServerConfig.EnableTrader) 
+        {
+            this.InstanceManager.logger.logWithColor("Skills Extended: Trader Disabled.", LogTextColor.BLUE);
+            this.loadLockPickingItemsIfDisabled();
+            return;
+        }
 
         this.addTraderToDb();
         this.addTraderToLocales();
@@ -109,6 +119,41 @@ export class TraderManager
         };
 
         return assortTable;
+    }
+
+    private loadLockPickingItemsIfDisabled(): void
+    {
+        if (!this.SkillsConfig.LockPicking.ENABLED) return;
+
+        const ioMgr = this.IOManager;
+        const items = ioMgr.loadJsonFile<Item[]>(path.join(ioMgr.AssortRootPath, "Items.json"));
+        const barterScheme = ioMgr.loadJsonFile<Record<string, IBarterScheme[][]>>(path.join(ioMgr.AssortRootPath, "BarterScheme.json"));
+        const loyalLevelItems = ioMgr.loadJsonFile<Record<string, number>>(path.join(ioMgr.AssortRootPath, "LoyalLevelItems.json"));
+
+        const mechanicAssort = this.InstanceManager.database.traders[Traders.MECHANIC].assort;
+        const peaceKeeperAssort = this.InstanceManager.database.traders[Traders.PEACEKEEPER].assort;
+
+        for (const item of items)
+        {
+            const id = item._id;
+            const scheme = barterScheme[id];
+            const loyal = loyalLevelItems[id];
+
+            if (item._tpl === SkillsExtendedIds.Lockpick)
+            {
+                mechanicAssort.items.push(item);
+                mechanicAssort.barter_scheme[id] = scheme;
+                mechanicAssort.loyal_level_items[id] = loyal;
+            }
+
+            if (item._tpl === SkillsExtendedIds.Pda)
+            {
+                console.log(`Adding PeaceKeeper ${item._tpl}`)
+                peaceKeeperAssort.items.push(item);
+                peaceKeeperAssort.barter_scheme[id] = scheme;
+                peaceKeeperAssort.loyal_level_items[id] = loyal;
+            }    
+        }
     }
 
     private addTraderToLocales()

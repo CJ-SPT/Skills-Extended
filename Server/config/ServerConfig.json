@@ -1,5 +1,5 @@
 {
-    "EnableTrader": true,
+    "EnableTrader": false,
     "EnableProgression": true,
     "ProgressionDebug": {
         "Enabled": false,

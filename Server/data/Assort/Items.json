@@ -226,5 +226,17 @@
         "BuyRestrictionMax": 3,
         "BuyRestrictionCurrent": 0
       }
+    },
+    {
+      "_id": "66c7ef2fbc1b451f35b0fbdb",
+      "_tpl": "662400eb756ca8948fe64fe8",
+      "parentId": "hideout",
+      "slotId": "hideout",
+      "upd": {
+        "UnlimitedCount": false,
+        "StackObjectsCount": 10,
+        "BuyRestrictionMax": 3,
+        "BuyRestrictionCurrent": 0
+      }
     }
 ]
