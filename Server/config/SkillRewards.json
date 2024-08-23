@@ -109,13 +109,13 @@
         {
             "Tier": 9,
             "RewardValue": 250000,
-            "LegaMedals": 1,
+            "LegaMedals": 0,
             "MaximumNumberOfMultiples": 2
         },
         {
             "Tier": 10,
             "RewardValue": 1250000,
-            "LegaMedals": 2,
+            "LegaMedals": 1,
             "MaximumNumberOfMultiples": 2 
         }
     ]
