@@ -9,8 +9,6 @@ namespace SkillsExtended.Patches.Skills;
 
 internal class SkillManagerConstructorPatch : ModulePatch
 {
-    public static EPlayerSide CurrentSide;
-    
     protected override MethodBase GetTargetMethod() =>
         typeof(SkillManager).GetConstructor(
             BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, 

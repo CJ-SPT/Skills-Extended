@@ -41,8 +41,6 @@ public class HealthEffectComponentPatch : ModulePatch
                 _instanceIdsChangedAtLevel.Remove(meds.TemplateId);
             }
             
-            Logger.LogDebug($"Updating Template: {meds.TemplateId.LocalizedName()}");
-            
             if (!_originalCosts.TryGetValue(meds.TemplateId, out var originalCosts))
             {
                 originalCosts = new(0, 0, 0);
@@ -93,7 +91,11 @@ public class HealthEffectComponentPatch : ModulePatch
                     Logger.LogDebug($"New HeavyBleeding Value: {heavyBleed.Cost}");
                 }
             }
+
+            if (fracture is null && lightBleed is null && heavyBleed is null) return;
+            if (fracture?.Cost == 0 || lightBleed?.Cost == 0 || heavyBleed?.Cost == 0) return;
             
+            Logger.LogDebug($"Updated Template: {meds.TemplateId.LocalizedName()} \n");
             _instanceIdsChangedAtLevel.Add(item.TemplateId, Plugin.Session.Profile.Skills.FirstAid.Level);
         }
         catch (Exception e)
