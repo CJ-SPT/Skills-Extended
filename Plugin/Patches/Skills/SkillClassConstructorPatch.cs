@@ -17,11 +17,13 @@ internal class SkillClassCtorPatch : ModulePatch
     /// We are using values that have been added by the pre-patcher here.
     /// </summary>
     [PatchPrefix]
-    public static void Prefix(SkillClass __instance, ESkillId id, ref SkillManager.SkillBuffAbstractClass[] buffs, ref SkillManager.SkillActionClass[] actions)
+    public static void Prefix(SkillManager skillManager, SkillClass __instance, ESkillId id, ref SkillManager.SkillBuffAbstractClass[] buffs, ref SkillManager.SkillActionClass[] actions)
     {
         // This is where we set all of our buffs and actions, done as a constructor patch, so they always exist when we need them
         
-        var skillMgrExt = Plugin.PlayerSkillManagerExt;
+        var skillMgrExt = skillManager.Side == EPlayerSide.Savage
+            ? Plugin.ScavSkillManagerExt
+            : Plugin.PlayerSkillManagerExt;
         
         if (id == ESkillId.FirstAid)
         {
@@ -56,7 +58,7 @@ internal class SkillClassCtorPatch : ModulePatch
                 skillMgrExt.BearRifleAction.Factor(0.5f)
             ];
         }
-
+        
         if (id == ESkillId.Lockpicking)
         {
             buffs = skillMgrExt.LockPickingBuffs();

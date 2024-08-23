@@ -28,6 +28,7 @@ internal static class PatchManager
         new SkillClassCtorPatch().Enable();
         new OnScreenChangePatch().Enable();
         new OnGameStartedPatch().Enable();
+        new SkillManagerDeserializePatch().Enable();
     }
     
     private static void InRaid()

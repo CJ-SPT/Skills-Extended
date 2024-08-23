@@ -20,6 +20,7 @@ public static class Patcher
             
             PatchNewBuffs(ref assembly);
             PatchNewAnim(ref assembly);
+            PatchSkillManagerSide(ref assembly);
             
             Logger.CreateLogSource("Skills Extended PrePatch").LogInfo("Patching Complete!");
         } catch (Exception ex)
@@ -31,7 +32,7 @@ public static class Patcher
             // Get the line number from the stack frame
             var line = frame.GetFileLineNumber();
 
-            Logger.CreateLogSource("Skills Extended PrePatch").LogInfo("Error When Patching: " + ex.Message + " - Line " + line);
+            Logger.CreateLogSource("Skills Extended PrePatch").LogError("Error When Patching: " + ex.Message + " - Line " + line);
         }
     }
     
@@ -197,5 +198,26 @@ public static class Patcher
         
         animEnum.Fields.Add(lockPickingAnimStart);
         animEnum.Fields.Add(lockPickingAnimEnd);
+    }
+
+    private static void PatchSkillManagerSide(ref AssemblyDefinition assembly)
+    {
+        var ePlayerSide = assembly.MainModule.GetType("EFT.EPlayerSide");
+        
+        // This is the intermediate object the skill manager gets deserialized onto
+        var jsonObj = assembly.MainModule.GetType("GClass1795");
+        
+        var sideField = new FieldDefinition(
+            "Side", 
+            FieldAttributes.Public, 
+            ePlayerSide);
+        
+        var sideFieldJson = new FieldDefinition(
+            "Side", 
+            FieldAttributes.Public, 
+            ePlayerSide);
+        
+        SkillManager.Fields.Add(sideField);
+        jsonObj.Fields.Add(sideFieldJson);
     }
 }

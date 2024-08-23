@@ -22,8 +22,9 @@ internal class SkillManagerConstructorPatch : ModulePatch
     public static void Postfix(SkillManager __instance, ref SkillClass[] ___DisplayList, ref SkillClass[] ___Skills, EPlayerSide faction)
     {
         var insertIndex = 12;
+        __instance.Side = faction;
         
-        // Logger.LogError($"SkillManager Created: {faction}");
+        Logger.LogDebug($"Creating SkillManager for side {faction}");
         
         // Action and buff lists intentionally empty here, this is for display list purposes only
         

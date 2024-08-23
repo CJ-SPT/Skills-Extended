@@ -129,6 +129,22 @@ export class RouteManager
             ],
             ""
         );
+
+        staticRouter.registerStaticRouter(
+            "AddSkillSide",
+            [
+                {
+                    url: "/launcher/profile/info",
+                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                    action: async (url, info, sessionId, output) => 
+                    {                     
+                        this.addSkillSideFieldToProfile(sessionId);
+                        return output;
+                    }
+                }
+            ],
+            ""
+        );
     }
 
     private getKeys(): string
@@ -152,5 +168,23 @@ export class RouteManager
         }
 
         return JSON.stringify(keys);
+    }
+
+    /**
+     * Fixes a BSG bug by adding the correct side field to the skill manager
+     * @param sessionId 
+     */
+    private addSkillSideFieldToProfile(sessionId: string): void
+    {
+        const helper = this.InstanceManager.profileHelper;
+        const pmcProfile = helper.getPmcProfile(sessionId);
+        const scavProfile = helper.getScavProfile(sessionId);
+        
+        const pmcSide = pmcProfile.Info.Side;
+        const pmcSkills = pmcProfile.Skills;
+        const scavSkills = scavProfile.Skills;
+
+        pmcSkills.Side = pmcSide;
+        scavSkills.Side = "Savage";
     }
 }
