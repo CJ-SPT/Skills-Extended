@@ -15,6 +15,9 @@
 		<Reference Include="0Harmony">
 			<HintPath>..\..\..\BepinEx\Core\0Harmony.dll</HintPath>
 		</Reference>
+		<Reference Include="QuestsExtended">
+			<HintPath>..\..\..\BepinEx\Plugins\QuestsExtended\QuestsExtended.dll</HintPath>
+		</Reference>
 		<Reference Include="IcyClawz.CustomInteractions">
 			<HintPath>..\..\..\BepinEx\Plugins\IcyClawz.CustomInteractions.dll</HintPath>
 		</Reference>

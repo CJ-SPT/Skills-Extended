@@ -45,5 +45,18 @@
     "66c66f3f59adcef221beddd2 startedMessageText": "",
     "66c66f3f59adcef221beddd2 successMessageText": "Getting shot is starting to be not so fun isnt it?",
     "66c671633d11e6fbe958ac92": "Restore 10 Blacked out limbs",
-    "66c67170577fb869afa7e5fa": "Heal 1500 Points of health using any means while in raid."
+    "66c67170577fb869afa7e5fa": "Heal 1500 Points of health using any means while in raid.",
+
+    "66c7d9aa978deedffce7fdd1 completePlayerMessage": "",
+    "66c7d9aa978deedffce7fdd1 declinePlayerMessage": "",
+    "66c7d9aa978deedffce7fdd1 description": "All of this will do you no good if you can't do it under pressure. Go out and win some fire fights, once you come back I'll have a reward waiting for you!",
+    "66c7d9aa978deedffce7fdd1 failMessageText": "",
+    "66c7d9aa978deedffce7fdd1 name": "Professional Medic",
+    "66c7d9aa978deedffce7fdd1 note": "",
+    "66c7d9aa978deedffce7fdd1 startedMessageText": "",
+    "66c7d9aa978deedffce7fdd1 successMessageText": "",
+    "66c7dab6ce812b20491ea28f": "Stop 10 Heavy bleeds",
+    "66c7dac455d5a53c43e18bdd": "Stop 10 Light bleeds",
+    "66c7dc68d634d24cde126450": "Restore 10 Blacked out limbs",
+    "66c7dd096f3b0796bbf02fd3": "Eliminate any 10 PMCs"
 }

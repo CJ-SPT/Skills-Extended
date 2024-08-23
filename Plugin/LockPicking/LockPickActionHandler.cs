@@ -1,6 +1,8 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using EFT;
 using EFT.Interactive;
+using QuestsExtended.API;
 
 namespace SkillsExtended.LockPicking;
 public sealed class LockPickActionHandler
@@ -16,7 +18,7 @@ public sealed class LockPickActionHandler
             InteractiveObject.Unlock();
             
             
-            //QuestEvents.Instance.OnLockPickedEvent(this, EventArgs.Empty);
+            QuestEvents.Instance.OnLockPickedEvent(this, EventArgs.Empty);
             return;
         }
         
@@ -26,9 +28,10 @@ public sealed class LockPickActionHandler
                 
         // Apply failure xp
         LpHelpers.ApplyLockPickActionXp(InteractiveObject, Owner, isFailure: true);
+        
         RemoveUseFromLockPick();
         
-        //QuestEvents.Instance.OnLockPickedFailedEvent(this, EventArgs.Empty);
+        QuestEvents.Instance.OnLockPickedFailedEvent(this, EventArgs.Empty);
     }
     
     private void AddFailedAttemptToCounter()
@@ -50,6 +53,7 @@ public sealed class LockPickActionHandler
             InteractiveObject.KeyId = string.Empty;
             InteractiveObject.Operatable = false;
             InteractiveObject.DoorStateChanged(EDoorState.None);
+            QuestEvents.Instance.OnBreakLockEvent(this, EventArgs.Empty);
         }
     }
     

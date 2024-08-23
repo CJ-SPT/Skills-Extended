@@ -26,6 +26,7 @@ namespace SkillsExtended;
 
 [BepInPlugin("com.dirtbikercj.SkillsExtended", "Skills Extended", "1.2.3")]
 [BepInDependency("com.IcyClawz.CustomInteractions")]
+[BepInDependency("com.dirtbikercj.QuestsExtended")]
 public class Plugin : BaseUnityPlugin
 {
     public const int TarkovVersion = 30626;

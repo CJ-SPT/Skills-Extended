@@ -15,7 +15,7 @@ internal sealed class CustomInteractionsProvider : IItemCustomInteractionsProvid
     {
         if (viewType is not EItemViewType.Inventory)
             yield break;
-
+        
         // Read book
         yield return new()
         {

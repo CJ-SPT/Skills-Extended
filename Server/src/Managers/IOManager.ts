@@ -24,7 +24,7 @@ export class IOManager
 
     public AchievementsRootPath: string = path.join(path.dirname(__filename), "..", "..", "data", "Achievements");
     public AssortRootPath: string = path.join(path.dirname(__filename), "..", "..", "data", "Assort");
-    public CustomQuestConditions: string = path.join(path.dirname(__filename), "..", "..", "Data", "CustomQuestConditions");
+    public CustomQuestConditions: string = path.join(path.dirname(__filename), "..", "..", "data", "CustomQuestConditions");
     public LocaleRootPath: string = path.join(path.dirname(__filename), "..", "..", "data", "Locales");
     public TraderRootPath: string = path.join(path.dirname(__filename), "..", "..", "data", "Trader");
     public QuestsRootPath: string = path.join(path.dirname(__filename), "..", "..", "data", "Quests");
