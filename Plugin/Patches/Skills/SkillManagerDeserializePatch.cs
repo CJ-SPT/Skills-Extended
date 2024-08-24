@@ -37,6 +37,12 @@ public class SkillManagerDeserializePatch : ModulePatch
         
         __result = new SkillManager(__instance.Side);
         
+        if (__instance.IsYourPlayer)
+        {
+            Logger.LogDebug("SkillManager Is Player");
+            __result.IsYourPlayer = true;
+        }
+        
         if (__instance.Common is not null)
         {
             foreach (var gclass in __instance.Common)

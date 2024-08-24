@@ -18,6 +18,7 @@ import type { VFS } from "@spt/utils/VFS";
 import type { HashUtil } from "@spt/utils/HashUtil";
 import type { TraderHelper } from "@spt/helpers/TraderHelper";
 import { LogTextColor } from "@spt/models/spt/logging/LogTextColor";
+import { HttpResponseUtil } from "@spt/utils/HttpResponseUtil";
 
 export class InstanceManager 
 {
@@ -35,6 +36,7 @@ export class InstanceManager
     public staticRouter: StaticRouterModService;
     public vfs: VFS;
     public hashUtil: HashUtil;
+    public httpResponseUtil: HttpResponseUtil;
     //#endregion
 
     //#region Acceessible in or after postDBLoad
@@ -63,6 +65,7 @@ export class InstanceManager
         this.staticRouter = container.resolve<StaticRouterModService>("StaticRouterModService");
         this.vfs = container.resolve<VFS>("VFS");
         this.hashUtil = container.resolve<HashUtil>("HashUtil");
+        this.httpResponseUtil = container.resolve<HttpResponseUtil>("HttpResponseUtil");
     }
 
     public postDBLoad(container: DependencyContainer): void

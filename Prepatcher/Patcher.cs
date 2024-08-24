@@ -206,6 +206,8 @@ public static class Patcher
         
         // This is the intermediate object the skill manager gets deserialized onto
         var jsonObj = assembly.MainModule.GetType("GClass1795");
+
+        var mainModule = assembly.MainModule;
         
         var sideField = new FieldDefinition(
             "Side", 
@@ -219,5 +221,22 @@ public static class Patcher
         
         SkillManager.Fields.Add(sideField);
         jsonObj.Fields.Add(sideFieldJson);
+        
+        var isPlayerField = new FieldDefinition(
+            "IsYourPlayer", 
+            FieldAttributes.Public, 
+            mainModule.ImportReference(typeof(bool)));
+
+        isPlayerField.Constant = false;
+        
+        var isPlayerFieldJson = new FieldDefinition(
+            "IsYourPlayer", 
+            FieldAttributes.Public, 
+            mainModule.ImportReference(typeof(bool)));
+        
+        isPlayerFieldJson.Constant = false;
+        
+        SkillManager.Fields.Add(isPlayerField);
+        jsonObj.Fields.Add(isPlayerFieldJson);
     }
 }

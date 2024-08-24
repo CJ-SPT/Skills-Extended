@@ -8,8 +8,8 @@ import type { IAdditionalWeapons, ISkillsConfig } from "../Models/ISkillsConfig"
 import type { IOManager } from "./IOManager";
 
 import path from "node:path";
-import { ICustomQuestCondition } from "../Models/ICustomQuestConditions";
 import { LogTextColor } from "@spt/models/spt/logging/LogTextColor";
+import type { IPmcData } from "@spt/models/eft/common/IPmcData";
 
 export class RouteManager
 {
@@ -105,7 +105,7 @@ export class RouteManager
                     url: "/client/game/profile/select",
                     // eslint-disable-next-line @typescript-eslint/no-unused-vars
                     action: async (url, info, sessionId, output) => 
-                    {                     
+                    {
                         this.ProgressionManager.checkForPendingRewards();
                         return output;
                     }
@@ -115,15 +115,20 @@ export class RouteManager
         );
 
         staticRouter.registerStaticRouter(
-            "wipe",
+            "AddSkillSideList",
             [
                 {
-                    url: "/launcher/profile/change/wipe",
+                    url: "/client/game/profile/list",
                     // eslint-disable-next-line @typescript-eslint/no-unused-vars
                     action: async (url, info, sessionId, output) => 
-                    {                     
-                        this.ProgressionManager.wipeProgressFile(sessionId);
-                        return output;
+                    {       
+                        const http = this.InstanceManager.httpResponseUtil;
+                        
+                        const profile = this.addSkillSideFieldToProfile(sessionId);
+
+                        return profile !== undefined 
+                            ? http.getBody(profile)
+                            : output;
                     }
                 }
             ],
@@ -131,7 +136,7 @@ export class RouteManager
         );
 
         staticRouter.registerStaticRouter(
-            "AddSkillSide",
+            "AddSkillSideInfo",
             [
                 {
                     url: "/launcher/profile/info",
@@ -139,6 +144,7 @@ export class RouteManager
                     action: async (url, info, sessionId, output) => 
                     {                     
                         this.addSkillSideFieldToProfile(sessionId);
+                        
                         return output;
                     }
                 }
@@ -174,17 +180,38 @@ export class RouteManager
      * Fixes a BSG bug by adding the correct side field to the skill manager
      * @param sessionId 
      */
-    private addSkillSideFieldToProfile(sessionId: string): void
+    private addSkillSideFieldToProfile(sessionId: string): undefined | IPmcData[]
     {
         const helper = this.InstanceManager.profileHelper;
+        const saveServer = this.InstanceManager.saveServer;
+
+        if (saveServer.getProfile(sessionId).info.wipe) return;
+
         const pmcProfile = helper.getPmcProfile(sessionId);
         const scavProfile = helper.getScavProfile(sessionId);
         
-        const pmcSide = pmcProfile.Info.Side;
-        const pmcSkills = pmcProfile.Skills;
-        const scavSkills = scavProfile.Skills;
+        const pmcSide = pmcProfile?.Info?.Side ?? "Bear";
+        
+        const pmcSkills = pmcProfile?.Skills;
+        const scavSkills = scavProfile?.Skills;
+
+        if (!pmcSkills || !scavSkills) 
+        {
+            console.log("Skills null");
+            return;
+        }
 
         pmcSkills.Side = pmcSide;
+        pmcSkills.IsPlayer = true;
+        
         scavSkills.Side = "Savage";
+        scavSkills.IsPlayer = true;
+
+        const profile: IPmcData[] = [];
+
+        profile.push(pmcProfile);
+        profile.push(scavProfile);
+
+        return profile;
     }
 }
