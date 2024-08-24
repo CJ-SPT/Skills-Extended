@@ -70,8 +70,6 @@ public class ProneMoveVolumePatch : ModulePatch
         Logger.LogDebug($"Original Prone volume: {__result}");
         Logger.LogDebug($"Updated Prone volume: {__result * bonus}");
         
-        player.ExecuteSkill(() => player.Skills.ProneAction.Complete(proneData.XpPerAction));
-        
         __result = Mathf.Clamp(__result * bonus, 0f, __result * bonus);
         
         return false;

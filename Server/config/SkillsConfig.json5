@@ -578,7 +578,7 @@
     },
     "ProneMovement": {
         "ENABLED": true,
-        "XP_PER_ACTION": 0.03,                            // xp per movement action while prone
+        "XP_PER_ACTION": 0.0025,                          // xp per movement action while prone
         "MOVEMENT_SPEED_INCREASE_MAX": 0.30,              // Bonus at level 50 to the movement speed
         "MOVEMENT_SPEED_INCREASE_MAX_ELITE": 0.50,        // Bonus at elite to the movement speed
         "MOVEMENT_VOLUME_DECREASE_MAX": 0.35,             // Decrease in prone movement volume
