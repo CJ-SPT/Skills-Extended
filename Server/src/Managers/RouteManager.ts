@@ -10,6 +10,8 @@ import type { IOManager } from "./IOManager";
 import path from "node:path";
 import { LogTextColor } from "@spt/models/spt/logging/LogTextColor";
 import type { IPmcData } from "@spt/models/eft/common/IPmcData";
+import { NewSkills } from "../enums/SkillsExtendedIds";
+import { Common } from "@spt/models/eft/common/tables/IBotBase";
 
 export class RouteManager
 {
@@ -125,6 +127,7 @@ export class RouteManager
                         const http = this.InstanceManager.httpResponseUtil;
                         
                         const profile = this.addSkillSideFieldToProfile(sessionId);
+                        //profile = this.addMissingSkillsToProfile(sessionId, profile);
 
                         return profile !== undefined 
                             ? http.getBody(profile)
@@ -144,7 +147,7 @@ export class RouteManager
                     action: async (url, info, sessionId, output) => 
                     {                     
                         this.addSkillSideFieldToProfile(sessionId);
-                        
+
                         return output;
                     }
                 }
@@ -195,11 +198,7 @@ export class RouteManager
         const pmcSkills = pmcProfile?.Skills;
         const scavSkills = scavProfile?.Skills;
 
-        if (!pmcSkills || !scavSkills) 
-        {
-            console.log("Skills null");
-            return;
-        }
+        if (!pmcSkills || !scavSkills) return;
 
         pmcSkills.Side = pmcSide;
         pmcSkills.IsPlayer = true;
@@ -211,6 +210,37 @@ export class RouteManager
 
         profile.push(pmcProfile);
         profile.push(scavProfile);
+
+        return profile;
+    }
+
+    private addMissingSkillsToProfile(sessionId: string, profile: IPmcData[]): undefined | IPmcData[]
+    {
+        const saveServer = this.InstanceManager.saveServer;
+
+        if (saveServer.getProfile(sessionId).info.wipe) return profile;
+
+        const pmcSkills = profile[0]?.Skills?.Common;
+        const scavSkills = profile[1]?.Skills?.Common;
+
+        if (!pmcSkills || !scavSkills) return profile;
+
+        for (const newSkill in NewSkills)
+        {
+            console.log(`Adding new skill ${newSkill}`)
+
+            if (pmcSkills.find(x => x.Id === newSkill)) continue;
+
+            const common: Common = {
+                Id: newSkill,
+                PointsEarnedDuringSession: 0,
+                LastAccess: 0,
+                Progress: 0
+            }
+
+            pmcSkills.push(common);
+            scavSkills.push(common);
+        }
 
         return profile;
     }

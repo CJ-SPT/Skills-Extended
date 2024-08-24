@@ -6,3 +6,9 @@ export enum SkillsExtendedIds
     Pda = "662400eb756ca8948fe64fe8",
     LockSmith = "66bf1f65e1f3b83ea069a271"
 }
+
+export enum NewSkills
+{
+    BearAuthority = "BearAuthority",
+    UsecNegotiations = "UsecNegotiations"
+}

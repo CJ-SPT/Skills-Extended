@@ -10,6 +10,8 @@ export interface ISkillsConfig
     EasternRifle: IWeaponConfig;
     LockPicking: ILockpickingConfig;
     ProneMovement: IProneMovementConfig;
+    BearAuthority: IBearAuthorityConfig;
+    UsecNegotiations: IUsecNegotiationsConfig;
 }
 
 export interface IFirstAidConfig
@@ -70,6 +72,26 @@ export interface IProneMovementConfig
     MOVEMENT_SPEED_INCREASE_MAX_ELITE: number;
     MOVEMENT_VOLUME_DECREASE_MAX: number;
     MOVEMENT_VOLUME_DECREASE_MAX_ELITE: number;
+}
+
+export interface IBearAuthorityConfig
+{
+    ENABLED: boolean;
+    XP_PER_ACTION: number;
+    TRADER_PRICE_DECREASE: number;
+    TRADER_PRICE_DECREASE_ELITE: number;
+    REPAIR_PRICE_DECREASE: number;
+    REPAIR_PRICE_DECREASE_ELITE: number;
+}
+
+export interface IUsecNegotiationsConfig
+{
+    ENABLED: boolean;
+    XP_PER_ACTION: number;
+    TRADER_PRICE_DECREASE: number;
+    TRADER_PRICE_DECREASE_ELITE: number;
+    HEAL_PRICE_DECREASE: number;
+    HEAL_PRICE_DECREASE_ELITE: number;
 }
 
 export interface IAdditionalWeapons

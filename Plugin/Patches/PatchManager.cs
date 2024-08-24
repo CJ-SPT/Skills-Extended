@@ -55,6 +55,9 @@ internal static class PatchManager
         new QuestFinishPatch().Enable();
         new SkillLevelPanelPatch().Enable();
         new OnScreenChangePatch().Enable();
+        new GetBarterPricePatch().Enable();
+        new RequiredItemsCountPatch().Enable();
+        new TraderDealScreenPatch().Enable();
     }
 
     private static void Debug()

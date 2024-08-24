@@ -86,5 +86,20 @@ internal class SkillClassCtorPatch : ModulePatch
                 skillManager.ProneAction.Factor(0.25f)
             ];
         }
+        
+        if (id == ESkillId.BearAuthority)
+        {
+            buffs = skillMgrExt.BearAuthorityBuffs();
+            actions = [
+            ];
+        }
+        
+        if (id == ESkillId.UsecNegotiations)
+        {
+            buffs = skillMgrExt.UsecNegotiationsBuffs();
+            actions = [
+                
+            ];
+        }
     }
 }

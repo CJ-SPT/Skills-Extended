@@ -176,6 +176,40 @@ public static class Patcher
         buffEnums.Fields.Add(lockpickingTimeIncrease);
         buffEnums.Fields.Add(lockpickingForgivenessAngle);
         buffEnums.Fields.Add(lockpickingUseElite);
+        
+        var bearAuthorityTraderPriceRed = CreateNewEnum(
+            ref assembly, 
+            "BearAuthorityTraderPriceRed", 
+            "BearAuthorityTraderPriceRed", 
+            buffEnums, 
+            index++);
+        
+        var bearAuthorityRepairPriceRed = CreateNewEnum(
+            ref assembly, 
+            "BearAuthorityRepairPriceRed", 
+            "BearAuthorityRepairPriceRed", 
+            buffEnums, 
+            index++);
+        
+        buffEnums.Fields.Add(bearAuthorityTraderPriceRed);
+        buffEnums.Fields.Add(bearAuthorityRepairPriceRed);
+        
+        var usecNegotiationTraderPriceRed = CreateNewEnum(
+            ref assembly, 
+            "UsecNegotiationsTraderPriceRed", 
+            "UsecNegotiationsTraderPriceRed", 
+            buffEnums, 
+            index++);
+        
+        var usecNegotiationHealingPriceRed = CreateNewEnum(
+            ref assembly, 
+            "UsecNegotiationsHealingPriceRed", 
+            "UsecNegotiationsHealingPriceRed", 
+            buffEnums, 
+            index++);
+        
+        buffEnums.Fields.Add(usecNegotiationTraderPriceRed);
+        buffEnums.Fields.Add(usecNegotiationHealingPriceRed);
     }
 
     private static void PatchNewAnim(ref AssemblyDefinition assembly)

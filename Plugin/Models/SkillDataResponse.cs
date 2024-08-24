@@ -16,6 +16,10 @@ namespace SkillsExtended.Models
         public LockPickingData LockPicking;
 
         public ProneMovementData ProneMovement;
+
+        public BearAuthorityData BearAuthority;
+        
+        public UsecNegotiationsData UsecNegotiations;
     }
 
     public struct FirstAidData
@@ -163,5 +167,47 @@ namespace SkillsExtended.Models
         
         [JsonProperty("MOVEMENT_VOLUME_DECREASE_MAX_ELITE")]
         public float MovementVolumeDecMaxElite;
+    }
+
+    public struct BearAuthorityData
+    {
+        [JsonProperty("ENABLED")]
+        public bool Enabled;
+        
+        [JsonProperty("XP_PER_ACTION")]
+        public float XpPerAction;
+        
+        [JsonProperty("TRADER_PRICE_DECREASE")]
+        public float TraderPriceDecrease;
+        
+        [JsonProperty("TRADER_PRICE_DECREASE_ELITE")]
+        public float TraderPriceDecreaseElite;
+        
+        [JsonProperty("REPAIR_PRICE_DECREASE")]
+        public float RepairPriceDecrease;
+        
+        [JsonProperty("REPAIR_PRICE_DECREASE_ELITE")]
+        public float RepairPriceDecreaseElite;
+    }
+
+    public struct UsecNegotiationsData
+    {
+        [JsonProperty("ENABLED")]
+        public bool Enabled;
+        
+        [JsonProperty("XP_PER_ACTION")]
+        public float XpPerAction;
+        
+        [JsonProperty("TRADER_PRICE_DECREASE")]
+        public float TraderPriceDecrease;
+        
+        [JsonProperty("TRADER_PRICE_DECREASE_ELITE")]
+        public float TraderPriceDecreaseElite;
+        
+        [JsonProperty("HEAL_PRICE_DECREASE")]
+        public float HealPriceDecrease;
+        
+        [JsonProperty("HEAL_PRICE_DECREASE_ELITE")]
+        public float HealPriceDecreaseElite;
     }
 }

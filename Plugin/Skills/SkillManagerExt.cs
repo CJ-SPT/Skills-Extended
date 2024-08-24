@@ -73,12 +73,34 @@ public class SkillManagerExt
         Id = EBuffId.LockpickingUseElite,
         BuffType = SkillManager.EBuffType.Elite
     };
+    
+    public readonly SkillManager.SkillBuffClass BearAuthorityTraderPrice = new()
+    {
+        Id = EBuffId.BearAuthorityTraderPriceRed,
+    };
+    
+    public readonly SkillManager.SkillBuffClass BearAuthorityRepairPrice = new()
+    {
+        Id = EBuffId.BearAuthorityRepairPriceRed
+    };
+    
+    public readonly SkillManager.SkillBuffClass UsecNegotiationsTraderPrice = new()
+    {
+        Id = EBuffId.UsecNegotiationsTraderPriceRed,
+    };
+    
+    public readonly SkillManager.SkillBuffClass UsecNegotiationsHealPrice = new()
+    {
+        Id = EBuffId.UsecNegotiationsHealingPriceRed
+    };
 
     public readonly SkillManager.SkillActionClass FirstAidAction = new();
     public readonly SkillManager.SkillActionClass FieldMedicineAction = new();
     public readonly SkillManager.SkillActionClass UsecRifleAction = new();
     public readonly SkillManager.SkillActionClass BearRifleAction = new();
     public readonly SkillManager.SkillActionClass LockPickAction = new();
+    public readonly SkillManager.SkillActionClass BearAuthorityAction = new();
+    public readonly SkillManager.SkillActionClass UsecNegotiationsAction = new();
     
     public SkillManager.SkillBuffAbstractClass[] FirstAidBuffs()
     {
@@ -153,6 +175,34 @@ public class SkillManagerExt
                 .PerLevel(SkillData.LockPicking.SweetSpotRangePerLevel),
             
             LockPickingUseBuffElite
+        };
+    }
+    
+    public SkillManager.SkillBuffAbstractClass[] BearAuthorityBuffs()
+    {
+        return new SkillManager.SkillBuffAbstractClass[]
+        {
+            BearAuthorityTraderPrice
+                .Max(SkillData.BearAuthority.TraderPriceDecrease)
+                .Elite(SkillData.BearAuthority.TraderPriceDecreaseElite),
+            
+            BearAuthorityRepairPrice
+                .Max(SkillData.BearAuthority.RepairPriceDecrease)
+                .Elite(SkillData.BearAuthority.RepairPriceDecreaseElite),
+        };
+    }
+    
+    public SkillManager.SkillBuffAbstractClass[] UsecNegotiationsBuffs()
+    {
+        return new SkillManager.SkillBuffAbstractClass[]
+        {
+            UsecNegotiationsTraderPrice
+                .Max(SkillData.UsecNegotiations.TraderPriceDecrease)
+                .Elite(SkillData.UsecNegotiations.TraderPriceDecreaseElite),
+            
+            UsecNegotiationsHealPrice
+                .Max(SkillData.UsecNegotiations.HealPriceDecrease)
+                .Elite(SkillData.UsecNegotiations.HealPriceDecreaseElite)
         };
     }
 }
