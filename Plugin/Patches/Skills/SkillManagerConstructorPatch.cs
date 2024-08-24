@@ -54,27 +54,32 @@ internal class SkillManagerConstructorPatch : ModulePatch
             [], 
             []);
         
-        var newDisplayList = new SkillClass[___DisplayList.Length + 5];
+        __instance.ProneMovement = new SkillClass(
+            __instance, 
+            ESkillId.ProneMovement, 
+            ESkillClass.Combat, 
+            [], 
+            []);
+        
+        var newDisplayList = new SkillClass[___DisplayList.Length + 4];
 
         Array.Copy(___DisplayList, newDisplayList, insertIndex);
 
         newDisplayList[12] = __instance.UsecArsystems;
         newDisplayList[12 + 1] = __instance.BearAksystems;
         newDisplayList[12 + 2] = __instance.Lockpicking;
-        newDisplayList[12 + 3] = __instance.BearRawpower;
-        newDisplayList[12 + 4] = __instance.UsecTactics;
+        newDisplayList[12 + 3] = __instance.ProneMovement;
         
-        Array.Copy(___DisplayList, insertIndex, newDisplayList, insertIndex + 5, ___DisplayList.Length - insertIndex);
+        Array.Copy(___DisplayList, insertIndex, newDisplayList, insertIndex + 4, ___DisplayList.Length - insertIndex);
 
         ___DisplayList = newDisplayList;
 
-        Array.Resize(ref ___Skills, ___Skills.Length + 5);
+        Array.Resize(ref ___Skills, ___Skills.Length + 4);
 
         ___Skills[___Skills.Length - 1] = __instance.UsecArsystems;
         ___Skills[___Skills.Length - 2] = __instance.BearAksystems;
         ___Skills[___Skills.Length - 3] = __instance.Lockpicking;
-        ___Skills[___Skills.Length - 4] = __instance.BearRawpower;
-        ___Skills[___Skills.Length - 5] = __instance.UsecTactics;
+        ___Skills[___Skills.Length - 4] = __instance.ProneMovement;
 
         // If the skill is not enabled, lock it
         AccessTools.Field(typeof(SkillClass), "Locked").SetValue(__instance.UsecArsystems,
@@ -91,6 +96,9 @@ internal class SkillManagerConstructorPatch : ModulePatch
 
         AccessTools.Field(typeof(SkillClass), "Locked").SetValue(__instance.FirstAid,
             !Plugin.SkillData.FirstAid.Enabled);
+        
+        AccessTools.Field(typeof(SkillClass), "Locked").SetValue(__instance.ProneMovement,
+            !Plugin.SkillData.ProneMovement.Enabled);
         
         //BonusController is called in SkillClass.OnTrigger and must not be null, otherwise it will trigger System.NullReferenceException.
         __instance.BonusController = new();

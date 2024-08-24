@@ -20,6 +20,8 @@ internal class SkillClassCtorPatch : ModulePatch
     public static void Prefix(SkillManager skillManager, SkillClass __instance, ESkillId id, ref SkillManager.SkillBuffAbstractClass[] buffs, ref SkillManager.SkillActionClass[] actions)
     {
         // This is where we set all of our buffs and actions, done as a constructor patch, so they always exist when we need them
+
+        var skillData = Plugin.SkillData;
         
         var skillMgrExt = skillManager.Side == EPlayerSide.Savage
             ? Plugin.ScavSkillManagerExt
@@ -65,6 +67,23 @@ internal class SkillClassCtorPatch : ModulePatch
             actions = 
             [
                 skillMgrExt.LockPickAction.Factor(0.25f)
+            ];
+        }
+        
+        if (id == ESkillId.ProneMovement)
+        {
+            buffs = [
+                skillManager.ProneMovementSpeed
+                    .Max(skillData.ProneMovement.MovementSpeedIncMax)
+                    .Elite(skillData.ProneMovement.MovementSpeedIncMaxElite),
+                
+                skillManager.ProneMovementVolume
+                    .Max(skillData.ProneMovement.MovementVolumeDecMax)
+                    .Elite(skillData.ProneMovement.MovementVolumeDecMaxElite)
+            ];
+            actions = 
+            [
+                skillManager.ProneAction.Factor(0.25f)
             ];
         }
     }

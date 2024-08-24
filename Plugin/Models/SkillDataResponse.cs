@@ -14,6 +14,8 @@ namespace SkillsExtended.Models
         public WeaponSkillData EasternRifle;
 
         public LockPickingData LockPicking;
+
+        public ProneMovementData ProneMovement;
     }
 
     public struct FirstAidData
@@ -140,5 +142,26 @@ namespace SkillsExtended.Models
         public Dictionary<string, int> Lighthouse;
         public Dictionary<string, int> Streets;
         public Dictionary<string, int> GroundZero;
+    }
+
+    public struct ProneMovementData
+    {
+        [JsonProperty("ENABLED")]
+        public bool Enabled;
+        
+        [JsonProperty("XP_PER_ACTION")]
+        public float XpPerAction;
+        
+        [JsonProperty("MOVEMENT_SPEED_INCREASE_MAX")]
+        public float MovementSpeedIncMax;
+        
+        [JsonProperty("MOVEMENT_SPEED_INCREASE_MAX_ELITE")]
+        public float MovementSpeedIncMaxElite;
+        
+        [JsonProperty("MOVEMENT_VOLUME_DECREASE_MAX")]
+        public float MovementVolumeDecMax;
+        
+        [JsonProperty("MOVEMENT_VOLUME_DECREASE_MAX_ELITE")]
+        public float MovementVolumeDecMaxElite;
     }
 }

@@ -9,6 +9,7 @@ export interface ISkillsConfig
     NatoRifle: IWeaponConfig;
     EasternRifle: IWeaponConfig;
     LockPicking: ILockpickingConfig;
+    ProneMovement: IProneMovementConfig;
 }
 
 export interface IFirstAidConfig
@@ -59,6 +60,16 @@ export interface ILockpickingConfig
     XP_TABLE: Record<string, number>;
     DOOR_PICK_LEVELS: Record<string, Record<string, number>>;
     CRAFTING_RECIPES: IHideoutProduction[];
+}
+
+export interface IProneMovementConfig
+{
+    ENABLED: boolean;
+    XP_PER_ACTION: number;
+    MOVEMENT_SPEED_INCREASE_MAX: number;
+    MOVEMENT_SPEED_INCREASE_MAX_ELITE: number;
+    MOVEMENT_VOLUME_DECREASE_MAX: number;
+    MOVEMENT_VOLUME_DECREASE_MAX_ELITE: number;
 }
 
 export interface IAdditionalWeapons

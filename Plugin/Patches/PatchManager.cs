@@ -26,14 +26,16 @@ internal static class PatchManager
         new BuffIconShowPatch().Enable();
         new SkillManagerConstructorPatch().Enable();
         new SkillClassCtorPatch().Enable();
-        new OnScreenChangePatch().Enable();
-        new OnGameStartedPatch().Enable();
         new SkillManagerDeserializePatch().Enable();
+        new SkillIconShowPatch().Enable();
     }
     
     private static void InRaid()
     {
         new DoorActionPatch().Enable();
+        new OnGameStartedPatch().Enable();
+        new ProneMoveStatePatch().Enable();
+        new ProneMoveVolumePatch().Enable();
         // new KeyCardDoorActionPatch().Enable(); // TODO
     }
 
@@ -52,6 +54,7 @@ internal static class PatchManager
         new PersonalBuffStringPatch().Enable();
         new QuestFinishPatch().Enable();
         new SkillLevelPanelPatch().Enable();
+        new OnScreenChangePatch().Enable();
     }
 
     private static void Debug()

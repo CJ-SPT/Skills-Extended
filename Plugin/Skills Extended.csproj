@@ -87,7 +87,7 @@
 	</ItemGroup>
 
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-	  <Exec Command="copy &quot;$(TargetPath)&quot; &quot;..\..\..\BepInEx\plugins\SkillsExtended\$(TargetName).dll&quot;&#xA;if $(ConfigurationName) == Debug (&#xA;    copy &quot;$(ProjectDir)$(OutDir)$(TargetName).pdb&quot; &quot;..\..\..\BepInEx\plugins\SkillsExtended\$(TargetName).pdb&quot;&#xA;) else (&#xA;    del &quot;..\..\..\BepInEx\plugins\SkillsExtended\$(TargetName).pdb&quot;&#xA;)&#xA;&#xA;xcopy &quot;$(ProjectDir)bundles\doorlock.bundle&quot; &quot;..\..\..\BepInEx\plugins\SkillsExtended\bundles\&quot; /Y&#xA;&#xA;xcopy &quot;$(ProjectDir)Buffs\buffs.json&quot; &quot;..\..\..\BepInEx\plugins\SkillsExtended\&quot; /Y&#xA;&#xA;del &quot;..\..\..\BepInEx\config\com.dirtbikercj.SkillsExtended.cfg&quot;" />
+	  <Exec Command="copy &quot;$(TargetPath)&quot; &quot;..\..\..\BepInEx\plugins\SkillsExtended\$(TargetName).dll&quot;&#xA;if $(ConfigurationName) == Debug (&#xA;    copy &quot;$(ProjectDir)$(OutDir)$(TargetName).pdb&quot; &quot;..\..\..\BepInEx\plugins\SkillsExtended\$(TargetName).pdb&quot;&#xA;) else (&#xA;    del &quot;..\..\..\BepInEx\plugins\SkillsExtended\$(TargetName).pdb&quot;&#xA;)&#xA;&#xA;xcopy /s /i &quot;$(ProjectDir)bundles&quot; &quot;..\..\..\BepInEx\plugins\SkillsExtended\bundles\&quot; /Y&#xA;&#xA;xcopy &quot;$(ProjectDir)Buffs\buffs.json&quot; &quot;..\..\..\BepInEx\plugins\SkillsExtended\&quot; /Y&#xA;&#xA;del &quot;..\..\..\BepInEx\config\com.dirtbikercj.SkillsExtended.cfg&quot;" />
 	</Target>
 
 </Project>
