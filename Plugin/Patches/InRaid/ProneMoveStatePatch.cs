@@ -25,6 +25,7 @@ public class ProneMoveStatePatch : ModulePatch
     private static bool Prefix(MovementContext __instance, float speed, ref float __result)
     {
         if (__instance.CurrentState is not GClass1718) return true;
+        if (!proneData.Enabled) return true;
         
         var player = (Player)_playerField.GetValue(__instance);
 
@@ -59,6 +60,7 @@ public class ProneMoveVolumePatch : ModulePatch
     private static bool Prefix(MovementContext __instance, ref float __result)
     {
         if (__instance.CurrentState is not GClass1718) return true;
+        if (!proneData.Enabled) return true;
         
         var player = (Player)_playerField.GetValue(__instance);
 
