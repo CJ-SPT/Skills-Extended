@@ -71,6 +71,18 @@ internal class BuffIconShowPatch : ModulePatch
             case EBuffId.LockpickingUseElite:
                 ____icon.sprite = staticIcons.ItemAttributeSprites.GetValueOrDefault(EItemAttributeId.KeyUses);
                 break;
+            
+            case EBuffId.SilentOpsIncMeleeSpeed:
+                ____icon.sprite = staticIcons.DamageEffectSprites.GetValueOrDefault(EDamageEffectType.Contusion);
+                break;
+            
+            case EBuffId.SilentOpsRedVolume:
+                ____icon.sprite = staticIcons.BuffIdSprites.GetValueOrDefault(EBuffId.CovertMovementSoundVolume);
+                break;
+            
+            case EBuffId.SilentOpsSilencerCostRed:
+                ____icon.sprite = staticIcons.ItemAttributeSprites.GetValueOrDefault(EItemAttributeId.Loudness);
+                break;
         }
         
         __instance.UpdateBuff();

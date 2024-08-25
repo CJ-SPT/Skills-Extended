@@ -84,10 +84,9 @@ public class SkillManagerExt
         Id = EBuffId.SilentOpsRedVolume
     };
     
-    public readonly SkillManager.GClass1790 SilentOpsSilencerCostRedBuff = new()
+    public readonly SkillManager.SkillBuffClass SilentOpsSilencerCostRedBuff = new()
     {
-        Id = EBuffId.SilentOpsSilencerCostRed,
-        BuffType = SkillManager.EBuffType.Elite
+        Id = EBuffId.SilentOpsSilencerCostRed
     };
     
     public readonly SkillManager.SkillActionClass FirstAidAction = new();
@@ -185,6 +184,7 @@ public class SkillManagerExt
                 .Max(SkillData.SilentOps.VolumeReduction),
             
             SilentOpsSilencerCostRedBuff
+                .Max(SkillData.SilentOps.SilencerPriceReduction)
         };
     }
 }

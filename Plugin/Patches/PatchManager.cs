@@ -52,10 +52,10 @@ internal static class PatchManager
     {
         new PersonalBuffFullStringPatch().Enable();
         new PersonalBuffStringPatch().Enable();
-        new QuestFinishPatch().Enable();
         new SkillLevelPanelPatch().Enable();
         new OnScreenChangePatch().Enable();
-        // new TraderDealScreenPatch().Enable();
+        new GetBarterPricePatch().Enable();
+        new RequiredItemsCountPatch().Enable();
     }
 
     private static void Debug()
