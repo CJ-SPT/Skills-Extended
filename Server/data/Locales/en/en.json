@@ -248,14 +248,8 @@
     "LockpickingTimeIncrease": "Increases the strength of lockpicks by [{0:0.#%}]",
     "LockpickingForgivenessAngle": "Reduces the difficulty of locks by [{0:0.#%}]",
     "LockpickingUseElite": "You no longer break lockpicks.",
-    "UsecNegotiations": "USEC Negotiations",
-    "UsecNegotiationsDescription": "Improves your negotiation tactics with members of the opposite faction.",
-    "UsecNegotiationsLevelingUpDescription": "Improved by purchasing goods from Prapor or Jaegar",
-    "UsecNegotiationsTraderPriceRed": "Reduces the price of goods with Prapor and Jaegar by [{0:0.#%}]",
-    "UsecNegotiationsHealingPriceRed": "Reduces the price of healing and medical items by [{0:0.#%}]",
-    "BearAuthority": "BEAR Authority",
-    "BearAuthorityDescription": "Improves your authority over members of the opposite faction.",
-    "BearAuthorityLevelingUpDescription": "Improved by purchasing goods from Peacekeeper or Mechanic",
-    "BearAuthorityTraderPriceRed": "Reduces the price of goods with Peacekeeper and Mechanic by [{0:0.#%}]",
-    "BearAuthorityRepairPriceRed": "Reduces the price of repairs and reduces repair degradation by [{0:0.#%}]"
+    "SilentOpsLevelingUpDescription": "Improved by performing silent kills.",
+    "SilentOpsIncMeleeSpeed": "Increases the speed of melee attacks by [{0:0.#%}]",
+    "SilentOpsRedVolume": "Reduces the volume of door and looting actions by [{0:0.#%}]",
+    "SilentOpsSilencerCostRed": "Reduces the trader price of supressors by [{0:0.#%}]"
 }

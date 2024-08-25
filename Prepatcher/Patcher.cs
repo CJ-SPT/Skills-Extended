@@ -177,39 +177,30 @@ public static class Patcher
         buffEnums.Fields.Add(lockpickingForgivenessAngle);
         buffEnums.Fields.Add(lockpickingUseElite);
         
-        var bearAuthorityTraderPriceRed = CreateNewEnum(
+        var silentOpsIncMeleeSpeed = CreateNewEnum(
             ref assembly, 
-            "BearAuthorityTraderPriceRed", 
-            "BearAuthorityTraderPriceRed", 
+            "SilentOpsIncMeleeSpeed", 
+            "SilentOpsIncMeleeSpeed", 
             buffEnums, 
             index++);
         
-        var bearAuthorityRepairPriceRed = CreateNewEnum(
+        var silentOpsRedVolume = CreateNewEnum(
             ref assembly, 
-            "BearAuthorityRepairPriceRed", 
-            "BearAuthorityRepairPriceRed", 
+            "SilentOpsRedVolume", 
+            "SilentOpsRedVolume", 
             buffEnums, 
             index++);
         
-        buffEnums.Fields.Add(bearAuthorityTraderPriceRed);
-        buffEnums.Fields.Add(bearAuthorityRepairPriceRed);
-        
-        var usecNegotiationTraderPriceRed = CreateNewEnum(
+        var silentOpsSilencerCostRed = CreateNewEnum(
             ref assembly, 
-            "UsecNegotiationsTraderPriceRed", 
-            "UsecNegotiationsTraderPriceRed", 
+            "SilentOpsSilencerCostRed", 
+            "SilentOpsSilencerCostRed", 
             buffEnums, 
             index++);
         
-        var usecNegotiationHealingPriceRed = CreateNewEnum(
-            ref assembly, 
-            "UsecNegotiationsHealingPriceRed", 
-            "UsecNegotiationsHealingPriceRed", 
-            buffEnums, 
-            index++);
-        
-        buffEnums.Fields.Add(usecNegotiationTraderPriceRed);
-        buffEnums.Fields.Add(usecNegotiationHealingPriceRed);
+        buffEnums.Fields.Add(silentOpsIncMeleeSpeed);
+        buffEnums.Fields.Add(silentOpsRedVolume);
+        buffEnums.Fields.Add(silentOpsSilencerCostRed);
     }
 
     private static void PatchNewAnim(ref AssemblyDefinition assembly)

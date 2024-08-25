@@ -1,18 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Reflection;
-using Comfort.Common;
 using EFT;
 using EFT.InventoryLogic;
-using EFT.UI;
 using HarmonyLib;
-using JetBrains.Annotations;
 using SkillsExtended.Helpers;
 using SPT.Reflection.Patching;
 using SPT.Reflection.Utils;
 using UnityEngine;
-
+/*
 namespace SkillsExtended.Patches.UI;
 
 public class GetBarterPricePatch : ModulePatch
@@ -47,16 +42,18 @@ public class GetBarterPricePatch : ModulePatch
         
         if (___traderClass.Id == Traders.PRAPOR || ___traderClass.Id == Traders.JAEGER)
         {
-            if (Plugin.Session.Profile.Side == EPlayerSide.Bear) return;
-            
-            bonus = 1f - skillMgrExt.UsecNegotiationsTraderPrice;
+            if (Plugin.Session.Profile.Side == EPlayerSide.Usec)
+            {
+                bonus = 1f - skillMgrExt.UsecNegotiationsTraderPrice;
+            }
         }
         
         if (___traderClass.Id == Traders.PEACEKEEPER || ___traderClass.Id == Traders.MECHANIC)
         {
-            if (Plugin.Session.Profile.Side == EPlayerSide.Usec) return;
-            
-            bonus = 1f - skillMgrExt.BearAuthorityTraderPrice;
+            if (Plugin.Session.Profile.Side == EPlayerSide.Bear)
+            {
+                bonus = 1f - skillMgrExt.BearAuthorityTraderPrice;
+            }
         }
         
         __result = new TraderClass.GStruct244(scheme[0][0]._tpl, (int)Mathf.Ceil(price * bonus));
@@ -80,37 +77,23 @@ public class RequiredItemsCountPatch : ModulePatch
         
         if (activeTrader == Traders.PRAPOR || activeTrader == Traders.JAEGER)
         {
-            if (Plugin.Session.Profile.Side == EPlayerSide.Bear) return;
+            if (Plugin.Session.Profile.Side == EPlayerSide.Usec)
+            {
+                var bonus = 1f - skillMgrExt.UsecNegotiationsTraderPrice;
             
-            var bonus = 1f - skillMgrExt.UsecNegotiationsTraderPrice;
-            
-            __result = (int)Mathf.Ceil(__result * bonus);
-            return;
+                __result = (int)Mathf.Ceil(__result * bonus);
+            };
         }
         
         if (activeTrader == Traders.PEACEKEEPER || activeTrader == Traders.MECHANIC)
         {
-            if (Plugin.Session.Profile.Side == EPlayerSide.Usec) return;
+            if (Plugin.Session.Profile.Side == EPlayerSide.Bear)
+            {
+                var bonus = 1f - skillMgrExt.BearAuthorityTraderPrice;
             
-            var bonus = 1f - skillMgrExt.BearAuthorityTraderPrice;
-            
-            __result = (int)Mathf.Ceil(__result * bonus);
+                __result = (int)Mathf.Ceil(__result * bonus);
+            }
         }
     }
 }
-
-public class TraderDealScreenPatch : ModulePatch
-{
-    public static string ActiveTrader;
-    
-    protected override MethodBase GetTargetMethod()
-    {
-        return AccessTools.Method(typeof(TraderDealScreen), nameof(TraderDealScreen.method_11));
-    }
-
-    [PatchPostfix]
-    private static void Postfix(Profile.TraderInfo traderInfo)
-    {
-        ActiveTrader = traderInfo.Id;
-    }
-}
+*/

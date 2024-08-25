@@ -40,28 +40,7 @@ internal class SkillManagerConstructorPatch : ModulePatch
             [], 
             []);
         
-        __instance.ProneMovement = new SkillClass(
-            __instance, 
-            ESkillId.ProneMovement, 
-            ESkillClass.Combat, 
-            [], 
-            []);
-        
-        __instance.BearAuthority = new SkillClass(
-            __instance, 
-            ESkillId.BearAuthority, 
-            ESkillClass.Special, 
-            [], 
-            []);
-        
-        __instance.UsecNegotiations = new SkillClass(
-            __instance, 
-            ESkillId.UsecNegotiations, 
-            ESkillClass.Special, 
-            [], 
-            []);
-        
-        var newDisplayList = new SkillClass[___DisplayList.Length + 6];
+        var newDisplayList = new SkillClass[___DisplayList.Length + 5];
 
         Array.Copy(___DisplayList, newDisplayList, insertIndex);
 
@@ -69,21 +48,19 @@ internal class SkillManagerConstructorPatch : ModulePatch
         newDisplayList[12 + 1] = __instance.BearAksystems;
         newDisplayList[12 + 2] = __instance.Lockpicking;
         newDisplayList[12 + 3] = __instance.ProneMovement;
-        newDisplayList[12 + 4] = __instance.UsecNegotiations;
-        newDisplayList[12 + 5] = __instance.BearAuthority;
+        newDisplayList[12 + 4] = __instance.SilentOps;
         
-        Array.Copy(___DisplayList, insertIndex, newDisplayList, insertIndex + 6, ___DisplayList.Length - insertIndex);
+        Array.Copy(___DisplayList, insertIndex, newDisplayList, insertIndex + 5, ___DisplayList.Length - insertIndex);
 
         ___DisplayList = newDisplayList;
 
-        Array.Resize(ref ___Skills, ___Skills.Length + 6);
+        Array.Resize(ref ___Skills, ___Skills.Length + 5);
 
         ___Skills[___Skills.Length - 1] = __instance.UsecArsystems;
         ___Skills[___Skills.Length - 2] = __instance.BearAksystems;
         ___Skills[___Skills.Length - 3] = __instance.Lockpicking;
         ___Skills[___Skills.Length - 4] = __instance.ProneMovement;
-        ___Skills[___Skills.Length - 5] = __instance.UsecNegotiations;
-        ___Skills[___Skills.Length - 6] = __instance.BearAuthority;
+        ___Skills[___Skills.Length - 5] = __instance.SilentOps;
 
         // If the skill is not enabled, lock it
         AccessTools.Field(typeof(SkillClass), "Locked").SetValue(__instance.UsecArsystems,
@@ -104,11 +81,9 @@ internal class SkillManagerConstructorPatch : ModulePatch
         AccessTools.Field(typeof(SkillClass), "Locked").SetValue(__instance.ProneMovement,
             !Plugin.SkillData.ProneMovement.Enabled);
         
-        AccessTools.Field(typeof(SkillClass), "Locked").SetValue(__instance.BearAuthority,
-            !Plugin.SkillData.FirstAid.Enabled || ShouldDisable(faction, EPlayerSide.Bear));
+        AccessTools.Field(typeof(SkillClass), "Locked").SetValue(__instance.SilentOps,
+            !Plugin.SkillData.SilentOps.Enabled);
         
-        AccessTools.Field(typeof(SkillClass), "Locked").SetValue(__instance.UsecNegotiations,
-            !Plugin.SkillData.ProneMovement.Enabled || ShouldDisable(faction, EPlayerSide.Usec));
         
         // BonusController is called in SkillClass.OnTrigger and must not be null, otherwise it will trigger System.NullReferenceException.
         __instance.BonusController = new();

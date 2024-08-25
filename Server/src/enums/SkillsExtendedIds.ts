@@ -9,6 +9,5 @@ export enum SkillsExtendedIds
 
 export enum NewSkills
 {
-    BearAuthority = "BearAuthority",
-    UsecNegotiations = "UsecNegotiations"
+    //SILENTOPS = "SilentOps"
 }

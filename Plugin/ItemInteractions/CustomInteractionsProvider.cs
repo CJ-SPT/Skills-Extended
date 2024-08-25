@@ -3,6 +3,7 @@ using System.Linq;
 using EFT.InventoryLogic;
 using EFT.UI;
 using IcyClawz.CustomInteractions;
+using SkillsExtended.Helpers;
 
 namespace SkillsExtended.ItemInteractions;
 
@@ -14,6 +15,9 @@ internal sealed class CustomInteractionsProvider : IItemCustomInteractionsProvid
         Item item)
     {
         if (viewType is not EItemViewType.Inventory)
+            yield break;
+
+        if (!Items.BookIds.Contains(item.TemplateId)) 
             yield break;
         
         // Read book

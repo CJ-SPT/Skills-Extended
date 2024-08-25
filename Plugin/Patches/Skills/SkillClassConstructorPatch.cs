@@ -17,7 +17,12 @@ internal class SkillClassCtorPatch : ModulePatch
     /// We are using values that have been added by the pre-patcher here.
     /// </summary>
     [PatchPrefix]
-    public static void Prefix(SkillManager skillManager, SkillClass __instance, ESkillId id, ref SkillManager.SkillBuffAbstractClass[] buffs, ref SkillManager.SkillActionClass[] actions)
+    public static void Prefix(
+        SkillManager skillManager, 
+        SkillClass __instance, 
+        ESkillId id, 
+        ref SkillManager.SkillBuffAbstractClass[] buffs, 
+        ref SkillManager.SkillActionClass[] actions)
     {
         // This is where we set all of our buffs and actions, done as a constructor patch, so they always exist when we need them
 
@@ -87,18 +92,12 @@ internal class SkillClassCtorPatch : ModulePatch
             ];
         }
         
-        if (id == ESkillId.BearAuthority)
+        if (id == ESkillId.SilentOps)
         {
-            buffs = skillMgrExt.BearAuthorityBuffs();
+            buffs = skillMgrExt.SilentOpsBuffs();
             actions = [
-            ];
-        }
-        
-        if (id == ESkillId.UsecNegotiations)
-        {
-            buffs = skillMgrExt.UsecNegotiationsBuffs();
-            actions = [
-                
+                skillMgrExt.SilentOpsMeleeAction.Factor(0.25f),
+                skillMgrExt.SilentOpsGunAction.Factor(0.15f)
             ];
         }
     }

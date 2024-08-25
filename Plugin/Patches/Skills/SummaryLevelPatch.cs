@@ -18,7 +18,7 @@ internal class SummaryLevelPatch : ModulePatch
         ref int __result)
     {
         if (!Plugin.SkillData.FieldMedicine.Enabled) return;
-        
+
         var buffLevel = __instance.Buff > 0 
             ? Mathf.FloorToInt(60 * (1 + Plugin.PlayerSkillManagerExt.FieldMedicineSkillCap))
             : 51;
