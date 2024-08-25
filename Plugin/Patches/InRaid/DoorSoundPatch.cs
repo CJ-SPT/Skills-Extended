@@ -11,11 +11,11 @@ public class DoorSoundPatch : ModulePatch
 {
     protected override MethodBase GetTargetMethod()
     {
-        return AccessTools.Method(typeof(Door), nameof(Door.PlaySound));
+        return AccessTools.Method(typeof(WorldInteractiveObject), nameof(WorldInteractiveObject.PlaySound));
     }
 
     [PatchPrefix]
-    private static bool Prefix(Door __instance, EDoorState state)
+    private static bool Prefix(WorldInteractiveObject __instance, EDoorState state)
     {
         if (!Plugin.SkillData.SilentOps.Enabled) return true;
         
@@ -32,7 +32,7 @@ public class DoorSoundPatch : ModulePatch
         return false;
     }
 
-    private static void PlayDoorOpenSound(Door door)
+    private static void PlayDoorOpenSound(WorldInteractiveObject door)
     {
         var openSound = door.OpenSound[Random.Range(0, door.OpenSound.Length)];
         var bonus = 1f - Plugin.PlayerSkillManagerExt.SilentOpsReduceVolumeBuff;
@@ -50,7 +50,7 @@ public class DoorSoundPatch : ModulePatch
         }
     }
     
-    private static void PlayDoorSqueakSound(Door door)
+    private static void PlayDoorSqueakSound(WorldInteractiveObject door)
     {
         var squeakSound = door.SqueakSound[Random.Range(0, door.SqueakSound.Length)];
         var bonus = 1f - Plugin.PlayerSkillManagerExt.SilentOpsReduceVolumeBuff;    

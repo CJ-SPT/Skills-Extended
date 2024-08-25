@@ -96,8 +96,8 @@ internal class SkillClassCtorPatch : ModulePatch
         {
             buffs = skillMgrExt.SilentOpsBuffs();
             actions = [
-                skillMgrExt.SilentOpsMeleeAction.Factor(0.25f),
-                skillMgrExt.SilentOpsGunAction.Factor(0.15f)
+                skillMgrExt.SilentOpsMeleeAction.Factor(0.75f),
+                skillMgrExt.SilentOpsGunAction.Factor(0.50f)
             ];
         }
     }

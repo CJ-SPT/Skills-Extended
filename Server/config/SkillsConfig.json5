@@ -586,7 +586,7 @@
     },
     "SilentOps": {
       "ENABLED": true,
-      "XP_PER_ACTION": 0.0025,                          // xp per transactional exchange
+      "XP_PER_ACTION": 3.75,                          // xp per transactional exchange
       "MELEE_SPEED_INCREASE": 0.20,                     // bonus at level 50 to melee speed
       "VOLUME_REDUCTION": 0.40,                         // Bonus at level 50 to looting and door opening volume for the player
       "SILENCER_PRICE_RED": 0.25,                       // Decrease in cost of silencers
