@@ -38,6 +38,8 @@ internal static class PatchManager
         new ProneMoveStatePatch().Enable();
         new ProneMoveVolumePatch().Enable();
         // new KeyCardDoorActionPatch().Enable(); // TODO
+        new DoorSoundPatch().Enable();
+        new MeleeSpeedPatch().Enable();
     }
 
     private static void Medical()
