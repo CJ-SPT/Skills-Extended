@@ -28,6 +28,7 @@ internal static class PatchManager
         new SkillClassCtorPatch().Enable();
         new SkillManagerDeserializePatch().Enable();
         new SkillIconShowPatch().Enable();
+        new OnEnemyKillPatch().Enable();
     }
     
     private static void InRaid()
