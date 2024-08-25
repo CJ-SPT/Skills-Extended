@@ -75,7 +75,7 @@ internal static class ReadBookHandler
                 .GetValue(_itemUiContext);
         }
         
-        //_inventoryController.TryThrowItem(item, null, true);
+        _inventoryController.TryThrowItem(item, null, true);
     }
 
     [CanBeNull]
