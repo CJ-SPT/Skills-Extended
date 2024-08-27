@@ -247,5 +247,9 @@
     "LockpickingLevelingUpDescription": "通过开锁来提升技能水平。",
     "LockpickingTimeIncrease": "提高开锁工具的强度 [{0:0.#%}]",
     "LockpickingForgivenessAngle": "减少锁的难度 [{0:0.#%}]",
-    "LockpickingUseElite": "你不再会弄坏开锁工具。"
+    "LockpickingUseElite": "你不再会弄坏开锁工具。",
+	"SilentOpsLevelingUpDescription": "通过执行静默击杀来提升。",
+    "SilentOpsIncMeleeSpeed": "提升近战攻击速度 [{0:0.#%}]",
+    "SilentOpsRedVolume": "降低开门和搜刮动作的音量 [{0:0.#%}]",
+    "SilentOpsSilencerCostRed": "降低抑制器的商人价格 [{0:0.#%}]"	
 }
