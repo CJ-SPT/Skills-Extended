@@ -247,5 +247,9 @@
   "LockpickingLevelingUpDescription": "Améliorée en crochetant des serrures.",
   "LockpickingTimeIncrease": "Augmente la résistance des crochets de [{0:0.#%}]",
   "LockpickingForgivenessAngle": "Réduit la difficulté des serrures de [{0:0.#%}]",
-  "LockpickingUseElite": "Vous ne cassez plus vos crochets."
+  "LockpickingUseElite": "Vous ne cassez plus vos crochets.",
+  "SilentOpsLevelingUpDescription": "Amélioré en effectuant des éliminations silencieuses.",
+  "SilentOpsIncMeleeSpeed": "Augmente la vitesse des attaques au corps à corps de [{0:0.#%}]",
+  "SilentOpsRedVolume": "Réduit le volume des actions de porte et de pillage de [{0:0.#%}]",
+  "SilentOpsSilencerCostRed": "Réduit le prix des silencieux chez le marchand de [{0:0.#%}]."
 }
