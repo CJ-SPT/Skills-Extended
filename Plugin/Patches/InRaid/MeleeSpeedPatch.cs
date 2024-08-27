@@ -15,7 +15,7 @@ public class MeleeSpeedPatch : ModulePatch
     private static void Prefix(ref float speed)
     {
         if (!Plugin.SkillData.SilentOps.Enabled) return;
-
+        
         var bonus = 1 + Plugin.PlayerSkillManagerExt.SilentOpsIncMeleeSpeedBuff;
 
         speed *= bonus;

@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using EFT;
 using EFT.InventoryLogic;
 using HarmonyLib;
 using SPT.Reflection.Patching;
@@ -21,5 +22,24 @@ internal class HealthEffectUseTimePatch : ModulePatch
         if (!firstAid.Enabled) return;
             
         __result *= (1f - skillMgrExt.FirstAidItemSpeedBuff);
+    }
+}
+
+internal class SpawnPatch : ModulePatch
+{
+    protected override MethodBase GetTargetMethod()
+    {
+        return AccessTools.Method(typeof(Player.MedsController), nameof(Player.MedsController.Spawn));
+    }
+
+    [PatchPrefix]
+    public static void PreFix(ref float animationSpeed)
+    {
+        var skillMgrExt = Plugin.PlayerSkillManagerExt;
+        var firstAid = Plugin.SkillData.FirstAid;
+        
+        if (!firstAid.Enabled) return;
+            
+        animationSpeed *= (1f + skillMgrExt.FirstAidItemSpeedBuff);
     }
 }

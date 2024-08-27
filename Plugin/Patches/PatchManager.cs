@@ -49,6 +49,7 @@ internal static class PatchManager
         new CanWalkPatch().Enable();
         new SummaryLevelPatch().Enable();
         new PersonalBuffPatch().Enable();
+        new SpawnPatch().Enable();
     }
 
     private static void UI()
