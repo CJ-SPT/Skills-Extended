@@ -23,7 +23,7 @@ using UnityEngine.UI;
 
 namespace SkillsExtended;
 
-[BepInPlugin("com.dirtbikercj.SkillsExtended", "Skills Extended", "1.3.0")]
+[BepInPlugin("com.dirtbikercj.SkillsExtended", "Skills Extended", "1.3.1")]
 [BepInDependency("com.IcyClawz.CustomInteractions")]
 [BepInDependency("com.dirtbikercj.QuestsExtended")]
 public class Plugin : BaseUnityPlugin
@@ -130,13 +130,12 @@ public class Plugin : BaseUnityPlugin
         
         var audioSources = LockPickingGame.GetComponents(typeof(AudioSource));
         
-        lpComp.audioSource = audioSources.First() as AudioSource;
-        
         foreach (var source in audioSources)
         {
             var audio = source as AudioSource;
-
-            switch (audio!.name)
+            audio!.playOnAwake = false;
+            
+            switch (audio!.clip.name)
             {
                 case "LockpickingReset":
                     lpComp.resetSound = audio.clip;

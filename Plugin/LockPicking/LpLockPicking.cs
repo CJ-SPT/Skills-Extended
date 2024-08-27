@@ -112,8 +112,6 @@ public class LpLockPicking : MonoBehaviour
         _player.MovementContext.ToggleBlockInputPlayerRotation(true);
                 
         _player.CurrentManagedState.ChangePose(-1f);
-        
-        Singleton<GUISounds>.Instance.PlayUISound(EUISoundType.MenuContextMenu);
     }
 
     public void OnDisable()
@@ -126,8 +124,6 @@ public class LpLockPicking : MonoBehaviour
         _player.MovementContext.ToggleBlockInputPlayerRotation(false);
         
         _player.CurrentManagedState.ChangePose(1f);
-
-        Singleton<GUISounds>.Instance.PlayUISound(EUISoundType.MenuContextMenu);
         
         CursorSettings.SetCursor(ECursorType.Invisible);
         Cursor.lockState = CursorLockMode.Locked;
@@ -141,11 +137,18 @@ public class LpLockPicking : MonoBehaviour
         
         Singleton<GUISounds>.Instance.PlayUISound(EUISoundType.MenuDropdown);
     }
-    
+
+    private void Awake()
+    {
+        audioSource = GetComponent<AudioSource>();
+        audioSource.playOnAwake = false;
+        audioSource.volume = ConfigManager.LpMiniGameVolume.Value;
+    }
+
     private void Start()
     {
         animator = GetComponent<Animator>();
-        
+
         _lockPickSetAngle = Random.Range(0, 180);
     }
     
@@ -155,7 +158,7 @@ public class LpLockPicking : MonoBehaviour
 
         if (ShouldClose())
         {
-            HandleWin(false);
+            HandleWin(false, ConfigManager.LpMiniEnablePickLossOnExit.Value);
             return;
         }
 
@@ -196,6 +199,8 @@ public class LpLockPicking : MonoBehaviour
         _isUnlocked = false;
         _timeSpentWiggling = 0f;
         
+        audioSource.volume = ConfigManager.LpMiniGameVolume.Value;
+        
         _onUnlocked = action;
         
         var doorLevel = LpHelpers.GetLevelForDoor(owner.Player.Location, interactiveObject.Id);
@@ -218,6 +223,11 @@ public class LpLockPicking : MonoBehaviour
         _lockPickSetAngle = Random.Range(0, 180);
         _isUnlocked = false;
         _timeSpentWiggling = 0f;
+        
+        audioSource.volume = ConfigManager.LpMiniGameVolume.Value;
+
+        pickStrengthRemainingLower.enabled = ConfigManager.LpMiniEnableHealthBar.Value;
+        pickStrengthRemainingUpper.enabled = ConfigManager.LpMiniEnableHealthBar.Value;
         
         SetSweetSpotRange(doorLevel);
         SetTimeLimit(doorLevel);
