@@ -33,8 +33,6 @@ export class IOManager
     public ImageRootPath: string = path.join(path.dirname(__filename), "..", "..", "data", "Images");
     public ItemRootPath: string = path.join(path.dirname(__filename), "..", "..", "data", "Items");
 
-    private EnLocale: Record<string, string>;
-
     public preSptLoad(): void
     {
         const confPath = path.join(this.ConfigPath, "ServerConfig.json");
@@ -126,11 +124,6 @@ export class IOManager
     private importLocaleData(lang: string, localeData: Record<string, string>): number
     {
         const globals = this.InstanceManager.database.locales.global;
-
-        if (lang === "en")
-        {
-            this.EnLocale = localeData;
-        }
 
         for (const entry in localeData)
         {
