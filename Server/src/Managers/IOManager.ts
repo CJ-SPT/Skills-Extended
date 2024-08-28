@@ -33,6 +33,8 @@ export class IOManager
     public ImageRootPath: string = path.join(path.dirname(__filename), "..", "..", "data", "Images");
     public ItemRootPath: string = path.join(path.dirname(__filename), "..", "..", "data", "Items");
 
+    private EnLocale: Record<string, string>;
+
     public preSptLoad(): void
     {
         const confPath = path.join(this.ConfigPath, "ServerConfig.json");
@@ -117,11 +119,18 @@ export class IOManager
 
             logger.logWithColor(`Skills Extended: Loaded ${entries} locale entries for locale '${lang}'`, LogTextColor.GREEN);
         }
+
+        this.importMissingLocalesAsEnglish();
     }
 
     private importLocaleData(lang: string, localeData: Record<string, string>): number
     {
         const globals = this.InstanceManager.database.locales.global;
+
+        if (lang === "en")
+        {
+            this.EnLocale = localeData;
+        }
 
         for (const entry in localeData)
         {
@@ -129,6 +138,29 @@ export class IOManager
         }
 
         return Object.keys(localeData).length;
+    }
+
+    private importMissingLocalesAsEnglish(): void
+    {
+        const globals = this.InstanceManager.database.locales.global;
+        const logger = this.InstanceManager.logger;
+
+        let count = 0;
+
+        for (const entry in globals.en)
+        {
+            for (const lang in globals)
+            {
+                if (globals[lang][entry] === undefined)
+                {
+                    globals[lang][entry] = globals.en[entry];
+                    count++;
+                }
+            }  
+        }
+
+        logger.logWithColor(`Skills Extended: Defaulted ${count} locale entries to english across ${Object.keys(globals).length} languages.`, LogTextColor.YELLOW);
+        logger.logWithColor("Skills Extended: If you would like to provide translations, please reach out on the mod page.", LogTextColor.YELLOW);
     }
 
     private importAllImages(): void
