@@ -26,7 +26,8 @@
         "os": "^0.1",
         "tsyringe": "4.8.0",
         "typescript": "5.2.2",
-        "winston": "3.11.0"
+        "winston": "3.11.0",
+        "bestzip": "^2.2.1"
     },
     "dependencies": {
     }

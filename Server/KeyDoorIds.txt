@@ -266,6 +266,7 @@ Door ID: Lighthouse_WaterStation_00044 KeyID: 61aa5aed32a4743c3453d319 Key Name:
 Door ID: Lighthouse_WaterStation_00019 KeyID: 61aa81fcb225ac1ead7957c3 Key Name: Rogue USEC workshop key
 Door ID: Lighthouse_WaterStation_00017 KeyID: 61a64492ba05ef10d62adcc1 Key Name: Rogue USEC stash key
 Door ID: trunk_Lighthouse_Extension_00005 KeyID: 5448ba0b4bdc2d02308b456c Key Name: Factory emergency exit key
+Door ID: Lighthouse_SummerHotel_00035 KeyID: 66265d7be65f224b2e17c6aa Key Name: USEC cottage room key
 
 STREETS:
 
