@@ -29,6 +29,7 @@ internal static class LpHelpers
         {"Lighthouse", Plugin.SkillData.LockPicking.DoorPickLevels.Lighthouse},
         {"TarkovStreets", Plugin.SkillData.LockPicking.DoorPickLevels.Streets},
         {"Sandbox", Plugin.SkillData.LockPicking.DoorPickLevels.GroundZero},
+        {"Sandbox_high", Plugin.SkillData.LockPicking.DoorPickLevels.GroundZero},
     };
     
     /// <summary>

@@ -23,7 +23,7 @@ using UnityEngine.UI;
 
 namespace SkillsExtended;
 
-[BepInPlugin("com.dirtbikercj.SkillsExtended", "Skills Extended", "1.3.1")]
+[BepInPlugin("com.dirtbikercj.SkillsExtended", "Skills Extended", "1.3.2")]
 [BepInDependency("com.IcyClawz.CustomInteractions")]
 [BepInDependency("com.dirtbikercj.QuestsExtended")]
 public class Plugin : BaseUnityPlugin
