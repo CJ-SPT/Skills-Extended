@@ -17,7 +17,6 @@ public sealed class LockPickActionHandler
             LpHelpers.ApplyLockPickActionXp(InteractiveObject, Owner);
             InteractiveObject.Unlock();
             
-            
             QuestEvents.Instance.OnLockPickedEvent(this, EventArgs.Empty);
             return;
         }
@@ -47,14 +46,14 @@ public sealed class LockPickActionHandler
         }
 
         // Break the lock if more than 3 failed attempts
-        if (LpHelpers.DoorAttempts[InteractiveObject.Id] > Plugin.SkillData.LockPicking.AttemptsBeforeBreak)
-        {
-            Owner.DisplayPreloaderUiNotification("You broke the lock...");
-            InteractiveObject.KeyId = string.Empty;
-            InteractiveObject.Operatable = false;
-            InteractiveObject.DoorStateChanged(EDoorState.None);
-            QuestEvents.Instance.OnBreakLockEvent(this, EventArgs.Empty);
-        }
+        if (LpHelpers.DoorAttempts[InteractiveObject.Id] < Plugin.SkillData.LockPicking.AttemptsBeforeBreak) 
+            return;
+        
+        Owner.DisplayPreloaderUiNotification("You broke the lock...");
+        InteractiveObject.KeyId = string.Empty;
+        InteractiveObject.Operatable = false;
+        InteractiveObject.DoorStateChanged(EDoorState.None);
+        QuestEvents.Instance.OnBreakLockEvent(this, EventArgs.Empty);
     }
     
     private void RemoveUseFromLockPick()

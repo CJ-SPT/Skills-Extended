@@ -16,12 +16,7 @@ public static class WorldInteractionUtils
             throw new ArgumentNullException("owner is null...");
         }
 
-        if (owner?.Player?.Id != Singleton<GameWorld>.Instance?.MainPlayer?.Id)
-        {
-            return true;
-        }
-
-        return false;
+        return owner?.Player?.Id != Singleton<GameWorld>.Instance?.MainPlayer?.Id;
     }
 
     public static void AddLockpickingInteraction(this WorldInteractiveObject interactiveObject, ActionsReturnClass actionReturn, GamePlayerOwner owner)
@@ -43,20 +38,20 @@ public static class WorldInteractionUtils
                 Disabled = interactiveObject.Operatable
             };
 
-            notValidAction.Action = new Action(lockPickInteraction.DoorNotValid);
+            notValidAction.Action = lockPickInteraction.DoorNotValid;
             actionReturn.Actions.Add(notValidAction);
 
             return;
         }
 
-        ActionsTypesClass ValidAction = new()
+        ActionsTypesClass validAction = new()
         {
             Name = "Pick lock",
-            Disabled = !interactiveObject.Operatable && !LockPicking.LpHelpers.GetLockPicksInInventory().Any()
+            Disabled = !interactiveObject.Operatable && !LpHelpers.GetLockPicksInInventory().Any()
         };
 
-        ValidAction.Action = new Action(lockPickInteraction.TryPickLock);
-        actionReturn.Actions.Add(ValidAction);
+        validAction.Action = lockPickInteraction.TryPickLock;
+        actionReturn.Actions.Add(validAction);
     }
 
     public static void AddKeyCardInteraction(this KeycardDoor door, ActionsReturnClass actionReturn, GamePlayerOwner owner)
@@ -78,20 +73,20 @@ public static class WorldInteractionUtils
                 Disabled = door.Operatable
             };
 
-            notValidAction.Action = new Action(hackTerminalOperation.DoorNotValid);
+            notValidAction.Action = hackTerminalOperation.DoorNotValid;
             actionReturn.Actions.Add(notValidAction);
 
             return;
         }
 
-        ActionsTypesClass ValidAction = new()
+        ActionsTypesClass validAction = new()
         {
             Name = "Hack terminal",
-            Disabled = !door.Operatable && !LockPicking.LpHelpers.IsFlipperZeroInInventory()
+            Disabled = !door.Operatable && !LpHelpers.IsFlipperZeroInInventory()
         };
 
-        ValidAction.Action = new Action(hackTerminalOperation.TryHackTerminal);
-        actionReturn.Actions.Add(ValidAction);
+        validAction.Action = hackTerminalOperation.TryHackTerminal;
+        actionReturn.Actions.Add(validAction);
     }
     
     public static void AddInspectInteraction(this WorldInteractiveObject interactiveObject, ActionsReturnClass actionReturn, GamePlayerOwner owner)
@@ -109,7 +104,7 @@ public static class WorldInteractionUtils
 
         LockInspectInteraction keyInfoAction = new(interactiveObject, owner);
 
-        action.Action = new Action(keyInfoAction.TryInspectLock);
+        action.Action = keyInfoAction.TryInspectLock;
         actionReturn.Actions.Add(action);
     }
     
@@ -125,7 +120,7 @@ public static class WorldInteractionUtils
 
     private static bool IsValidDoorForInspect(WorldInteractiveObject interactiveObject)
     {
-        if (interactiveObject.KeyId == null || interactiveObject.KeyId == string.Empty
+        if (interactiveObject.KeyId is null || interactiveObject.KeyId == string.Empty
             || !interactiveObject.Operatable || interactiveObject.DoorState != EDoorState.Locked
             || !Plugin.Keys.KeyLocale.ContainsKey(interactiveObject.KeyId))
         {

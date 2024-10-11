@@ -115,7 +115,7 @@
         "SWEET_SPOT_RANGE_PER_LEVEL": 0.005,                // Bonus per level in percent to the sweet spot angle to allow movement of the cylinder
         "ATTEMPTS_BEFORE_BREAK": 3,                         // Failed attempts before a lock breaks
         "INSPECT_LOCK_XP_RATIO": 0.15,                      // Ratio of lock xp given for inspecting a lock
-        "FAILURE_LOCK_XP_RATIO": 0.25,                      // Ratio of lock xp given for inspecting a lock
+        "FAILURE_LOCK_XP_RATIO": 0.25,                      // Ratio of lock xp given for Failing a lock
         "XP_TABLE": {                                       // Door XP map
             "0": 0.01,
             "1": 0.15,

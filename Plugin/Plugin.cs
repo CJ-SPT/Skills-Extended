@@ -40,7 +40,7 @@ public class Plugin : BaseUnityPlugin
     
     public static RealismConfig RealismConfig;
 
-    private static GameObject Hook;
+    private static GameObject _hook;
     
     internal static UsecRifleBehaviour NatoWeaponScript;
     internal static BearRifleBehaviour EasternWeaponScript;
@@ -74,11 +74,10 @@ public class Plugin : BaseUnityPlugin
         
         Utils.GetTypes();
         
-        Hook = new GameObject("Skills Controller Object");
+        _hook = new GameObject("Skills Controller Object");
+        DontDestroyOnLoad(_hook);
         
-        BuffController = Hook.AddComponent<BuffController>();
-        
-        DontDestroyOnLoad(Hook);
+        BuffController = _hook.AddComponent<BuffController>();
     }
 
     private void Start()
@@ -96,12 +95,12 @@ public class Plugin : BaseUnityPlugin
         
         if (SkillData.NatoRifle.Enabled)
         {
-            NatoWeaponScript = Hook.AddComponent<UsecRifleBehaviour>();
+            NatoWeaponScript = _hook.AddComponent<UsecRifleBehaviour>();
         }
         
         if (SkillData.EasternRifle.Enabled)
         {
-            EasternWeaponScript = Hook.AddComponent<BearRifleBehaviour>();
+            EasternWeaponScript = _hook.AddComponent<BearRifleBehaviour>();
         }
         
         LoadMiniGame();
@@ -109,12 +108,10 @@ public class Plugin : BaseUnityPlugin
 
     private void Update()
     {
-        if (Session == null && ClientAppUtils.GetClientApp().GetClientBackEndSession() != null)
-        {
-            Session = ClientAppUtils.GetClientApp().GetClientBackEndSession();
-            
-            Log.LogDebug("Session set");
-        }
+        if (Session is not null && ClientAppUtils.GetClientApp()?.GetClientBackEndSession() is null) return;
+
+        Session = ClientAppUtils.GetClientApp().GetClientBackEndSession();
+        Log.LogDebug("Session set");
     }
 
     private static void LoadMiniGame()
