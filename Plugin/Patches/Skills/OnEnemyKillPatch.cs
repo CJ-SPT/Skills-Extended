@@ -26,6 +26,8 @@ public class OnEnemyKillPatch : ModulePatch
 
         var skills = Plugin.PlayerSkillManagerExt;
         var xp = Plugin.SkillData.SilentOps.XpPerAction;
+
+        if (___player_0.Skills.SilentOps.IsEliteLevel) return;
         
         if (itemInHands.GetItemComponent<KnifeComponent>() is not null)
         {

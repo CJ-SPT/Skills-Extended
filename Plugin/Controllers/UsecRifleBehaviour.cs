@@ -104,9 +104,12 @@ public class UsecRifleBehaviour : MonoBehaviour
 
     private static void CompleteSkill()
     {
-        SkillMgrExt.UsecRifleAction.Complete(NatoData.WeaponProfXp);
-
-        if (NatoData.SkillShareEnabled)
+        if (!SkillManager.UsecArsystems.IsEliteLevel)
+        {
+            SkillMgrExt.UsecRifleAction.Complete(NatoData.WeaponProfXp);
+        }
+        
+        if (NatoData.SkillShareEnabled && !SkillManager.BearAksystems.IsEliteLevel)
         {
 	        SkillMgrExt.BearRifleAction.Complete(NatoData.WeaponProfXp * NatoData.SkillShareXpRatio);
         }

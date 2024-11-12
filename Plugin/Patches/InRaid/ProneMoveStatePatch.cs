@@ -36,8 +36,11 @@ public class ProneMoveStatePatch : ModulePatch
         
         Logger.LogDebug($"Original Prone Speed: {speed}");
         Logger.LogDebug($"Updated Prone Speed: {speed * bonus}");
-        
-        player.ExecuteSkill(() => player.Skills.ProneAction.Complete(proneData.XpPerAction));
+
+        if (!player.Skills.ProneMovement.IsEliteLevel)
+        {
+            player.ExecuteSkill(() => player.Skills.ProneAction.Complete(proneData.XpPerAction));
+        }
         
         __result = Mathf.Clamp(speed * bonus, 0f, __instance.StateSpeedLimit * bonus);
         

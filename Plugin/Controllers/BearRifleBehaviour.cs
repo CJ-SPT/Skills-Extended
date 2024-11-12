@@ -108,9 +108,12 @@ internal class BearRifleBehaviour : MonoBehaviour
 
     private static void CompleteSkill()
     {
-        SkillMgrExt.BearRifleAction.Complete(EasternData.WeaponProfXp);
-
-        if (EasternData.SkillShareEnabled)
+        if (!SkillManager.BearAksystems.IsEliteLevel)
+        {
+            SkillMgrExt.BearRifleAction.Complete(EasternData.WeaponProfXp);
+        }
+        
+        if (EasternData.SkillShareEnabled && !SkillManager.UsecArsystems.IsEliteLevel)
         {
 	        SkillMgrExt.UsecRifleAction.Complete(EasternData.WeaponProfXp * EasternData.SkillShareXpRatio);
         }

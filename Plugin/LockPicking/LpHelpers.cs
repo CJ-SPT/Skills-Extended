@@ -82,7 +82,9 @@ internal static class LpHelpers
 
         var xpExists = Plugin.SkillData.LockPicking.XpTable.TryGetValue(doorLevel.ToString(), out var xp);
 
-        if (!xpExists) return;
+        var player = Singleton<GameWorld>.Instance.MainPlayer;
+        
+        if (!xpExists || player.Skills.Lockpicking.IsEliteLevel) return;
         
         xpToApply = isInspect
             ? xp * Plugin.SkillData.LockPicking.InspectLockXpRatio
@@ -91,9 +93,8 @@ internal static class LpHelpers
         xpToApply = isFailure
             ? xpToApply * Plugin.SkillData.LockPicking.FailureLockXpRatio
             : xpToApply;
-            
         
-        Singleton<GameWorld>.Instance.MainPlayer.ExecuteSkill(CompleteLockPickAction);
+        player.ExecuteSkill(CompleteLockPickAction);
     }
 
     private static void CompleteLockPickAction()
