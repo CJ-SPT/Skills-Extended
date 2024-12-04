@@ -7,7 +7,7 @@ using System.Diagnostics;
 using JetBrains.Annotations;
 using FieldAttributes = Mono.Cecil.FieldAttributes;
 
-public static class Patcher
+public static class SkillsExtendedPatcher
 {
     public static IEnumerable<string> TargetDLLs { get; } = new string[] { "Assembly-CSharp.dll" };
     public static TypeDefinition SkillManager;
@@ -230,7 +230,7 @@ public static class Patcher
         var ePlayerSide = assembly.MainModule.GetType("EFT.EPlayerSide");
         
         // This is the intermediate object the skill manager gets deserialized onto
-        var jsonObj = assembly.MainModule.GetType("GClass1795");
+        var jsonObj = assembly.MainModule.GetType("GClass1956");
 
         var mainModule = assembly.MainModule;
         
