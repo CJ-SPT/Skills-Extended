@@ -19,6 +19,8 @@ import { AchievementManager } from "./Managers/AchievementManager";
 import { TraderManager } from "./Managers/TraderManager";
 import { QuestManager } from "./Managers/QuestManager";
 import { SkillsExtendedIds } from "./enums/SkillsExtendedIds";
+import { IQuestReward } from "@spt/models/eft/common/tables/IQuest";
+import { QuestRewardType } from "@spt/models/enums/QuestRewardType";
 
 class SkillsExtended implements IPreSptLoadMod, IPostDBLoadMod
 {
@@ -61,7 +63,6 @@ class SkillsExtended implements IPreSptLoadMod, IPostDBLoadMod
         this.CreateItems();
         // Do this after so we dont wipe locales with create items
         this.IOManager.importData();
-        
 
         this.addItemToSpecSlots(SkillsExtendedIds.Lockpick);
         this.addItemToSpecSlots(SkillsExtendedIds.Pda);
@@ -85,7 +86,7 @@ class SkillsExtended implements IPreSptLoadMod, IPostDBLoadMod
 
         for (const craft of crafts)
         {
-            this.InstanceManager.database.hideout.production.push(craft)
+            this.InstanceManager.database.hideout.production.recipes.push(craft)
         }
     }
 
