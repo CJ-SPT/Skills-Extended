@@ -12,7 +12,7 @@ namespace SkillsExtended.Patches.InRaid;
 public class ProneMoveStatePatch : ModulePatch
 {
     private static FieldInfo _playerField;
-    private static ProneMovementData proneData => Plugin.SkillData.ProneMovement;
+    private static ProneMovementData ProneData => Plugin.SkillData.ProneMovement;
     
     protected override MethodBase GetTargetMethod()
     {
@@ -24,8 +24,8 @@ public class ProneMoveStatePatch : ModulePatch
     [HarmonyAfter(["RealismMod"])]
     private static bool Prefix(MovementContext __instance, float speed, ref float __result)
     {
+        if (!ProneData.Enabled) return true;
         if (__instance.CurrentState is not ProneMoveState) return true;
-        if (!proneData.Enabled) return true;
         
         var player = (Player)_playerField.GetValue(__instance);
 
@@ -41,7 +41,7 @@ public class ProneMoveStatePatch : ModulePatch
         
         if (!player.Skills.ProneMovement.IsEliteLevel)
         {
-            player.ExecuteSkill(() => player.Skills.ProneAction.Complete(proneData.XpPerAction));
+            player.ExecuteSkill(() => player.Skills.ProneAction.Complete(ProneData.XpPerAction));
         }
         
         __result = Mathf.Clamp(speed * bonus, 0f, __instance.StateSpeedLimit * bonus);
@@ -64,8 +64,8 @@ public class ProneMoveVolumePatch : ModulePatch
     [PatchPrefix]
     private static bool Prefix(MovementContext __instance, ref float __result)
     {
-        if (__instance.CurrentState is not ProneMoveState) return true;
         if (!proneData.Enabled) return true;
+        if (__instance.CurrentState is not ProneMoveState) return true;
         
         var player = (Player)_playerField.GetValue(__instance);
 
