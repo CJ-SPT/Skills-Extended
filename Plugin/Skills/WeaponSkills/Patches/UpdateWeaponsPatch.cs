@@ -12,9 +12,9 @@ using SkillsExtended.Helpers;
 using SkillsExtended.Models;
 using SkillsExtended.Skills.Core;
 
-namespace SkillsExtended.Skills.Shared.Patches;
+namespace SkillsExtended.Skills.WeaponSkills.Patches;
 
-internal class OnScreenChangePatch : ModulePatch
+internal class UpdateWeaponsPatch : ModulePatch
 {
     // Store an object containing the weapons original stats.
     private static readonly Dictionary<string, OrigWeaponValues> UsecOriginalWeaponValues = [];

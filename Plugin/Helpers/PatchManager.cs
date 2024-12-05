@@ -6,6 +6,7 @@ using SkillsExtended.Skills.ProneMovement.Patches;
 using SkillsExtended.Skills.Shared.Patches;
 using SkillsExtended.Skills.SilentOps.Patches;
 using SkillsExtended.Skills.UI.Patches;
+using SkillsExtended.Skills.WeaponSkills.Patches;
 
 namespace SkillsExtended.Helpers;
 
@@ -63,7 +64,7 @@ internal static class PatchManager
         new PersonalBuffFullStringPatch().Enable();
         new PersonalBuffStringPatch().Enable();
         new SkillLevelPanelPatch().Enable();
-        new OnScreenChangePatch().Enable();
+        new UpdateWeaponsPatch().Enable();
         new GetBarterPricePatch().Enable();
         new RequiredItemsCountPatch().Enable();
     }
