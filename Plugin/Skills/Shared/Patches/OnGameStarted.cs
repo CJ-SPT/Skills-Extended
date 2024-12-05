@@ -96,7 +96,6 @@ internal class OnGameStartedPatch : ModulePatch
             Player.ExecuteSkill(() => SkillMgrExt.BearRifleAction.Complete(NatoData.WeaponProfXp * NatoData.SkillShareXpRatio));
             
             SkillsPlugin.Log.LogDebug("APPLYING EASTERN RIFLE SHARED XP");
-            return;
         }
         
         Player.ExecuteSkill(() => SkillMgrExt.UsecRifleAction.Complete(NatoData.WeaponProfXp));
@@ -117,7 +116,6 @@ internal class OnGameStartedPatch : ModulePatch
             Player.ExecuteSkill(() => SkillMgrExt.UsecRifleAction.Complete(EasternData.WeaponProfXp * EasternData.SkillShareXpRatio));
            
             SkillsPlugin.Log.LogDebug("APPLYING EASTERN RIFLE SHARED XP");
-            return;
         }
         
         Player.ExecuteSkill(() => SkillMgrExt.BearRifleAction.Complete(EasternData.WeaponProfXp));

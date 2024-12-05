@@ -55,10 +55,10 @@ internal class UpdateWeaponsPatch : ModulePatch
     {
         if (SkillManager is null) yield break; 
         
-        var usecWeapons = SkillsPlugin.SkillData.NatoRifle;
+        var natoWeapons = SkillsPlugin.SkillData.NatoRifle;
         
         var weapons = GameUtils.GetProfile()!.Inventory.AllRealPlayerItems
-            .Where(x => usecWeapons.Weapons.Contains(x.TemplateId));
+            .Where(x => natoWeapons.Weapons.Contains(x.TemplateId));
         
         foreach (var item in weapons)
         {
@@ -106,10 +106,10 @@ internal class UpdateWeaponsPatch : ModulePatch
     {
         if (SkillManager == null) yield break;
 
-        var bearWeapons = SkillsPlugin.SkillData.EasternRifle;
+        var easternWeapons = SkillsPlugin.SkillData.EasternRifle;
 
         var weapons = GameUtils.GetProfile()!.Inventory.AllRealPlayerItems
-            .Where(x => bearWeapons.Weapons.Contains(x.TemplateId));
+            .Where(x => easternWeapons.Weapons.Contains(x.TemplateId));
 
         foreach (var item in weapons)
         {
