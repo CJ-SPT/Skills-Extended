@@ -1,12 +1,10 @@
 ﻿using BepInEx;
 using BepInEx.Bootstrap;
 using BepInEx.Logging;
-using DrakiaXYZ.VersionChecker;
 using Newtonsoft.Json;
 using SkillsExtended.Controllers;
 using SkillsExtended.Helpers;
 using SkillsExtended.Models;
-using SkillsExtended.Patches;
 using SPT.Common.Http;
 using SPT.Reflection.Utils;
 using System;
@@ -16,8 +14,10 @@ using System.Reflection;
 using IcyClawz.CustomInteractions;
 using SkillsExtended.Config;
 using SkillsExtended.ItemInteractions;
-using SkillsExtended.LockPicking;
 using SkillsExtended.Skills;
+using SkillsExtended.Skills.EasternRifle;
+using SkillsExtended.Skills.LockPicking;
+using SkillsExtended.Skills.NatoRifle;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -42,8 +42,8 @@ public class Plugin : BaseUnityPlugin
 
     private static GameObject _hook;
     
-    internal static UsecRifleBehaviour NatoWeaponScript;
-    internal static BearRifleBehaviour EasternWeaponScript;
+    internal static NatoRifleBehaviour NatoWeaponScript;
+    internal static EasternRifleBehaviour EasternWeaponScript;
     internal static BuffController BuffController;
 
     internal static readonly SkillManagerExt PlayerSkillManagerExt = new();
@@ -95,12 +95,12 @@ public class Plugin : BaseUnityPlugin
         
         if (SkillData.NatoRifle.Enabled)
         {
-            NatoWeaponScript = _hook.AddComponent<UsecRifleBehaviour>();
+            NatoWeaponScript = _hook.AddComponent<NatoRifleBehaviour>();
         }
         
         if (SkillData.EasternRifle.Enabled)
         {
-            EasternWeaponScript = _hook.AddComponent<BearRifleBehaviour>();
+            EasternWeaponScript = _hook.AddComponent<EasternRifleBehaviour>();
         }
         
         LoadMiniGame();
