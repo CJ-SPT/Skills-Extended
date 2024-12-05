@@ -4,6 +4,7 @@ using SPT.Reflection.Patching;
 using System.Linq;
 using System.Reflection;
 using EFT;
+using SkillsExtended.Helpers;
 
 namespace SkillsExtended.Skills.Shared.Patches;
 
@@ -21,7 +22,7 @@ internal class OnScreenChangePatch : ModulePatch
 
             var usecWeapons = Plugin.SkillData.NatoRifle;
 
-            Plugin.NatoWeaponScript.UsecWeapons = Plugin.Session.Profile.Inventory.AllRealPlayerItems
+            Plugin.NatoWeaponScript.UsecWeapons = GameUtils.GetProfile().Inventory.AllRealPlayerItems
                 .Where(x => usecWeapons.Weapons.Contains(x.TemplateId));
 
             StaticManager.BeginCoroutine(Plugin.NatoWeaponScript.UpdateWeapons());
@@ -33,7 +34,7 @@ internal class OnScreenChangePatch : ModulePatch
 
             var bearWeapons = Plugin.SkillData.EasternRifle;
 
-            Plugin.EasternWeaponScript.BearWeapons = Plugin.Session.Profile.Inventory.AllRealPlayerItems
+            Plugin.EasternWeaponScript.BearWeapons = GameUtils.GetProfile().Inventory.AllRealPlayerItems
                 .Where(x => bearWeapons.Weapons.Contains(x.TemplateId));
                 
             StaticManager.BeginCoroutine(Plugin.EasternWeaponScript.UpdateWeapons());

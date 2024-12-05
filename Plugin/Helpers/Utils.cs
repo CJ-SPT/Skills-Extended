@@ -19,12 +19,6 @@ namespace SkillsExtended.Helpers
 
         private static Type _idleStateType;
         
-        // If the player is in the GameWorld, use the main players SkillManager
-        public static SkillManager GetActiveSkillManager()
-        {
-            return ClientAppUtils.GetMainApp()?.GetClientBackEndSession()?.Profile?.Skills;
-        }
-
         // Get Json from the server
         public static T Get<T>(string url)
         {

@@ -15,9 +15,9 @@ public class NatoRifleBehaviour : MonoBehaviour
     private static bool _isSubscribed = false;
     public readonly Dictionary<string, int> WeaponInstanceIds = [];
     public IEnumerable<Item> UsecWeapons = null;
-    private static SkillManager SkillManager => Utils.GetActiveSkillManager();
+    private static SkillManager SkillManager => GameUtils.GetSkillManager();
     private static SkillManagerExt SkillMgrExt => Plugin.PlayerSkillManagerExt;
-    private static ISession Session => Plugin.Session;
+    private static ISession Session => GameUtils.GetSession();
     private static GameWorld GameWorld => Singleton<GameWorld>.Instance;
     private static int UsecARLevel => Session.Profile.Skills.UsecArsystems.Level;
     private static WeaponSkillData NatoData => Plugin.SkillData.NatoRifle;

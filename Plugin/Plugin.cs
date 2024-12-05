@@ -29,8 +29,6 @@ namespace SkillsExtended;
 public class Plugin : BaseUnityPlugin
 {
     public const int TarkovVersion = 33420;
-
-    public static ISession Session => ClientAppUtils.GetClientApp().GetClientBackEndSession();
     
     // Contains key information
     public static KeysResponse Keys;
@@ -84,6 +82,11 @@ public class Plugin : BaseUnityPlugin
     {
         Keys = Utils.Get<KeysResponse>("/skillsExtended/GetKeys");
         SkillData = Utils.Get<SkillDataResponse>("/skillsExtended/GetSkillsConfig");
+
+        foreach (var key in Keys.KeyLocale)
+        {
+            Logger.LogInfo($"Key: {key}");
+        }
         
         // If realism is installed, load its config
         if (Chainloader.PluginInfos.ContainsKey("RealismMod"))

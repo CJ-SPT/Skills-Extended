@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using EFT;
 using EFT.InventoryLogic;
 using HarmonyLib;
+using SkillsExtended.Helpers;
 using SPT.Reflection.Patching;
 using UnityEngine;
 
@@ -30,13 +32,13 @@ public class HealthEffectComponentPatch : ModulePatch
             if (!skillData.Enabled) return;
             if (template.DamageEffects is null) return;
             if (item is not MedicalItemClass meds) return;
-            if (Plugin.Session?.Profile?.Skills is null) return;
+            if (GameUtils.GetSkillManager() is null) return;
             if (meds.TemplateId.LocalizedName().Contains("Name")) return;
             
             if (_instanceIdsChangedAtLevel.TryGetValue(meds.TemplateId, out var level))
             {
                 // We've changed this item at this level
-                if (level == Plugin.Session.Profile.Skills.FirstAid.Level) return;
+                if (level == GameUtils.GetSkillManager().FirstAid.Level) return;
                 
                 _instanceIdsChangedAtLevel.Remove(meds.TemplateId);
             }
@@ -96,7 +98,7 @@ public class HealthEffectComponentPatch : ModulePatch
             if (fracture?.Cost == 0 || lightBleed?.Cost == 0 || heavyBleed?.Cost == 0) return;
             
             Logger.LogDebug($"Updated Template: {meds.TemplateId.LocalizedName()} \n");
-            _instanceIdsChangedAtLevel.Add(item.TemplateId, Plugin.Session.Profile.Skills.FirstAid.Level);
+            _instanceIdsChangedAtLevel.Add(item.TemplateId, GameUtils.GetSkillManager().FirstAid.Level);
         }
         catch (Exception e)
         {

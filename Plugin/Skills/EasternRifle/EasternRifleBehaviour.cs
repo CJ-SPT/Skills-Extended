@@ -17,8 +17,8 @@ internal class EasternRifleBehaviour : MonoBehaviour
     public readonly Dictionary<string, int> WeaponInstanceIds = [];
     public IEnumerable<Item> BearWeapons = null;
 
-    private static SkillManager SkillManager => Utils.GetActiveSkillManager();
-    private static ISession Session => Plugin.Session;
+    private static SkillManager SkillManager => GameUtils.GetSkillManager();
+    private static ISession Session => GameUtils.GetSession();
 
     private static SkillManagerExt SkillMgrExt => Plugin.PlayerSkillManagerExt;
     

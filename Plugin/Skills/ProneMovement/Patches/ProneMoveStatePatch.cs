@@ -1,6 +1,4 @@
-﻿using System;
-using System.Reflection;
-using Comfort.Common;
+﻿using System.Reflection;
 using EFT;
 using HarmonyLib;
 using SkillsExtended.Models;

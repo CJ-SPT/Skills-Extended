@@ -60,7 +60,7 @@ internal static class LpHelpers
     /// <returns>All lock pick items in the players inventory</returns>
     public static IEnumerable<Item> GetLockPicksInInventory()
     {
-        return Plugin.Session.Profile.Inventory.GetPlayerItems(EPlayerItems.Equipment)
+        return GameUtils.GetProfile().Inventory.GetPlayerItems(EPlayerItems.Equipment)
             .Where(x => x.TemplateId == "6622c28aed7e3bc72e301e22");
     }
 
@@ -70,7 +70,7 @@ internal static class LpHelpers
     /// <returns>true if in inventory</returns>
     public static bool IsFlipperZeroInInventory()
     {
-        return Plugin.Session.Profile.Inventory.GetPlayerItems(EPlayerItems.Equipment)
+        return GameUtils.GetProfile().Inventory.GetPlayerItems(EPlayerItems.Equipment)
             .Any(x => x.TemplateId == "662400eb756ca8948fe64fe8");
     }
 

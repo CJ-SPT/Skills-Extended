@@ -36,7 +36,7 @@ namespace SkillsExtended.Helpers
         
         private static void GetAllWeaponIDsInInventory()
         {
-            var weapons = Plugin.Session?.Profile?.Inventory?.AllRealPlayerItems;
+            var weapons = GameUtils.GetProfile().Inventory?.AllRealPlayerItems;
             weapons = weapons.Where(x => x is Weapon);
 
             foreach (var weapon in weapons)
