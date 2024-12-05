@@ -15,12 +15,12 @@ internal class LocationSceneAwakePatch : ModulePatch
         {
             if (interactableObj.KeyId is null && interactableObj.KeyId != string.Empty) return;
             
-            if (Plugin.Keys.KeyLocale.TryGetValue(interactableObj.KeyId, out var name))
+            if (SkillsPlugin.Keys.KeyLocale.TryGetValue(interactableObj.KeyId, out var name))
             {
-                Plugin.Log.LogDebug($"Door ID: {interactableObj.Id} KeyID: {interactableObj.KeyId} Key Name: {name}");
+                SkillsPlugin.Log.LogDebug($"Door ID: {interactableObj.Id} KeyID: {interactableObj.KeyId} Key Name: {name}");
             }
                 
-            Plugin.Log.LogError($"Door ID: {interactableObj.Id} KeyID: {interactableObj.KeyId} Key locale missing...");
+            SkillsPlugin.Log.LogError($"Door ID: {interactableObj.Id} KeyID: {interactableObj.KeyId} Key locale missing...");
         }
     }
 }

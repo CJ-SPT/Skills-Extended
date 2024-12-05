@@ -24,7 +24,7 @@ public class GetBarterPricePatch : ModulePatch
     private static void Postfix(TraderAssortmentControllerClass __instance, ref TraderClass.GStruct256? __result, Item[] items, TraderClass ___traderClass)
     {
         if (items.IsNullOrEmpty()) return;
-        if (!Plugin.SkillData.SilentOps.Enabled) return;
+        if (!SkillsPlugin.SkillData.SilentOps.Enabled) return;
         
         var scheme = __instance.GetSchemeForItem(items[0]);
 
@@ -70,7 +70,7 @@ public class RequiredItemsCountPatch : ModulePatch
     {
         // Suppressor type
         if (GetBarterPricePatch.Selecteditem is not SilencerItemClass) return;
-        if (!Plugin.SkillData.SilentOps.Enabled) return;
+        if (!SkillsPlugin.SkillData.SilentOps.Enabled) return;
         
         var bonus = 1f - SkillManagerExt.Instance(EPlayerSide.Usec).SilentOpsSilencerCostRedBuff;
 

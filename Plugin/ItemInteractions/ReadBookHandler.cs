@@ -32,7 +32,7 @@ internal static class ReadBookHandler
         
         if (buff is null)
         {
-            Plugin.Log.LogError($"Missing or not implemented buff for item: {item.TemplateId}");
+            SkillsPlugin.Log.LogError($"Missing or not implemented buff for item: {item.TemplateId}");
             return;
         }
 
@@ -63,7 +63,7 @@ internal static class ReadBookHandler
 
         if (buff is null)
         {
-            Plugin.Log.LogError($"Missing or not implemented buff for item: {item.TemplateId}");
+            SkillsPlugin.Log.LogError($"Missing or not implemented buff for item: {item.TemplateId}");
             return;
         }
         

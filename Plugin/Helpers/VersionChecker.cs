@@ -24,7 +24,7 @@ namespace SkillsExtended.Helpers
         public static bool CheckEftVersion(ManualLogSource Logger, PluginInfo Info, ConfigFile Config = null)
         {
             int currentVersion = FileVersionInfo.GetVersionInfo(BepInEx.Paths.ExecutablePath).FilePrivatePart;
-            int buildVersion = SkillsExtended.Plugin.TarkovVersion;
+            int buildVersion = SkillsExtended.SkillsPlugin.TarkovVersion;
             if (currentVersion != buildVersion)
             {
                 string errorMessage = $"ERROR: This version of Skills Extended was built for Tarkov {buildVersion}, but you are running {currentVersion}. Please download the correct plugin version.";

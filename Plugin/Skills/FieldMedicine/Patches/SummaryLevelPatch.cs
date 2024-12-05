@@ -19,7 +19,7 @@ internal class SummaryLevelPatch : ModulePatch
         AbstractSkillClass __instance, 
         ref int __result)
     {
-        if (!Plugin.SkillData.FieldMedicine.Enabled) return;
+        if (!SkillsPlugin.SkillData.FieldMedicine.Enabled) return;
 
         var buffLevel = __instance.Buff > 0 
             ? Mathf.FloorToInt(60 * (1 + SkillManagerExt.Instance(EPlayerSide.Usec).FieldMedicineSkillCap))

@@ -19,14 +19,14 @@ public class OnEnemyKillPatch : ModulePatch
     [PatchPostfix]
     private static void Postfix(Player ___player_0, DamageInfoStruct damage)
     {
-        if (!Plugin.SkillData.SilentOps.Enabled) return;
+        if (!SkillsPlugin.SkillData.SilentOps.Enabled) return;
         
         var itemInHands = ___player_0.InventoryController.ItemInHands;
         
         if (itemInHands is null) return;
 
         var skills = SkillManagerExt.Instance(EPlayerSide.Usec);
-        var xp = Plugin.SkillData.SilentOps.XpPerAction;
+        var xp = SkillsPlugin.SkillData.SilentOps.XpPerAction;
 
         if (___player_0.Skills.SilentOps.IsEliteLevel) return;
         

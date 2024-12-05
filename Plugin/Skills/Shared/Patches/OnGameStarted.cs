@@ -4,6 +4,8 @@ using System.Reflection;
 using EFT;
 using EFT.HealthSystem;
 using HarmonyLib;
+using SkillsExtended.Helpers;
+using SkillsExtended.Models;
 using SkillsExtended.Skills.Core;
 using SPT.Reflection.Patching;
 using SPT.Reflection.Utils;
@@ -16,8 +18,12 @@ internal class OnGameStartedPatch : ModulePatch
     private static Type _stimType;
     private static Type _painKillerType;
     private static Type _medEffectType;
-
-    private static Player _player;
+    
+    private static SkillManagerExt SkillMgrExt => SkillManagerExt.Instance(EPlayerSide.Usec);
+    
+    private static WeaponSkillData NatoData => SkillsPlugin.SkillData.NatoRifle;
+    private static WeaponSkillData EasternData => SkillsPlugin.SkillData.EasternRifle;
+    private static Player Player => GameUtils.GetPlayer();
     
     protected override MethodBase GetTargetMethod()
     {
@@ -33,38 +39,89 @@ internal class OnGameStartedPatch : ModulePatch
     [PatchPostfix]
     private static void Postfix(GameWorld __instance)
     {
-        _player = __instance.MainPlayer;
+        SkillsPlugin.Log.LogDebug($"Player map id: {__instance.MainPlayer.Location}");
         
-        Plugin.Log.LogDebug($"Player map id: {__instance.MainPlayer.Location}");
-
         LockPicking.LpHelpers.InspectedDoors.Clear();
         LockPicking.LpHelpers.DoorAttempts.Clear();
         
         __instance.MainPlayer.ActiveHealthController.EffectStartedEvent += ApplyMedicalXp;
+        
+        if (SkillsPlugin.SkillData.NatoRifle.Enabled)
+        {
+            Player!.Skills.OnMasteringExperienceChanged += ApplyNatoRifleXp;
+        }
+        
+        if (SkillsPlugin.SkillData.EasternRifle.Enabled)
+        {
+            Player!.Skills.OnMasteringExperienceChanged += ApplyEasternRifleXp;
+        }
     }
     
     private static void ApplyMedicalXp(IEffect effect)
     {
         var skillMgrExt = SkillManagerExt.Instance(EPlayerSide.Usec);
-        var xpGain = Plugin.SkillData.FieldMedicine.FieldMedicineXpPerAction;
         
-        if (_stimType.IsInstanceOfType(effect) || _painKillerType.IsInstanceOfType(effect))
+        if (SkillsPlugin.SkillData.FieldMedicine.Enabled && _stimType.IsInstanceOfType(effect) || _painKillerType.IsInstanceOfType(effect))
         {
-            if (!Plugin.SkillData.FieldMedicine.Enabled) return;
-            if (_player.Skills.FieldMedicine.IsEliteLevel) return;
+            if (GameUtils.GetPlayer()!.Skills.FieldMedicine.IsEliteLevel) return;
             
-            skillMgrExt.FieldMedicineAction.Complete(xpGain);
-            Logger.LogDebug("Applying Field Medicine XP");
+            var xpGain = SkillsPlugin.SkillData.FieldMedicine.FieldMedicineXpPerAction;
+            
+            Player.ExecuteSkill(() => skillMgrExt.FieldMedicineAction.Complete(xpGain));
+            Logger.LogDebug("APPLYING FIELD MEDICINE XP");
             return;
         }
 
-        if (_medEffectType.IsInstanceOfType(effect))
+        if (SkillsPlugin.SkillData.FirstAid.Enabled && _medEffectType.IsInstanceOfType(effect))
         {
-            if (!Plugin.SkillData.FirstAid.Enabled) return;
-            if (_player.Skills.FirstAid.IsEliteLevel) return;
+            if (GameUtils.GetPlayer()!.Skills.FirstAid.IsEliteLevel) return;
             
-            skillMgrExt.FirstAidAction.Complete(xpGain);
-            Logger.LogDebug("Applying First Aid XP");
+            var xpGain = SkillsPlugin.SkillData.FirstAid.FirstAidXpPerAction;
+            
+            Player.ExecuteSkill(() => skillMgrExt.FirstAidAction.Complete(xpGain));
+            Logger.LogDebug("APPLYING FIRST AID XP");
         }
+    }
+
+    private static void ApplyNatoRifleXp(MasterSkillClass skillClass)
+    {
+        if (GameUtils.GetSkillManager()!.UsecArsystems.IsEliteLevel) return;
+        
+        var weaponInHand = Player.HandsController.GetItem();
+
+        if (!NatoData.Weapons.Contains(weaponInHand.TemplateId)) return;
+        
+        if (NatoData.SkillShareEnabled)
+        {
+            Player.ExecuteSkill(() => SkillMgrExt.BearRifleAction.Complete(NatoData.WeaponProfXp * NatoData.SkillShareXpRatio));
+            
+            SkillsPlugin.Log.LogDebug("APPLYING EASTERN RIFLE SHARED XP");
+            return;
+        }
+        
+        Player.ExecuteSkill(() => SkillMgrExt.UsecRifleAction.Complete(NatoData.WeaponProfXp));
+        
+        SkillsPlugin.Log.LogDebug("APPLYING NATO RIFLE XP");
+    }
+
+    private static void ApplyEasternRifleXp(MasterSkillClass skillClass)
+    {
+        if (GameUtils.GetSkillManager()!.BearAksystems.IsEliteLevel) return;
+        
+        var weaponInHand = Player!.HandsController.GetItem();
+
+        if (!EasternData.Weapons.Contains(weaponInHand.TemplateId)) return;
+        
+        if (EasternData.SkillShareEnabled)
+        {
+            Player.ExecuteSkill(() => SkillMgrExt.UsecRifleAction.Complete(EasternData.WeaponProfXp * EasternData.SkillShareXpRatio));
+           
+            SkillsPlugin.Log.LogDebug("APPLYING EASTERN RIFLE SHARED XP");
+            return;
+        }
+        
+        Player.ExecuteSkill(() => SkillMgrExt.BearRifleAction.Complete(EasternData.WeaponProfXp));
+        
+        SkillsPlugin.Log.LogDebug("APPLYING EASTERN RIFLE XP");
     }
 }

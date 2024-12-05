@@ -207,16 +207,16 @@ public class LpLockPicking : MonoBehaviour
         var doorLevel = LpHelpers.GetLevelForDoor(owner.Player.Location, interactiveObject.Id);
         
         levelText.text = $"DOOR LEVEL: {doorLevel.ToString()}";
-        keyText.text = $"DOOR KEY: {Plugin.Keys.KeyLocale[interactiveObject.KeyId]}";
+        keyText.text = $"DOOR KEY: {SkillsPlugin.Keys.KeyLocale[interactiveObject.KeyId]}";
         
         SetSweetSpotRange(doorLevel);
         SetTimeLimit(doorLevel);
         
-        Plugin.Log.LogDebug($"LEVEL:        {doorLevel}");
-        Plugin.Log.LogDebug($"SWEET SPOT:   {_sweetSpotRange}");
-        Plugin.Log.LogDebug($"ROTATE SPEED: {rotateSpeed}");
-        Plugin.Log.LogDebug($"TIME LIMIT:   {_wiggleTimeLimit}");
-        Plugin.Log.LogDebug($"WIN ANGLE:    {rotateToWin}");
+        SkillsPlugin.Log.LogDebug($"LEVEL:        {doorLevel}");
+        SkillsPlugin.Log.LogDebug($"SWEET SPOT:   {_sweetSpotRange}");
+        SkillsPlugin.Log.LogDebug($"ROTATE SPEED: {rotateSpeed}");
+        SkillsPlugin.Log.LogDebug($"TIME LIMIT:   {_wiggleTimeLimit}");
+        SkillsPlugin.Log.LogDebug($"WIN ANGLE:    {rotateToWin}");
     }
     
     public void ActivatePractice(int doorLevel)
@@ -233,11 +233,11 @@ public class LpLockPicking : MonoBehaviour
         SetSweetSpotRange(doorLevel);
         SetTimeLimit(doorLevel);
         
-        Plugin.Log.LogDebug($"LEVEL:        {doorLevel}");
-        Plugin.Log.LogDebug($"SWEET SPOT:   {_sweetSpotRange}");
-        Plugin.Log.LogDebug($"ROTATE SPEED: {rotateSpeed}");
-        Plugin.Log.LogDebug($"TIME LIMIT:   {_wiggleTimeLimit}");
-        Plugin.Log.LogDebug($"WIN ANGLE:    {rotateToWin}");
+        SkillsPlugin.Log.LogDebug($"LEVEL:        {doorLevel}");
+        SkillsPlugin.Log.LogDebug($"SWEET SPOT:   {_sweetSpotRange}");
+        SkillsPlugin.Log.LogDebug($"ROTATE SPEED: {rotateSpeed}");
+        SkillsPlugin.Log.LogDebug($"TIME LIMIT:   {_wiggleTimeLimit}");
+        SkillsPlugin.Log.LogDebug($"WIN ANGLE:    {rotateToWin}");
     }
 
     private bool ShouldClose()
@@ -302,7 +302,7 @@ public class LpLockPicking : MonoBehaviour
             
             if (_timeSpentWiggling > _wiggleTimeLimit)
             {
-                Plugin.Log.LogDebug($"Time limit reached");
+                SkillsPlugin.Log.LogDebug($"Time limit reached");
                 HandleWin(false, true);
             }
             
@@ -359,12 +359,12 @@ public class LpLockPicking : MonoBehaviour
         var skillMod = 1 + SkillManagerExt.Instance(EPlayerSide.Usec).LockPickingForgiveness;
         var doorMod = Mathf.Clamp(doorLevel / 35f, 0.05f, 1.5f);
 
-        Plugin.Log.LogWarning($"SKILL: {skillMod}");
-        Plugin.Log.LogWarning($"DOOR: {doorMod}");
+        SkillsPlugin.Log.LogWarning($"SKILL: {skillMod}");
+        SkillsPlugin.Log.LogWarning($"DOOR: {doorMod}");
         
-        var configVal = Plugin.SkillData.LockPicking.SweetSpotRange;
+        var configVal = SkillsPlugin.SkillData.LockPicking.SweetSpotRange;
         
-        Plugin.Log.LogWarning($"CONFIG: {configVal}");
+        SkillsPlugin.Log.LogWarning($"CONFIG: {configVal}");
         
         _sweetSpotRange = Mathf.Clamp((configVal - doorMod) * skillMod, 0f, 20f);
     }
@@ -374,7 +374,7 @@ public class LpLockPicking : MonoBehaviour
         var skillMod = 1 + SkillManagerExt.Instance(EPlayerSide.Usec).LockPickingTimeBuff;
         var doorMod = Mathf.Clamp(doorLevel / 50f, 0.05f, 1f);
         
-        var configVal = Plugin.SkillData.LockPicking.PickStrength;
+        var configVal = SkillsPlugin.SkillData.LockPicking.PickStrength;
         
         _wiggleTimeLimit = Mathf.Clamp((configVal - doorMod) * skillMod, 1f, 20f);
     }

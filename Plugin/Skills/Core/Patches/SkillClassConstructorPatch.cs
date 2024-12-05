@@ -26,7 +26,7 @@ internal class SkillClassCtorPatch : ModulePatch
     {
         // This is where we set all of our buffs and actions, done as a constructor patch, so they always exist when we need them
 
-        var skillData = Plugin.SkillData;
+        var skillData = SkillsPlugin.SkillData;
         
         var skillMgrExt = skillManager.Side == EPlayerSide.Savage
             ? SkillManagerExt.Instance(EPlayerSide.Savage)

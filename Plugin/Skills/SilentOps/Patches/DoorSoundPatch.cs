@@ -19,7 +19,7 @@ public class DoorSoundPatch : ModulePatch
     [PatchPrefix]
     private static bool Prefix(WorldInteractiveObject __instance, EDoorState state)
     {
-        if (!Plugin.SkillData.SilentOps.Enabled) return true;
+        if (!SkillsPlugin.SkillData.SilentOps.Enabled) return true;
         
         if (__instance.OpenSound.Length != 0 && state == EDoorState.Open)
         {

@@ -6,7 +6,6 @@ using SkillsExtended.Controllers;
 using SkillsExtended.Helpers;
 using SkillsExtended.Models;
 using SPT.Common.Http;
-using SPT.Reflection.Utils;
 using System;
 using System.IO;
 using System.Linq;
@@ -14,10 +13,7 @@ using System.Reflection;
 using IcyClawz.CustomInteractions;
 using SkillsExtended.Config;
 using SkillsExtended.ItemInteractions;
-using SkillsExtended.Skills.Core;
-using SkillsExtended.Skills.EasternRifle;
 using SkillsExtended.Skills.LockPicking;
-using SkillsExtended.Skills.NatoRifle;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -26,7 +22,7 @@ namespace SkillsExtended;
 [BepInPlugin("com.dirtbikercj.SkillsExtended", "Skills Extended", "1.4.0")]
 [BepInDependency("com.IcyClawz.CustomInteractions")]
 [BepInDependency("com.dirtbikercj.QuestsExtended")]
-public class Plugin : BaseUnityPlugin
+public class SkillsPlugin : BaseUnityPlugin
 {
     public const int TarkovVersion = 33420;
     
@@ -40,8 +36,6 @@ public class Plugin : BaseUnityPlugin
 
     private static GameObject _hook;
     
-    internal static NatoRifleBehaviour NatoWeaponScript;
-    internal static EasternRifleBehaviour EasternWeaponScript;
     internal static BuffController BuffController;
     
     // TODO: Move this to the lockpicking namespace
@@ -92,16 +86,6 @@ public class Plugin : BaseUnityPlugin
             var jsonString = RequestHandler.GetJson("/RealismMod/GetInfo");
             RealismConfig = JsonConvert.DeserializeObject<RealismConfig>(jsonString);
             Log.LogInfo("Realism mod detected");
-        }
-        
-        if (SkillData.NatoRifle.Enabled)
-        {
-            NatoWeaponScript = _hook.AddComponent<NatoRifleBehaviour>();
-        }
-        
-        if (SkillData.EasternRifle.Enabled)
-        {
-            EasternWeaponScript = _hook.AddComponent<EasternRifleBehaviour>();
         }
         
         LoadMiniGame();

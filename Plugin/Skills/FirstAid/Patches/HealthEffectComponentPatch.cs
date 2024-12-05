@@ -28,7 +28,7 @@ public class HealthEffectComponentPatch : ModulePatch
         try
         { 
             var skillMgrExt = SkillManagerExt.Instance(EPlayerSide.Usec);
-            var skillData = Plugin.SkillData.FirstAid;
+            var skillData = SkillsPlugin.SkillData.FirstAid;
         
             if (!skillData.Enabled) return;
             if (template.DamageEffects is null) return;

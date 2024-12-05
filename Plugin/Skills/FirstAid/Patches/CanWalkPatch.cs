@@ -23,14 +23,14 @@ internal class CanWalkPatch : ModulePatch
     {
         if (!____player.IsYourPlayer) return;
 
-        if (Plugin.LockPickingGame.activeSelf)
+        if (SkillsPlugin.LockPickingGame.activeSelf)
         {
             __result = false;
             return;
         }
         
         var skillMgrExt = SkillManagerExt.Instance(EPlayerSide.Usec);
-        var skillData = Plugin.SkillData.FirstAid;
+        var skillData = SkillsPlugin.SkillData.FirstAid;
 
         if (!skillData.Enabled) return;
         if (!skillMgrExt.FirstAidMovementSpeedBuffElite) return;

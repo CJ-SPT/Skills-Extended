@@ -16,7 +16,7 @@ internal class PersonalBuffPatch : ModulePatch
     [PatchPostfix]
     public static void PostFix(GClass2756.GClass2781.GClass2782 __result)
     {
-        if (!Plugin.SkillData.FieldMedicine.Enabled) return;
+        if (!SkillsPlugin.SkillData.FieldMedicine.Enabled) return;
         if (__result.BuffName == "Pain") return;
         
         var durationBuff = SkillManagerExt.Instance(EPlayerSide.Usec).FieldMedicineDurationBonus;

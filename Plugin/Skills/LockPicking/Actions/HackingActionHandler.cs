@@ -31,7 +31,7 @@ public class HackingActionHandler
         }
 
         // Break the lock if more than 3 failed attempts
-        if (LpHelpers.DoorAttempts[InteractiveObject.Id] > Plugin.SkillData.LockPicking.AttemptsBeforeBreak)
+        if (LpHelpers.DoorAttempts[InteractiveObject.Id] > SkillsPlugin.SkillData.LockPicking.AttemptsBeforeBreak)
         {
             Owner.DisplayPreloaderUiNotification("You triggered security protocols..");
             InteractiveObject.KeyId = string.Empty;

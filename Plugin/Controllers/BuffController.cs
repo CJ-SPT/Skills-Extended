@@ -22,7 +22,7 @@ public class BuffController : MonoBehaviour
         var path = Path.Combine(directory, "Buffs.json");
         var text = File.ReadAllText(path);
         Buffs = JsonConvert.DeserializeObject<BuffsModel>(text);
-        Plugin.Log.LogWarning("Buffs loaded from disk.");
+        SkillsPlugin.Log.LogWarning("Buffs loaded from disk.");
     }
     
     public static void ApplyBuff(AbstractBuff buff)

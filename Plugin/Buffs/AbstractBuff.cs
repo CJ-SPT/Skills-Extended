@@ -21,7 +21,7 @@ public abstract class AbstractBuff
         var now = GetCurrentTime();
         ExpireTime = DateTimeOffset.FromUnixTimeSeconds(now + buff.DurationInSeconds);
         
-        Plugin.Log.LogDebug($"Buff expiry time set to {ExpireTime.ToString("yyyy-MM-dd HH:mm:ss")}");
+        SkillsPlugin.Log.LogDebug($"Buff expiry time set to {ExpireTime.ToString("yyyy-MM-dd HH:mm:ss")}");
     }
 
     /// <summary>

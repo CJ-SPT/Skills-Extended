@@ -5,7 +5,7 @@ namespace SkillsExtended.Skills.Core;
 
 public class SkillManagerExt
 {
-    private static SkillDataResponse SkillData => Plugin.SkillData;
+    private static SkillDataResponse SkillData => SkillsPlugin.SkillData;
     
     public readonly SkillManager.SkillBuffClass FirstAidItemSpeedBuff = new()
     {

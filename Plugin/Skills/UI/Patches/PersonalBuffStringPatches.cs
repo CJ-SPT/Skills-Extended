@@ -24,7 +24,7 @@ internal class PersonalBuffFullStringPatch : ModulePatch
         HashSet<string> ___hashSet_0,
         ref string __result)
     {
-        if (!Plugin.SkillData.FieldMedicine.Enabled) return;
+        if (!SkillsPlugin.SkillData.FieldMedicine.Enabled) return;
         if (__instance.BuffName == "Pain") return;
         
         var durationBuff = SkillManagerExt.Instance(EPlayerSide.Usec).FieldMedicineDurationBonus;
@@ -80,7 +80,7 @@ internal class PersonalBuffStringPatch : ModulePatch
         HashSet<string> ___hashSet_0,
         ref string __result)
     {
-        if (!Plugin.SkillData.FieldMedicine.Enabled) return;
+        if (!SkillsPlugin.SkillData.FieldMedicine.Enabled) return;
         if (__instance.BuffName == "Pain") return;
         
         var durationBuff = SkillManagerExt.Instance(EPlayerSide.Usec).FieldMedicineDurationBonus;

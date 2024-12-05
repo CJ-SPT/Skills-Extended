@@ -19,18 +19,18 @@ internal static class LpHelpers
     
     private static readonly Dictionary<string, Dictionary<string, int>> LocationDoorIdLevels = new()
     {
-        {"factory4_day", Plugin.SkillData.LockPicking.DoorPickLevels.Factory},
-        {"factory4_night", Plugin.SkillData.LockPicking.DoorPickLevels.Factory},
-        {"Woods", Plugin.SkillData.LockPicking.DoorPickLevels.Woods},
-        {"bigmap", Plugin.SkillData.LockPicking.DoorPickLevels.Customs},
-        {"Interchange", Plugin.SkillData.LockPicking.DoorPickLevels.Interchange},
-        {"RezervBase", Plugin.SkillData.LockPicking.DoorPickLevels.Reserve},
-        {"Shoreline", Plugin.SkillData.LockPicking.DoorPickLevels.Shoreline},
-        {"laboratory", Plugin.SkillData.LockPicking.DoorPickLevels.Labs},
-        {"Lighthouse", Plugin.SkillData.LockPicking.DoorPickLevels.Lighthouse},
-        {"TarkovStreets", Plugin.SkillData.LockPicking.DoorPickLevels.Streets},
-        {"Sandbox", Plugin.SkillData.LockPicking.DoorPickLevels.GroundZero},
-        {"Sandbox_high", Plugin.SkillData.LockPicking.DoorPickLevels.GroundZero},
+        {"factory4_day", SkillsPlugin.SkillData.LockPicking.DoorPickLevels.Factory},
+        {"factory4_night", SkillsPlugin.SkillData.LockPicking.DoorPickLevels.Factory},
+        {"Woods", SkillsPlugin.SkillData.LockPicking.DoorPickLevels.Woods},
+        {"bigmap", SkillsPlugin.SkillData.LockPicking.DoorPickLevels.Customs},
+        {"Interchange", SkillsPlugin.SkillData.LockPicking.DoorPickLevels.Interchange},
+        {"RezervBase", SkillsPlugin.SkillData.LockPicking.DoorPickLevels.Reserve},
+        {"Shoreline", SkillsPlugin.SkillData.LockPicking.DoorPickLevels.Shoreline},
+        {"laboratory", SkillsPlugin.SkillData.LockPicking.DoorPickLevels.Labs},
+        {"Lighthouse", SkillsPlugin.SkillData.LockPicking.DoorPickLevels.Lighthouse},
+        {"TarkovStreets", SkillsPlugin.SkillData.LockPicking.DoorPickLevels.Streets},
+        {"Sandbox", SkillsPlugin.SkillData.LockPicking.DoorPickLevels.GroundZero},
+        {"Sandbox_high", SkillsPlugin.SkillData.LockPicking.DoorPickLevels.GroundZero},
     };
     
     /// <summary>
@@ -43,7 +43,7 @@ internal static class LpHelpers
     {
         if (!LocationDoorIdLevels.TryGetValue(locationId, out var levels))
         {
-            Plugin.Log.LogError($"Could not find location ID: {locationId}");
+            SkillsPlugin.Log.LogError($"Could not find location ID: {locationId}");
             return -1;
         }
         
@@ -81,18 +81,18 @@ internal static class LpHelpers
     {
         var doorLevel = GetLevelForDoor(owner.Player.Location, interactiveObject.Id);
 
-        var xpExists = Plugin.SkillData.LockPicking.XpTable.TryGetValue(doorLevel.ToString(), out var xp);
+        var xpExists = SkillsPlugin.SkillData.LockPicking.XpTable.TryGetValue(doorLevel.ToString(), out var xp);
 
         var player = Singleton<GameWorld>.Instance.MainPlayer;
         
         if (!xpExists || player.Skills.Lockpicking.IsEliteLevel) return;
         
         xpToApply = isInspect
-            ? xp * Plugin.SkillData.LockPicking.InspectLockXpRatio
+            ? xp * SkillsPlugin.SkillData.LockPicking.InspectLockXpRatio
             : xp;
         
         xpToApply = isFailure
-            ? xpToApply * Plugin.SkillData.LockPicking.FailureLockXpRatio
+            ? xpToApply * SkillsPlugin.SkillData.LockPicking.FailureLockXpRatio
             : xpToApply;
         
         player.ExecuteSkill(CompleteLockPickAction);
@@ -110,7 +110,7 @@ internal static class LpHelpers
         var doorLevel = GetLevelForDoor(owner.Player.Location, interactiveObject.Id);
 
         // Display inspection info
-        NotificationManagerClass.DisplayMessageNotification($"Key for door is {Plugin.Keys.KeyLocale[interactiveObject.KeyId]}");
+        NotificationManagerClass.DisplayMessageNotification($"Key for door is {SkillsPlugin.Keys.KeyLocale[interactiveObject.KeyId]}");
         NotificationManagerClass.DisplayMessageNotification($"Lock level {doorLevel}");
     }
 }

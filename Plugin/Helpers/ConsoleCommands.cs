@@ -27,9 +27,9 @@ namespace SkillsExtended.Helpers
             [ConsoleCommand("minigame", "", "Mini game practice")]
             public static void StartMiniGame([ConsoleArgument(50)] int chance)
             {
-                Plugin.LockPickingGame.SetActive(true);
+                SkillsPlugin.LockPickingGame.SetActive(true);
                 
-                Plugin.LockPickingGame.GetComponent<LpLockPicking>()
+                SkillsPlugin.LockPickingGame.GetComponent<LpLockPicking>()
                     .ActivatePractice(chance);
             }
         }
@@ -41,7 +41,7 @@ namespace SkillsExtended.Helpers
 
             foreach (var weapon in weapons)
             {
-                Plugin.Log.LogDebug($"Template ID: {weapon.TemplateId}, locale name: {weapon.LocalizedName()}");
+                SkillsPlugin.Log.LogDebug($"Template ID: {weapon.TemplateId}, locale name: {weapon.LocalizedName()}");
             }
         }
         

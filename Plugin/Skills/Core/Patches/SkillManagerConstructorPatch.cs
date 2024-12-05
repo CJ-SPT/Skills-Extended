@@ -61,25 +61,25 @@ internal class SkillManagerConstructorPatch : ModulePatch
 
         // If the skill is not enabled, lock it
         AccessTools.Field(typeof(SkillClass), "Locked").SetValue(__instance.UsecArsystems,
-            !Plugin.SkillData.NatoRifle.Enabled);
+            !SkillsPlugin.SkillData.NatoRifle.Enabled);
 
         AccessTools.Field(typeof(SkillClass), "Locked").SetValue(__instance.BearAksystems,
-            !Plugin.SkillData.EasternRifle.Enabled);
+            !SkillsPlugin.SkillData.EasternRifle.Enabled);
         
         AccessTools.Field(typeof(SkillClass), "Locked").SetValue(__instance.Lockpicking,
-            !Plugin.SkillData.LockPicking.Enabled);
+            !SkillsPlugin.SkillData.LockPicking.Enabled);
         
         AccessTools.Field(typeof(SkillClass), "Locked").SetValue(__instance.FieldMedicine,
-            !Plugin.SkillData.FieldMedicine.Enabled);
+            !SkillsPlugin.SkillData.FieldMedicine.Enabled);
 
         AccessTools.Field(typeof(SkillClass), "Locked").SetValue(__instance.FirstAid,
-            !Plugin.SkillData.FirstAid.Enabled);
+            !SkillsPlugin.SkillData.FirstAid.Enabled);
         
         AccessTools.Field(typeof(SkillClass), "Locked").SetValue(__instance.ProneMovement,
-            !Plugin.SkillData.ProneMovement.Enabled);
+            !SkillsPlugin.SkillData.ProneMovement.Enabled);
         
         AccessTools.Field(typeof(SkillClass), "Locked").SetValue(__instance.SilentOps,
-            !Plugin.SkillData.SilentOps.Enabled);
+            !SkillsPlugin.SkillData.SilentOps.Enabled);
         
         
         // BonusController is called in SkillClass.OnTrigger and must not be null, otherwise it will trigger System.NullReferenceException.

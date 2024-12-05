@@ -15,7 +15,7 @@ internal class DoorActionPatch : ModulePatch
     private static void Postfix(ref ActionsReturnClass __result, GamePlayerOwner owner, WorldInteractiveObject worldInteractiveObject)
     {
         if (WorldInteractionUtils.IsBotInteraction(owner)
-            || !Plugin.SkillData.LockPicking.Enabled
+            || !SkillsPlugin.SkillData.LockPicking.Enabled
             || Singleton<GameWorld>.Instance.MainPlayer.Side == EPlayerSide.Savage)
         {
             return;
