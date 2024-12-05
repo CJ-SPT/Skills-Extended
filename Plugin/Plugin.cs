@@ -107,6 +107,7 @@ public class Plugin : BaseUnityPlugin
         LoadMiniGame();
     }
     
+    // TODO: Move this to the lockpicking namespace
     private static void LoadMiniGame()
     {
         var directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
