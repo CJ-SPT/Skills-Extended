@@ -40,11 +40,11 @@ internal static class PatchManager
     
     private static void InRaid()
     {
-        new DoorActionPatch().Enable();
+        // new DoorActionPatch().Enable(); // TODO: Fix me LP is broken as fuck.
         new OnGameStartedPatch().Enable();
         new ProneMoveStatePatch().Enable();
         new ProneMoveVolumePatch().Enable();
-        // new KeyCardDoorActionPatch().Enable(); // TODO
+        // new KeyCardDoorActionPatch().Enable(); // TODO: Fix me LP is broken as fuck.
         new DoorSoundPatch().Enable();
         new MeleeSpeedPatch().Enable();
     }
