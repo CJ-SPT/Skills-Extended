@@ -9,6 +9,8 @@ using SkillsExtended.Skills.UI.Patches;
 
 namespace SkillsExtended.Helpers;
 
+// TODO: Organize these into their respective methods for skills and generic patches
+
 internal static class PatchManager
 {
     public static void PatchAll()
