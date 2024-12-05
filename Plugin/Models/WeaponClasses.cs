@@ -1,4 +1,4 @@
-﻿namespace SkillsExtended.Skills;
+﻿namespace SkillsExtended.Models;
 
 public struct OrigWeaponValues
 {
