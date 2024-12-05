@@ -20,7 +20,7 @@ internal class EasternRifleBehaviour : MonoBehaviour
     private static SkillManager SkillManager => GameUtils.GetSkillManager();
     private static ISession Session => GameUtils.GetSession();
 
-    private static SkillManagerExt SkillMgrExt => Plugin.PlayerSkillManagerExt;
+    private static SkillManagerExt SkillMgrExt => SkillManagerExt.Instance(EPlayerSide.Usec);
     
     private static GameWorld GameWorld => Singleton<GameWorld>.Instance;
 
@@ -34,7 +34,7 @@ internal class EasternRifleBehaviour : MonoBehaviour
     {
         SetupSkillManager();
     }
-
+    
     public IEnumerator UpdateWeapons()
     {
         if (SkillManager == null || BearWeapons == null) yield break;

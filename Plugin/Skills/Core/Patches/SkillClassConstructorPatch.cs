@@ -29,8 +29,10 @@ internal class SkillClassCtorPatch : ModulePatch
         var skillData = Plugin.SkillData;
         
         var skillMgrExt = skillManager.Side == EPlayerSide.Savage
-            ? Plugin.ScavSkillManagerExt
-            : Plugin.PlayerSkillManagerExt;
+            ? SkillManagerExt.Instance(EPlayerSide.Savage)
+            // Doesn't matter what player side we pass here
+            // As long as it's not savage
+            : SkillManagerExt.Instance(EPlayerSide.Usec); 
         
         if (id == ESkillId.FirstAid)
         {

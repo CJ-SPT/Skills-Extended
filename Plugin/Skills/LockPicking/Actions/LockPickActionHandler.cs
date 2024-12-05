@@ -3,6 +3,7 @@ using System.Linq;
 using EFT;
 using EFT.Interactive;
 using QuestsExtended.API;
+using SkillsExtended.Skills.Core;
 
 namespace SkillsExtended.Skills.LockPicking.Actions;
 
@@ -59,9 +60,8 @@ public sealed class LockPickActionHandler
     
     private void RemoveUseFromLockPick()
     {
-        var skillMgrExt = Plugin.PlayerSkillManagerExt;
-        
-        if (skillMgrExt.LockPickingUseBuffElite.Value) return;
+        // We are elite level, do not remove a use.
+        if (SkillManagerExt.Instance(EPlayerSide.Usec).LockPickingUseBuffElite.Value) return;
         
         // Remove a use from a lock pick in the inventory
         var lockPicks = LpHelpers.GetLockPicksInInventory();

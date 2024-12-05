@@ -97,6 +97,25 @@ public class SkillManagerExt
     public readonly SkillManager.SkillActionClass SilentOpsGunAction = new();
     public readonly SkillManager.SkillActionClass SilentOpsMeleeAction = new();
     
+    private static SkillManagerExt _playerInstance;
+    private static SkillManagerExt _scavInstance;
+    
+    /// <summary>
+    /// Returns the SkillManagerExt instance for the respective side passed.
+    /// For now for clarity always pass EPlayerSide.Usec for the PMC as
+    /// there's no difference at the moment.
+    /// The first time this is called it will also initialize the fields.
+    /// </summary>
+    /// <param name="playerSide">Side to get the SkillManagerExt for</param>
+    /// <returns>SkillManagerExt</returns>
+    public static SkillManagerExt Instance(EPlayerSide playerSide)
+    {
+        _playerInstance ??= new SkillManagerExt();
+        _scavInstance ??= new SkillManagerExt();
+        
+        return playerSide == EPlayerSide.Savage ? _scavInstance : _playerInstance;
+    }
+    
     public SkillManager.SkillBuffAbstractClass[] FirstAidBuffs()
     {
         return new SkillManager.SkillBuffAbstractClass[]

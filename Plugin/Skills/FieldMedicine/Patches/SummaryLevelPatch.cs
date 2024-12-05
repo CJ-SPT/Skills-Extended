@@ -1,5 +1,7 @@
 ﻿using System.Reflection;
+using EFT;
 using HarmonyLib;
+using SkillsExtended.Skills.Core;
 using SPT.Reflection.Patching;
 using UnityEngine;
 
@@ -20,7 +22,7 @@ internal class SummaryLevelPatch : ModulePatch
         if (!Plugin.SkillData.FieldMedicine.Enabled) return;
 
         var buffLevel = __instance.Buff > 0 
-            ? Mathf.FloorToInt(60 * (1 + Plugin.PlayerSkillManagerExt.FieldMedicineSkillCap))
+            ? Mathf.FloorToInt(60 * (1 + SkillManagerExt.Instance(EPlayerSide.Usec).FieldMedicineSkillCap))
             : 51;
         
         __result = Mathf.Min(buffLevel, __instance.Level + __instance.Buff);

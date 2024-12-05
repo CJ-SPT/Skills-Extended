@@ -3,6 +3,7 @@ using System.Reflection;
 using EFT;
 using EFT.InventoryLogic;
 using HarmonyLib;
+using SkillsExtended.Skills.Core;
 using SPT.Reflection.Patching;
 
 namespace SkillsExtended.Skills.SilentOps.Patches;
@@ -24,7 +25,7 @@ public class OnEnemyKillPatch : ModulePatch
         
         if (itemInHands is null) return;
 
-        var skills = Plugin.PlayerSkillManagerExt;
+        var skills = SkillManagerExt.Instance(EPlayerSide.Usec);
         var xp = Plugin.SkillData.SilentOps.XpPerAction;
 
         if (___player_0.Skills.SilentOps.IsEliteLevel) return;
@@ -37,7 +38,7 @@ public class OnEnemyKillPatch : ModulePatch
         
         if (itemInHands is Weapon weap)
         {
-            var isSuppressed = weap.Mods.Any(x => x is GClass2671);
+            var isSuppressed = weap.Mods.Any(x => x is SilencerItemClass);
 
             if (!isSuppressed) return;
             

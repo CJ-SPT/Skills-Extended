@@ -1,5 +1,7 @@
 ﻿using System.Reflection;
+using EFT;
 using HarmonyLib;
+using SkillsExtended.Skills.Core;
 using SPT.Reflection.Patching;
 
 namespace SkillsExtended.Skills.SilentOps.Patches;
@@ -16,7 +18,7 @@ public class MeleeSpeedPatch : ModulePatch
     {
         if (!Plugin.SkillData.SilentOps.Enabled) return;
         
-        var bonus = 1 + Plugin.PlayerSkillManagerExt.SilentOpsIncMeleeSpeedBuff;
+        var bonus = 1 + SkillManagerExt.Instance(EPlayerSide.Usec).SilentOpsIncMeleeSpeedBuff;
 
         speed *= bonus;
     }

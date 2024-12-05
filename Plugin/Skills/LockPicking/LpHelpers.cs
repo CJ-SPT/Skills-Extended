@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using SkillsExtended.Helpers;
 using SkillsExtended.Skills;
+using SkillsExtended.Skills.Core;
 
 namespace SkillsExtended.Skills.LockPicking;
 
@@ -101,9 +102,7 @@ internal static class LpHelpers
     {
         if (xpToApply == 0.0f) return;
         
-        var skillMgrExt = Plugin.PlayerSkillManagerExt;
-        
-        skillMgrExt.LockPickAction.Complete(xpToApply);
+        SkillManagerExt.Instance(EPlayerSide.Usec).LockPickAction.Complete(xpToApply);
     }
     
     public static void DisplayInspectInformation(WorldInteractiveObject interactiveObject, GamePlayerOwner owner)

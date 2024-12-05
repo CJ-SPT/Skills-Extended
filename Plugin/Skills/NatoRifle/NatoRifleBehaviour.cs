@@ -16,7 +16,7 @@ public class NatoRifleBehaviour : MonoBehaviour
     public readonly Dictionary<string, int> WeaponInstanceIds = [];
     public IEnumerable<Item> UsecWeapons = null;
     private static SkillManager SkillManager => GameUtils.GetSkillManager();
-    private static SkillManagerExt SkillMgrExt => Plugin.PlayerSkillManagerExt;
+    private static SkillManagerExt SkillMgrExt => SkillManagerExt.Instance(EPlayerSide.Usec);
     private static ISession Session => GameUtils.GetSession();
     private static GameWorld GameWorld => Singleton<GameWorld>.Instance;
     private static int UsecARLevel => Session.Profile.Skills.UsecArsystems.Level;

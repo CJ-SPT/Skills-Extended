@@ -43,10 +43,8 @@ public class Plugin : BaseUnityPlugin
     internal static NatoRifleBehaviour NatoWeaponScript;
     internal static EasternRifleBehaviour EasternWeaponScript;
     internal static BuffController BuffController;
-
-    internal static readonly SkillManagerExt PlayerSkillManagerExt = new();
-    internal static readonly SkillManagerExt ScavSkillManagerExt = new();
-
+    
+    // TODO: Move this to the lockpicking namespace
     public static GameObject LockPickingGame;
     
     internal static ManualLogSource Log;

@@ -2,6 +2,7 @@
 using EFT;
 using EFT.ObstacleCollision;
 using HarmonyLib;
+using SkillsExtended.Skills.Core;
 using SPT.Reflection.Patching;
 
 namespace SkillsExtended.Skills.FirstAid.Patches;
@@ -28,7 +29,7 @@ internal class CanWalkPatch : ModulePatch
             return;
         }
         
-        var skillMgrExt = Plugin.PlayerSkillManagerExt;
+        var skillMgrExt = SkillManagerExt.Instance(EPlayerSide.Usec);
         var skillData = Plugin.SkillData.FirstAid;
 
         if (!skillData.Enabled) return;

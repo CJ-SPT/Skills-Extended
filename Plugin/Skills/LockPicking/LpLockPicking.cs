@@ -5,6 +5,7 @@ using EFT.UI;
 using EFT.Interactive;
 using SkillsExtended.Config;
 using SkillsExtended.Helpers;
+using SkillsExtended.Skills.Core;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
@@ -355,7 +356,7 @@ public class LpLockPicking : MonoBehaviour
 
     private static void SetSweetSpotRange(int doorLevel)
     {
-        var skillMod = 1 + Plugin.PlayerSkillManagerExt.LockPickingForgiveness;
+        var skillMod = 1 + SkillManagerExt.Instance(EPlayerSide.Usec).LockPickingForgiveness;
         var doorMod = Mathf.Clamp(doorLevel / 35f, 0.05f, 1.5f);
 
         Plugin.Log.LogWarning($"SKILL: {skillMod}");
@@ -370,7 +371,7 @@ public class LpLockPicking : MonoBehaviour
     
     private static void SetTimeLimit(int doorLevel)
     {
-        var skillMod = 1 + Plugin.PlayerSkillManagerExt.LockPickingTimeBuff;
+        var skillMod = 1 + SkillManagerExt.Instance(EPlayerSide.Usec).LockPickingTimeBuff;
         var doorMod = Mathf.Clamp(doorLevel / 50f, 0.05f, 1f);
         
         var configVal = Plugin.SkillData.LockPicking.PickStrength;

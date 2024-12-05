@@ -1,7 +1,9 @@
 ﻿using System.Linq;
 using System.Reflection;
+using EFT;
 using EFT.InventoryLogic;
 using HarmonyLib;
+using SkillsExtended.Skills.Core;
 using SPT.Reflection.Patching;
 using SPT.Reflection.Utils;
 using UnityEngine;
@@ -27,8 +29,6 @@ public class GetBarterPricePatch : ModulePatch
         var scheme = __instance.GetSchemeForItem(items[0]);
 
         if (scheme is null) return;
-
-        var skillMgrExt = Plugin.PlayerSkillManagerExt;
         
         float price = 0;
         foreach (var item in items)
@@ -39,7 +39,7 @@ public class GetBarterPricePatch : ModulePatch
             
             var num2 = Mathf.Ceil((float)barterScheme.Sum(TraderAssortmentControllerClass.Class1892.class1892_0.method_0));
 
-            var bonus = 1f - skillMgrExt.SilentOpsSilencerCostRedBuff;
+            var bonus = 1f - SkillManagerExt.Instance(EPlayerSide.Usec).SilentOpsSilencerCostRedBuff;
 
             // Silencer Type
             if (item is SilencerItemClass)
@@ -72,8 +72,7 @@ public class RequiredItemsCountPatch : ModulePatch
         if (GetBarterPricePatch.Selecteditem is not SilencerItemClass) return;
         if (!Plugin.SkillData.SilentOps.Enabled) return;
         
-        var skillMgrExt = Plugin.PlayerSkillManagerExt;
-        var bonus = 1f - skillMgrExt.SilentOpsSilencerCostRedBuff;
+        var bonus = 1f - SkillManagerExt.Instance(EPlayerSide.Usec).SilentOpsSilencerCostRedBuff;
 
         __result = (int)Mathf.Ceil(__result * bonus);
     }

@@ -5,6 +5,7 @@ using EFT;
 using EFT.InventoryLogic;
 using HarmonyLib;
 using SkillsExtended.Helpers;
+using SkillsExtended.Skills.Core;
 using SPT.Reflection.Patching;
 using UnityEngine;
 
@@ -26,7 +27,7 @@ public class HealthEffectComponentPatch : ModulePatch
     {
         try
         { 
-            var skillMgrExt = Plugin.PlayerSkillManagerExt;
+            var skillMgrExt = SkillManagerExt.Instance(EPlayerSide.Usec);
             var skillData = Plugin.SkillData.FirstAid;
         
             if (!skillData.Enabled) return;

@@ -4,6 +4,7 @@ using System.Reflection;
 using EFT;
 using EFT.HealthSystem;
 using HarmonyLib;
+using SkillsExtended.Skills.Core;
 using SPT.Reflection.Patching;
 using SPT.Reflection.Utils;
 
@@ -44,7 +45,7 @@ internal class OnGameStartedPatch : ModulePatch
     
     private static void ApplyMedicalXp(IEffect effect)
     {
-        var skillMgrExt = Plugin.PlayerSkillManagerExt;
+        var skillMgrExt = SkillManagerExt.Instance(EPlayerSide.Usec);
         var xpGain = Plugin.SkillData.FieldMedicine.FieldMedicineXpPerAction;
         
         if (_stimType.IsInstanceOfType(effect) || _painKillerType.IsInstanceOfType(effect))

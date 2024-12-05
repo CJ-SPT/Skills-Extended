@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using SPT.Reflection.Patching;
 using System.Reflection;
 using System.Text;
+using EFT;
 using HarmonyLib;
+using SkillsExtended.Skills.Core;
 
 namespace SkillsExtended.Skills.UI.Patches;
 
@@ -25,8 +27,8 @@ internal class PersonalBuffFullStringPatch : ModulePatch
         if (!Plugin.SkillData.FieldMedicine.Enabled) return;
         if (__instance.BuffName == "Pain") return;
         
-        var durationBuff = Plugin.PlayerSkillManagerExt.FieldMedicineDurationBonus;
-        var chanceBuff = Plugin.PlayerSkillManagerExt.FieldMedicineChanceBonus;
+        var durationBuff = SkillManagerExt.Instance(EPlayerSide.Usec).FieldMedicineDurationBonus;
+        var chanceBuff = SkillManagerExt.Instance(EPlayerSide.Usec).FieldMedicineChanceBonus;
         
         var flag = __instance.Value.IsZero();
         if (__instance.Delay.IsZero() && (__instance.Duration.IsZero() || __instance.Duration >= 7200f) && __instance.Value.IsZero())
@@ -81,8 +83,8 @@ internal class PersonalBuffStringPatch : ModulePatch
         if (!Plugin.SkillData.FieldMedicine.Enabled) return;
         if (__instance.BuffName == "Pain") return;
         
-        var durationBuff = Plugin.PlayerSkillManagerExt.FieldMedicineDurationBonus;
-        var chanceBuff = Plugin.PlayerSkillManagerExt.FieldMedicineChanceBonus;
+        var durationBuff = SkillManagerExt.Instance(EPlayerSide.Usec).FieldMedicineDurationBonus;
+        var chanceBuff = SkillManagerExt.Instance(EPlayerSide.Usec).FieldMedicineChanceBonus;
         
         var text = __instance.BuffColoredStringValue();
         var flag = __instance.Value.IsZero();

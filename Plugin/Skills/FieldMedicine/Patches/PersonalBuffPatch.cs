@@ -1,5 +1,7 @@
 ﻿using System.Reflection;
+using EFT;
 using HarmonyLib;
+using SkillsExtended.Skills.Core;
 using SPT.Reflection.Patching;
 
 namespace SkillsExtended.Skills.FieldMedicine.Patches;
@@ -17,8 +19,8 @@ internal class PersonalBuffPatch : ModulePatch
         if (!Plugin.SkillData.FieldMedicine.Enabled) return;
         if (__result.BuffName == "Pain") return;
         
-        var durationBuff = Plugin.PlayerSkillManagerExt.FieldMedicineDurationBonus;
-        var chanceBuff = Plugin.PlayerSkillManagerExt.FieldMedicineChanceBonus;
+        var durationBuff = SkillManagerExt.Instance(EPlayerSide.Usec).FieldMedicineDurationBonus;
+        var chanceBuff = SkillManagerExt.Instance(EPlayerSide.Usec).FieldMedicineChanceBonus;
         
         __result.Duration *= 1f + durationBuff;
         __result.Delay *= __result.Delay == 1f 
