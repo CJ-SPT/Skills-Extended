@@ -24,7 +24,7 @@ public class ProneMoveStatePatch : ModulePatch
     [HarmonyAfter(["RealismMod"])]
     private static bool Prefix(MovementContext __instance, float speed, ref float __result)
     {
-        if (__instance.CurrentState is not GClass1718) return true;
+        if (__instance.CurrentState is not ProneMoveState) return true;
         if (!proneData.Enabled) return true;
         
         var player = (Player)_playerField.GetValue(__instance);
@@ -33,10 +33,12 @@ public class ProneMoveStatePatch : ModulePatch
 
         var buff = player.Skills.ProneMovementSpeed;
         var bonus = 1f + buff;
-        
+
+#if DEBUG
         Logger.LogDebug($"Original Prone Speed: {speed}");
         Logger.LogDebug($"Updated Prone Speed: {speed * bonus}");
-
+#endif
+        
         if (!player.Skills.ProneMovement.IsEliteLevel)
         {
             player.ExecuteSkill(() => player.Skills.ProneAction.Complete(proneData.XpPerAction));
@@ -62,7 +64,7 @@ public class ProneMoveVolumePatch : ModulePatch
     [PatchPrefix]
     private static bool Prefix(MovementContext __instance, ref float __result)
     {
-        if (__instance.CurrentState is not GClass1718) return true;
+        if (__instance.CurrentState is not ProneMoveState) return true;
         if (!proneData.Enabled) return true;
         
         var player = (Player)_playerField.GetValue(__instance);

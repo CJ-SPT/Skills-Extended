@@ -17,7 +17,7 @@ public class SkillManagerExt
         Id = EBuffId.FirstAidResourceCost,
     };
     
-    public readonly SkillManager.GClass1790 FirstAidMovementSpeedBuffElite = new()
+    public readonly SkillManager.GClass1988 FirstAidMovementSpeedBuffElite = new()
     {
         Id = EBuffId.FirstAidMovementSpeedElite,
         BuffType = SkillManager.EBuffType.Elite
@@ -68,7 +68,7 @@ public class SkillManagerExt
         Id = EBuffId.LockpickingForgivenessAngle,
     };
     
-    public readonly SkillManager.GClass1790 LockPickingUseBuffElite = new()
+    public readonly SkillManager.GClass1988 LockPickingUseBuffElite = new()
     {
         Id = EBuffId.LockpickingUseElite,
         BuffType = SkillManager.EBuffType.Elite

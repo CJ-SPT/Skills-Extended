@@ -49,7 +49,7 @@ namespace SkillsExtended.Helpers
         private static void DoDamage()
         {
             var player = Singleton<GameWorld>.Instance.MainPlayer;
-            DamageInfo Blunt = new DamageInfo();
+            var Blunt = new DamageInfoStruct();
             
             if (player is null) { return; }
 
@@ -59,7 +59,7 @@ namespace SkillsExtended.Helpers
         private static void DoDie()
         {
             var player = Singleton<GameWorld>.Instance.MainPlayer;
-            DamageInfo Blunt = new DamageInfo();
+            var Blunt = new DamageInfoStruct();
             
             if (player is null) { return; }
 

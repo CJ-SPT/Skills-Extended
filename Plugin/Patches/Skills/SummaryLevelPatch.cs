@@ -9,12 +9,12 @@ internal class SummaryLevelPatch : ModulePatch
 {
     protected override MethodBase GetTargetMethod()
     {
-        return AccessTools.PropertyGetter(typeof(GClass1778), nameof(GClass1778.SummaryLevel));
+        return AccessTools.PropertyGetter(typeof(AbstractSkillClass), nameof(AbstractSkillClass.SummaryLevel));
     }
 
     [PatchPostfix]
     public static void PostFix(
-        GClass1778 __instance, 
+        AbstractSkillClass __instance, 
         ref int __result)
     {
         if (!Plugin.SkillData.FieldMedicine.Enabled) return;

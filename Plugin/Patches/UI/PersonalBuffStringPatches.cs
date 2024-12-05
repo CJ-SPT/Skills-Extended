@@ -7,16 +7,18 @@ using HarmonyLib;
 
 namespace SkillsExtended.Patches.UI;
 
+// TODO: What the fuck is this shit?
+
 internal class PersonalBuffFullStringPatch : ModulePatch
 {
     protected override MethodBase GetTargetMethod()
     {
-        return AccessTools.Method(typeof(GClass2438.GClass2463.GClass2464), nameof(GClass2438.GClass2463.GClass2464.GetStringValue));
+        return AccessTools.Method(typeof(GClass2756.GClass2781.GClass2782), nameof(GClass2756.GClass2781.GClass2782.GetStringValue));
     }
 
     [PatchPostfix]
     public static void PostFix(
-        GClass2438.GClass2463.GClass2464 __instance,
+        GClass2756.GClass2781.GClass2782 __instance,
         HashSet<string> ___hashSet_0,
         ref string __result)
     {
@@ -67,12 +69,12 @@ internal class PersonalBuffStringPatch : ModulePatch
 {
     protected override MethodBase GetTargetMethod()
     {
-        return AccessTools.Method(typeof(GClass2438.GClass2463.GClass2464), nameof(GClass2438.GClass2463.GClass2464.GetStringValue));
+        return AccessTools.Method(typeof(GClass2756.GClass2781.GClass2782), nameof(GClass2756.GClass2781.GClass2782.GetStringValue));
     }
 
     [PatchPostfix]
     public static void PostFix(
-        GClass2438.GClass2463.GClass2464 __instance, 
+        GClass2756.GClass2781.GClass2782 __instance, 
         HashSet<string> ___hashSet_0,
         ref string __result)
     {

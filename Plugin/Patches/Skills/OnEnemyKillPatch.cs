@@ -16,11 +16,11 @@ public class OnEnemyKillPatch : ModulePatch
     }
 
     [PatchPostfix]
-    private static void Postfix(Player ___player_0, DamageInfo damage)
+    private static void Postfix(Player ___player_0, DamageInfoStruct damage)
     {
         if (!Plugin.SkillData.SilentOps.Enabled) return;
         
-        var itemInHands = ___player_0.InventoryControllerClass.ItemInHands;
+        var itemInHands = ___player_0.InventoryController.ItemInHands;
         
         if (itemInHands is null) return;
 

@@ -22,7 +22,7 @@ public class GetBarterPricePatch : ModulePatch
     }
 
     [PatchPostfix]
-    private static void Postfix(TraderAssortmentControllerClass __instance, ref TraderClass.GStruct244? __result, Item[] items, TraderClass ___traderClass)
+    private static void Postfix(TraderAssortmentControllerClass __instance, ref TraderClass.GStruct256? __result, Item[] items, TraderClass ___traderClass)
     {
         if (items.IsNullOrEmpty()) return;
         if (!Plugin.SkillData.SilentOps.Enabled) return;
@@ -36,13 +36,16 @@ public class GetBarterPricePatch : ModulePatch
         float price = 0;
         foreach (var item in items)
         {
-            var num2 = Mathf.Ceil((float)__instance.GetSchemeForItem(item)
-                .Sum(TraderAssortmentControllerClass.Class1762.class1762_0.method_0));
+            var barterScheme = __instance.GetSchemeForItem(item);
+            
+            if (barterScheme is null) continue;
+            
+            var num2 = Mathf.Ceil((float)barterScheme.Sum(TraderAssortmentControllerClass.Class1892.class1892_0.method_0));
 
             var bonus = 1f - skillMgrExt.SilentOpsSilencerCostRedBuff;
 
             // Silencer Type
-            if (item is GClass2671)
+            if (item is SilencerItemClass)
             {
                 num2 *= bonus;
             }
@@ -52,7 +55,7 @@ public class GetBarterPricePatch : ModulePatch
 
         Selecteditem = __instance.SelectedItem;
         
-        __result = new TraderClass.GStruct244(scheme[0][0]._tpl, (int)Mathf.Ceil(price));
+        __result = new TraderClass.GStruct256(scheme[0][0]._tpl, (int)Mathf.Ceil(price));
     }
 }
 
@@ -69,7 +72,7 @@ public class RequiredItemsCountPatch : ModulePatch
     private static void Postfix(GClass2064 __instance, ref int __result)
     {
         // Suppressor type
-        if (GetBarterPricePatch.Selecteditem is not GClass2671) return;
+        if (GetBarterPricePatch.Selecteditem is not SilencerItemClass) return;
         if (!Plugin.SkillData.SilentOps.Enabled) return;
         
         var skillMgrExt = Plugin.PlayerSkillManagerExt;

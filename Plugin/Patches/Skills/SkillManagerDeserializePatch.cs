@@ -27,7 +27,7 @@ public class SkillManagerDeserializePatch : ModulePatch
     }
 
     [PatchPrefix]
-    private static bool Prefix(GClass1795 __instance, ref SkillManager __result)
+    private static bool Prefix(GClass1956 __instance, ref SkillManager __result)
     {
         if (__instance.Side == 0x00000000)
         {
@@ -35,7 +35,7 @@ public class SkillManagerDeserializePatch : ModulePatch
             Logger.LogDebug("Creating SkillManager default of Bear");
         }
         
-        __result = new SkillManager(__instance.Side);
+        __result = new SkillManager(__instance);
         
         if (__instance.IsYourPlayer)
         {

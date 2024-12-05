@@ -19,11 +19,11 @@ internal static class ReadBookHandler
 {
     private static FieldInfo _inventoryControllerFieldInfo;
     private static ItemUiContext _itemUiContext => ItemUiContext.Instance;
-    private static InventoryControllerClass _inventoryController;
+    private static InventoryController _inventoryController;
     
     static ReadBookHandler()
     {
-        _inventoryControllerFieldInfo = AccessTools.Field(typeof(ItemUiContext), "inventoryControllerClass");
+        _inventoryControllerFieldInfo = AccessTools.Field(typeof(ItemUiContext), "inventoryController_0");
     }
     
     public static void ReadBook(Item item)
@@ -71,7 +71,7 @@ internal static class ReadBookHandler
         
         if (_inventoryController is null)
         {
-            _inventoryController = (InventoryControllerClass)_inventoryControllerFieldInfo
+            _inventoryController = (InventoryController)_inventoryControllerFieldInfo
                 .GetValue(_itemUiContext);
         }
         

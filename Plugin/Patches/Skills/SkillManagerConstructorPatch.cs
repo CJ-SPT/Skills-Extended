@@ -13,16 +13,13 @@ internal class SkillManagerConstructorPatch : ModulePatch
         typeof(SkillManager).GetConstructor(
             BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, 
             null, 
-            [typeof(EPlayerSide)], 
+            [], 
             null);
 
     [PatchPostfix]
-    public static void Postfix(SkillManager __instance, ref SkillClass[] ___DisplayList, ref SkillClass[] ___Skills, EPlayerSide faction)
+    public static void Postfix(SkillManager __instance, ref SkillClass[] ___DisplayList, ref SkillClass[] ___Skills)
     {
         var insertIndex = 12;
-        __instance.Side = faction;
-        
-        Logger.LogDebug($"Creating SkillManager for side {faction}");
         
         // Action and buff lists intentionally empty here, this is for display list purposes only
         
@@ -86,7 +83,9 @@ internal class SkillManagerConstructorPatch : ModulePatch
         
         
         // BonusController is called in SkillClass.OnTrigger and must not be null, otherwise it will trigger System.NullReferenceException.
-        __instance.BonusController = new();
+        
+        // TODO: Is this still needed?
+        // __instance.BonusController = new();
 	}
 
     /// <summary>

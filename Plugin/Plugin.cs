@@ -23,14 +23,14 @@ using UnityEngine.UI;
 
 namespace SkillsExtended;
 
-[BepInPlugin("com.dirtbikercj.SkillsExtended", "Skills Extended", "1.3.3")]
+[BepInPlugin("com.dirtbikercj.SkillsExtended", "Skills Extended", "1.4.0")]
 [BepInDependency("com.IcyClawz.CustomInteractions")]
 [BepInDependency("com.dirtbikercj.QuestsExtended")]
 public class Plugin : BaseUnityPlugin
 {
-    public const int TarkovVersion = 30626;
+    public const int TarkovVersion = 33420;
 
-    public static ISession Session;
+    public static ISession Session => ClientAppUtils.GetClientApp().GetClientBackEndSession();
     
     // Contains key information
     public static KeysResponse Keys;
@@ -105,15 +105,7 @@ public class Plugin : BaseUnityPlugin
         
         LoadMiniGame();
     }
-
-    private void Update()
-    {
-        if (Session is not null && ClientAppUtils.GetClientApp()?.GetClientBackEndSession() is null) return;
-
-        Session = ClientAppUtils.GetClientApp().GetClientBackEndSession();
-        Log.LogDebug("Session set");
-    }
-
+    
     private static void LoadMiniGame()
     {
         var directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);

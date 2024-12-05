@@ -67,14 +67,15 @@ public sealed class LockPickActionHandler
         
         var lockPick = lockPicks.First();
 
-        if (lockPick is not GClass2735 pick) return;
+        if (lockPick is not KeyItemClass pick) return;
         
         pick.KeyComponent.NumberOfUsages++;
 
         // lock pick has no uses left, destroy it
         if (pick.KeyComponent.NumberOfUsages >= pick.KeyComponent.Template.MaximumNumberOfUsage && pick.KeyComponent.Template.MaximumNumberOfUsage > 0)
         {
-            Owner.Player.InventoryControllerClass.DestroyItem(lockPick);
+            // TODO: Is ThrowItem() the correct method?
+            Owner.Player.InventoryController.ThrowItem(lockPick);
         }
     }
 }

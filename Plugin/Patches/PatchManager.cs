@@ -26,7 +26,7 @@ internal static class PatchManager
         new BuffIconShowPatch().Enable();
         new SkillManagerConstructorPatch().Enable();
         new SkillClassCtorPatch().Enable();
-        new SkillManagerDeserializePatch().Enable();
+        // new SkillManagerDeserializePatch().Enable();
         new SkillIconShowPatch().Enable();
         new OnEnemyKillPatch().Enable();
     }
