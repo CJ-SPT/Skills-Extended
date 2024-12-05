@@ -5,6 +5,7 @@ using EFT.InventoryLogic;
 using SkillsExtended.Helpers;
 using SkillsExtended.Models;
 using System.Collections.Generic;
+using SkillsExtended.Skills.Core;
 using UnityEngine;
 
 namespace SkillsExtended.Skills.NatoRifle;

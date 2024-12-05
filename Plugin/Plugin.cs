@@ -14,7 +14,7 @@ using System.Reflection;
 using IcyClawz.CustomInteractions;
 using SkillsExtended.Config;
 using SkillsExtended.ItemInteractions;
-using SkillsExtended.Skills;
+using SkillsExtended.Skills.Core;
 using SkillsExtended.Skills.EasternRifle;
 using SkillsExtended.Skills.LockPicking;
 using SkillsExtended.Skills.NatoRifle;
