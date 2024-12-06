@@ -243,28 +243,32 @@ Door ID: door_Factory_Rework_Basement_00031 KeyID: 66acd6702b17692df20144c0 Key 
 
 LIGHTHOUSE:
 
-Door ID: Lighthouse_Bus_Stop_00004 KeyID: 61a64428a8c6aa1b795f0ba1 Key Name: Convenience store storage room key
-Door ID: door_Lighthouse_Extension_00009 KeyID: 62987cb98081af308d7558c8 Key Name: Conference room key
-Door ID: 00452 KeyID: 62987dfc402c7f69bf010923 Key Name: Shared bedroom marked key
-Door ID: Lighthouse_Roads_00030 KeyID: 5448ba0b4bdc2d02308b456c Key Name: Factory emergency exit key
-Door ID: Lighthouse_Roads_00040 KeyID: 5448ba0b4bdc2d02308b456c Key Name: Factory emergency exit key
-Door ID: Lighthouse_Roads_00043 KeyID: 5448ba0b4bdc2d02308b456c Key Name: Factory emergency exit key
-Door ID: Lighthouse_Roads_00029 KeyID: 5448ba0b4bdc2d02308b456c Key Name: Factory emergency exit key
-Door ID: Lighthouse_Roads_00031 KeyID: 5448ba0b4bdc2d02308b456c Key Name: Factory emergency exit key
-Door ID: Lighthouse_Logistics_Terminal_00018 KeyID: 5448ba0b4bdc2d02308b456c Key Name: Factory emergency exit key
-Door ID: Lighthouse_Marina_00016 KeyID: 61aa5b518f5e7a39b41416e2 Key Name: Merin car trunk key
-Door ID: door_Lighthouse_Small_RLS_base_00004 KeyID: 62987c658081af308d7558c6 Key Name: Radar station commandant room key
-Door ID: Lighthouse_SwampVillage_00049 KeyID: 5448ba0b4bdc2d02308b456c Key Name: Factory emergency exit key
-Door ID: Lighthouse_SwampVillage_00019 KeyID: 61a6444b8c141d68246e2d2f Key Name: Hillside house key
-Door ID: Lighthouse_SwampVillage_00095 KeyID: 5448ba0b4bdc2d02308b456c Key Name: Factory emergency exit key
-Door ID: Lighthouse_Water_filter_facility_01_00002 KeyID: 62987da96188c076bc0d8c51 Key Name: Operating room key
-Door ID: Lighthouse_Water_filter_facility_02_00006 KeyID: 62987e26a77ec735f90a2995 Key Name: Water treatment plant storage room key
-Door ID: Lighthouse_Water_filter_facility_03_00005 KeyID: 62a9cb937377a65d7b070cef Key Name: Rogue USEC barrack key
-Door ID: Lighthouse_WaterStation_00044 KeyID: 61aa5aed32a4743c3453d319 Key Name: Police truck cabin key
-Door ID: Lighthouse_WaterStation_00019 KeyID: 61aa81fcb225ac1ead7957c3 Key Name: Rogue USEC workshop key
-Door ID: Lighthouse_WaterStation_00017 KeyID: 61a64492ba05ef10d62adcc1 Key Name: Rogue USEC stash key
-Door ID: trunk_Lighthouse_Extension_00005 KeyID: 5448ba0b4bdc2d02308b456c Key Name: Factory emergency exit key
-Door ID: Lighthouse_SummerHotel_00035 KeyID: 66265d7be65f224b2e17c6aa Key Name: USEC cottage room key
+Door ID: door_Lighthouse_Bus_Stop_00003 KeyID: 61a64428a8c6aa1b795f0ba1 Key Name: Convenience store storage room key
+Door ID: door_Lighthouse_Complex_00000 KeyID: 62987cb98081af308d7558c8 Key Name: Conference room key
+Door ID: door_Lighthouse_Complex_00009 KeyID: 62987dfc402c7f69bf010923 Key Name: Shared bedroom marked key
+Door ID: door_Lighthouse_Small_RLS_base_00011 KeyID: 62987c658081af308d7558c6 Key Name: Radar station commandant room key
+Door ID: door_Lighthouse_SummerHotel_00003 KeyID: 61a6446f4b5f8b70f451b166 Key locale missing...
+Door ID: door_Lighthouse_SummerHotel_00025 KeyID: 66265d7be65f224b2e17c6aa Key Name: USEC cottage room key
+Door ID: trunk_Lighthouse_SummerHotel_00007 KeyID: 61aa5ba8018e9821b7368da9 Key Name: USEC cottage second safe key
+Door ID: trunk_Lighthouse_SummerHotel_00008 KeyID: 61aa5b7db225ac1ead7957c1 Key Name: USEC cottage first safe key
+Door ID: door_Lighthouse_SwampVillage_00032 KeyID: 664d3de85f2355673b09aed5 Key Name: Leon's hideout key
+Door ID: door_Lighthouse_SwampVillage_00040 KeyID: 61a6444b8c141d68246e2d2f Key Name: Hillside house key
+Door ID: door_Lighthouse_Water_filter_facility_01_00009 KeyID: 62987da96188c076bc0d8c51 Key Name: Operating room key
+Door ID: door_Lighthouse_Water_filter_facility_02_00009 KeyID: 62987e26a77ec735f90a2995 Key Name: Water treatment plant storage room key
+Door ID: door_Lighthouse_Water_filter_facility_03_00005 KeyID: 62a9cb937377a65d7b070cef Key Name: Rogue USEC barrack key
+Door ID: door_Lighthouse_WaterStation_00020 KeyID: 61aa81fcb225ac1ead7957c3 Key Name: Rogue USEC workshop key
+Door ID: door_Lighthouse_WaterStation_00021 KeyID: 61a64492ba05ef10d62adcc1 Key Name: Rogue USEC stash key
+Door ID: trunk_Lighthouse_Roads_00041 KeyID: 5448ba0b4bdc2d02308b456c Key Name: Factory emergency exit key
+Door ID: trunk_Lighthouse_WaterStation_00014 KeyID: 61aa5aed32a4743c3453d319 Key Name: Police truck cabin key
+Door ID: trunk_Lighthouse_island_00002 KeyID: 5448ba0b4bdc2d02308b456c Key Name: Factory emergency exit key
+Door ID: trunk_Lighthouse_Roads_00045 KeyID: 5448ba0b4bdc2d02308b456c Key Name: Factory emergency exit key
+Door ID: trunk_Lighthouse_Roads_00053 KeyID: 5448ba0b4bdc2d02308b456c Key Name: Factory emergency exit key
+Door ID: trunk_Lighthouse_Roads_00002 KeyID: 5448ba0b4bdc2d02308b456c Key Name: Factory emergency exit key
+Door ID: trunk_Lighthouse_SwampVillage_00002 KeyID: 5448ba0b4bdc2d02308b456c Key Name: Factory emergency exit key
+Door ID: trunk_Lighthouse_Logistics_Terminal_00000 KeyID: 5448ba0b4bdc2d02308b456c Key Name: Factory emergency exit key
+Door ID: trunk_Lighthouse_Roads_00022 KeyID: 5448ba0b4bdc2d02308b456c Key Name: Factory emergency exit key
+Door ID: trunk_Lighthouse_SwampVillage_00014 KeyID: 5448ba0b4bdc2d02308b456c Key Name: Factory emergency exit key
+Door ID: _00000 KeyID: 61aa5b518f5e7a39b41416e2 Key Name: Merin car trunk key
 
 STREETS:
 
