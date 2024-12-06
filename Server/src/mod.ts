@@ -19,8 +19,6 @@ import { AchievementManager } from "./Managers/AchievementManager";
 import { TraderManager } from "./Managers/TraderManager";
 import { QuestManager } from "./Managers/QuestManager";
 import { SkillsExtendedIds } from "./enums/SkillsExtendedIds";
-import { IQuestReward } from "@spt/models/eft/common/tables/IQuest";
-import { QuestRewardType } from "@spt/models/enums/QuestRewardType";
 
 class SkillsExtended implements IPreSptLoadMod, IPostDBLoadMod
 {
