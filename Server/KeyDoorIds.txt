@@ -269,62 +269,66 @@ Door ID: Lighthouse_SummerHotel_00035 KeyID: 66265d7be65f224b2e17c6aa Key Name: 
 STREETS:
 
 Door ID: door_City_SE_01_Lenina_74_Indoor_00000 KeyID: 6582dc4b6ba9e979af6b79f4 Key Name: MVD academy entrance hall guard room key
-Door ID: door_City_SE_01_Pinewood_Hotel_indoor_00003 KeyID: 63a39f08cd6db0635c197600 Key Name: Pinewood hotel room 215 key
+Door ID: door_City_SE_01_Pinewood_Hotel_indoor_00055 KeyID: 63a39f08cd6db0635c197600 Key Name: Pinewood hotel room 215 key
 Door ID: door_City_SE_02_Malevicha_5_00001 KeyID: 6582dbf0b8d7830efc45016f Key Name: Relaxation room key
-Door ID: door_City_SE_02_Nikitskaya_6_indoor_00016 KeyID: 63a3a93f8a56922e82001f5d Key Name: Abandoned factory marked key
-Door ID: door_City_SW_01_Primorskiy_46_indoor_00077 KeyID: 63a71ed21031ac76fe773c7f Key Name: Financial institution small office key
+Door ID: door_City_SE_02_Nikitskaya_6_indoor_00010 KeyID: 63a3a93f8a56922e82001f5d Key Name: Abandoned factory marked key
+Door ID: door_City_SE_02_Nikitskaya_10_indoor_00003 KeyID: 63a71ed21031ac76fe773c7f Key Name: Financial institution small office key
 Door ID: door_City_SE_02_Nikitskaya_10_indoor_00008 KeyID: 63a39667c9b3aa4b61683e98 Key Name: Financial institution office key
 Door ID: door_City_SE_03_Cinema_00000 KeyID: 6398fd8ad3de3849057f5128 Key Name: Backup hideout key
-Door ID: trunk_City_SE_03_Cinema_Street_00004 KeyID: 5448ba0b4bdc2d02308b456c Key Name: Factory emergency exit key
-Door ID: door_City_SE_04_Nizhnyaya_Sadovaya_2_3ST_REWORK_00006 KeyID: 6582dc5740562727a654ebb1 Key Name: Real estate agency office room key
-Door ID: autoId_00302 KeyID: 63a39fc0af870e651d58e6ae Key Name: Chekannaya 15 apartment key
-Door ID: door_City_SW_01_A_Chekannaya_15_indoor_00001 KeyID: 63a39f6e64283b5e9c56b289 Key Name: Iron gate key
-Door ID: door_City_SW_01_A_Chekannaya_15_indoor_00003 KeyID: 63a39f6e64283b5e9c56b289 Key Name: Iron gate key
-Door ID: door_City_SW_01_A_Chekannaya_15_indoor_00004 KeyID: 63a39f6e64283b5e9c56b289 Key Name: Iron gate key
-Door ID: door_City_SW_01_Chekannaya_15_indoor_00022 KeyID: 63a39fd1c9b3aa4b61683efb Key Name: Stair landing key
-Door ID: door_City_SW_01_Primorskiy_48_00001 KeyID: 63a39e1d234195315d4020bd Key Name: Primorsky 46-48 skybridge key
-Door ID: door_City_SW_01_Primorskiy_48_indoor_00001 KeyID: 63a71eb5b7f4570d3a29316b Key Name: Primorsky 48 apartment key
-Door ID: door_City_SW_01_A_Primorskiy_52_indoor_00001 KeyID: 64ccc2111779ad6ba200a139 Key Name: Tarbank cash register department key
-Door ID: door_City_SW_01_A_Primorskiy_52_indoor_00004 KeyID: 64ccc2111779ad6ba200a139 Key Name: Tarbank cash register department key
-Door ID: door_City_SW_01_Zmeiskiy_3_indoor_00020 KeyID: 63a39dfe3901f439517cafba Key Name: Zmeisky 3 apartment 8 key
-Door ID: door_City_SW_01_Zmeiskiy_3a_indoor_00012 KeyID: 63a39e49cd6db0635c1975fc Key Name: Archive room key
-Door ID: door_City_SW_01_Zmeiskiy_5_indoor_00015 KeyID: 63a39df18a56922e82001f25 Key Name: Zmeisky 5 apartment 20 key
-Door ID: door_City_SW_01_B_Chekannaya_13_indoor_2ST_NEW_00000 KeyID: 64ccc25f95763a1ae376e447 Key Name: Mysterious room marked key
-Door ID: door_City_SW_01_B_Klimova_16a_indoor_HIDE_00009 KeyID: 64d4b23dc1b37504b41ac2b6 Key Name: Rusted bloody key
-Door ID: door_City_SW_01_B_School_30_indoor_HIDE_00008 KeyID: 64ccc268c41e91416064ebc7 Key Name: PE teacher's office key
-Door ID: door_City_SW_01_Zmeiskiy_4a_indoor_HIDE_00017 KeyID: 64ccc246ff54fb38131acf29 Key Name: X-ray room key
-Door ID: door_City_SW_01_B_Zmeiskiy_6_indoor_3ST_NEW_00009 KeyID: 6582dbe43a2e5248357dbe9a Key Name: "Negotiation" room key
-Door ID: trunk_City_SW_01_B_Zmeiskiy_6_indoor_00003 KeyID: 61aa5ba8018e9821b7368da9 Key Name: USEC second safe key
+Door ID: trunk_City_SE_03_Cinema_Street_00000 KeyID: 5448ba0b4bdc2d02308b456c Key Name: Factory emergency exit key
+Door ID: door_City_SE_04_Nizhnyaya_Sadovaya_2_indoor_00006 KeyID: 6582dc5740562727a654ebb1 Key Name: Real estate agency office room key
+Door ID: door_City_SW_01_A_Chekannaya_15_indoor_00017 KeyID: 63a39fc0af870e651d58e6ae Key Name: Chekannaya 15 apartment key
+Door ID: door_City_SW_01_A_Chekannaya_15_indoor_00020 KeyID: 63a39f6e64283b5e9c56b289 Key Name: Iron gate key
+Door ID: door_City_SW_01_A_Chekannaya_15_indoor_00021 KeyID: 63a39f6e64283b5e9c56b289 Key Name: Iron gate key
+Door ID: door_City_SW_01_A_Chekannaya_15_indoor_00022 KeyID: 63a39f6e64283b5e9c56b289 Key Name: Iron gate key
+Door ID: door_City_SW_01_A_Chekannaya_15_indoor_00023 KeyID: 63a39fd1c9b3aa4b61683efb Key Name: Stair landing key
+Door ID: door_City_SW_01_A_Primorskiy_48_00000 KeyID: 63a39e1d234195315d4020bd Key Name: Primorsky 46-48 skybridge key
+Door ID: door_City_SW_01_A_Primorskiy_48_indoor_00012 KeyID: 63a71eb5b7f4570d3a29316b Key Name: Primorsky 48 apartment key
+Door ID: door_City_SW_01_A_Primorskiy_52_indoor_00040 KeyID: 64ccc2111779ad6ba200a139 Key Name: Tarbank cash register department key
+Door ID: door_City_SW_01_A_Primorskiy_52_indoor_00042 KeyID: 64ccc2111779ad6ba200a139 Key Name: Tarbank cash register department key
+Door ID: door_City_SW_01_A_Zmeiskiy_3_indoor_00006 KeyID: 63a39dfe3901f439517cafba Key Name: Zmeisky 3 apartment 8 key
+Door ID: door_City_SW_01_A_Zmeiskiy_3a_indoor_00011 KeyID: 63a39e49cd6db0635c1975fc Key Name: Archive room key
+Door ID: door_City_SW_01_A_Zmeiskiy_5_indoor_00000 KeyID: 63a39df18a56922e82001f25 Key Name: Zmeisky 5 apartment 20 key
+Door ID: door_City_SW_01_B_Chekannaya_13_indoor_00000 KeyID: 64ccc25f95763a1ae376e447 Key Name: Mysterious room marked key
+Door ID: door_City_SW_01_B_Klimova_16a_indoor_00012 KeyID: 64d4b23dc1b37504b41ac2b6 Key Name: Rusted bloody key
+Door ID: door_City_SW_01_B_School_30_indoor_00005 KeyID: 64ccc268c41e91416064ebc7 Key Name: PE teacher's office key
+Door ID: door_City_SW_01_B_Zmeiskiy_4a_indoor_00009 KeyID: 64ccc246ff54fb38131acf29 Key Name: X-ray room key
+Door ID: door_City_SW_01_B_Zmeiskiy_6_indoor_00000 KeyID: 6582dbe43a2e5248357dbe9a Key Name: "Negotiation" room key
+Door ID: trunk_City_SW_01_B_Zmeiskiy_6_indoor_00003 KeyID: 61aa5ba8018e9821b7368da9 Key Name: USEC cottage second safe key
 Door ID: door_City_SW_02_Construction_outdoor_00002 KeyID: 63a39cb1c9b3aa4b61683ee2 Key Name: Construction site bunkhouse key
-Door ID: trunk_City_SW_02_Construction_outdoor_00001 KeyID: 5448ba0b4bdc2d02308b456c Key Name: Factory emergency exit key
-Door ID: door_City_SW_02_LexOs_AutoService_indoor_00001 KeyID: 63a399193901f439517cafb6 Key Name: Car dealership director's office room key
-Door ID: door_City_SW_02_LexOs_AutoService_indoor_00000 KeyID: 63a397d3af870e651d58e65b Key Name: Car dealership closed section key
-Door ID: trunk_City_SW_02_LexOs_blockpost_2ST_REWORK_00007 KeyID: 5448ba0b4bdc2d02308b456c Key Name: Factory emergency exit key
-Door ID: trunk_City_SW_02_LexOs_blockpost_2ST_REWORK_00006 KeyID: 5448ba0b4bdc2d02308b456c Key Name: Factory emergency exit key
-Door ID: door_City_SW_02_LexOs_blockpost_2ST_REWORK_00001 KeyID: 63a39fdf1e21260da44a0256 Key Name: Cargo container mesh door key
+Door ID: trunk_City_SW_02_Construction_outdoor_00000 KeyID: 5448ba0b4bdc2d02308b456c Key Name: Factory emergency exit key
+Door ID: door_City_SW_02_LexOs_AutoService_indoor_00000 KeyID: 63a399193901f439517cafb6 Key Name: Car dealership director's office room key
+Door ID: door_City_SW_02_LexOs_AutoService_indoor_00001 KeyID: 63a397d3af870e651d58e65b Key Name: Car dealership closed section key
+Door ID: trunk_City_SW_02_LexOs_blockpost_00003 KeyID: 5448ba0b4bdc2d02308b456c Key Name: Factory emergency exit key
+Door ID: trunk_City_SW_02_LexOs_blockpost_00004 KeyID: 5448ba0b4bdc2d02308b456c Key Name: Factory emergency exit key
+Door ID: door_City_SW_02_LexOs_blockpost_00001 KeyID: 63a39fdf1e21260da44a0256 Key Name: Cargo container mesh door key
 Door ID: door_City_SW_02_Primorskiy_56_00000 KeyID: 64ce572331dd890873175115 Key Name: Aspect company office key
-Door ID: door_City_SW_02_Primorskiy_56_00005 KeyID: 63a39ce4cd6db0635c1975fa Key Name: Supply department director's office key
-Door ID: autoId_00165 KeyID: 63a71e86b7f4570d3a293169 Key Name: Concordia apartment 64 office room key
-Door ID: door_City_SW_02_Razvedchikov_7_indoor_00020 KeyID: 63a71e922b25f7513905ca20 Key Name: Concordia apartment 64 key
-Door ID: autoId_00227 KeyID: 63a71e781031ac76fe773c7d Key Name: Concordia apartment 8 room key
-Door ID: autoId_00226 KeyID: 64ccc1ec1779ad6ba200a137 Key Name: Concordia apartment 8 home cinema key
-Door ID: autoId_00222 KeyID: 64ccc1d4a0f13c24561edf27 Key Name: Concordia apartment 34 room key
-Door ID: autoId_00199 KeyID: 64ccc1f4ff54fb38131acf27 Key Name: Concordia apartment 63 room key
-Door ID: autoId_00211 KeyID: 63a39c7964283b5e9c56b280 Key Name: Concordia security room key
-Door ID: autoId_00003 KeyID: 63a39c69af870e651d58e6aa Key Name: Store manager's key
-Door ID: trunk_City_SW_05_courtyard_B_2ST_REWORK_00000 KeyID: 5448ba0b4bdc2d02308b456c Key Name: Factory emergency exit key
-Door ID: trunk_City_SW_05_courtyard_B_2ST_REWORK_00001 KeyID: 5448ba0b4bdc2d02308b456c Key Name: Factory emergency exit key
-Door ID: door_City_NW_01_Cardinal_indoor_00007 KeyID: 64ccc206793ca11c8f450a38 Key Name: TerraGroup meeting room key
-Door ID: door_City_NW_01_Cardinal_indoor_00001 KeyID: 64ccc24de61ea448b507d34d Key Name: TerraGroup security armory key
-Door ID: trunk_City_NW_02_Tetris_00049 KeyID: 5448ba0b4bdc2d02308b456c Key Name: Factory emergency exit key
-Door ID: door_City_NE_02_TD_Klimova_Beluga_indoor_2ST_NEW_00004 KeyID: 64ccc1fe088064307e14a6f7 Key Name: Beluga restaurant director key
-Door ID: door_City_NE_02_TD_Klimova_Beluga_indoor_2ST_NEW_00005 KeyID: 64ccc1fe088064307e14a6f7 Key Name: Beluga restaurant director key
-Door ID: trunk_City_SE_01_Pinewood_Hotel_indoor_00002 KeyID: 61aa5ba8018e9821b7368da9 Key Name: USEC second safe key
-Door ID: trunk_City_SE_01_Pinewood_Hotel_indoor_00003 KeyID: 61aa5ba8018e9821b7368da9 Key Name: USEC second safe key
-Door ID: trunk_City_SE_01_Pinewood_Hotel_indoor_00001 KeyID: 61aa5ba8018e9821b7368da9 Key Name: USEC second safe key
-Door ID: container_Shopping_Mall_GOSHAN_00001 KeyID: 5ad7247386f7747487619dc3 Key Name: Goshan cash register key
-Door ID: container_City_SE_01_Klimova_24_indoor_00001 KeyID: 5ad7247386f7747487619dc3 Key Name: Goshan cash register key
-Door ID: Shopping_Mall_GOSHAN_00083 KeyID: 5ad7247386f7747487619dc3 Key Name: Goshan cash register key
+Door ID: door_City_SW_02_Primorskiy_56_indoor_00004 KeyID: 63a39ce4cd6db0635c1975fa Key Name: Supply department director's office key
+Door ID: door_City_SW_02_Razvedchikov_7_indoor_00010 KeyID: 63a71e86b7f4570d3a293169 Key Name: Concordia apartment 64 office room key
+Door ID: door_City_SW_02_Razvedchikov_7_indoor_00013 KeyID: 63a71e922b25f7513905ca20 Key Name: Concordia apartment 64 key
+Door ID: door_City_SW_02_Razvedchikov_7_indoor_00024 KeyID: 63a71e781031ac76fe773c7d Key Name: Concordia apartment 8 room key
+Door ID: door_City_SW_02_Razvedchikov_7_indoor_00025 KeyID: 64ccc1ec1779ad6ba200a137 Key Name: Concordia apartment 8 home cinema key
+Door ID: door_City_SW_02_Razvedchikov_7_indoor_00031 KeyID: 64ccc1d4a0f13c24561edf27 Key Name: Concordia apartment 34 room key
+Door ID: door_City_SW_02_Razvedchikov_7_indoor_00041 KeyID: 64ccc1f4ff54fb38131acf27 Key Name: Concordia apartment 63 room key
+Door ID: door_City_SW_02_Razvedchikov_9_Parking_00000 KeyID: 63a39c7964283b5e9c56b280 Key Name: Concordia security room key
+Door ID: door_City_SW_02_Sparja_indoor_00003 KeyID: 63a39c69af870e651d58e6aa Key Name: Store manager's key
+Door ID: trunk_City_SW_05_courtyard_B_00002 KeyID: 5448ba0b4bdc2d02308b456c Key Name: Factory emergency exit key
+Door ID: trunk_City_SW_05_courtyard_B_00003 KeyID: 5448ba0b4bdc2d02308b456c Key Name: Factory emergency exit key
+Door ID: trunk_City_NW_01_courtyard_00000 KeyID: 5448ba0b4bdc2d02308b456c Key Name: Factory emergency exit key
+Door ID: door_City_NE_02_TD_Klimova_Beluga_indoor_00007 KeyID: 64ccc1fe088064307e14a6f7 Key Name: Beluga restaurant director key
+Door ID: door_City_NE_02_TD_Klimova_Beluga_indoor_00008 KeyID: 64ccc1fe088064307e14a6f7 Key Name: Beluga restaurant director key
+Door ID: door_City_Roads_Primorskiy_00000 KeyID: 63a39e0f64283b5e9c56b282 Key locale missing...
+Door ID: trunk_City_Roads_Primorskiy_00035 KeyID: 5448ba0b4bdc2d02308b456c Key Name: Factory emergency exit key
+Door ID: trunk_City_Roads_Primorskiy_00036 KeyID: 5448ba0b4bdc2d02308b456c Key Name: Factory emergency exit key
+Door ID: trunk_City_SE_01_DesignStuff_00000 KeyID: 61aa5ba8018e9821b7368da9 Key Name: USEC cottage second safe key
+Door ID: trunk_City_SE_01_DesignStuff_00001 KeyID: 61aa5ba8018e9821b7368da9 Key Name: USEC cottage second safe key
+Door ID: trunk_City_SE_01_DesignStuff_00002 KeyID: 61aa5ba8018e9821b7368da9 Key Name: USEC cottage second safe key
+Door ID: container_City_SE_01_DesignStuff_00075 KeyID: 5ad7247386f7747487619dc3 Key Name: Goshan cash register key
+Door ID: container_City_SE_01_DesignStuff_00077 KeyID: 5ad7247386f7747487619dc3 Key Name: Goshan cash register key
+Door ID: container_City_SE_04_DesignStuff_00020 KeyID: 5ad7247386f7747487619dc3 Key Name: Goshan cash register key
+Door ID: container_City_SW_01_A_DesignStuff_00213 KeyID: 63a39e6acd6db0635c1975fe Key locale missing...
+Door ID: container_City_SW_01_A_DesignStuff_00214 KeyID: 63a39e5b234195315d4020bf Key locale missing...
+Door ID: container_City_SW_02_DesignStuff_00278 KeyID: 63a39ddda3a2b32b5f6e007a Key locale missing...
 
 GROUNDZERO:
 
