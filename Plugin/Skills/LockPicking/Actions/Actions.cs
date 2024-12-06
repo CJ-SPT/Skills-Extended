@@ -28,7 +28,7 @@ public static class LockPickActions
         }
 
         // Only allow lockpicking if the player is stationary
-        if (Utils.IdleStateType.IsInstanceOfType(owner.Player.CurrentState))
+        if (owner.Player.CurrentState is IdleState)
         {
             var level = LpHelpers.GetLevelForDoor(owner.Player.Location, interactiveObject.Id);
 
@@ -49,12 +49,10 @@ public static class LockPickActions
                 InteractiveObject = interactiveObject,
             };
             
-            Action<bool> action = new(handler.PickLockAction);
-            
             SkillsPlugin.LockPickingGame.SetActive(true);
             
             SkillsPlugin.LockPickingGame.GetComponent<LpLockPicking>()
-                .Activate(owner, interactiveObject, action);
+                .Activate(owner, interactiveObject, handler.PickLockAction);
 
             return;
         }
@@ -81,7 +79,7 @@ public static class LockPickActions
         }
         
         // Only allow lockpicking if the player is stationary
-        if (Utils.IdleStateType.IsInstanceOfType(owner.Player.CurrentState))
+        if (owner.Player.CurrentState is IdleState)
         {
             var level = LpHelpers.GetLevelForDoor(owner.Player.Location, door.Id);
 
