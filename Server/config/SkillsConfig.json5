@@ -150,10 +150,9 @@
                 "door_Factory_Rework_Basement_00031": 5
             },
             "Woods": {
-                "woods_combined_00022": 7,
-                "woods_combined_00040": 4,
-                "woods_combined_00065": 15,
-                "woods_design_stuff_00022": 10
+                "door_woods_combined_00025": 7,
+                "door_woods_combined_00017": 15,
+                "Lootable_00063": 15
             },
             "Customs": {
                 "custom_Tamozhnya_00000": 8,
