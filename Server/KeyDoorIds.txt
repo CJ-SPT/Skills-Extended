@@ -336,8 +336,9 @@ Door ID: container_City_SW_02_DesignStuff_00278 KeyID: 63a39ddda3a2b32b5f6e007a 
 
 GROUNDZERO:
 
-Door ID: door_Sandbox_bottom_area_00002 KeyID: 658199972dc4e60f6d556a2f Key Name: Underground parking utility room key
-Door ID: trunk_Sandbox_Maxim_temp_00025 KeyID: 5448ba0b4bdc2d02308b456c Key Name: Factory emergency exit key
-Door ID: trunk_City_Roads_Klimova_2ST_REWORK_00004 KeyID: 5448ba0b4bdc2d02308b456c Key Name: Factory emergency exit key
-Door ID: door_Sandbox_Area_01_indoor_00014 KeyID: 6581998038c79576a2569e11 Key Name: Unity Credit Bank cash register key
-Door ID: door_Sandbox_Area_05_00007 KeyID: 658199aa38c79576a2569e13 Key Name: TerraGroup science office key
+Door ID: door_Sandbox_bottom_area_00004 KeyID: 658199972dc4e60f6d556a2f Key Name: Underground parking utility room key
+Door ID: trunk_Sandbox_bottom_area_00017 KeyID: 5448ba0b4bdc2d02308b456c Key Name: Factory emergency exit key
+Door ID: trunk_Sandbox_roads_00032 KeyID: 5448ba0b4bdc2d02308b456c Key Name: Factory emergency exit key
+Door ID: door_Sandbox_Area_01_indoor_00008 KeyID: 6581998038c79576a2569e11 Key Name: Unity Credit Bank cash register key
+Door ID: door_Sandbox_Area_03_indoor_00000 KeyID: 658199a0490414548c0fa83b Key locale missing...
+Door ID: door_Sandbox_Area_05_indoor_00002 KeyID: 658199aa38c79576a2569e13 Key Name: TerraGroup science office key

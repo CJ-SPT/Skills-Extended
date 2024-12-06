@@ -461,11 +461,11 @@
                 "container_City_SE_04_DesignStuff_00020": 1,
             },
             "GroundZero": {
-                "door_Sandbox_bottom_area_00002": 3,
-                "trunk_Sandbox_Maxim_temp_00025": 7,
-                "trunk_City_Roads_Klimova_2ST_REWORK_00004": 7,
-                "door_Sandbox_Area_01_indoor_00014": 3,
-                "door_Sandbox_Area_05_00007": 8
+                "door_Sandbox_bottom_area_00004": 3,
+                "trunk_Sandbox_bottom_area_00017": 7,
+                "trunk_Sandbox_roads_00032": 7,
+                "door_Sandbox_Area_01_indoor_00008": 3,
+                "door_Sandbox_Area_05_indoor_00002": 8
             }
         },
         "CRAFTING_RECIPES": [                              // WARNING: DO NOT EDIT THIS UNLESS YOU KNOW WHAT YOU ARE DOING.
