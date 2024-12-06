@@ -1,6 +1,6 @@
 {
     "EnableTrader": true,
-    "EnableProgression": true,
+    "EnableProgression": false,
     "ProgressionDebug": {
         "Enabled": true,
         "TestGeneration": false,
