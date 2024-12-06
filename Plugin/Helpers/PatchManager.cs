@@ -16,57 +16,82 @@ internal static class PatchManager
 {
     public static void PatchAll()
     {
-        Skills();
-        InRaid();
-        Medical();
-        UI();
-        
+        SkillsCore();
+        SkillFieldMedicine();
+        SkillFirstAid();
+        SkillLockpicking();
+        SkillProneMovement();
+        SkillsShared();
+        SkillSilentOps();
+        SkillsUI();
+        SkillWeapons();
         
 #if DEBUG
         Debug();
 #endif
     }
-    
-    private static void Skills()
+
+    private static void SkillsCore()
     {
-        new SkillPanelDisablePatch().Enable();
-        new BuffIconShowPatch().Enable();
-        new SkillManagerConstructorPatch().Enable();
         new SkillClassCtorPatch().Enable();
+        new SkillClassOnTriggerPatch().Enable();
+        new SkillManagerConstructorPatch().Enable();
         // new SkillManagerDeserializePatch().Enable();
-        new SkillIconShowPatch().Enable();
-        new OnEnemyKillPatch().Enable();
-    }
-    
-    private static void InRaid()
-    {
-        // new DoorActionPatch().Enable(); // TODO: Fix me LP is broken as fuck.
-        new OnGameStartedPatch().Enable();
-        new ProneMoveStatePatch().Enable();
-        new ProneMoveVolumePatch().Enable();
-        // new KeyCardDoorActionPatch().Enable(); // TODO: Fix me LP is broken as fuck.
-        new DoorSoundPatch().Enable();
-        new MeleeSpeedPatch().Enable();
     }
 
-    private static void Medical()
+    private static void SkillFieldMedicine()
     {
-        new HealthEffectUseTimePatch().Enable();
-        new HealthEffectComponentPatch().Enable();
-        new CanWalkPatch().Enable();
-        new SummaryLevelPatch().Enable();
         new PersonalBuffPatch().Enable();
+        new SummaryLevelPatch().Enable();
+    }
+    
+    private static void SkillFirstAid()
+    {
+        new CanWalkPatch().Enable();
+        new HealthEffectComponentPatch().Enable();
+        new HealthEffectUseTimePatch().Enable();
         new SpawnPatch().Enable();
     }
 
-    private static void UI()
+    private static void SkillLockpicking()
     {
-        new PersonalBuffFullStringPatch().Enable();
-        new PersonalBuffStringPatch().Enable();
-        new SkillLevelPanelPatch().Enable();
-        new UpdateWeaponsPatch().Enable();
+        new DoorActionPatch().Enable();
+        // new KeyCardDoorActionPatch().Enable();
+    }
+
+    private static void SkillProneMovement()
+    {
+        new ProneMoveStatePatch().Enable();
+        new ProneMoveVolumePatch().Enable();
+    }
+
+    private static void SkillsShared()
+    {
+        new OnGameStartedPatch().Enable();
+    }
+
+    private static void SkillSilentOps()
+    {
+        new DoorSoundPatch().Enable();
         new GetBarterPricePatch().Enable();
+        new MeleeSpeedPatch().Enable();
+        new OnEnemyKillPatch().Enable();
         new RequiredItemsCountPatch().Enable();
+    }
+    
+    private static void SkillsUI()
+    {
+        new BuffIconShowPatch().Enable();
+        new PersonalBuffFullStringPatch().Enable(); // TODO: Refactor this patch
+        new PersonalBuffStringPatch().Enable(); // TODO: Refactor this patch
+        new SkillIconShowPatch().Enable();
+        new SkillLevelPanelPatch().Enable();
+        new SkillPanelDisablePatch().Enable();
+    }
+    
+    private static void SkillWeapons()
+    {
+        new UpdateWeaponsPatch().Enable();
     }
 
     private static void Debug()

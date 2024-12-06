@@ -3,6 +3,7 @@ using System.Linq;
 using System.Reflection;
 using EFT;
 using HarmonyLib;
+using SkillsExtended.Helpers;
 using SPT.Reflection.Patching;
 
 namespace SkillsExtended.Skills.Core.Patches;
@@ -80,12 +81,6 @@ internal class SkillManagerConstructorPatch : ModulePatch
         
         AccessTools.Field(typeof(SkillClass), "Locked").SetValue(__instance.SilentOps,
             !SkillsPlugin.SkillData.SilentOps.Enabled);
-        
-        
-        // BonusController is called in SkillClass.OnTrigger and must not be null, otherwise it will trigger System.NullReferenceException.
-        
-        // TODO: Is this still needed?
-        // __instance.BonusController = new();
 	}
 
     /// <summary>

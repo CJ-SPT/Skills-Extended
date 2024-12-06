@@ -5,7 +5,7 @@ using SkillsExtended.Buffs;
 using SkillsExtended.Controllers;
 using SPT.Reflection.Patching;
 
-namespace SkillsExtended.Skills.Core.Patches;
+namespace SkillsExtended.Skills.UI.Patches;
 
 public class SkillLevelPanelPatch : ModulePatch
 {

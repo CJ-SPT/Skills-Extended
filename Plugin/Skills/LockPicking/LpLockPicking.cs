@@ -336,7 +336,7 @@ public class LpLockPicking : MonoBehaviour
         
         cylinder!.eulerAngles = Vector3.zero;
         
-        if (_player is not null)
+        if (_player)
         {
             GamePlayerOwner.SetIgnoreInputWithKeepResetLook(false);
             _player.MovementContext.ToggleBlockInputPlayerRotation(false);
