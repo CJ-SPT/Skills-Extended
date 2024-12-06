@@ -74,11 +74,6 @@ public class SkillsPlugin : BaseUnityPlugin
     {
         Keys = Utils.Get<KeysResponse>("/skillsExtended/GetKeys");
         SkillData = Utils.Get<SkillDataResponse>("/skillsExtended/GetSkillsConfig");
-
-        foreach (var key in Keys.KeyLocale)
-        {
-            Logger.LogInfo($"Key: {key}");
-        }
         
         // If realism is installed, load its config
         if (Chainloader.PluginInfos.ContainsKey("RealismMod"))
