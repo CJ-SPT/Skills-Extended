@@ -144,12 +144,10 @@
         },
         "DOOR_PICK_LEVELS": {                              // WARNING: DO NOT EDIT THESE UNLESS YOU KNOW WHAT YOU ARE DOING.
             "Factory": {                                   // THIS IS A COMPREHENSIVE LIST ALL DOORS IN THE GAME AND THEIR ASSOCIATED LEVELS. See "keyDoorIds.txt" to better understand this section.
-                "00094": 7,
-                "00095": 7,
-                "00115": 3,
-                "00120": 3,
-                "00126": 7,
-                "00133": 7
+                "door_Factory_Rework_Areas_00006": 7,
+                "door_Factory_Rework_Basement_00006": 7,
+                "door_Factory_Rework_Admin_Office_00014": 7,
+                "door_Factory_Rework_Basement_00031": 5
             },
             "Woods": {
                 "woods_combined_00022": 7,
