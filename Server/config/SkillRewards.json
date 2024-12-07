@@ -178,7 +178,7 @@
         },
         {
             "Tier": 10,
-            "RewardValue": 1250000,
+            "RewardValue": 650000,
             "ItemAmountRange": [3, 5],
             "LegaMedals": 1,
             "MaximumNumberOfMultiples": 2 
