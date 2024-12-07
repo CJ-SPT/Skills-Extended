@@ -43,8 +43,6 @@ export class IOManager
     {
         this.importAllLocaleData();
         this.importAllImages();
-
-        //this.extractLocalesToSingleFile();
     }
 
     /**
@@ -201,40 +199,5 @@ export class IOManager
         }
 
         logger.logWithColor(`Skills Extended: Loaded ${images} images`, LogTextColor.GREEN);
-    }
-
-    private extractLocalesToSingleFile(): void
-    {
-        const enPath = path.join(this.LocaleRootPath, "fr");
-        const localeFiles = fs.readdirSync(enPath);
-
-        const locales: Record<string, string> = {};
-
-        for (const file of localeFiles)
-        {
-            const localeFile = path.join(enPath, file);
-
-            const tmpLocales = this.loadJsonFile<Record<string, string>>(localeFile);
-
-            for (const locale in tmpLocales)
-            {
-                locales[locale] = tmpLocales[locale];
-            }
-        }
-
-        const outPath = path.join(this.RootPath, "fr.json");
-        const data = JSON.stringify(locales);
-
-        this.InstanceManager.logger.logWithColor(outPath, LogTextColor.BLUE);
-
-        fs.writeFileSync(outPath, data, "utf8");
-
-        
-        this.InstanceManager.logger.logWithColor(`Skills Debug: Exported ${locales.length} entries for translation.`, LogTextColor.BLUE);
-    }
-
-    private cleanUpLocaleDirectory(): void
-    {
-        
     }
 }
