@@ -61,9 +61,6 @@ public class SkillsPlugin : BaseUnityPlugin
         Logger.LogWarning("DEBUG BUILD FEATURES ENABLED");
         ConsoleCommands.RegisterCommands();
 #endif
-        
-        Utils.GetTypes();
-        
         _hook = new GameObject("Skills Controller Object");
         DontDestroyOnLoad(_hook);
         
