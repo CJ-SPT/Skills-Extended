@@ -2,19 +2,18 @@
 import path from "node:path";
 
 import { LogTextColor } from "@spt/models/spt/logging/LogTextColor";
-import type { IPmcData } from "@spt/models/eft/common/IPmcData";
+import { IPmcData } from "@spt/models/eft/common/IPmcData";
 import { MessageType } from "@spt/models/enums/MessageType";
-import type { IRewardTier, ISkillRewards } from "../Models/ISkillRewards";
-import type { ILogger } from "@spt/models/spt/utils/ILogger";
-import type { Item } from "@spt/models/eft/common/tables/IItem";
+import { IRewardTier, ISkillRewards } from "../Models/ISkillRewards";
+import { ILogger } from "@spt/models/spt/utils/ILogger";
+import { IItem } from "@spt/models/eft/common/tables/IItem";
 import { BaseClasses } from "@spt/models/enums/BaseClasses";
 
-import type { InstanceManager } from "./InstanceManager";
-import type { IOManager } from "./IOManager";
-import type { IProgression } from "../Models/IProgression";
-import type { IServerConfig } from "../Models/IServerConfig";
+import { InstanceManager } from "./InstanceManager";
+import { IOManager } from "./IOManager";
+import { IProgression } from "../Models/IProgression";
+import { IServerConfig } from "../Models/IServerConfig";
 import { Traders } from "@spt/models/enums/Traders";
-import { it } from "node:test";
 
 export class ProgressionManager
 {
@@ -167,9 +166,9 @@ export class ProgressionManager
         }   
     }
 
-    private generateReward(tier: number, debug = false): Item[]
+    private generateReward(tier: number, debug = false): IItem[]
     {
-        const items: Item[] = [];
+        const items: IItem[] = [];
         const hashUtil = this.InstanceManager.hashUtil;
         const itemHelper = this.InstanceManager.itemHelper;
 
@@ -236,7 +235,7 @@ export class ProgressionManager
 
             for (let i = 0; i < amount; i++)
             {
-                const newItem: Item = {
+                const newItem: IItem = {
                     _tpl: item,
                     _id: hashUtil.generate()
                 }
@@ -319,12 +318,12 @@ export class ProgressionManager
         return true;
     }
 
-    private generateLegaMedals(tierData: IRewardTier): Item
+    private generateLegaMedals(tierData: IRewardTier): IItem
     {
         const hashUtil = this.InstanceManager.hashUtil;
         const itemHelper = this.InstanceManager.itemHelper;
 
-        const newItem: Item = {
+        const newItem: IItem = {
             _tpl: "6656560053eaaa7a23349c86",
             _id: hashUtil.generate()
         }
@@ -337,13 +336,13 @@ export class ProgressionManager
         return newItem;
     }
 
-    private generateAmmoReward(itemTpl: string, tierData: IRewardTier): Item
+    private generateAmmoReward(itemTpl: string, tierData: IRewardTier): IItem
     {
         const hashUtil = this.InstanceManager.hashUtil;
         const itemHelper = this.InstanceManager.itemHelper;
         const locale = this.InstanceManager.database.locales.global.en;
 
-        const newItem: Item = {
+        const newItem: IItem = {
             _tpl: itemTpl,
             _id: hashUtil.generate()
         }
@@ -362,15 +361,15 @@ export class ProgressionManager
         return newItem;
     }
 
-    private generateArmorReward(itemTpl: string): [Item[], number]
+    private generateArmorReward(itemTpl: string): [IItem[], number]
     {
         const hashUtil = this.InstanceManager.hashUtil;
         const itemHelper = this.InstanceManager.itemHelper;
         
-        const armor: Item[] = [];
+        const armor: IItem[] = [];
         const id: string = hashUtil.generate();
 
-        const newItem: Item = {
+        const newItem: IItem = {
             _tpl: itemTpl,
             _id: id
         }
@@ -387,12 +386,12 @@ export class ProgressionManager
         return [armor, price + inserts[1]];
     }
 
-    private generateSoftArmorInserts(itemTpl: string, itemId: string): [Item[], number]
+    private generateSoftArmorInserts(itemTpl: string, itemId: string): [IItem[], number]
     {
         const hashUtil = this.InstanceManager.hashUtil;
         const itemHelper = this.InstanceManager.itemHelper;
 
-        const items: Item[] = [];
+        const items: IItem[] = [];
         
         const db = this.InstanceManager.database.templates.items;
         
@@ -409,7 +408,7 @@ export class ProgressionManager
     
             const plate = slot._props.filters[0].Plate;
 
-            const insert: Item = {
+            const insert: IItem = {
                 _tpl: plate,
                 _id: hashUtil.generate(),
                 parentId: itemId,
