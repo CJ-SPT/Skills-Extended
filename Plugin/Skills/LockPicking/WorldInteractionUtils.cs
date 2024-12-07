@@ -47,7 +47,7 @@ public static class WorldInteractionUtils
         ActionsTypesClass validAction = new()
         {
             Name = "Pick lock",
-            Disabled = !interactiveObject.Operatable && !LpHelpers.GetLockPicksInInventory().Any()
+            Disabled = !interactiveObject.Operatable && !LockPickingHelpers.GetLockPicksInInventory().Any()
         };
 
         validAction.Action = lockPickInteraction.TryPickLock;
@@ -82,7 +82,7 @@ public static class WorldInteractionUtils
         ActionsTypesClass validAction = new()
         {
             Name = "Hack terminal",
-            Disabled = !door.Operatable && !LpHelpers.IsFlipperZeroInInventory()
+            Disabled = !door.Operatable && !LockPickingHelpers.IsFlipperZeroInInventory()
         };
 
         validAction.Action = hackTerminalOperation.TryHackTerminal;

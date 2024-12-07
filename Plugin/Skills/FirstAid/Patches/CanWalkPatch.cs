@@ -3,6 +3,7 @@ using EFT;
 using EFT.ObstacleCollision;
 using HarmonyLib;
 using SkillsExtended.Skills.Core;
+using SkillsExtended.Skills.LockPicking;
 using SPT.Reflection.Patching;
 
 namespace SkillsExtended.Skills.FirstAid.Patches;
@@ -23,7 +24,7 @@ internal class CanWalkPatch : ModulePatch
     {
         if (!____player.IsYourPlayer) return;
 
-        if (SkillsPlugin.LockPickingGame.activeSelf)
+        if (LockPickingHelpers.LockPickingGame.activeSelf)
         {
             __result = false;
             return;

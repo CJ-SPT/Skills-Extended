@@ -13,7 +13,7 @@ public class HackingActionHandler
     {
         if (unlocked)
         {
-            LpHelpers.ApplyLockPickActionXp(InteractiveObject, Owner);
+            LockPickingHelpers.ApplyLockPickActionXp(InteractiveObject, Owner);
             AccessTools.Method(typeof(WorldInteractiveObject), "Unlock").Invoke(InteractiveObject, null);
             return;
         }
@@ -21,17 +21,17 @@ public class HackingActionHandler
         Owner.DisplayPreloaderUiNotification("You failed to hack the terminal...");
 
         // Add to the counter
-        if (!LpHelpers.DoorAttempts.ContainsKey(InteractiveObject.Id))
+        if (!LockPickingHelpers.DoorAttempts.ContainsKey(InteractiveObject.Id))
         {
-            LpHelpers.DoorAttempts.Add(InteractiveObject.Id, 1);
+            LockPickingHelpers.DoorAttempts.Add(InteractiveObject.Id, 1);
         }
         else
         {
-            LpHelpers.DoorAttempts[InteractiveObject.Id]++;
+            LockPickingHelpers.DoorAttempts[InteractiveObject.Id]++;
         }
 
         // Break the lock if more than 3 failed attempts
-        if (LpHelpers.DoorAttempts[InteractiveObject.Id] > SkillsPlugin.SkillData.LockPicking.AttemptsBeforeBreak)
+        if (LockPickingHelpers.DoorAttempts[InteractiveObject.Id] > SkillsPlugin.SkillData.LockPicking.AttemptsBeforeBreak)
         {
             Owner.DisplayPreloaderUiNotification("You triggered security protocols..");
             InteractiveObject.KeyId = string.Empty;
@@ -40,6 +40,6 @@ public class HackingActionHandler
         }
 
         // Apply failure xp
-        LpHelpers.ApplyLockPickActionXp(InteractiveObject, Owner, false, true);
+        LockPickingHelpers.ApplyLockPickActionXp(InteractiveObject, Owner, false, true);
     }
 }

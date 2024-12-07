@@ -38,9 +38,6 @@ public class SkillsPlugin : BaseUnityPlugin
     
     internal static BuffController BuffController;
     
-    // TODO: Move this to the lockpicking namespace
-    public static GameObject LockPickingGame;
-    
     internal static ManualLogSource Log;
 
     private void Awake()
@@ -79,70 +76,7 @@ public class SkillsPlugin : BaseUnityPlugin
             RealismConfig = JsonConvert.DeserializeObject<RealismConfig>(jsonString);
             Log.LogInfo("Realism mod detected");
         }
-        
-        LoadMiniGame();
-    }
-    
-    // TODO: Move this to the lockpicking namespace
-    private static void LoadMiniGame()
-    {
-        var directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-        
-        var assetBundle = AssetBundle.LoadFromFile($"{directory}/bundles/doorlock.bundle");
-        var gameObject = assetBundle.LoadAssetWithSubAssets("DoorLock").First();
-        LockPickingGame = Instantiate(gameObject as GameObject);
 
-        DontDestroyOnLoad(LockPickingGame);
-        var lpComp = LockPickingGame.GetOrAddComponent<LpLockPicking>();
-        
-        var audioSources = LockPickingGame.GetComponents(typeof(AudioSource));
-        
-        foreach (var source in audioSources)
-        {
-            var audio = source as AudioSource;
-            audio!.playOnAwake = false;
-            
-            switch (audio!.clip.name)
-            {
-                case "LockpickingReset":
-                    lpComp.resetSound = audio.clip;
-                    break;
-                
-                case "LockpickingStuck":
-                    lpComp.clickSound = audio.clip;
-                    break;
-                
-                case "LockpickingTurn":
-                    lpComp.rotateSound = audio.clip;
-                    break;
-                    
-                case "LockpickingUnlocked":
-                    lpComp.winSound = audio.clip;
-                    break;
-            }
-        }
-
-        var children = LockPickingGame
-            .GetComponentsInChildren<RectTransform>();
-        
-        lpComp.cylinder = children
-            .First(x => x.gameObject.name == "Cylinder");
-
-        lpComp.lockpick = children
-            .First(x => x.gameObject.name == "Lockpick");
-        
-        lpComp.levelText = LockPickingGame.GetComponentsInChildren<Text>()
-            .FirstOrDefault(x => x.gameObject.name == "LockLevelText");
-        
-        lpComp.keyText = LockPickingGame.GetComponentsInChildren<Text>()
-            .FirstOrDefault(x => x.gameObject.name == "KeyNameText");
-        
-        lpComp.pickStrengthRemainingLower = LockPickingGame.GetComponentsInChildren<Image>()
-            .FirstOrDefault(x => x.gameObject.name == "PickStrengthBarLower");
-        
-        lpComp.pickStrengthRemainingUpper = LockPickingGame.GetComponentsInChildren<Image>()
-            .FirstOrDefault(x => x.gameObject.name == "PickStrengthBarUpper");
-        
-        LockPickingGame.SetActive(false);
+        LockPickingHelpers.LoadMiniGame();
     }
 }

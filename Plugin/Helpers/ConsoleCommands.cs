@@ -13,11 +13,11 @@ namespace SkillsExtended.Helpers
     {
         public static void RegisterCommands()
         {
-            ConsoleScreen.Processor.RegisterCommand("getAllWeaponIdsInInventory", new Action(GetAllWeaponIDsInInventory));
+            ConsoleScreen.Processor.RegisterCommand("getAllWeaponIdsInInventory", GetAllWeaponIDsInInventory);
             
-            ConsoleScreen.Processor.RegisterCommand("damage", new Action(DoDamage));
-            ConsoleScreen.Processor.RegisterCommand("die", new Action(DoDie));
-            ConsoleScreen.Processor.RegisterCommand("fracture", new Action(DoFracture));
+            ConsoleScreen.Processor.RegisterCommand("damage", DoDamage);
+            ConsoleScreen.Processor.RegisterCommand("die", DoDie);
+            ConsoleScreen.Processor.RegisterCommand("fracture",DoFracture);
 
             ConsoleScreen.Processor.RegisterCommandGroup<Commands>();
         }
@@ -27,9 +27,9 @@ namespace SkillsExtended.Helpers
             [ConsoleCommand("minigame", "", "Mini game practice")]
             public static void StartMiniGame([ConsoleArgument(50)] int chance)
             {
-                SkillsPlugin.LockPickingGame.SetActive(true);
+                LockPickingHelpers.LockPickingGame.SetActive(true);
                 
-                SkillsPlugin.LockPickingGame.GetComponent<LpLockPicking>()
+                LockPickingHelpers.LockPickingGame.GetComponent<LockPickingGame>()
                     .ActivatePractice(chance);
             }
         }

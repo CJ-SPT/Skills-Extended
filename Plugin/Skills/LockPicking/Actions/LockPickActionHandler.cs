@@ -16,7 +16,7 @@ public sealed class LockPickActionHandler
     {
         if (unlocked)
         {
-            LpHelpers.ApplyLockPickActionXp(InteractiveObject, Owner);
+            LockPickingHelpers.ApplyLockPickActionXp(InteractiveObject, Owner);
             InteractiveObject.Unlock();
             
             QuestEvents.Instance.OnLockPickedEvent(this, EventArgs.Empty);
@@ -28,7 +28,7 @@ public sealed class LockPickActionHandler
         AddFailedAttemptToCounter();
                 
         // Apply failure xp
-        LpHelpers.ApplyLockPickActionXp(InteractiveObject, Owner, isFailure: true);
+        LockPickingHelpers.ApplyLockPickActionXp(InteractiveObject, Owner, isFailure: true);
         
         RemoveUseFromLockPick();
         
@@ -38,17 +38,17 @@ public sealed class LockPickActionHandler
     private void AddFailedAttemptToCounter()
     {
         // Add to the counter
-        if (!LpHelpers.DoorAttempts.ContainsKey(InteractiveObject.Id))
+        if (!LockPickingHelpers.DoorAttempts.ContainsKey(InteractiveObject.Id))
         {
-            LpHelpers.DoorAttempts.Add(InteractiveObject.Id, 1);
+            LockPickingHelpers.DoorAttempts.Add(InteractiveObject.Id, 1);
         }
         else
         {
-            LpHelpers.DoorAttempts[InteractiveObject.Id]++;
+            LockPickingHelpers.DoorAttempts[InteractiveObject.Id]++;
         }
 
         // Break the lock if more than 3 failed attempts
-        if (LpHelpers.DoorAttempts[InteractiveObject.Id] < SkillsPlugin.SkillData.LockPicking.AttemptsBeforeBreak) 
+        if (LockPickingHelpers.DoorAttempts[InteractiveObject.Id] < SkillsPlugin.SkillData.LockPicking.AttemptsBeforeBreak) 
             return;
         
         Owner.DisplayPreloaderUiNotification("You broke the lock...");
@@ -64,7 +64,7 @@ public sealed class LockPickActionHandler
         if (SkillManagerExt.Instance(EPlayerSide.Usec).LockPickingUseBuffElite.Value) return;
         
         // Remove a use from a lock pick in the inventory
-        var lockPicks = LpHelpers.GetLockPicksInInventory();
+        var lockPicks = LockPickingHelpers.GetLockPicksInInventory();
         
         var lockPick = lockPicks.First();
 

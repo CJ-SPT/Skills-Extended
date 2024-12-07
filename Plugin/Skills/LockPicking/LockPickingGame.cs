@@ -17,7 +17,7 @@ namespace SkillsExtended.Skills.LockPicking;
 /// This class defines a lockpicking system that behaves similar to games such as Skyrim, Fallout, and Dying Light.
 /// Here you must rotate the lockpick until you find the sweetspot, and then press a button to rotate the cylinder and unlock it
 /// </summary>
-public class LpLockPicking : MonoBehaviour
+public class LockPickingGame : MonoBehaviour
 {
     #region FIELDS
 
@@ -204,7 +204,7 @@ public class LpLockPicking : MonoBehaviour
         
         _onUnlocked = action;
         
-        var doorLevel = LpHelpers.GetLevelForDoor(owner.Player.Location, interactiveObject.Id);
+        var doorLevel = LockPickingHelpers.GetLevelForDoor(owner.Player.Location, interactiveObject.Id);
         
         levelText.text = $"DOOR LEVEL: {doorLevel.ToString()}";
         keyText.text = $"DOOR KEY: {SkillsPlugin.Keys.KeyLocale[interactiveObject.KeyId]}";

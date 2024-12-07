@@ -41,8 +41,8 @@ internal class OnGameStartedPatch : ModulePatch
     {
         SkillsPlugin.Log.LogDebug($"Player map id: {__instance.MainPlayer.Location}");
         
-        LockPicking.LpHelpers.InspectedDoors.Clear();
-        LockPicking.LpHelpers.DoorAttempts.Clear();
+        LockPicking.LockPickingHelpers.InspectedDoors.Clear();
+        LockPicking.LockPickingHelpers.DoorAttempts.Clear();
         
         __instance.MainPlayer.ActiveHealthController.EffectStartedEvent += ApplyMedicalXp;
         

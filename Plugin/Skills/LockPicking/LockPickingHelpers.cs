@@ -1,21 +1,25 @@
-﻿using System;
-using Comfort.Common;
+﻿using Comfort.Common;
 using EFT;
 using EFT.Interactive;
 using EFT.InventoryLogic;
-using SkillsExtended.Models;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using SkillsExtended.Helpers;
-using SkillsExtended.Skills;
 using SkillsExtended.Skills.Core;
+using UnityEngine;
+using UnityEngine.UI;
+using Object = UnityEngine.Object;
 
 namespace SkillsExtended.Skills.LockPicking;
 
-internal static class LpHelpers
+internal static class LockPickingHelpers
 {
     public static readonly Dictionary<string, int> DoorAttempts = [];
     public static readonly List<string> InspectedDoors = [];
+    
+    public static GameObject LockPickingGame;
     
     private static readonly Dictionary<string, Dictionary<string, int>> LocationDoorIdLevels = new()
     {
@@ -112,5 +116,67 @@ internal static class LpHelpers
         // Display inspection info
         NotificationManagerClass.DisplayMessageNotification($"Key for door is {SkillsPlugin.Keys.KeyLocale[interactiveObject.KeyId]}");
         NotificationManagerClass.DisplayMessageNotification($"Lock level {doorLevel}");
+    }
+    
+    public static void LoadMiniGame()
+    {
+        var directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        
+        var assetBundle = AssetBundle.LoadFromFile($"{directory}/bundles/doorlock.bundle");
+        var gameObject = assetBundle.LoadAssetWithSubAssets("DoorLock").First();
+        LockPickingGame = Object.Instantiate(gameObject as GameObject);
+
+        Object.DontDestroyOnLoad(LockPickingGame);
+        var lpComp = LockPickingGame.GetOrAddComponent<LockPickingGame>();
+        
+        var audioSources = LockPickingGame.GetComponents(typeof(AudioSource));
+        
+        foreach (var source in audioSources)
+        {
+            var audio = source as AudioSource;
+            audio!.playOnAwake = false;
+            
+            switch (audio!.clip.name)
+            {
+                case "LockpickingReset":
+                    lpComp.resetSound = audio.clip;
+                    break;
+                
+                case "LockpickingStuck":
+                    lpComp.clickSound = audio.clip;
+                    break;
+                
+                case "LockpickingTurn":
+                    lpComp.rotateSound = audio.clip;
+                    break;
+                    
+                case "LockpickingUnlocked":
+                    lpComp.winSound = audio.clip;
+                    break;
+            }
+        }
+
+        var children = LockPickingGame
+            .GetComponentsInChildren<RectTransform>();
+        
+        lpComp.cylinder = children
+            .First(x => x.gameObject.name == "Cylinder");
+
+        lpComp.lockpick = children
+            .First(x => x.gameObject.name == "Lockpick");
+        
+        lpComp.levelText = LockPickingGame.GetComponentsInChildren<Text>()
+            .FirstOrDefault(x => x.gameObject.name == "LockLevelText");
+        
+        lpComp.keyText = LockPickingGame.GetComponentsInChildren<Text>()
+            .FirstOrDefault(x => x.gameObject.name == "KeyNameText");
+        
+        lpComp.pickStrengthRemainingLower = LockPickingGame.GetComponentsInChildren<Image>()
+            .FirstOrDefault(x => x.gameObject.name == "PickStrengthBarLower");
+        
+        lpComp.pickStrengthRemainingUpper = LockPickingGame.GetComponentsInChildren<Image>()
+            .FirstOrDefault(x => x.gameObject.name == "PickStrengthBarUpper");
+        
+        LockPickingGame.SetActive(false);
     }
 }

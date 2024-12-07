@@ -11,14 +11,14 @@ public static class LockPickActions
     public static void PickLock(WorldInteractiveObject interactiveObject, GamePlayerOwner owner)
     {
         // Check if a lock pick exists in the inventory
-        if (!LpHelpers.GetLockPicksInInventory().Any())
+        if (!LockPickingHelpers.GetLockPicksInInventory().Any())
         {
             owner.DisplayPreloaderUiNotification("You must have a lock pick in your inventory to pick a lock...");
             return;
         }
 
         // Check if the locks broken
-        if (LpHelpers.DoorAttempts.TryGetValue(interactiveObject.Id, out var val))
+        if (LockPickingHelpers.DoorAttempts.TryGetValue(interactiveObject.Id, out var val))
         {
             if (val > 3)
             {
@@ -30,7 +30,7 @@ public static class LockPickActions
         // Only allow lockpicking if the player is stationary
         if (owner.Player.CurrentState is IdleState)
         {
-            var level = LpHelpers.GetLevelForDoor(owner.Player.Location, interactiveObject.Id);
+            var level = LockPickingHelpers.GetLevelForDoor(owner.Player.Location, interactiveObject.Id);
 
             // Return out if the door level is not found
             if (level == -1)
@@ -49,9 +49,9 @@ public static class LockPickActions
                 InteractiveObject = interactiveObject,
             };
             
-            SkillsPlugin.LockPickingGame.SetActive(true);
+            LockPickingHelpers.LockPickingGame.SetActive(true);
             
-            SkillsPlugin.LockPickingGame.GetComponent<LpLockPicking>()
+            LockPickingHelpers.LockPickingGame.GetComponent<LockPickingGame>()
                 .Activate(owner, interactiveObject, handler.PickLockAction);
 
             return;
@@ -62,14 +62,14 @@ public static class LockPickActions
     
     public static void HackTerminal(KeycardDoor door, GamePlayerOwner owner)
     {
-        if (!LpHelpers.IsFlipperZeroInInventory())
+        if (!LockPickingHelpers.IsFlipperZeroInInventory())
         {
             owner.DisplayPreloaderUiNotification("You must have a Flipper Zero in your inventory to hack a key card door..."); 
             return;
         }
         
         // Check if the locks broken
-        if (LpHelpers.DoorAttempts.TryGetValue(door.Id, out var val))
+        if (LockPickingHelpers.DoorAttempts.TryGetValue(door.Id, out var val))
         {
             if (val > 3)
             {
@@ -81,7 +81,7 @@ public static class LockPickActions
         // Only allow lockpicking if the player is stationary
         if (owner.Player.CurrentState is IdleState)
         {
-            var level = LpHelpers.GetLevelForDoor(owner.Player.Location, door.Id);
+            var level = LockPickingHelpers.GetLevelForDoor(owner.Player.Location, door.Id);
 
             // Return out if the door level is not found
             if (level == -1)
@@ -112,7 +112,7 @@ public static class LockPickActions
     
     public static void InspectDoor(WorldInteractiveObject interactiveObject, GamePlayerOwner owner, Action action)
     {
-        var level = LpHelpers.GetLevelForDoor(owner.Player.Location, interactiveObject.Id);
+        var level = LockPickingHelpers.GetLevelForDoor(owner.Player.Location, interactiveObject.Id);
 
         // Return out if the door level is not found
         if (level == -1)
@@ -126,6 +126,6 @@ public static class LockPickActions
         }
         
         action.Invoke();
-        LpHelpers.DisplayInspectInformation(interactiveObject, owner);
+        LockPickingHelpers.DisplayInspectInformation(interactiveObject, owner);
     }
 }
