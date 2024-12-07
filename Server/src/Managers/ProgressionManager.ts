@@ -117,7 +117,7 @@ export class ProgressionManager
         {
             if (skill.Progress === 0) continue;
 
-            const tier = Math.floor(this.convertSkillProgressToRewardTier(skill.Progress));
+            const tier = this.convertSkillProgressToRewardTier(skill.Progress);
             const rewardDiff = this.findDifferenceInRewardLevel(skill.Id, tier);
 
             if (rewardDiff > 0)
@@ -131,7 +131,7 @@ export class ProgressionManager
 
     private convertSkillProgressToRewardTier(progress: number): number
     {
-        return (progress / 100) / 5;
+        return Math.floor((progress / 100) / 5);
     }
 
     private findDifferenceInRewardLevel(skillId: string, tier: number): number
