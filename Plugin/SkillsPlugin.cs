@@ -7,21 +7,21 @@ using SkillsExtended.Helpers;
 using SkillsExtended.Models;
 using SPT.Common.Http;
 using System;
-using System.IO;
 using System.Linq;
-using System.Reflection;
 using IcyClawz.CustomInteractions;
 using SkillsExtended.Config;
 using SkillsExtended.ItemInteractions;
 using SkillsExtended.Skills.LockPicking;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace SkillsExtended;
 
 [BepInPlugin("com.dirtbikercj.SkillsExtended", "Skills Extended", "1.4.0")]
 [BepInDependency("com.IcyClawz.CustomInteractions")]
 [BepInDependency("com.dirtbikercj.QuestsExtended")]
+
+// Because I need the idle state type from it for lockpicking
+[BepInDependency("com.boogle.oldtarkovmovement", BepInDependency.DependencyFlags.SoftDependency)] 
 public class SkillsPlugin : BaseUnityPlugin
 {
     public const int TarkovVersion = 33420;
@@ -40,6 +40,8 @@ public class SkillsPlugin : BaseUnityPlugin
     
     internal static ManualLogSource Log;
 
+    internal static bool IsOldTarkovMovementDetected { get; private set; }
+    
     private void Awake()
     {
         if (!VersionChecker.CheckEftVersion(Logger, Info, Config))
@@ -62,6 +64,14 @@ public class SkillsPlugin : BaseUnityPlugin
         DontDestroyOnLoad(_hook);
         
         BuffController = _hook.AddComponent<BuffController>();
+
+        // Compatibility for lockpicking
+        if (Chainloader.PluginInfos.Keys.Contains("com.boogle.oldtarkovmovement"))
+        {
+            RE.GetOldMovementTypes();
+            IsOldTarkovMovementDetected = true;
+            Logger.LogInfo("Enabling compatibility for old tarkov movement");
+        }
     }
 
     private void Start()

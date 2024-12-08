@@ -6,13 +6,16 @@ namespace SkillsExtended.Helpers;
 
 public static class RE
 {
-    public static Type BleedType;
-    public static Type LightBleedType;
-    public static Type HeavyBleedType;
-    public static Type FractureType;
-    public static Type PainType;
-    public static Type MedEffectType;
-    public static Type StimulatorType;
+    internal static Type BleedType;
+    internal static Type LightBleedType;
+    internal static Type HeavyBleedType;
+    internal static Type FractureType;
+    internal static Type PainType;
+    internal static Type MedEffectType;
+    internal static Type StimulatorType;
+
+    internal static Type OldMovementIdleState;
+    internal static Type OldMovementStationaryState;
     
     static RE()
     {
@@ -23,10 +26,21 @@ public static class RE
         PainType = AccessTools.Inner(typeof(ActiveHealthController), "Pain");
         MedEffectType = AccessTools.Inner(typeof(ActiveHealthController), "MedEffect");
         StimulatorType = AccessTools.Inner(typeof(ActiveHealthController), "MedEffect");
-
+        
         if (BleedType is null)
         {
-            throw new MemberNotFoundException("Could not find HealthController nested types");
+            throw new SkillsExtendedException("Could not find HealthController nested types");
+        }
+    }
+
+    public static void GetOldMovementTypes()
+    {
+        OldMovementIdleState = AccessTools.TypeByName("OldIdleState");
+        OldMovementStationaryState = AccessTools.TypeByName("OldStationaryState");
+
+        if (OldMovementIdleState is null || OldMovementStationaryState is null)
+        {
+            throw new SkillsExtendedException("Could not find OldIdleState or OldStationaryState");
         }
     }
 }
