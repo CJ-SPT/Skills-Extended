@@ -23,8 +23,8 @@ import { LogTextColor } from "@spt/models/spt/logging/LogTextColor";
 export class InstanceManager 
 {
     //#region Accessible in or after preAkiLoad
-    private alpha = true;
-    private version = "1.4.0 RC2";
+    private alpha = false;
+    private version = "";
 
     // Instances
     public container: DependencyContainer;
