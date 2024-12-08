@@ -20,18 +20,18 @@ export class IOManager
     public ServerConfig: IServerConfig;
 
     public RootPath: string = path.join(path.dirname(__filename), "..", "..");
-    public DataPath: string = path.join(path.dirname(__filename), "..", "..", "data");
-    public ConfigPath: string = path.join(path.dirname(__filename), "..", "..", "config");
-    public ProgressPath: string = path.join(path.dirname(__filename), "..", "..", "progression");
+    public DataPath: string = path.join(this.RootPath, "data");
+    public ConfigPath: string = path.join(this.RootPath, "config");
+    public ProgressPath: string = path.join(this.RootPath, "progression");
 
-    public AchievementsRootPath: string = path.join(path.dirname(__filename), "..", "..", "data", "Achievements");
-    public AssortRootPath: string = path.join(path.dirname(__filename), "..", "..", "data", "Assort");
-    public CustomQuestConditions: string = path.join(path.dirname(__filename), "..", "..", "data", "CustomQuestConditions");
-    public LocaleRootPath: string = path.join(path.dirname(__filename), "..", "..", "data", "Locales");
-    public TraderRootPath: string = path.join(path.dirname(__filename), "..", "..", "data", "Trader");
-    public QuestsRootPath: string = path.join(path.dirname(__filename), "..", "..", "data", "Quests");
-    public ImageRootPath: string = path.join(path.dirname(__filename), "..", "..", "data", "Images");
-    public ItemRootPath: string = path.join(path.dirname(__filename), "..", "..", "data", "Items");
+    public AchievementsRootPath: string = path.join(this.DataPath, "Achievements");
+    public AssortRootPath: string = path.join(this.DataPath, "Assort");
+    public CustomQuestConditions: string = path.join(this.DataPath, "CustomQuestConditions");
+    public LocaleRootPath: string = path.join(this.DataPath, "Locales");
+    public TraderRootPath: string = path.join(this.DataPath, "Trader");
+    public QuestsRootPath: string = path.join(this.DataPath, "Quests");
+    public ImageRootPath: string = path.join(this.DataPath, "Images");
+    public ItemRootPath: string = path.join(this.DataPath, "Items");
 
     public preSptLoad(): void
     {
@@ -43,8 +43,6 @@ export class IOManager
     {
         this.importAllLocaleData();
         this.importAllImages();
-
-        //this.extractLocalesToSingleFile();
     }
 
     /**
@@ -201,40 +199,5 @@ export class IOManager
         }
 
         logger.logWithColor(`Skills Extended: Loaded ${images} images`, LogTextColor.GREEN);
-    }
-
-    private extractLocalesToSingleFile(): void
-    {
-        const enPath = path.join(this.LocaleRootPath, "fr");
-        const localeFiles = fs.readdirSync(enPath);
-
-        const locales: Record<string, string> = {};
-
-        for (const file of localeFiles)
-        {
-            const localeFile = path.join(enPath, file);
-
-            const tmpLocales = this.loadJsonFile<Record<string, string>>(localeFile);
-
-            for (const locale in tmpLocales)
-            {
-                locales[locale] = tmpLocales[locale];
-            }
-        }
-
-        const outPath = path.join(this.RootPath, "fr.json");
-        const data = JSON.stringify(locales);
-
-        this.InstanceManager.logger.logWithColor(outPath, LogTextColor.BLUE);
-
-        fs.writeFileSync(outPath, data, "utf8");
-
-        
-        this.InstanceManager.logger.logWithColor(`Skills Debug: Exported ${locales.length} entries for translation.`, LogTextColor.BLUE);
-    }
-
-    private cleanUpLocaleDirectory(): void
-    {
-        
     }
 }

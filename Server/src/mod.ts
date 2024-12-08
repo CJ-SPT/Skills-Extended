@@ -61,7 +61,6 @@ class SkillsExtended implements IPreSptLoadMod, IPostDBLoadMod
         this.CreateItems();
         // Do this after so we dont wipe locales with create items
         this.IOManager.importData();
-        
 
         this.addItemToSpecSlots(SkillsExtendedIds.Lockpick);
         this.addItemToSpecSlots(SkillsExtendedIds.Pda);
@@ -85,7 +84,7 @@ class SkillsExtended implements IPreSptLoadMod, IPostDBLoadMod
 
         for (const craft of crafts)
         {
-            this.InstanceManager.database.hideout.production.push(craft)
+            this.InstanceManager.database.hideout.production.recipes.push(craft)
         }
     }
 

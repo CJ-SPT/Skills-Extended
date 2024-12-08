@@ -7,11 +7,13 @@ using SkillsExtended.Helpers;
 
 namespace SkillsExtended.ItemInteractions;
 
-internal sealed class CustomInteractionsProvider : IItemCustomInteractionsProvider
+internal sealed class CustomInteractionsProvider : ICustomInteractionsProvider
 {
     private static StaticIcons StaticIcons => EFTHardSettings.Instance.StaticIcons;
     
-    public IEnumerable<CustomInteraction> GetCustomInteractions(ItemUiContext uiContext, EItemViewType viewType,
+    public IEnumerable<CustomInteraction> GetCustomInteractions(
+        ItemUiContext uiContext, 
+        EItemViewType viewType,
         Item item)
     {
         if (viewType is not EItemViewType.Inventory)
@@ -21,7 +23,7 @@ internal sealed class CustomInteractionsProvider : IItemCustomInteractionsProvid
             yield break;
         
         // Read book
-        yield return new()
+        yield return new(ItemUiContext.Instance)
         {
             Caption = () => "Read Book",
             Icon = () => StaticIcons.GetItemTypeIcon(EItemType.Info),

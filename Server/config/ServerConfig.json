@@ -2,7 +2,7 @@
     "EnableTrader": true,
     "EnableProgression": true,
     "ProgressionDebug": {
-        "Enabled": true,
+        "Enabled": false,
         "TestGeneration": false,
         "GenerationLevel": 9,
         "NumberOfRuns": 2500

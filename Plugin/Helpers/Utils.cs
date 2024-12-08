@@ -11,44 +11,20 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 
-namespace SkillsExtended.Helpers
+namespace SkillsExtended.Helpers;
+
+public static class Utils
 {
-    public static class Utils
+    // Get Json from the server
+    public static T Get<T>(string url)
     {
-        public static Type IdleStateType => _idleStateType;
-
-        private static Type _idleStateType;
-        
-        // If the player is in the GameWorld, use the main players SkillManager
-        public static SkillManager GetActiveSkillManager()
-        {
-            return ClientAppUtils.GetMainApp()?.GetClientBackEndSession()?.Profile?.Skills;
-        }
-
-        // Get Json from the server
-        public static T Get<T>(string url)
-        {
-            var req = RequestHandler.GetJson(url);
+        var req = RequestHandler.GetJson(url);
             
-            if (string.IsNullOrEmpty(req))
-            {
-                throw new InvalidOperationException("The response from the server is null or empty.");
-            }
-
-            return JsonConvert.DeserializeObject<T>(req);
-        }
-        
-        public static void GetTypes()
+        if (string.IsNullOrEmpty(req))
         {
-            _idleStateType = GetIdleStateType();
+            throw new InvalidOperationException("The response from the server is null or empty.");
         }
 
-        private static Type GetIdleStateType()
-        {
-            return PatchConstants.EftTypes.Single(x =>
-                AccessTools.GetDeclaredMethods(x).Any(method => method.Name == "Plant") &&
-                AccessTools.GetDeclaredFields(x).Count >= 5 &&
-                x.BaseType.Name == "MovementState");
-        }
+        return JsonConvert.DeserializeObject<T>(req);
     }
 }

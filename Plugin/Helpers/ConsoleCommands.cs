@@ -5,7 +5,7 @@ using EFT.UI;
 using System;
 using System.Linq;
 using EFT.Console.Core;
-using SkillsExtended.LockPicking;
+using SkillsExtended.Skills.LockPicking;
 
 namespace SkillsExtended.Helpers
 {
@@ -13,11 +13,11 @@ namespace SkillsExtended.Helpers
     {
         public static void RegisterCommands()
         {
-            ConsoleScreen.Processor.RegisterCommand("getAllWeaponIdsInInventory", new Action(GetAllWeaponIDsInInventory));
+            ConsoleScreen.Processor.RegisterCommand("getAllWeaponIdsInInventory", GetAllWeaponIDsInInventory);
             
-            ConsoleScreen.Processor.RegisterCommand("damage", new Action(DoDamage));
-            ConsoleScreen.Processor.RegisterCommand("die", new Action(DoDie));
-            ConsoleScreen.Processor.RegisterCommand("fracture", new Action(DoFracture));
+            ConsoleScreen.Processor.RegisterCommand("damage", DoDamage);
+            ConsoleScreen.Processor.RegisterCommand("die", DoDie);
+            ConsoleScreen.Processor.RegisterCommand("fracture",DoFracture);
 
             ConsoleScreen.Processor.RegisterCommandGroup<Commands>();
         }
@@ -27,21 +27,21 @@ namespace SkillsExtended.Helpers
             [ConsoleCommand("minigame", "", "Mini game practice")]
             public static void StartMiniGame([ConsoleArgument(50)] int chance)
             {
-                Plugin.LockPickingGame.SetActive(true);
+                LockPickingHelpers.LockPickingGame.SetActive(true);
                 
-                Plugin.LockPickingGame.GetComponent<LpLockPicking>()
+                LockPickingHelpers.LockPickingGame.GetComponent<LockPickingGame>()
                     .ActivatePractice(chance);
             }
         }
         
         private static void GetAllWeaponIDsInInventory()
         {
-            var weapons = Plugin.Session?.Profile?.Inventory?.AllRealPlayerItems;
+            var weapons = GameUtils.GetProfile().Inventory?.AllRealPlayerItems;
             weapons = weapons.Where(x => x is Weapon);
 
             foreach (var weapon in weapons)
             {
-                Plugin.Log.LogDebug($"Template ID: {weapon.TemplateId}, locale name: {weapon.LocalizedName()}");
+                SkillsPlugin.Log.LogDebug($"Template ID: {weapon.TemplateId}, locale name: {weapon.LocalizedName()}");
             }
         }
         
@@ -49,7 +49,7 @@ namespace SkillsExtended.Helpers
         private static void DoDamage()
         {
             var player = Singleton<GameWorld>.Instance.MainPlayer;
-            DamageInfo Blunt = new DamageInfo();
+            var Blunt = new DamageInfoStruct();
             
             if (player is null) { return; }
 
@@ -59,7 +59,7 @@ namespace SkillsExtended.Helpers
         private static void DoDie()
         {
             var player = Singleton<GameWorld>.Instance.MainPlayer;
-            DamageInfo Blunt = new DamageInfo();
+            var Blunt = new DamageInfoStruct();
             
             if (player is null) { return; }
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using EFT;
+using SkillsExtended.Helpers;
 using SkillsExtended.Models;
 
 namespace SkillsExtended.Buffs;
@@ -11,9 +12,7 @@ public abstract class AbstractBuff
     public TimeSpan RemainingTime => ExpireTime.Subtract(CurrentTime);
     private DateTimeOffset ExpireTime { get; }
     private DateTimeOffset CurrentTime => DateTimeOffset.FromUnixTimeSeconds(GetCurrentTime());
-    
-    protected ISession Session => Plugin.Session;
-    protected static SkillManager SkillManager => Plugin.Session.Profile.Skills;
+    protected static SkillManager SkillManager => GameUtils.GetSkillManager();
     
     protected AbstractBuff(SkillBuffModel buff)
     {
@@ -22,7 +21,7 @@ public abstract class AbstractBuff
         var now = GetCurrentTime();
         ExpireTime = DateTimeOffset.FromUnixTimeSeconds(now + buff.DurationInSeconds);
         
-        Plugin.Log.LogDebug($"Buff expiry time set to {ExpireTime.ToString("yyyy-MM-dd HH:mm:ss")}");
+        SkillsPlugin.Log.LogDebug($"Buff expiry time set to {ExpireTime.ToString("yyyy-MM-dd HH:mm:ss")}");
     }
 
     /// <summary>
