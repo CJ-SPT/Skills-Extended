@@ -7,18 +7,26 @@ namespace SkillsExtended.Helpers;
 
 public static class GameUtils
 {
+    /// <summary>
+    /// We are in raid, but not the hideout
+    /// </summary>
+    /// <returns></returns>
     public static bool IsInRaid()
     {
-        return Singleton<IBotGame>.Instantiated;
+        return Singleton<GameWorld>.Instantiated && Singleton<GameWorld>.Instance is not HideoutGameWorld;
     }
     
+    /// <summary>
+    /// We are in hideout, but not in raid
+    /// </summary>
+    /// <returns></returns>
     public static bool IsInHideout()
     {
         return Singleton<GameWorld>.Instantiated && Singleton<GameWorld>.Instance is HideoutGameWorld;
     }
     
     [CanBeNull]
-    public static GameWorld GetGameWorld()
+    public static GameWorld GetGameWorld(bool throwIfNull = false)
     {
         if (!IsInRaid())
         {
@@ -70,7 +78,7 @@ public static class GameUtils
     [CanBeNull]
     public static Player GetPlayer(bool throwIfNull = false)
     {
-        var player = GetGameWorld().MainPlayer;
+        var player = GetGameWorld()?.MainPlayer;
 
         if (throwIfNull && player is null)
         {
