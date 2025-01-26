@@ -114,46 +114,7 @@ export class RouteManager
                 }
             ],
             ""
-        );
-
-        staticRouter.registerStaticRouter(
-            "AddSkillSideList",
-            [
-                {
-                    url: "/client/game/profile/list",
-                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                    action: async (url, info, sessionId, output) => 
-                    {       
-                        const http = this.InstanceManager.httpResponseUtil;
-                        
-                        const profile = this.addSkillSideFieldToProfile(sessionId);
-                        //profile = this.addMissingSkillsToProfile(sessionId, profile);
-
-                        return profile !== undefined 
-                            ? http.getBody(profile)
-                            : output;
-                    }
-                }
-            ],
-            ""
-        );
-
-        staticRouter.registerStaticRouter(
-            "AddSkillSideInfo",
-            [
-                {
-                    url: "/launcher/profile/info",
-                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                    action: async (url, info, sessionId, output) => 
-                    {                     
-                        this.addSkillSideFieldToProfile(sessionId);
-
-                        return output;
-                    }
-                }
-            ],
-            ""
-        );
+        );      
     }
 
     private getKeys(): string
@@ -177,71 +138,5 @@ export class RouteManager
         }
 
         return JSON.stringify(keys);
-    }
-
-    /**
-     * Fixes a BSG bug by adding the correct side field to the skill manager
-     * @param sessionId 
-     */
-    private addSkillSideFieldToProfile(sessionId: string): undefined | IPmcData[]
-    {
-        const helper = this.InstanceManager.profileHelper;
-        const saveServer = this.InstanceManager.saveServer;
-
-        if (saveServer.getProfile(sessionId).info.wipe) return;
-
-        const pmcProfile = helper.getPmcProfile(sessionId);
-        const scavProfile = helper.getScavProfile(sessionId);
-        
-        const pmcSide = pmcProfile?.Info?.Side ?? "Bear";
-        
-        const pmcSkills = pmcProfile?.Skills;
-        const scavSkills = scavProfile?.Skills;
-
-        if (!pmcSkills || !scavSkills) return;
-
-        pmcSkills.Side = pmcSide;
-        pmcSkills.IsPlayer = true;
-        
-        scavSkills.Side = "Savage";
-        scavSkills.IsPlayer = true;
-
-        const profile: IPmcData[] = [];
-
-        profile.push(pmcProfile);
-        profile.push(scavProfile);
-
-        return profile;
-    }
-
-    private addMissingSkillsToProfile(sessionId: string, profile: IPmcData[]): undefined | IPmcData[]
-    {
-        const saveServer = this.InstanceManager.saveServer;
-
-        if (saveServer.getProfile(sessionId).info.wipe) return profile;
-
-        const pmcSkills = profile[0]?.Skills?.Common;
-        const scavSkills = profile[1]?.Skills?.Common;
-
-        if (!pmcSkills || !scavSkills) return profile;
-
-        for (const newSkill in NewSkills)
-        {
-            console.log(`Adding new skill ${newSkill}`)
-
-            if (pmcSkills.find(x => x.Id === newSkill)) continue;
-
-            const common: Common = {
-                Id: newSkill,
-                PointsEarnedDuringSession: 0,
-                LastAccess: 0,
-                Progress: 0
-            }
-
-            pmcSkills.push(common);
-            scavSkills.push(common);
-        }
-
-        return profile;
     }
 }

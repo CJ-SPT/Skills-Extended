@@ -82,20 +82,4 @@ internal class SkillManagerConstructorPatch : ModulePatch
         AccessTools.Field(typeof(SkillClass), "Locked").SetValue(__instance.SilentOps,
             !SkillsPlugin.SkillData.SilentOps.Enabled);
 	}
-
-    /// <summary>
-    /// Return true if we should disable the skill for the provided side
-    /// </summary>
-    /// <returns></returns>
-    private static bool ShouldDisable(EPlayerSide faction, EPlayerSide skillSide)
-    {
-        var disable = true;
-        
-        if (disable)
-        {
-            return false;
-        }
-        
-        return faction != skillSide;
-    }
 }
