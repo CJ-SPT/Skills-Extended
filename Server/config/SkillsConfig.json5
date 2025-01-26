@@ -218,6 +218,11 @@
                 "door_Shopping_Mall_OLI_00037": 15,
                 "door_Shopping_Mall_OLI_00039": 15,
                 "door_Shopping_Mall_OLI_00043": 15,
+                "Shopping_Mall_DesignStuff_00049": 25,
+                "Shopping_Mall_DesignStuff_00050": 25,
+                "Shopping_Mall_DesignStuff_00051": 25,
+                "Shopping_Mall_DesignStuff_00052": 20,
+                "Shopping_Mall_DesignStuff_00063": 25,
                 "container_Shopping_Mall_DesignStuff_00247": 1,
                 "container_Shopping_Mall_DesignStuff_00249": 1,
                 "container_Shopping_Mall_DesignStuff_00252": 1,
@@ -361,6 +366,10 @@
                 "door_Shoreline_Sanatorium_indoor_00246": 15,
                 "door_Shoreline_Sanatorium_indoor_00248": 15,
                 "door_Shoreline_Sanatorium_indoor_00283": 7,
+                "container_shoreline_DesignStuff_00208": 10,
+                "container_shoreline_DesignStuff_00211": 10,
+                "container_shoreline_DesignStuff_00212": 10,
+                "Lootable_00004": 10,
             },
             "Labs": {
                 "door_Laboratory_work_zone_00002": 20,
@@ -403,7 +412,8 @@
                 "trunk_Lighthouse_SwampVillage_00002": 10,
                 "trunk_Lighthouse_Logistics_Terminal_00000": 5,
                 "trunk_Lighthouse_Roads_00022": 5,
-                "trunk_Lighthouse_SwampVillage_00014": 15
+                "trunk_Lighthouse_SwampVillage_00014": 15,
+                "_00000": 5
             },
             "Streets": {
                 "door_City_SE_01_Lenina_74_Indoor_00000": 10,
