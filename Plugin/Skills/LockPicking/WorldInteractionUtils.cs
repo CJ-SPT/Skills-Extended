@@ -204,9 +204,7 @@ public static class WorldInteractionUtils
                     InteractiveObject = interactiveObject,
                 };
                 
-                Action action = new(handler.InspectLockAction);
-                
-                LockPickActions.InspectDoor(interactiveObject, owner, action);
+                LockPickActions.InspectDoor(interactiveObject, owner, handler.InspectLockAction);
                 return;
             }
             
