@@ -8,9 +8,7 @@
     "isBundleMod": true,
     "loadBefore": [],
     "loadAfter": [],
-    "incompatibilities": [
-        "fika-server"
-    ],
+    "incompatibilities": [],
     "contributors": [],
     "scripts": {
         "setup": "npm i",
