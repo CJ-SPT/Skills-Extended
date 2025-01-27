@@ -114,7 +114,7 @@ export class ProgressionManager
         const skills = this.PmcProfile.Skills.Common;
         for (const skill of skills)
         {
-            if (skill.Progress === 0) continue;
+            if (skill.Progress === 0 || skill.Id === "BotSound" || skill.Id === "BotReload") continue;
 
             const tier = this.convertSkillProgressToRewardTier(skill.Progress);
             const rewardDiff = this.findDifferenceInRewardLevel(skill.Id, tier);
