@@ -18,15 +18,12 @@ using UnityEngine;
 
 namespace SkillsExtended;
 
-[BepInPlugin("com.dirtbikercj.SkillsExtended", "Skills Extended", "1.4.1")]
+[BepInPlugin("com.dirtbikercj.SkillsExtended", "Skills Extended", "1.4.2")]
 [BepInDependency("com.IcyClawz.CustomInteractions")]
 [BepInDependency("com.dirtbikercj.QuestsExtended")]
 
 // Because I need the idle state type from it for lockpicking
 [BepInDependency("com.boogle.oldtarkovmovement", BepInDependency.DependencyFlags.SoftDependency)] 
-
-// NOT COMPATIBLE
-[BepInDependency("com.fika.core", BepInDependency.DependencyFlags.SoftDependency)]
 public class SkillsPlugin : BaseUnityPlugin
 {
     public const int TarkovVersion = 33420;
