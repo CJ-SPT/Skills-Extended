@@ -1,6 +1,65 @@
 ﻿@page "/FirstAid"
-<h3>FirstAid</h3>
+
+<MudGrid>
+    <MudItem xs="6">
+        <MudSwitch
+            Class="d-flex align-center justify-center mud-width-full py-8"
+            @bind-Value="_firstAidEnabled" 
+            Label="Enabled" 
+            Color="Color.Success"/>
+    </MudItem>
+
+    <MudItem xs="6">
+        <MudNumericField
+            @bind-Value="_xpPerAction"
+            Label="XP Per Action"
+            Variant="Variant.Filled"
+            Step=".05M"
+            Min="0" Max="25"/>
+    </MudItem>
+    
+    <MudItem xs="6">
+        <MudNumericField
+            @bind-Value="_medkitUsageReduction"
+            Label="Resource Cost Reduction"
+            Variant="Variant.Filled"
+            Step=".05M"
+            Min="0" Max="1"/>
+    </MudItem>
+
+    <MudItem xs="6">
+        <MudNumericField
+            @bind-Value="_medkitUsageReductionElite"
+            Label="Resource Cost Reduction Elite"
+            Variant="Variant.Filled"
+            Step=".05M"
+            Min="0" Max="1"/>
+    </MudItem>
+    
+    <MudItem xs="6">
+        <MudNumericField
+            @bind-Value="_medkitSpeedBonus"
+            Label="Medkit Speed Bonus"
+            Variant="Variant.Filled"
+            Step=".05M"
+            Min="0" Max="1"/>
+    </MudItem>
+    
+    <MudItem xs="6">
+        <MudNumericField
+            @bind-Value="_medkitSpeedBonusElite"
+            Label="Medkit Speed Bonus Elite"
+            Variant="Variant.Filled"
+            Step=".05M"
+            Min="0" Max="1"/>
+    </MudItem>
+</MudGrid>
 
 @code {
-    
+    bool _firstAidEnabled;
+    decimal _xpPerAction;
+    decimal _medkitUsageReduction;
+    decimal _medkitUsageReductionElite;
+    decimal _medkitSpeedBonus;
+    decimal _medkitSpeedBonusElite;
 }
