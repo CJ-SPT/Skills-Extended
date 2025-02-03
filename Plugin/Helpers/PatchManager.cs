@@ -5,6 +5,7 @@ using SkillsExtended.Skills.LockPicking.Patches;
 using SkillsExtended.Skills.ProneMovement.Patches;
 using SkillsExtended.Skills.Shared.Patches;
 using SkillsExtended.Skills.SilentOps.Patches;
+using SkillsExtended.Skills.Strength.Patches;
 using SkillsExtended.Skills.UI.Patches;
 using SkillsExtended.Skills.WeaponSkills.Patches;
 
@@ -23,6 +24,7 @@ internal static class PatchManager
         SkillProneMovement();
         SkillsShared();
         SkillSilentOps();
+        SkillStrength();
         SkillsUI();
         SkillWeapons();
         
@@ -77,6 +79,11 @@ internal static class PatchManager
         new MeleeSpeedPatch().Enable();
         new OnEnemyKillPatch().Enable();
         new RequiredItemsCountPatch().Enable();
+    }
+
+    private static void SkillStrength()
+    {
+        new MovementContextSetSpeedLimitPatch().Enable();
     }
     
     private static void SkillsUI()

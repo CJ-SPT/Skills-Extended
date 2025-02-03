@@ -18,6 +18,8 @@ namespace SkillsExtended.Models
         public ProneMovementData ProneMovement;
 
         public SilentOpsData SilentOps;
+        
+        public StrengthData Strength;
     }
 
     public struct FirstAidData
@@ -183,5 +185,14 @@ namespace SkillsExtended.Models
         
         [JsonProperty("SILENCER_PRICE_RED")]
         public float SilencerPriceReduction;
+    }
+
+    public struct StrengthData
+    {
+        [JsonProperty("ENABLED")]
+        public bool Enabled;
+        
+        [JsonProperty("COLLIDER_SPEED_BUFF")]
+        public float ColliderSpeedBuff;
     }
 }

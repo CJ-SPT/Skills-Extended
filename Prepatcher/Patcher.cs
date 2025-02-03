@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using BepInEx.Logging;
 using System.Diagnostics;
+using System.Reflection;
 using JetBrains.Annotations;
 using FieldAttributes = Mono.Cecil.FieldAttributes;
 
@@ -19,8 +20,7 @@ public static class SkillsExtendedPatcher
             SkillManager = assembly.MainModule.GetType("EFT.SkillManager");
             
             PatchNewBuffs(ref assembly);
-            PatchNewAnim(ref assembly);
-            PatchSkillManagerSide(ref assembly);
+            //PatchSkillManagerSide(ref assembly);
             
             Logger.CreateLogSource("Skills Extended PrePatch").LogInfo("Patching Complete!");
         } catch (Exception ex)
@@ -66,165 +66,191 @@ public static class SkillsExtendedPatcher
         var buffEnums = assembly.MainModule.GetType("EFT.EBuffId");
         var index = 1000;
         
+        // New skills
+        FirstAidBuffs(assembly, buffEnums, ref index);
+        FieldMedicineBuffs(assembly, buffEnums, ref index);
+        WesternRifleBuffs(assembly, buffEnums, ref index);
+        EasternRifleBuffs(assembly, buffEnums, ref index);
+        LockPickingBuffs(assembly, buffEnums, ref index);
+        SilentOpsBuffs(assembly, buffEnums, ref index);
+        
+        // Existing skills
+        StrengthBuffs(assembly, buffEnums, ref index);
+    }
+
+    private static void FirstAidBuffs(AssemblyDefinition assembly, TypeDefinition buffEnum, ref int index)
+    {
         var firstAidHealingSpeedEnum = CreateNewEnum(
             ref assembly, 
             "FirstAidHealingSpeed", 
             "FirstAidHealingSpeed", 
-            buffEnums, 
+            buffEnum, 
             index++);
         
         var firstAidHealingCostEnum = CreateNewEnum(
             ref assembly, 
             "FirstAidResourceCost", 
             "FirstAidResourceCost",
-            buffEnums, 
+            buffEnum, 
             index++);
-        
         
         var firstAidMovementSpeedElite = CreateNewEnum(
             ref assembly, 
             "FirstAidMovementSpeedElite", 
             "FirstAidMovementSpeedElite",
-            buffEnums, 
+            buffEnum, 
             index++);
         
-        buffEnums.Fields.Add(firstAidHealingSpeedEnum);
-        buffEnums.Fields.Add(firstAidHealingCostEnum);
-        buffEnums.Fields.Add(firstAidMovementSpeedElite);
-        
+        buffEnum.Fields.Add(firstAidHealingSpeedEnum);
+        buffEnum.Fields.Add(firstAidHealingCostEnum);
+        buffEnum.Fields.Add(firstAidMovementSpeedElite);
+    }
+
+    private static void FieldMedicineBuffs(AssemblyDefinition assembly, TypeDefinition buffEnum, ref int index)
+    {
         var fieldMedicineSkillCap = CreateNewEnum(
             ref assembly, 
             "FieldMedicineSkillCap", 
             "FieldMedicineSkillCap", 
-            buffEnums, 
+            buffEnum, 
             index++);
         
         var fieldMedicineDurationBonus = CreateNewEnum(
             ref assembly, 
             "FieldMedicineDurationBonus", 
             "FieldMedicineDurationBonus", 
-            buffEnums, 
+            buffEnum, 
             index++);
         
         var fieldMedicineChanceBonus = CreateNewEnum(
             ref assembly, 
             "FieldMedicineChanceBonus", 
             "FieldMedicineChanceBonus", 
-            buffEnums, 
+            buffEnum, 
             index++);
         
-        buffEnums.Fields.Add(fieldMedicineSkillCap);
-        buffEnums.Fields.Add(fieldMedicineDurationBonus);
-        buffEnums.Fields.Add(fieldMedicineChanceBonus);
-        
+        buffEnum.Fields.Add(fieldMedicineSkillCap);
+        buffEnum.Fields.Add(fieldMedicineDurationBonus);
+        buffEnum.Fields.Add(fieldMedicineChanceBonus);
+    }
+
+    private static void WesternRifleBuffs(AssemblyDefinition assembly, TypeDefinition buffEnum, ref int index)
+    {
         var usecArSystemsRecoilEnum = CreateNewEnum(
             ref assembly, 
             "UsecArSystemsRecoil", 
             "UsecArSystemsRecoil", 
-            buffEnums, 
+            buffEnum, 
             index++);
         
         var usecArSystemsErgoEnum = CreateNewEnum(
             ref assembly, 
             "UsecArSystemsErgo", 
             "UsecArSystemsErgo", 
-            buffEnums, 
+            buffEnum, 
             index++);
         
         
-        buffEnums.Fields.Add(usecArSystemsRecoilEnum);
-        buffEnums.Fields.Add(usecArSystemsErgoEnum);
-        
+        buffEnum.Fields.Add(usecArSystemsRecoilEnum);
+        buffEnum.Fields.Add(usecArSystemsErgoEnum);
+    }
+
+    private static void EasternRifleBuffs(AssemblyDefinition assembly, TypeDefinition buffEnum, ref int index)
+    {
         var bearAkSystemsRecoilEnum = CreateNewEnum(
             ref assembly, 
             "BearAkSystemsRecoil", 
             "BearAkSystemsRecoil", 
-            buffEnums, 
+            buffEnum, 
             index++);
         
         var bearAkSystemsErgoEnum = CreateNewEnum(
             ref assembly, 
             "BearAkSystemsErgo", 
             "BearAkSystemsErgo", 
-            buffEnums, 
+            buffEnum, 
             index++);
         
-        buffEnums.Fields.Add(bearAkSystemsRecoilEnum);
-        buffEnums.Fields.Add(bearAkSystemsErgoEnum);
-        
+        buffEnum.Fields.Add(bearAkSystemsRecoilEnum);
+        buffEnum.Fields.Add(bearAkSystemsErgoEnum);
+    }
+
+    private static void LockPickingBuffs(AssemblyDefinition assembly, TypeDefinition buffEnum, ref int index)
+    {
         var lockpickingTimeIncrease = CreateNewEnum(
             ref assembly, 
             "LockpickingTimeIncrease", 
             "LockpickingTimeIncrease", 
-            buffEnums, 
+            buffEnum, 
             index++);
         
         var lockpickingForgivenessAngle = CreateNewEnum(
             ref assembly, 
             "LockpickingForgivenessAngle", 
             "LockpickingForgivenessAngle", 
-            buffEnums, 
+            buffEnum, 
             index++);
         
         var lockpickingUseElite = CreateNewEnum(
             ref assembly, 
             "LockpickingUseElite", 
             "LockpickingUseElite", 
-            buffEnums, 
+            buffEnum, 
             index++);
         
-        buffEnums.Fields.Add(lockpickingTimeIncrease);
-        buffEnums.Fields.Add(lockpickingForgivenessAngle);
-        buffEnums.Fields.Add(lockpickingUseElite);
-        
+        buffEnum.Fields.Add(lockpickingTimeIncrease);
+        buffEnum.Fields.Add(lockpickingForgivenessAngle);
+        buffEnum.Fields.Add(lockpickingUseElite);
+    }
+
+    private static void SilentOpsBuffs(AssemblyDefinition assembly, TypeDefinition buffEnum, ref int index)
+    {
         var silentOpsIncMeleeSpeed = CreateNewEnum(
             ref assembly, 
             "SilentOpsIncMeleeSpeed", 
             "SilentOpsIncMeleeSpeed", 
-            buffEnums, 
+            buffEnum, 
             index++);
         
         var silentOpsRedVolume = CreateNewEnum(
             ref assembly, 
             "SilentOpsRedVolume", 
             "SilentOpsRedVolume", 
-            buffEnums, 
+            buffEnum, 
             index++);
         
         var silentOpsSilencerCostRed = CreateNewEnum(
             ref assembly, 
             "SilentOpsSilencerCostRed", 
             "SilentOpsSilencerCostRed", 
-            buffEnums, 
+            buffEnum, 
             index++);
         
-        buffEnums.Fields.Add(silentOpsIncMeleeSpeed);
-        buffEnums.Fields.Add(silentOpsRedVolume);
-        buffEnums.Fields.Add(silentOpsSilencerCostRed);
+        buffEnum.Fields.Add(silentOpsIncMeleeSpeed);
+        buffEnum.Fields.Add(silentOpsRedVolume);
+        buffEnum.Fields.Add(silentOpsSilencerCostRed);
     }
 
-    private static void PatchNewAnim(ref AssemblyDefinition assembly)
+    private static void StrengthBuffs(AssemblyDefinition assembly, TypeDefinition buffEnum, ref int index)
     {
-        var animEnum = assembly.MainModule.GetType("EFT.InputSystem.ECommand");
-        
-        var lockPickingAnimStart = CreateNewEnum(
+        var incBushSpeed = CreateNewEnum(
             ref assembly, 
-            null, 
-            "LockPickingStart", 
-            animEnum, 
-            1000);
+            "StrengthColliderSpeedBuff", 
+            "StrengthColliderSpeedBuff", 
+            buffEnum, 
+            index++);
         
-        var lockPickingAnimEnd = CreateNewEnum(
+        var incBushSpeedElite = CreateNewEnum(
             ref assembly, 
-            null, 
-            "LockPickingEnd", 
-            animEnum, 
-            1001);
+            "StrengthColliderSpeedBuffElite", 
+            "StrengthColliderSpeedBuffElite", 
+            buffEnum, 
+            index++);
         
-        animEnum.Fields.Add(lockPickingAnimStart);
-        animEnum.Fields.Add(lockPickingAnimEnd);
+        buffEnum.Fields.Add(incBushSpeed);
+        buffEnum.Fields.Add(incBushSpeedElite);
     }
-
+    
     private static void PatchSkillManagerSide(ref AssemblyDefinition assembly)
     {
         var ePlayerSide = assembly.MainModule.GetType("EFT.EPlayerSide");

@@ -1,0 +1,41 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <TargetFramework>net8.0-windows</TargetFramework>
+        <LangVersion>latestmajor</LangVersion>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <UseWPF>true</UseWPF>
+        <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
+        <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <EmbeddedResource Include="Resources\icons\NavMenu\Skill_SilentOps.png" />
+        <None Remove="Resources\*"/>
+        <EmbeddedResource Include="Resources\*"/>
+        <None Remove="Resources\icons\Skill_EasternRifle.png" />
+        <None Remove="Resources\icons\Skill_FieldMedicine.png" />
+        <EmbeddedResource Include="Resources\icons\NavMenu\Skill_EasternRifle.png" />
+        <None Remove="Resources\icons\Skill_FirstAid.png" />
+        <EmbeddedResource Include="Resources\icons\NavMenu\Skill_FieldMedicine.png" />
+        <None Remove="Resources\icons\Skill_Lockpicking.png" />
+        <EmbeddedResource Include="Resources\icons\NavMenu\Skill_FirstAid.png" />
+        <None Remove="Resources\icons\Skill_NatoRifle.png" />
+        <EmbeddedResource Include="Resources\icons\NavMenu\Skill_Lockpicking.png" />
+        <None Remove="Resources\icons\Skill_SilentOps.png" />
+        <EmbeddedResource Include="Resources\icons\NavMenu\Skill_NatoRifle.png" />
+        <EmbeddedResource Include="Resources\icons\NavMenu\Skill_ProneMovement.png" />
+        <None Remove="Resources\icons\Skill_ProneMovement.png" />
+        <None Remove="Resources\icons\NavMenu\home.png" />
+        <EmbeddedResource Include="Resources\icons\NavMenu\home.png" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebView.Wpf" Version="8.0.71"/>
+        <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="8.0.7"/>
+        <PackageReference Include="MudBlazor" Version="7.5.0"/>
+    </ItemGroup>
+
+</Project>

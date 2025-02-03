@@ -251,5 +251,7 @@
     "SilentOpsLevelingUpDescription": "Improved by performing silent kills.",
     "SilentOpsIncMeleeSpeed": "Increases the speed of melee attacks by [{0:0.#%}]",
     "SilentOpsRedVolume": "Reduces the volume of door and looting actions by [{0:0.#%}]",
-    "SilentOpsSilencerCostRed": "Reduces the trader price of supressors by [{0:0.#%}]"
+    "SilentOpsSilencerCostRed": "Reduces the trader price of supressors by [{0:0.#%}]",
+    "StrengthColliderSpeedBuff": "Reduces speed penalty from bushes and water by [{0:0.#%}]",
+    "StrengthColliderSpeedBuffElite": "Allows jumping and sprinting through bushes and swamps."
 }

@@ -83,6 +83,10 @@ internal class BuffIconShowPatch : ModulePatch
             case EBuffId.SilentOpsSilencerCostRed:
                 ____icon.sprite = staticIcons.ItemAttributeSprites.GetValueOrDefault(EItemAttributeId.Loudness);
                 break;
+            
+            case EBuffId.StrengthColliderSpeedBuff:
+                ____icon.sprite = staticIcons.BuffIdSprites.GetValueOrDefault(EBuffId.StrengthBuffSprintSpeedInc);
+                break;
         }
         
         __instance.UpdateBuff();

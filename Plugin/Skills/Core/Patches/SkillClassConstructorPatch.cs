@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Linq;
+using System.Reflection;
 using EFT;
 using SPT.Reflection.Patching;
 
@@ -18,21 +19,25 @@ internal class SkillClassCtorPatch : ModulePatch
     /// </summary>
     [PatchPrefix]
     public static void Prefix(
-        SkillManager skillManager, 
-        SkillClass __instance, 
+        SkillManager skillManager,
         ESkillId id, 
         ref SkillManager.SkillBuffAbstractClass[] buffs, 
         ref SkillManager.SkillActionClass[] actions)
     {
-        // This is where we set all of our buffs and actions, done as a constructor patch, so they always exist when we need them
+        // This is where we set all of our buffs and actions,
+        // done as a constructor patch, so they always exist when we need them
+        InitializeNewSkills(skillManager, id, ref buffs, ref actions);
+        ModifyExistingSkills(skillManager, id, ref buffs, ref actions);
+    }
 
+    private static void InitializeNewSkills(
+        SkillManager skillManager, 
+        ESkillId id, 
+        ref SkillManager.SkillBuffAbstractClass[] buffs, 
+        ref SkillManager.SkillActionClass[] actions)
+    {
         var skillData = SkillsPlugin.SkillData;
-        
-        var skillMgrExt = skillManager.Side == EPlayerSide.Savage
-            ? SkillManagerExt.Instance(EPlayerSide.Savage)
-            // Doesn't matter what player side we pass here
-            // As long as it's not savage
-            : SkillManagerExt.Instance(EPlayerSide.Usec); 
+        var skillMgrExt = SkillManagerExt.Instance(EPlayerSide.Usec);
         
         if (id == ESkillId.FirstAid)
         {
@@ -102,5 +107,33 @@ internal class SkillClassCtorPatch : ModulePatch
                 skillMgrExt.SilentOpsGunAction.Factor(0.50f)
             ];
         }
+    }
+
+    private static void ModifyExistingSkills(
+        SkillManager skillManager, 
+        ESkillId id, 
+        ref SkillManager.SkillBuffAbstractClass[] buffs, 
+        ref SkillManager.SkillActionClass[] actions)
+    {
+        var buffList = buffs.ToList();
+        var actionList = actions.ToList();
+
+        var skillData = SkillsPlugin.SkillData;
+        var skillMgrExt = SkillManagerExt.Instance(EPlayerSide.Usec);
+        
+        if (id == ESkillId.Strength)
+        {
+            buffList.Add(
+                skillMgrExt.StrengthBushSpeedIncBuff
+                    .Max(skillData.Strength.ColliderSpeedBuff)
+                );
+            
+            buffList.Add(
+                skillMgrExt.StrengthBushSpeedIncBuffElite
+            );
+        }
+        
+        buffs = buffList.ToArray();
+        actions = actionList.ToArray();
     }
 }

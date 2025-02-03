@@ -6,7 +6,12 @@ namespace SkillsExtended.Skills.Core;
 public class SkillManagerExt
 {
     private static SkillDataResponse SkillData => SkillsPlugin.SkillData;
+
+    private static SkillManagerExt _playerInstance;
+    private static SkillManagerExt _scavInstance;
     
+    #region BUFFS
+
     public readonly SkillManager.SkillBuffClass FirstAidItemSpeedBuff = new()
     {
         Id = EBuffId.FirstAidHealingSpeed,
@@ -89,6 +94,21 @@ public class SkillManagerExt
         Id = EBuffId.SilentOpsSilencerCostRed
     };
     
+    public readonly SkillManager.SkillBuffClass StrengthBushSpeedIncBuff = new()
+    {
+        Id = EBuffId.StrengthColliderSpeedBuff
+    };
+    
+    public readonly SkillManager.GClass1988 StrengthBushSpeedIncBuffElite = new()
+    {
+        Id = EBuffId.StrengthColliderSpeedBuffElite,
+        BuffType = SkillManager.EBuffType.Elite
+    };
+
+    #endregion
+    
+    #region ACTIONS
+
     public readonly SkillManager.SkillActionClass FirstAidAction = new();
     public readonly SkillManager.SkillActionClass FieldMedicineAction = new();
     public readonly SkillManager.SkillActionClass UsecRifleAction = new();
@@ -96,9 +116,8 @@ public class SkillManagerExt
     public readonly SkillManager.SkillActionClass LockPickAction = new();
     public readonly SkillManager.SkillActionClass SilentOpsGunAction = new();
     public readonly SkillManager.SkillActionClass SilentOpsMeleeAction = new();
-    
-    private static SkillManagerExt _playerInstance;
-    private static SkillManagerExt _scavInstance;
+
+    #endregion
     
     /// <summary>
     /// Returns the SkillManagerExt instance for the respective side passed.
@@ -118,8 +137,8 @@ public class SkillManagerExt
     
     public SkillManager.SkillBuffAbstractClass[] FirstAidBuffs()
     {
-        return new SkillManager.SkillBuffAbstractClass[]
-        {
+        return
+        [
             FirstAidItemSpeedBuff
                 .Max(SkillData.FirstAid.ItemSpeedBonus)
                 .Elite(SkillData.FirstAid.ItemSpeedBonusElite),
@@ -129,13 +148,13 @@ public class SkillManagerExt
                 .Elite(SkillData.FirstAid.MedkitUsageReductionElite),
             
             FirstAidMovementSpeedBuffElite
-        };
+        ];
     }
     
     public SkillManager.SkillBuffAbstractClass[] FieldMedicineBuffs()
     {
-        return new SkillManager.SkillBuffAbstractClass[]
-        {
+        return
+        [
             FieldMedicineSkillCap
                 .Max(SkillData.FieldMedicine.SkillBonus)
                 .Elite(SkillData.FieldMedicine.SkillBonusElite),
@@ -147,41 +166,41 @@ public class SkillManagerExt
             FieldMedicineChanceBonus
                 .Max(SkillData.FieldMedicine.PositiveEffectChanceBonus)
                 .Elite(SkillData.FieldMedicine.PositiveEffectChanceBonusElite)
-        };
+        ];
     }
     
     public SkillManager.SkillBuffAbstractClass[] UsecArBuffs()
     {
-        return new SkillManager.SkillBuffAbstractClass[]
-        {
+        return
+        [
             UsecArSystemsErgoBuff
                 .Max(SkillData.NatoRifle.ErgoMod)
                 .Elite(SkillData.NatoRifle.ErgoModElite),
             
             UsecArSystemsRecoilBuff
                 .Max(SkillData.NatoRifle.RecoilReduction)
-                .Elite(SkillData.NatoRifle.RecoilReductionElite),
-        };
+                .Elite(SkillData.NatoRifle.RecoilReductionElite)
+        ];
     }
     
     public SkillManager.SkillBuffAbstractClass[] BearAkBuffs()
     {
-        return new SkillManager.SkillBuffAbstractClass[]
-        {
+        return
+        [
             BearAkSystemsErgoBuff
                 .Max(SkillData.EasternRifle.ErgoMod)
                 .Elite(SkillData.EasternRifle.ErgoModElite),
             
             BearAkSystemsRecoilBuff
                 .Max(SkillData.EasternRifle.RecoilReduction)
-                .Elite(SkillData.EasternRifle.RecoilReductionElite),
-        };
+                .Elite(SkillData.EasternRifle.RecoilReductionElite)
+        ];
     }
     
     public SkillManager.SkillBuffAbstractClass[] LockPickingBuffs()
     {
-        return new SkillManager.SkillBuffAbstractClass[]
-        {
+        return
+        [
             LockPickingTimeBuff
                 .PerLevel(SkillData.LockPicking.PickStrengthPerLevel),
             
@@ -189,13 +208,13 @@ public class SkillManagerExt
                 .PerLevel(SkillData.LockPicking.SweetSpotRangePerLevel),
             
             LockPickingUseBuffElite
-        };
+        ];
     }
     
     public SkillManager.SkillBuffAbstractClass[] SilentOpsBuffs()
     {
-        return new SkillManager.SkillBuffAbstractClass[]
-        {
+        return
+        [
             SilentOpsIncMeleeSpeedBuff
                 .Max(SkillData.SilentOps.MeleeSpeedInc),
             
@@ -204,6 +223,6 @@ public class SkillManagerExt
             
             SilentOpsSilencerCostRedBuff
                 .Max(SkillData.SilentOps.SilencerPriceReduction)
-        };
+        ];
     }
 }
