@@ -1,4 +1,5 @@
-﻿@inherits LayoutComponentBase
+﻿@using ConfigEditor.Core.Config
+@inherits LayoutComponentBase
 
 <MudThemeProvider IsDarkMode="true"/>
 <MudPopoverProvider/>
@@ -12,7 +13,8 @@
     </MudAppBar>
     
     <MudDrawer Width="125px" @bind-Open="_drawerOpen"
-               ClipMode="DrawerClipMode.Never" Elevation="5"
+               ClipMode="DrawerClipMode.Never" 
+               Elevation="0"
                Variant="@DrawerVariant.Mini"
                OpenMiniOnHover="true"
                Breakpoint="Breakpoint.Sm">
@@ -27,7 +29,7 @@
             }
             else
             {
-                <MudText Class="pl-8" Typo="Typo.h6" Color="Color.Success">Complete</MudText>
+                <MudText Class="pl-8" Typo="Typo.h6" Color="Color.Success">Saved!</MudText>
             }
         </MudOverlay>
         @Body
@@ -48,7 +50,7 @@
     async Task ShowSaveOverlay()
     {
         _saving = true;
-        await Task.Delay(2500);
+        await ConfigProvider.SaveConfigs();
         
         _showSaveComplete = true;
         StateHasChanged();

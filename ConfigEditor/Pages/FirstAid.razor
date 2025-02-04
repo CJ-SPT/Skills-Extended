@@ -1,17 +1,19 @@
 ﻿@page "/FirstAid"
+@using ConfigEditor.Core.Config
+@using ConfigEditor.Core.Models
 
 <MudGrid>
     <MudItem xs="6">
         <MudSwitch
             Class="d-flex align-center justify-center mud-width-full py-8"
-            @bind-Value="_firstAidEnabled" 
+            @bind-Value="Enabled" 
             Label="Enabled" 
             Color="Color.Success"/>
     </MudItem>
 
     <MudItem xs="6">
         <MudNumericField
-            @bind-Value="_xpPerAction"
+            @bind-Value="XpPerAction"
             Label="XP Per Action"
             Variant="Variant.Filled"
             Step=".05M"
@@ -20,7 +22,7 @@
     
     <MudItem xs="6">
         <MudNumericField
-            @bind-Value="_medkitUsageReduction"
+            @bind-Value="UsageReduction"
             Label="Resource Cost Reduction"
             Variant="Variant.Filled"
             Step=".05M"
@@ -29,7 +31,7 @@
 
     <MudItem xs="6">
         <MudNumericField
-            @bind-Value="_medkitUsageReductionElite"
+            @bind-Value="UsageReductionElite"
             Label="Resource Cost Reduction Elite"
             Variant="Variant.Filled"
             Step=".05M"
@@ -38,7 +40,7 @@
     
     <MudItem xs="6">
         <MudNumericField
-            @bind-Value="_medkitSpeedBonus"
+            @bind-Value="SpeedBonus"
             Label="Medkit Speed Bonus"
             Variant="Variant.Filled"
             Step=".05M"
@@ -47,7 +49,7 @@
     
     <MudItem xs="6">
         <MudNumericField
-            @bind-Value="_medkitSpeedBonusElite"
+            @bind-Value="SpeedBonusElite"
             Label="Medkit Speed Bonus Elite"
             Variant="Variant.Filled"
             Step=".05M"
@@ -56,10 +58,42 @@
 </MudGrid>
 
 @code {
-    bool _firstAidEnabled;
-    decimal _xpPerAction;
-    decimal _medkitUsageReduction;
-    decimal _medkitUsageReductionElite;
-    decimal _medkitSpeedBonus;
-    decimal _medkitSpeedBonusElite;
+
+    static FirstAidData Data => ConfigProvider.SkillsConfig.FirstAid;
+    
+    static bool Enabled
+    {
+        get => Data.Enabled;
+        set => Data.Enabled = value;
+    }
+
+    static decimal XpPerAction
+    {
+        get => (decimal)Data.FirstAidXpPerAction;
+        set => Data.FirstAidXpPerAction = (float)value;
+    }
+    
+    static decimal UsageReduction
+    {
+        get => (decimal)Data.MedkitUsageReduction;
+        set => Data.MedkitUsageReduction = (float)value;
+    }
+    
+    static decimal UsageReductionElite
+    {
+        get => (decimal)Data.MedkitUsageReductionElite;
+        set => Data.MedkitUsageReductionElite = (float)value;
+    }
+    
+    static decimal SpeedBonus
+    {
+        get => (decimal)Data.ItemSpeedBonus;
+        set => Data.ItemSpeedBonus = (float)value;
+    }
+    
+    static decimal SpeedBonusElite
+    {
+        get => (decimal)Data.ItemSpeedBonusElite;
+        set => Data.ItemSpeedBonusElite = (float)value;
+    }
 }

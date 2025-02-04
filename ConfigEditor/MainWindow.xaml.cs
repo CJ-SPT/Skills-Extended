@@ -8,6 +8,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using ConfigEditor.Core.Config;
 using Microsoft.Extensions.DependencyInjection;
 using MudBlazor;
 using MudBlazor.Services;
@@ -36,5 +37,7 @@ public partial class MainWindow : Window
 		});
 
 		Resources.Add("services", serviceCollection.BuildServiceProvider());
+		
+		ConfigProvider.LoadConfigs();
 	}
 }
