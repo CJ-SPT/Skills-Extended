@@ -6,23 +6,57 @@
 <MudDialogProvider/>
 
 <MudLayout>
-    <MudDrawer Width="125px" @bind-Open="_drawerOpen" 
-               ClipMode="DrawerClipMode.Never" Elevation="5" 
-               Variant="@DrawerVariant.Mini" OpenMiniOnHover="true"
+    
+    <MudAppBar Color="Color.Primary" Fixed="false" Contextual="true">
+        <MudIconButton Icon="@Icons.Material.Filled.Save" Color="Color.Inherit" Edge="Edge.Start" OnClick="Save"/>
+    </MudAppBar>
+    
+    <MudDrawer Width="125px" @bind-Open="_drawerOpen"
+               ClipMode="DrawerClipMode.Never" Elevation="5"
+               Variant="@DrawerVariant.Mini"
+               OpenMiniOnHover="true"
                Breakpoint="Breakpoint.Sm">
         <NavMenu/>
     </MudDrawer>
+
     <MudMainContent Class="pt-1">
+        <MudOverlay Visible="_saving" DarkBackground="true">
+            @if (!_showSaveComplete)
+            {
+                <MudProgressCircular Color="Color.Default" Indeterminate="true"/>
+            }
+            else
+            {
+                <MudText Class="pl-8" Typo="Typo.h6" Color="Color.Success">Complete</MudText>
+            }
+        </MudOverlay>
         @Body
     </MudMainContent>
 </MudLayout>
 
 @code {
     bool _drawerOpen = true;
-
-    void DrawerToggle()
+    
+    bool _saving;
+    bool _showSaveComplete;
+    
+    async Task Save()
     {
-        _drawerOpen = !_drawerOpen;
+        await ShowSaveOverlay();
     }
 
+    async Task ShowSaveOverlay()
+    {
+        _saving = true;
+        await Task.Delay(2500);
+        
+        _showSaveComplete = true;
+        StateHasChanged();
+        await Task.Delay(750);
+        
+        _saving = false;
+        _showSaveComplete = false;
+        
+        StateHasChanged();
+    }
 }

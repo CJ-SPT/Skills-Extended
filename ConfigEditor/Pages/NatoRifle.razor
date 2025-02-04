@@ -1,6 +1,102 @@
 ﻿@page "/NatoRifle"
-<h3>NatoRifle</h3>
 
-@code {
+<MudGrid>
+    <MudItem xs="6">
+        <MudSwitch
+            Class="d-flex align-center justify-center mud-width-full py-8"
+            @bind-Value="_natoRifleEnabled" 
+            Label="Enabled"
+            Color="Color.Success"/>
+    </MudItem>
+
+    <MudItem xs="6">
+        <MudNumericField
+            @bind-Value="_xpPerAction"
+            Label="XP Per Action"
+            Variant="Variant.Filled"
+            Step=".05M"
+            Min="0" Max="25"/>
+    </MudItem>
+
+    <MudItem xs="6">
+        <MudSwitch
+            Class="d-flex align-center justify-center mud-width-full py-8"
+            @bind-Value="_xpShareEnabled"
+            Label="XP Share"
+            Color="Color.Success"/>
+    </MudItem>
+
+    <MudItem xs="6">
+        <MudNumericField
+            @bind-Value="_xpShareRatio"
+            Label="XP Share Ratio"
+            Variant="Variant.Filled"
+            Step=".05M"
+            Min="0" Max="1"/>
+    </MudItem>
+
+    <MudItem xs="6">
+        <MudNumericField
+            @bind-Value="_ergoMod"
+            Label="Ergo Modifier"
+            Variant="Variant.Filled"
+            Step=".05M"
+            Min="0" Max="1"/>
+    </MudItem>
+
+    <MudItem xs="6">
+        <MudNumericField
+            @bind-Value="_ergoModElite"
+            Label="Ergo Modifier Elite"
+            Variant="Variant.Filled"
+            Step=".05M"
+            Min="0" Max="1"/>
+    </MudItem>
+
+    <MudItem xs="6">
+        <MudNumericField
+            @bind-Value="_recoilReduction"
+            Label="Recoil Reduction"
+            Variant="Variant.Filled"
+            Step=".05M"
+            Min="0" Max="1"/>
+    </MudItem>
+
+    <MudItem xs="6">
+        <MudNumericField
+            @bind-Value="_recoilReductionElite"
+            Label="Recoil Reduction Elite"
+            Variant="Variant.Filled"
+            Step=".05M"
+            Min="0" Max="1"/>
+    </MudItem>
+
+    <MudItem xs="6">
+        <MudSelect @bind-Value="_selectedWeaponId"
+                   Variant="Variant.Filled"
+                   Label="Weapon Ids">
+            @foreach (var id in _weaponIds)
+            {
+                <MudSelectItem Value="id">@id</MudSelectItem>
+            }
+        </MudSelect>
+    </MudItem>
+</MudGrid>
+
+@code
+{
+    bool _natoRifleEnabled;
+    decimal _xpPerAction;
     
+    bool _xpShareEnabled;
+    decimal _xpShareRatio;
+    
+    decimal _ergoMod;
+    decimal _ergoModElite;
+    
+    decimal _recoilReduction;
+    decimal _recoilReductionElite;
+
+    string _selectedWeaponId;
+    List<string> _weaponIds = [];
 }

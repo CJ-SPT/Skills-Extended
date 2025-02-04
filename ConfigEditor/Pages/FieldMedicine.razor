@@ -1,6 +1,86 @@
 ﻿@page "/FieldMedicine"
-<h3>FieldMedicine</h3>
+
+<MudGrid>
+    <MudItem xs="6">
+        <MudSwitch
+            Class="d-flex align-center justify-center mud-width-full py-8"
+            @bind-Value="_fieldMedicineEnabled" 
+            Label="Enabled"
+            Color="Color.Success"/>
+    </MudItem>
+
+    <MudItem xs="6">
+        <MudNumericField
+            @bind-Value="_xpPerAction"
+            Label="XP Per Action"
+            Variant="Variant.Filled"
+            Step=".05M"
+            Min="0" Max="25"/>
+    </MudItem>
+    
+    <MudItem xs="6">
+        <MudNumericField
+            @bind-Value="_skillBonus"
+            Label="Skill Bonus"
+            Variant="Variant.Filled"
+            Step=".05M"
+            Min="0" Max="1"/>
+    </MudItem>
+
+    <MudItem xs="6">
+        <MudNumericField
+            @bind-Value="_skillBonusElite"
+            Label="Skill Bonus Elite"
+            Variant="Variant.Filled"
+            Step=".05M"
+            Min="0" Max="1"/>
+    </MudItem>
+    
+    <MudItem xs="6">
+        <MudNumericField
+            @bind-Value="_durationBonus"
+            Label="Duration Bonus"
+            Variant="Variant.Filled"
+            Step=".05M"
+            Min="0" Max="1"/>
+    </MudItem>
+    
+    <MudItem xs="6">
+        <MudNumericField
+            @bind-Value="_durationBonusElite"
+            Label="Duration Bonus Elite"
+            Variant="Variant.Filled"
+            Step=".05M"
+            Min="0" Max="1"/>
+    </MudItem>
+
+    <MudItem xs="6">
+        <MudNumericField
+            @bind-Value="_positiveEffectBonus"
+            Label="Positive Effect Bonus"
+            Variant="Variant.Filled"
+            Step=".05M"
+            Min="0" Max="1"/>
+    </MudItem>
+
+    <MudItem xs="6">
+        <MudNumericField
+            @bind-Value="_positiveEffectBonusElite"
+            Label="Positive Effect Bonus Elite"
+            Variant="Variant.Filled"
+            Step=".05M"
+            Min="0" Max="1"/>
+    </MudItem>
+</MudGrid>
 
 @code {
+    bool _fieldMedicineEnabled;
+    decimal _xpPerAction;
+    decimal _skillBonus;
+    decimal _skillBonusElite;
+    decimal _durationBonus;
+    decimal _durationBonusElite;
     
+    decimal _positiveEffectBonus;
+    decimal _positiveEffectBonusElite;
 }
