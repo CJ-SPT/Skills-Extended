@@ -1,6 +1,56 @@
 ﻿@page "/SilentOps"
-<h3>SilentOps</h3>
+<MudGrid>
+    <MudItem xs="6">
+        <MudSwitch
+            Class="d-flex align-center justify-center mud-width-full py-8"
+            @bind-Value="_enabled"
+            Label="Enabled"
+            Color="Color.Success"/>
+    </MudItem>
 
-@code {
+    <MudItem xs="6">
+        <MudNumericField
+            @bind-Value="_xpPerAction"
+            Label="XP Per Action"
+            Variant="Variant.Filled"
+            Step=".05M"
+            Min="0" Max="25"/>
+    </MudItem>
+
+    <MudItem xs="6">
+        <MudNumericField
+            @bind-Value="_speedIncrease"
+            Label="Melee Speed Increase"
+            Variant="Variant.Filled"
+            Step=".05M"
+            Min="0" Max="1"/>
+    </MudItem>
     
+    <MudItem xs="6">
+        <MudNumericField
+            @bind-Value="_volumeDecrease"
+            Label="Volume Decrease"
+            Variant="Variant.Filled"
+            Step=".05M"
+            Min="0" Max="1"/>
+    </MudItem>
+
+    <MudItem xs="6">
+        <MudNumericField
+            @bind-Value="_priceReduction"
+            Label="Price Reduction"
+            Variant="Variant.Filled"
+            Step=".05M"
+            Min="0" Max="1"/>
+    </MudItem>
+</MudGrid>
+
+@code
+{
+    bool _enabled;
+    decimal _xpPerAction;
+
+    decimal _speedIncrease;
+    decimal _volumeDecrease;
+    decimal _priceReduction;
 }

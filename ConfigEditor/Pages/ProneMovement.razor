@@ -1,6 +1,67 @@
 ﻿@page "/ProneMovement"
-<h3>ProneMovement</h3>
+<MudGrid>
+    <MudItem xs="6">
+        <MudSwitch
+            Class="d-flex align-center justify-center mud-width-full py-8"
+            @bind-Value="_proneMovementEnabled"
+            Label="Enabled"
+            Color="Color.Success"/>
+    </MudItem>
 
-@code {
+    <MudItem xs="6">
+        <MudNumericField
+            @bind-Value="_xpPerAction"
+            Label="XP Per Action"
+            Variant="Variant.Filled"
+            Step=".05M"
+            Min="0" Max="25"/>
+    </MudItem>
     
+    <MudItem xs="6">
+        <MudNumericField
+            @bind-Value="_speedIncrease"
+            Label="Movement Speed Increase"
+            Variant="Variant.Filled"
+            Step=".05M"
+            Min="0" Max="1"/>
+    </MudItem>
+
+    <MudItem xs="6">
+        <MudNumericField
+            @bind-Value="_speedIncreaseElite"
+            Label="Movement Speed Increase Elite"
+            Variant="Variant.Filled"
+            Step=".05M"
+            Min="0" Max="1"/>
+    </MudItem>
+
+    <MudItem xs="6">
+        <MudNumericField
+            @bind-Value="_volumeDecrease"
+            Label="Volume Decrease"
+            Variant="Variant.Filled"
+            Step=".05M"
+            Min="0" Max="1"/>
+    </MudItem>
+
+    <MudItem xs="6">
+        <MudNumericField
+            @bind-Value="_volumeDecreaseElite"
+            Label="Volume Decrease Elite"
+            Variant="Variant.Filled"
+            Step=".05M"
+            Min="0" Max="1"/>
+    </MudItem>
+</MudGrid>
+
+@code
+{
+    bool _proneMovementEnabled;
+    decimal _xpPerAction;
+
+    decimal _speedIncrease;
+    decimal _speedIncreaseElite;
+
+    decimal _volumeDecrease;
+    decimal _volumeDecreaseElite;
 }
