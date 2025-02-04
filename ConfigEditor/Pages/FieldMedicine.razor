@@ -1,17 +1,19 @@
 ﻿@page "/FieldMedicine"
+@using ConfigEditor.Core.Config
+@using ConfigEditor.Core.Models
 
 <MudGrid>
     <MudItem xs="6">
         <MudSwitch
             Class="d-flex align-center justify-center mud-width-full py-8"
-            @bind-Value="_fieldMedicineEnabled" 
+            @bind-Value="Enabled" 
             Label="Enabled"
             Color="Color.Success"/>
     </MudItem>
 
     <MudItem xs="6">
         <MudNumericField
-            @bind-Value="_xpPerAction"
+            @bind-Value="XpPerAction"
             Label="XP Per Action"
             Variant="Variant.Filled"
             Step=".05M"
@@ -20,7 +22,7 @@
     
     <MudItem xs="6">
         <MudNumericField
-            @bind-Value="_skillBonus"
+            @bind-Value="SkillBonus"
             Label="Skill Bonus"
             Variant="Variant.Filled"
             Step=".05M"
@@ -29,7 +31,7 @@
 
     <MudItem xs="6">
         <MudNumericField
-            @bind-Value="_skillBonusElite"
+            @bind-Value="SkillBonusElite"
             Label="Skill Bonus Elite"
             Variant="Variant.Filled"
             Step=".05M"
@@ -38,7 +40,7 @@
     
     <MudItem xs="6">
         <MudNumericField
-            @bind-Value="_durationBonus"
+            @bind-Value="DurationBonus"
             Label="Duration Bonus"
             Variant="Variant.Filled"
             Step=".05M"
@@ -47,7 +49,7 @@
     
     <MudItem xs="6">
         <MudNumericField
-            @bind-Value="_durationBonusElite"
+            @bind-Value="DurationBonusElite"
             Label="Duration Bonus Elite"
             Variant="Variant.Filled"
             Step=".05M"
@@ -56,7 +58,7 @@
 
     <MudItem xs="6">
         <MudNumericField
-            @bind-Value="_positiveEffectBonus"
+            @bind-Value="PositiveEffectBonus"
             Label="Positive Effect Bonus"
             Variant="Variant.Filled"
             Step=".05M"
@@ -65,7 +67,7 @@
 
     <MudItem xs="6">
         <MudNumericField
-            @bind-Value="_positiveEffectBonusElite"
+            @bind-Value="PositiveEffectBonusElite"
             Label="Positive Effect Bonus Elite"
             Variant="Variant.Filled"
             Step=".05M"
@@ -74,13 +76,53 @@
 </MudGrid>
 
 @code {
-    bool _fieldMedicineEnabled;
-    decimal _xpPerAction;
-    decimal _skillBonus;
-    decimal _skillBonusElite;
-    decimal _durationBonus;
-    decimal _durationBonusElite;
+    static FieldMedicineData Data => ConfigProvider.SkillsConfig.FieldMedicine;
     
-    decimal _positiveEffectBonus;
-    decimal _positiveEffectBonusElite;
+    static bool Enabled
+    {
+        get => Data.Enabled;
+        set => Data.Enabled = value;
+    }
+    
+    static decimal XpPerAction
+    {
+        get => (decimal)Data.FieldMedicineXpPerAction;
+        set => Data.FieldMedicineXpPerAction = (float)value;
+    }
+    
+    static decimal SkillBonus
+    {
+        get => (decimal)Data.SkillBonus;
+        set => Data.SkillBonus = (float)value;
+    }
+    
+    static decimal SkillBonusElite
+    {
+        get => (decimal)Data.SkillBonusElite;
+        set => Data.SkillBonusElite = (float)value;
+    }
+    
+    static decimal DurationBonus
+    {
+        get => (decimal)Data.DurationBonus;
+        set => Data.DurationBonus = (float)value;
+    }
+    
+    static decimal DurationBonusElite
+    {
+        get => (decimal)Data.DurationBonusElite;
+        set => Data.DurationBonusElite = (float)value;
+    }
+    
+    static decimal PositiveEffectBonus
+    {
+        get => (decimal)Data.PositiveEffectChanceBonus;
+        set => Data.PositiveEffectChanceBonus = (float)value;
+    }
+    
+    static decimal PositiveEffectBonusElite
+    {
+        get => (decimal)Data.PositiveEffectChanceBonusElite;
+        set => Data.PositiveEffectChanceBonusElite = (float)value;
+    }
 }

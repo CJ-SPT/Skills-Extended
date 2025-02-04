@@ -1,16 +1,18 @@
 ﻿@page "/EasternRifle"
+@using ConfigEditor.Core.Config
+@using ConfigEditor.Core.Models
 <MudGrid>
     <MudItem xs="6">
         <MudSwitch
             Class="d-flex align-center justify-center mud-width-full py-8"
-            @bind-Value="_easternRifleEnabled"
+            @bind-Value="Enabled"
             Label="Enabled"
             Color="Color.Success"/>
     </MudItem>
 
     <MudItem xs="6">
         <MudNumericField
-            @bind-Value="_xpPerAction"
+            @bind-Value="XpPerAction"
             Label="XP Per Action"
             Variant="Variant.Filled"
             Step=".05M"
@@ -20,14 +22,14 @@
     <MudItem xs="6">
         <MudSwitch
             Class="d-flex align-center justify-center mud-width-full py-8"
-            @bind-Value="_xpShareEnabled"
+            @bind-Value="XpShareEnabled"
             Label="XP Share"
             Color="Color.Success"/>
     </MudItem>
 
     <MudItem xs="6">
         <MudNumericField
-            @bind-Value="_xpShareRatio"
+            @bind-Value="XpShareRatio"
             Label="XP Share Ratio"
             Variant="Variant.Filled"
             Step=".05M"
@@ -36,7 +38,7 @@
 
     <MudItem xs="6">
         <MudNumericField
-            @bind-Value="_ergoMod"
+            @bind-Value="ErgoMod"
             Label="Ergo Modifier"
             Variant="Variant.Filled"
             Step=".05M"
@@ -45,7 +47,7 @@
 
     <MudItem xs="6">
         <MudNumericField
-            @bind-Value="_ergoModElite"
+            @bind-Value="ErgoModElite"
             Label="Ergo Modifier Elite"
             Variant="Variant.Filled"
             Step=".05M"
@@ -54,7 +56,7 @@
 
     <MudItem xs="6">
         <MudNumericField
-            @bind-Value="_recoilReduction"
+            @bind-Value="RecoilReduction"
             Label="Recoil Reduction"
             Variant="Variant.Filled"
             Step=".05M"
@@ -63,7 +65,7 @@
 
     <MudItem xs="6">
         <MudNumericField
-            @bind-Value="_recoilReductionElite"
+            @bind-Value="RecoilReductionElite"
             Label="Recoil Reduction Elite"
             Variant="Variant.Filled"
             Step=".05M"
@@ -71,10 +73,10 @@
     </MudItem>
 
     <MudItem xs="6">
-        <MudSelect @bind-Value="_selectedWeaponId"
+        <MudSelect @bind-Value="SelectedWeaponId"
                    Variant="Variant.Filled"
                    Label="Weapon Ids">
-            @foreach (var id in _weaponIds)
+            @foreach (var id in WeaponIds)
             {
                 <MudSelectItem Value="id">@id</MudSelectItem>
             }
@@ -84,18 +86,56 @@
 
 @code
 {
-    bool _easternRifleEnabled;
-    decimal _xpPerAction;
+    static WeaponSkillData Data => ConfigProvider.SkillsConfig.EasternRifle;
+    
+    static bool Enabled
+    {
+        get => Data.Enabled;
+        set => Data.Enabled = value;
+    }
+    
+    static decimal XpPerAction
+    {
+        get => (decimal)Data.WeaponProfXp;
+        set => Data.WeaponProfXp = (float)value;
+    }
+    
+    static bool XpShareEnabled
+    {
+        get => Data.SkillShareEnabled;
+        set => Data.SkillShareEnabled = value;
+    }
+    
+    static decimal XpShareRatio
+    {
+        get => (decimal)Data.SkillShareXpRatio;
+        set => Data.SkillShareXpRatio = (float)value;
+    }
+    
+    static decimal ErgoMod
+    {
+        get => (decimal)Data.ErgoMod;
+        set => Data.ErgoMod = (float)value;
+    }
+    
+    static decimal ErgoModElite
+    {
+        get => (decimal)Data.ErgoModElite;
+        set => Data.ErgoModElite = (float)value;
+    }
+    
+    static decimal RecoilReduction
+    {
+        get => (decimal)Data.RecoilReduction;
+        set => Data.RecoilReduction = (float)value;
+    }
+    
+    static decimal RecoilReductionElite
+    {
+        get => (decimal)Data.RecoilReductionElite;
+        set => Data.RecoilReductionElite = (float)value;
+    }
 
-    bool _xpShareEnabled;
-    decimal _xpShareRatio;
-
-    decimal _ergoMod;
-    decimal _ergoModElite;
-
-    decimal _recoilReduction;
-    decimal _recoilReductionElite;
-
-    string _selectedWeaponId;
-    List<string> _weaponIds = [];
+    static string SelectedWeaponId;
+    static List<string> WeaponIds = [];
 }

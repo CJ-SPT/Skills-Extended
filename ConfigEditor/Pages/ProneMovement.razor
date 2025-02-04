@@ -1,16 +1,18 @@
 ﻿@page "/ProneMovement"
+@using ConfigEditor.Core.Config
+@using ConfigEditor.Core.Models
 <MudGrid>
     <MudItem xs="6">
         <MudSwitch
             Class="d-flex align-center justify-center mud-width-full py-8"
-            @bind-Value="_proneMovementEnabled"
+            @bind-Value="Enabled"
             Label="Enabled"
             Color="Color.Success"/>
     </MudItem>
 
     <MudItem xs="6">
         <MudNumericField
-            @bind-Value="_xpPerAction"
+            @bind-Value="XpPerAction"
             Label="XP Per Action"
             Variant="Variant.Filled"
             Step=".05M"
@@ -19,7 +21,7 @@
     
     <MudItem xs="6">
         <MudNumericField
-            @bind-Value="_speedIncrease"
+            @bind-Value="SpeedIncrease"
             Label="Movement Speed Increase"
             Variant="Variant.Filled"
             Step=".05M"
@@ -28,7 +30,7 @@
 
     <MudItem xs="6">
         <MudNumericField
-            @bind-Value="_speedIncreaseElite"
+            @bind-Value="SpeedIncreaseElite"
             Label="Movement Speed Increase Elite"
             Variant="Variant.Filled"
             Step=".05M"
@@ -37,7 +39,7 @@
 
     <MudItem xs="6">
         <MudNumericField
-            @bind-Value="_volumeDecrease"
+            @bind-Value="VolumeDecrease"
             Label="Volume Decrease"
             Variant="Variant.Filled"
             Step=".05M"
@@ -46,7 +48,7 @@
 
     <MudItem xs="6">
         <MudNumericField
-            @bind-Value="_volumeDecreaseElite"
+            @bind-Value="VolumeDecreaseElite"
             Label="Volume Decrease Elite"
             Variant="Variant.Filled"
             Step=".05M"
@@ -56,12 +58,41 @@
 
 @code
 {
-    bool _proneMovementEnabled;
-    decimal _xpPerAction;
+    static ProneMovementData Data => ConfigProvider.SkillsConfig.ProneMovement;
+    
+    static bool Enabled
+    {
+        get => Data.Enabled;
+        set => Data.Enabled = value;
+    }
+    
+    static decimal XpPerAction
+    {
+        get => (decimal)Data.XpPerAction;
+        set => Data.XpPerAction = (float)value;
+    }
 
-    decimal _speedIncrease;
-    decimal _speedIncreaseElite;
-
-    decimal _volumeDecrease;
-    decimal _volumeDecreaseElite;
+    static decimal SpeedIncrease
+    {
+        get => (decimal)Data.MovementSpeedIncMax;
+        set => Data.MovementSpeedIncMax = (float)value;
+    }
+    
+    static decimal SpeedIncreaseElite
+    {
+        get => (decimal)Data.MovementSpeedIncMaxElite;
+        set => Data.MovementSpeedIncMaxElite = (float)value;
+    }
+    
+    static decimal VolumeDecrease
+    {
+        get => (decimal)Data.MovementVolumeDecMax;
+        set => Data.MovementVolumeDecMax = (float)value;
+    }
+    
+    static decimal VolumeDecreaseElite
+    {
+        get => (decimal)Data.MovementVolumeDecMaxElite;
+        set => Data.MovementVolumeDecMaxElite = (float)value;
+    }
 }
