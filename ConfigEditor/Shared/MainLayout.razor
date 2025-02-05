@@ -8,13 +8,15 @@
 
 <MudLayout>
     
-    <MudAppBar Color="Color.Primary" Fixed="false" Contextual="true">
-        <MudIconButton Icon="@Icons.Material.Filled.Save" Color="Color.Inherit" Edge="Edge.Start" OnClick="Save"/>
+    <MudAppBar Color="Color.Primary" Fixed="false" Contextual="true" Elevation="4">
+        <MudIconButton Icon="@Icons.Material.Filled.Save" Color="Color.Inherit" Edge="Edge.False" OnClick="Save"/>
+        <MudSpacer />
+        <MudIconButton Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit" Href="https://github.com/CJ-SPT/Skills-Extended" />
     </MudAppBar>
     
     <MudDrawer Width="125px" @bind-Open="_drawerOpen"
-               ClipMode="DrawerClipMode.Never" 
-               Elevation="0"
+               ClipMode="DrawerClipMode.Always" 
+               Elevation="4"
                Variant="@DrawerVariant.Mini"
                OpenMiniOnHover="true"
                Breakpoint="Breakpoint.Sm">
