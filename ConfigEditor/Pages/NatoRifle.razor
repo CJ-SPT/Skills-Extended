@@ -73,8 +73,15 @@
             Min="0" Max="1"/>
     </MudItem>
 
+    <MudItem xs="12">
+        <h1 Class="d-flex align-center justify-center mud-width-full py-2">Weapons</h1>
+        <MudDivider/>
+    </MudItem>
+    
     <MudItem xs="6">
         <MudSelect @bind-Value="SelectedWeaponId"
+                   @bind-SelectedValues="SelectedIds"
+                   MultiSelection="true"
                    Variant="Variant.Filled"
                    Label="Weapon Ids">
             @foreach (var id in WeaponIds)
@@ -83,6 +90,30 @@
             }
         </MudSelect>
     </MudItem>
+
+    <MudItem xs="6">
+        <MudButton Class="align-center justify-center" Size="Size.Small" Variant="Variant.Filled" OnClick="RemoveSelectedWeapons">
+            Remove Selected
+        </MudButton>
+
+        <MudButton Class="align-center justify-center" Size="Size.Small" Variant="Variant.Filled" OnClick="AddWeapon">
+            Add New Weapon
+        </MudButton>
+
+        <MudFlexBreak />
+
+        <MudButton Class="align-center justify-center" Size="Size.Small" Variant="Variant.Filled" OnClick="RemoveSelectedWeapons">
+            Load Additional Weapon List
+        </MudButton>
+        
+    </MudItem>
+    
+    <MudFlexBreak />
+    
+    <MudItem xs="6">
+        <MudTextField @bind-Value="NewWeaponId" Label="New Weapon Id" Variant="Variant.Text"/>
+    </MudItem>
+    
 </MudGrid>
 
 @code
@@ -138,5 +169,40 @@
     }
     
     static string SelectedWeaponId;
-    static List<string> WeaponIds = [];
+    static string NewWeaponId;
+    
+    static IEnumerable<string> SelectedIds = [];
+    
+    static HashSet<string> WeaponIds
+    {
+        get
+        {
+            var weaponIds = Data.Weapons;
+            
+            if (ConfigProvider.AdditionalWeapons is not null)
+            {
+                weaponIds.UnionWith(ConfigProvider.AdditionalWeapons.AdditionalNatoWeapons);
+            }
+
+            return weaponIds;
+        }
+    }
+
+    void AddWeapon()
+    {
+        if (string.IsNullOrEmpty(NewWeaponId)) return;
+        
+        WeaponIds.Add(NewWeaponId);
+        NewWeaponId = string.Empty;
+    }
+
+    void RemoveSelectedWeapons()
+    {
+        foreach (var id in SelectedIds)
+        {
+            WeaponIds.Remove(id);
+        }
+
+        SelectedIds = [];
+    }
 }

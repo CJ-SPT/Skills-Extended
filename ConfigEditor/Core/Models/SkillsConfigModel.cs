@@ -1,32 +1,34 @@
 ﻿using System.Text.Json.Serialization;
+// ReSharper disable ClassNeverInstantiated.Global
+// ReSharper disable UnassignedField.Global
 
 namespace ConfigEditor.Core.Models;
 
 public class SkillsConfigModel
 {
 	[JsonPropertyName("FirstAid")]
-	public FirstAidData FirstAid;
+	public required FirstAidData FirstAid;
 
 	[JsonPropertyName("FieldMedicine")]
-	public FieldMedicineData FieldMedicine;
+	public required FieldMedicineData FieldMedicine;
 
 	[JsonPropertyName("NatoRifle")]
-	public WeaponSkillData NatoRifle;
+	public required WeaponSkillData NatoRifle;
 
 	[JsonPropertyName("EasternRifle")]
-	public WeaponSkillData EasternRifle;
+	public required WeaponSkillData EasternRifle;
 
 	[JsonPropertyName("LockPicking")]
-	public LockPickingData LockPicking;
+	public required LockPickingData LockPicking;
 
 	[JsonPropertyName("ProneMovement")]
-	public ProneMovementData ProneMovement;
+	public required ProneMovementData ProneMovement;
 
 	[JsonPropertyName("SilentOps")]
-	public SilentOpsData SilentOps;
+	public required SilentOpsData SilentOps;
 
 	[JsonPropertyName("Strength")]
-	public StrengthData Strength;
+	public required StrengthData Strength;
 }
 
 public class FirstAidData
@@ -104,7 +106,7 @@ public class WeaponSkillData
 	public float SkillShareXpRatio;
 
 	[JsonPropertyName("WEAPONS")] 
-	public List<string> Weapons;
+	public required HashSet<string> Weapons;
 }
 
 public class LockPickingData
@@ -134,32 +136,34 @@ public class LockPickingData
 	public float FailureLockXpRatio;
 
 	[JsonPropertyName("XP_TABLE")] 
-	public Dictionary<string, float> XpTable;
+	public required Dictionary<string, float> XpTable;
 
 	[JsonPropertyName("DOOR_PICK_LEVELS")] 
-	public DoorPickLevels DoorPickLevels;
+	public required DoorPickLevels DoorPickLevels;
 }
 
 // DoorId : level to pick the lock
 public class DoorPickLevels
 {
-	public Dictionary<string, int> Factory;
-	public Dictionary<string, int> Woods;
-	public Dictionary<string, int> Customs;
-	public Dictionary<string, int> Interchange;
-	public Dictionary<string, int> Reserve;
-	public Dictionary<string, int> Shoreline;
-	public Dictionary<string, int> Labs;
-	public Dictionary<string, int> Lighthouse;
-	public Dictionary<string, int> Streets;
-	public Dictionary<string, int> GroundZero;
+	public required Dictionary<string, int> Factory;
+	public required Dictionary<string, int> Woods;
+	public required Dictionary<string, int> Customs;
+	public required Dictionary<string, int> Interchange;
+	public required Dictionary<string, int> Reserve;
+	public required Dictionary<string, int> Shoreline;
+	public required Dictionary<string, int> Labs;
+	public required Dictionary<string, int> Lighthouse;
+	public required Dictionary<string, int> Streets;
+	public required Dictionary<string, int> GroundZero;
 }
 
 public class ProneMovementData
 {
-	[JsonPropertyName("ENABLED")] public bool Enabled;
+	[JsonPropertyName("ENABLED")] 
+	public bool Enabled;
 
-	[JsonPropertyName("XP_PER_ACTION")] public float XpPerAction;
+	[JsonPropertyName("XP_PER_ACTION")] 
+	public float XpPerAction;
 
 	[JsonPropertyName("MOVEMENT_SPEED_INCREASE_MAX")]
 	public float MovementSpeedIncMax;
@@ -176,7 +180,8 @@ public class ProneMovementData
 
 public class SilentOpsData
 {
-	[JsonPropertyName("ENABLED")] public bool Enabled;
+	[JsonPropertyName("ENABLED")] 
+	public bool Enabled;
 
 	[JsonPropertyName("XP_PER_ACTION")] 
 	public float XpPerAction;
@@ -198,4 +203,10 @@ public class StrengthData
 
 	[JsonPropertyName("COLLIDER_SPEED_BUFF")]
 	public float ColliderSpeedBuff;
+}
+
+public class AdditionalWeaponsData
+{
+	public required HashSet<string> AdditionalNatoWeapons = [];
+	public required HashSet<string> AdditionalEasternWeapons = [];
 }

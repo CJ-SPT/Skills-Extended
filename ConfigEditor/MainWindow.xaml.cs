@@ -12,6 +12,7 @@ using ConfigEditor.Core.Config;
 using Microsoft.Extensions.DependencyInjection;
 using MudBlazor;
 using MudBlazor.Services;
+using ResizeMode = System.Windows.ResizeMode;
 
 namespace ConfigEditor;
 
