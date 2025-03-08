@@ -89,14 +89,14 @@
         "Conditions": [
             {
                 "ConditionId": "66c671633d11e6fbe958ac92",
-                "ConditionType": "FixFracture",
+                "ConditionType": "RestoreBodyPart",
                 "Locations": [
                     "any"
                 ]
             },
             {
                 "ConditionId": "66c67170577fb869afa7e5fa",
-                "ConditionType": "RestoreBodyPart",
+                "ConditionType": "HealthGain",
                 "Locations": [
                     "any"
                 ]
