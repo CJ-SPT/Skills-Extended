@@ -1,10 +1,10 @@
 {
     "name": "Skills Extended",
-    "version": "1.4.2",
+    "version": "1.4.3",
     "main": "src/mod.js",
     "license": "CC BY-NC-ND 4.0",
     "author": "dirtbikercj",
-    "sptVersion": "~3.10",
+    "sptVersion": "~3.11",
     "isBundleMod": true,
     "loadBefore": [],
     "loadAfter": [],
