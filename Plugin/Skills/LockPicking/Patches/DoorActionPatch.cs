@@ -9,7 +9,7 @@ namespace SkillsExtended.Skills.LockPicking.Patches;
 internal class DoorActionPatch : ModulePatch
 {
     protected override MethodBase GetTargetMethod() =>
-        typeof(GetActionsClass).GetMethod("smethod_4", BindingFlags.Public | BindingFlags.Static);
+        typeof(GetActionsClass).GetMethod("smethod_5", BindingFlags.Public | BindingFlags.Static);
 
     [PatchPostfix]
     private static void Postfix(ref ActionsReturnClass __result, GamePlayerOwner owner, WorldInteractiveObject worldInteractiveObject)
