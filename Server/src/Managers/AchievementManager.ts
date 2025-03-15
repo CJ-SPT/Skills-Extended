@@ -12,7 +12,7 @@ export class AchievementManager
     private InstanceManager: InstanceManager;
     private IOManager: IOManager;
 
-    public postDbLoad(instanceManager: InstanceManager, ioManager: IOManager): void
+    public async postDbLoad(instanceManager: InstanceManager, ioManager: IOManager): Promise<void>
     {
         this.InstanceManager = instanceManager;
         this.IOManager = ioManager;
@@ -20,7 +20,7 @@ export class AchievementManager
         this.importAchievementData();
     }
 
-    private importAchievementData(): void
+    private async importAchievementData(): Promise<void>
     {
         const dataPath = this.IOManager.AchievementsRootPath;
         const files = fs.readdirSync(dataPath);
@@ -36,7 +36,7 @@ export class AchievementManager
         for (const file of jsonFiles)
         {   
             const filePath = path.resolve(dataPath, `${file}.json`);
-            const data = this.IOManager.loadJsonFile<IAchievement[]>(filePath);
+            const data = await this.IOManager.loadJsonFile<IAchievement[]>(filePath);
 
             for (const achievement of data)
             {

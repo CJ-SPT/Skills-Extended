@@ -33,10 +33,10 @@ export class IOManager
     public ImageRootPath: string = path.join(this.DataPath, "Images");
     public ItemRootPath: string = path.join(this.DataPath, "Items");
 
-    public preSptLoad(): void
+    public async preSptLoad(): Promise<void>
     {
         const confPath = path.join(this.ConfigPath, "ServerConfig.json");
-        this.ServerConfig = this.loadJsonFile<IServerConfig>(confPath);
+        this.ServerConfig = await this.loadJsonFile<IServerConfig>(confPath);
     }
 
     public importData(): void
@@ -49,10 +49,10 @@ export class IOManager
      * Loads and parses a config file from disk
      * @param fileName File name inside of config folder to load
      */
-    public loadJsonFile<T>(filePath: string, readAsText = false): T
+    public async loadJsonFile<T>(filePath: string, readAsText = false): Promise<T>
     {
         const file = path.join(filePath);
-        const string = this.InstanceManager.vfs.readFile(file);
+        const string = await this.InstanceManager.vfs.read(file);
 
         return readAsText 
             ? string as T
@@ -90,7 +90,7 @@ export class IOManager
         }
     }
 
-    private importAllLocaleData(): void
+    private async importAllLocaleData(): Promise<void>
     {
         const localesPath = this.LocaleRootPath;
         const subDirs = fs.readdirSync(localesPath);
@@ -106,7 +106,7 @@ export class IOManager
 
             for (const file of localeFiles)
             {
-                const localeData = this.loadJsonFile<Record<string, string>>(path.join(langDir, file));
+                const localeData = await this.loadJsonFile<Record<string, string>>(path.join(langDir, file));
       
                 entries += this.importLocaleData(lang, localeData);
             }

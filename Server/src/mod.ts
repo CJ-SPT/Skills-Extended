@@ -34,31 +34,31 @@ class SkillsExtended implements IPreSptLoadMod, IPostDBLoadMod
     private customItemService: CustomItemService;
     public SkillsConfig: ISkillsConfig;
 
-    public preSptLoad(container: DependencyContainer): void 
+    public async preSptLoad(container: DependencyContainer): Promise<void> 
     {
         this.InstanceManager.preSptLoad(container);
-        this.IOManager.preSptLoad();
+        await this.IOManager.preSptLoad();
 
-        this.SkillsConfig = this.IOManager.loadJsonFile<ISkillsConfig>(path.join(this.IOManager.ConfigPath, "SkillsConfig.json5"));
+        this.SkillsConfig = await this.IOManager.loadJsonFile<ISkillsConfig>(path.join(this.IOManager.ConfigPath, "SkillsConfig.json5"));
 
         this.RouteManager.preSptLoad(this.InstanceManager, this.ProgressionManager, this.SkillsConfig, this.IOManager);
-        this.TraderManager.preSptLoad(this.InstanceManager, this.IOManager, this.SkillsConfig);
+        await this.TraderManager.preSptLoad(this.InstanceManager, this.IOManager, this.SkillsConfig);
 
         this.InstanceManager.logger.logWithColor("Skills Extended loading", LogTextColor.GREEN);    
     }
 
-    public postDBLoad(container: DependencyContainer): void 
+    public async postDBLoad(container: DependencyContainer): Promise<void> 
     {
         this.InstanceManager.postDBLoad(container);
 
         this.ProgressionManager.init(this.InstanceManager, this.IOManager);
         this.customItemService = this.InstanceManager.customItemService;
-        this.AchievementManager.postDbLoad(this.InstanceManager, this.IOManager);
+        await this.AchievementManager.postDbLoad(this.InstanceManager, this.IOManager);
         this.TraderManager.postDbLoad();
-        this.QuestManager.postDbLoad(this.InstanceManager, this.IOManager);
+        await this.QuestManager.postDbLoad(this.InstanceManager, this.IOManager);
 
         this.addCraftsToDatabase();
-        this.CreateItems();
+        await this.CreateItems();
         // Do this after so we dont wipe locales with create items
         this.IOManager.importData();
 
@@ -66,9 +66,9 @@ class SkillsExtended implements IPreSptLoadMod, IPostDBLoadMod
         this.addItemToSpecSlots(SkillsExtendedIds.Pda);
     }
 
-    private CreateItems(): void
+    private async CreateItems(): Promise<void>
     {
-        const items = this.IOManager.loadJsonFile<NewItemFromCloneDetails[]>(path.join(this.IOManager.ItemRootPath, "Items.json"));
+        const items = await this.IOManager.loadJsonFile<NewItemFromCloneDetails[]>(path.join(this.IOManager.ItemRootPath, "Items.json"));
 
         for (const item of items)
         {

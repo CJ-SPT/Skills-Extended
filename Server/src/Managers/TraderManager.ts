@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 
 import type { IOManager } from "./IOManager";
-import type { ITraderConfig, UpdateTime } from "@spt/models/spt/config/ITraderConfig";
+import type { ITraderConfig, IUpdateTime } from "@spt/models/spt/config/ITraderConfig";
 import type { IBarterScheme, ITraderAssort, ITraderBase } from "@spt/models/eft/common/tables/ITrader";
 import type { IRagfairConfig } from "@spt/models/spt/config/IRagfairConfig";
-import type { Item } from "@spt/models/eft/common/tables/IItem";
+import type { IItem } from "@spt/models/eft/common/tables/IItem";
 
 import path from "node:path";
 import { InstanceManager } from "./InstanceManager";
@@ -25,7 +25,7 @@ export class TraderManager
 
     private BaseJson: ITraderBase;
 
-    public preSptLoad(instanceManager: InstanceManager, iOManager: IOManager, skillsConfig: ISkillsConfig): void
+    public async preSptLoad(instanceManager: InstanceManager, iOManager: IOManager, skillsConfig: ISkillsConfig): Promise<void>
     {
         this.InstanceManager = instanceManager;
         this.IOManager = iOManager;
@@ -36,7 +36,7 @@ export class TraderManager
         this.TraderConfig = instanceManager.configServer.getConfig<ITraderConfig>(ConfigTypes.TRADER);
         this.RagfairConfig = instanceManager.configServer.getConfig<IRagfairConfig>(ConfigTypes.RAGFAIR);
 
-        this.BaseJson = this.IOManager.loadJsonFile<ITraderBase>(path.join(this.IOManager.TraderRootPath, "base.json"));
+        this.BaseJson = await this.IOManager.loadJsonFile<ITraderBase>(path.join(this.IOManager.TraderRootPath, "base.json"));
 
         // Add to traders enum and enable on ragfair
         Traders[this.BaseJson._id] = this.BaseJson._id;
@@ -73,7 +73,7 @@ export class TraderManager
     private setTraderUpdateTime(): void
     {
         // Add refresh time in seconds to config
-        const traderRefreshRecord: UpdateTime = {
+        const traderRefreshRecord: IUpdateTime = {
             traderId: this.BaseJson._id,
             seconds: {
                 min: 1800,
@@ -84,16 +84,16 @@ export class TraderManager
         this.TraderConfig.updateTime.push(traderRefreshRecord);
     }
 
-    private addTraderToDb(): void
+    private async addTraderToDb(): Promise<void>
     {
         const database = this.InstanceManager.database;
         const ioMgr = this.IOManager;
 
-        const questAssort = ioMgr.loadJsonFile<Record<string, Record<string, string>>>(path.join(ioMgr.AssortRootPath, "QuestAssort.json"));
+        const questAssort = await ioMgr.loadJsonFile<Record<string, Record<string, string>>>(path.join(ioMgr.AssortRootPath, "QuestAssort.json"));
 
         // Add trader to trader table, key is the traders id
         database.traders[this.BaseJson._id] = {
-            assort: this.createAssortTable(),
+            assort: await this.createAssortTable(),
             base: this.BaseJson,
             questassort: questAssort
         };
@@ -103,12 +103,12 @@ export class TraderManager
      * Create basic data for trader + add empty assorts table for trader
      * @returns ITraderAssort
      */
-    private createAssortTable(): ITraderAssort
+    private async createAssortTable(): Promise<ITraderAssort>
     {
         const ioMgr = this.IOManager;
-        const items = ioMgr.loadJsonFile<Item[]>(path.join(ioMgr.AssortRootPath, "Items.json"));
-        const barterScheme = ioMgr.loadJsonFile<Record<string, IBarterScheme[][]>>(path.join(ioMgr.AssortRootPath, "BarterScheme.json"));
-        const loyalLevelItems = ioMgr.loadJsonFile<Record<string, number>>(path.join(ioMgr.AssortRootPath, "LoyalLevelItems.json"));
+        const items = await ioMgr.loadJsonFile<IItem[]>(path.join(ioMgr.AssortRootPath, "Items.json"));
+        const barterScheme = await ioMgr.loadJsonFile<Record<string, IBarterScheme[][]>>(path.join(ioMgr.AssortRootPath, "BarterScheme.json"));
+        const loyalLevelItems = await ioMgr.loadJsonFile<Record<string, number>>(path.join(ioMgr.AssortRootPath, "LoyalLevelItems.json"));
 
         // Create a blank assort object, ready to have items added
         const assortTable: ITraderAssort = {
@@ -121,14 +121,14 @@ export class TraderManager
         return assortTable;
     }
 
-    private loadLockPickingItemsIfDisabled(): void
+    private async loadLockPickingItemsIfDisabled(): Promise<void>
     {
         if (!this.SkillsConfig.LockPicking.ENABLED) return;
 
         const ioMgr = this.IOManager;
-        const items = ioMgr.loadJsonFile<Item[]>(path.join(ioMgr.AssortRootPath, "Items.json"));
-        const barterScheme = ioMgr.loadJsonFile<Record<string, IBarterScheme[][]>>(path.join(ioMgr.AssortRootPath, "BarterScheme.json"));
-        const loyalLevelItems = ioMgr.loadJsonFile<Record<string, number>>(path.join(ioMgr.AssortRootPath, "LoyalLevelItems.json"));
+        const items = await ioMgr.loadJsonFile<IItem[]>(path.join(ioMgr.AssortRootPath, "Items.json"));
+        const barterScheme = await ioMgr.loadJsonFile<Record<string, IBarterScheme[][]>>(path.join(ioMgr.AssortRootPath, "BarterScheme.json"));
+        const loyalLevelItems = await ioMgr.loadJsonFile<Record<string, number>>(path.join(ioMgr.AssortRootPath, "LoyalLevelItems.json"));
 
         const mechanicAssort = this.InstanceManager.database.traders[Traders.MECHANIC].assort;
         const peaceKeeperAssort = this.InstanceManager.database.traders[Traders.PEACEKEEPER].assort;

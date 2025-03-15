@@ -12,15 +12,15 @@ export class QuestManager
     private InstanceManager: InstanceManager;
     private IOManager: IOManager;
 
-    public postDbLoad(instanceManager: InstanceManager, ioManager: IOManager): void
+    public async postDbLoad(instanceManager: InstanceManager, ioManager: IOManager): Promise<void>
     {
         this.InstanceManager = instanceManager;
         this.IOManager = ioManager;
 
-        this.importQuests();
+        await this.importQuests();
     }
 
-    private importQuests(): void
+    private async importQuests(): Promise<void>
     {
         const dataPath = this.IOManager.QuestsRootPath;
         const files = fs.readdirSync(dataPath);
@@ -36,7 +36,7 @@ export class QuestManager
         for (const file of jsonFiles)
         {   
             const filePath = path.resolve(dataPath, `${file}.json`);
-            const data = this.IOManager.loadJsonFile<IQuest[]>(filePath);
+            const data = await this.IOManager.loadJsonFile<IQuest[]>(filePath);
 
             for (const quest of data)
             {
