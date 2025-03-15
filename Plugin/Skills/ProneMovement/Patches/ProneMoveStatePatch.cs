@@ -23,7 +23,7 @@ public class ProneMoveStatePatch : ModulePatch
     private static bool Prefix(MovementContext __instance, float speed, ref float __result)
     {
         if (!ProneData.Enabled) return true;
-        if (__instance.CurrentState is not ProneMoveState) return true;
+        if (__instance.CurrentState is not ProneMoveStateClass) return true;
         
         var player = (Player)_playerField.GetValue(__instance);
 
@@ -63,7 +63,7 @@ public class ProneMoveVolumePatch : ModulePatch
     private static bool Prefix(MovementContext __instance, ref float __result)
     {
         if (!proneData.Enabled) return true;
-        if (__instance.CurrentState is not ProneMoveState) return true;
+        if (__instance.CurrentState is not ProneMoveStateClass) return true;
         
         var player = (Player)_playerField.GetValue(__instance);
 

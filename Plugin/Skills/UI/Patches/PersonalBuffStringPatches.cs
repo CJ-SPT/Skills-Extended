@@ -15,12 +15,12 @@ internal class PersonalBuffFullStringPatch : ModulePatch
 {
     protected override MethodBase GetTargetMethod()
     {
-        return AccessTools.Method(typeof(GClass2756.GClass2781.GClass2782), nameof(GClass2756.GClass2781.GClass2782.GetStringValue));
+        return AccessTools.Method(typeof(GClass2823.GClass2848.GClass2849), nameof(GClass2823.GClass2848.GClass2849.GetStringValue));
     }
 
     [PatchPostfix]
     public static void PostFix(
-        GClass2756.GClass2781.GClass2782 __instance,
+        GClass2823.GClass2848.GClass2849 __instance,
         HashSet<string> ___hashSet_0,
         ref string __result)
     {
@@ -61,65 +61,6 @@ internal class PersonalBuffFullStringPatch : ModulePatch
         if (__instance.Duration > 0f && __instance.Duration < 7200f)
         {
             stringBuilder.AppendFormat("\n{0} {1}{2}", "Duration".Localized(), __instance.Duration * (1f + durationBuff), "sec".Localized());
-        }
-
-        __result = stringBuilder.ToString();
-    }
-}
-
-internal class PersonalBuffStringPatch : ModulePatch
-{
-    protected override MethodBase GetTargetMethod()
-    {
-        return AccessTools.Method(typeof(GClass2756.GClass2781.GClass2782), nameof(GClass2756.GClass2781.GClass2782.GetStringValue));
-    }
-
-    [PatchPostfix]
-    public static void PostFix(
-        GClass2756.GClass2781.GClass2782 __instance, 
-        HashSet<string> ___hashSet_0,
-        ref string __result)
-    {
-        if (!SkillsPlugin.SkillData.FieldMedicine.Enabled) return;
-        if (__instance.BuffName == "Pain") return;
-        
-        var durationBuff = SkillManagerExt.Instance(EPlayerSide.Usec).FieldMedicineDurationBonus;
-        var chanceBuff = SkillManagerExt.Instance(EPlayerSide.Usec).FieldMedicineChanceBonus;
-        
-        var text = __instance.BuffColoredStringValue();
-        var flag = __instance.Value.IsZero();
-        var stringBuilder = new StringBuilder();
-        if (__instance.Chance < 1f)
-        {
-            stringBuilder.Append(string.Format("{0} {1}%", "UI/ItemAttribute/Chance".Localized(), Math.Round((__instance.Chance * (1f + chanceBuff) * 100f))));
-        }
-        if (__instance.Delay > 1f)
-        {
-            if (stringBuilder.Length > 0)
-            {
-                stringBuilder.Append(" / ");
-            }
-            stringBuilder.Append(string.Format("{0} {1}{2}", "Del.".Localized(), __instance.Delay * (1f + durationBuff), "sec".Localized()));
-        }
-        if (__instance.Duration > 0f && __instance.Duration < 7200f)
-        {
-            if (stringBuilder.Length > 0)
-            {
-                stringBuilder.Append(" / ");
-            }
-            stringBuilder.Append(string.Format("{0} {1}{2}", "Dur.".Localized(), __instance.Duration * (1f + durationBuff), "sec".Localized()));
-            if (!flag)
-            {
-                stringBuilder.Append(" (" + text + ")");
-            }
-        }
-        else if (!flag)
-        {
-            if (stringBuilder.Length > 0)
-            {
-                stringBuilder.Append(" / ");
-            }
-            stringBuilder.Append(" " + text);
         }
 
         __result = stringBuilder.ToString();

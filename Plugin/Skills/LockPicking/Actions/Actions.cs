@@ -31,7 +31,7 @@ public static class LockPickActions
         var type = currentState.GetType();
         
         // Only allow lockpicking if the player is stationary
-        if (currentState is IdleState || 
+        if (currentState is IdleStateClass || 
             RE.OldMovementIdleState.IsAssignableFrom(type) ||
             RE.OldMovementStationaryState.IsAssignableFrom(type))
         {
@@ -84,7 +84,7 @@ public static class LockPickActions
         }
         
         // Only allow lockpicking if the player is stationary
-        if (owner.Player.CurrentState is IdleState)
+        if (owner.Player.CurrentState is IdleStateClass)
         {
             var level = LockPickingHelpers.GetLevelForDoor(owner.Player.Location, door.Id);
 

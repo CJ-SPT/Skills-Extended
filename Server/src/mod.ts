@@ -16,8 +16,6 @@ import { ProgressionManager } from "./Managers/ProgressionManager";
 import { IOManager } from "./Managers/IOManager";
 import { RouteManager } from "./Managers/RouteManager";
 import { AchievementManager } from "./Managers/AchievementManager";
-import { TraderManager } from "./Managers/TraderManager";
-import { QuestManager } from "./Managers/QuestManager";
 import { SkillsExtendedIds } from "./enums/SkillsExtendedIds";
 
 class SkillsExtended implements IPreSptLoadMod, IPostDBLoadMod
@@ -27,8 +25,6 @@ class SkillsExtended implements IPreSptLoadMod, IPostDBLoadMod
     private IOManager: IOManager = new IOManager(this.InstanceManager); 
     private ProgressionManager: ProgressionManager = new ProgressionManager();
     private AchievementManager: AchievementManager = new AchievementManager();
-    private TraderManager: TraderManager = new TraderManager();  
-    private QuestManager: QuestManager = new QuestManager();
     private RouteManager: RouteManager = new RouteManager();
     
     private customItemService: CustomItemService;
@@ -41,21 +37,18 @@ class SkillsExtended implements IPreSptLoadMod, IPostDBLoadMod
 
         this.SkillsConfig = await this.IOManager.loadJsonFile<ISkillsConfig>(path.join(this.IOManager.ConfigPath, "SkillsConfig.json5"));
 
-        this.RouteManager.preSptLoad(this.InstanceManager, this.ProgressionManager, this.SkillsConfig, this.IOManager);
-        await this.TraderManager.preSptLoad(this.InstanceManager, this.IOManager, this.SkillsConfig);
-
-        this.InstanceManager.logger.logWithColor("Skills Extended loading", LogTextColor.GREEN);    
+        this.RouteManager.preSptLoad(this.InstanceManager, this.ProgressionManager, this.SkillsConfig, this.IOManager);    
     }
 
     public async postDBLoad(container: DependencyContainer): Promise<void> 
     {
+        this.InstanceManager.logger.logWithColor("Skills Extended loading", LogTextColor.GREEN);
+
         this.InstanceManager.postDBLoad(container);
 
         this.ProgressionManager.init(this.InstanceManager, this.IOManager);
         this.customItemService = this.InstanceManager.customItemService;
         await this.AchievementManager.postDbLoad(this.InstanceManager, this.IOManager);
-        this.TraderManager.postDbLoad();
-        await this.QuestManager.postDbLoad(this.InstanceManager, this.IOManager);
 
         this.addCraftsToDatabase();
         await this.CreateItems();

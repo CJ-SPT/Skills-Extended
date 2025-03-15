@@ -1,6 +1,5 @@
 export interface IServerConfig
 {
-    EnableTrader: boolean;
     EnableProgression: boolean;
     ProgressionDebug: ProgressionDebug;
 }

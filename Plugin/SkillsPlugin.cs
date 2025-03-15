@@ -8,25 +8,19 @@ using SkillsExtended.Models;
 using SPT.Common.Http;
 using System;
 using System.Linq;
-using Comfort.Common;
-using EFT.UI;
-using IcyClawz.CustomInteractions;
 using SkillsExtended.Config;
-using SkillsExtended.ItemInteractions;
 using SkillsExtended.Skills.LockPicking;
 using UnityEngine;
 
 namespace SkillsExtended;
 
-[BepInPlugin("com.dirtbikercj.SkillsExtended", "Skills Extended", "1.4.2")]
-[BepInDependency("com.IcyClawz.CustomInteractions")]
-[BepInDependency("com.dirtbikercj.QuestsExtended")]
+[BepInPlugin("com.dirtbikercj.SkillsExtended", "Skills Extended", "1.4.3")]
 
 // Because I need the idle state type from it for lockpicking
 [BepInDependency("com.boogle.oldtarkovmovement", BepInDependency.DependencyFlags.SoftDependency)] 
 public class SkillsPlugin : BaseUnityPlugin
 {
-    public const int TarkovVersion = 33420;
+    public const int TarkovVersion = 35392;
     
     // Contains key information
     public static KeysResponse Keys;
@@ -54,7 +48,6 @@ public class SkillsPlugin : BaseUnityPlugin
         Log = Logger;
         
         PatchManager.PatchAll();
-        CustomInteractionsManager.Register(new CustomInteractionsProvider());
         ConfigManager.RegisterConfig(Config);
         
 #if DEBUG

@@ -10,11 +10,11 @@ internal class PersonalBuffPatch : ModulePatch
 {
     protected override MethodBase GetTargetMethod()
     {
-        return AccessTools.Method(typeof(GClass2756.GClass2781), nameof(GClass2756.GClass2781.GetPersonalBuffSettings));
+        return AccessTools.Method(typeof(GClass2823.GClass2848), nameof(GClass2823.GClass2848.GetPersonalBuffSettings));
     }
 
     [PatchPostfix]
-    public static void PostFix(GClass2756.GClass2781.GClass2782 __result)
+    public static void PostFix(GClass2823.GClass2848.GClass2849 __result)
     {
         if (!SkillsPlugin.SkillData.FieldMedicine.Enabled) return;
         if (__result.BuffName == "Pain") return;

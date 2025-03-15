@@ -47,14 +47,6 @@ internal static class ReadBookHandler
             
             return;
         }
-        
-        PreloaderUI.Instance.ShowCriticalErrorScreen(
-            "Are you sure?",
-            $"Do you want to consume the book?",
-            ErrorScreen.EButtonType.OkButton,
-            10f,
-            () => ApplyBookBuff(item),
-            () => { });
     }
     
     private static void ApplyBookBuff(Item item)

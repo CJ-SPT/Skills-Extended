@@ -18,9 +18,6 @@
 		<Reference Include="QuestsExtended">
 			<HintPath>..\..\..\BepinEx\Plugins\QuestsExtended\QuestsExtended.dll</HintPath>
 		</Reference>
-		<Reference Include="IcyClawz.CustomInteractions">
-			<HintPath>..\..\..\BepinEx\Plugins\IcyClawz.CustomInteractions.dll</HintPath>
-		</Reference>
 		<Reference Include="Spt.Common">
 			<HintPath>..\..\..\BepinEx\Plugins\spt\SPT-Common.dll</HintPath>
 		</Reference>

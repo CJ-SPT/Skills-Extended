@@ -17,32 +17,32 @@ public class MovementContextSetSpeedLimitPatch : ModulePatch
 	}
 
 	[PatchPrefix]
-	public static bool Prefix(MovementContext __instance, List<ObstacleCollider> ____enteredObstacles)
+	public static bool Prefix(MovementContext __instance)
 	{
 		var skillData = SkillsPlugin.SkillData;
 		var skillMgrExt = SkillManagerExt.Instance(EPlayerSide.Usec);
 
 		if (!skillData.Strength.Enabled) return true;
 
-		MovementContext.Struct294 gStruct;
+		MovementContext.Struct303 gStruct;
 		gStruct.movementContext_0 = __instance;
 		gStruct.conditions = EPhysicalCondition.None;
 
 		var flag = false;
-		foreach (var collider in ____enteredObstacles)
+		foreach (var collider in __instance._enteredObstacles)
 		{
 			gStruct.conditions |= collider.ConditionsMask;
 			flag |= collider.HasSwampSpeedLimit;
 		}
 		
-		__instance.method_27(EPhysicalCondition.ProneDisabled, ref gStruct);
-		__instance.method_27(EPhysicalCondition.ProneMovementDisabled, ref gStruct);
+		__instance.method_28(EPhysicalCondition.ProneDisabled, ref gStruct);
+		__instance.method_28(EPhysicalCondition.ProneMovementDisabled, ref gStruct);
 
 		// Allow jumping/sprinting in swamps
 		if (skillMgrExt.StrengthBushSpeedIncBuffElite)
 		{
-			__instance.method_27(EPhysicalCondition.SprintDisabled, ref gStruct);
-			__instance.method_27(EPhysicalCondition.JumpDisabled, ref gStruct);
+			__instance.method_28(EPhysicalCondition.SprintDisabled, ref gStruct);
+			__instance.method_28(EPhysicalCondition.JumpDisabled, ref gStruct);
 		}
 		
 		if (__instance.PhysicalConditionIs(EPhysicalCondition.SprintDisabled))

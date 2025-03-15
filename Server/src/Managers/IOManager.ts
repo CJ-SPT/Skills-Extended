@@ -25,11 +25,7 @@ export class IOManager
     public ProgressPath: string = path.join(this.RootPath, "progression");
 
     public AchievementsRootPath: string = path.join(this.DataPath, "Achievements");
-    public AssortRootPath: string = path.join(this.DataPath, "Assort");
-    public CustomQuestConditions: string = path.join(this.DataPath, "CustomQuestConditions");
     public LocaleRootPath: string = path.join(this.DataPath, "Locales");
-    public TraderRootPath: string = path.join(this.DataPath, "Trader");
-    public QuestsRootPath: string = path.join(this.DataPath, "Quests");
     public ImageRootPath: string = path.join(this.DataPath, "Images");
     public ItemRootPath: string = path.join(this.DataPath, "Items");
 
@@ -160,9 +156,7 @@ export class IOManager
         const logger = this.InstanceManager.logger;
 
         const directories = [
-            path.join(this.ImageRootPath, "Achievements"),
-            path.join(this.ImageRootPath, "Quests"),
-            path.join(this.ImageRootPath, "Trader")
+            path.join(this.ImageRootPath, "Achievements")
         ];
 
         let images = 0;
@@ -176,23 +170,9 @@ export class IOManager
                 const imagePath = path.join(directory, image);
                 const filenameWithoutExtension = path.basename(imagePath, path.extname(imagePath));
 
-                if (imagePath.includes("Trader"))
-                {
-                    imageRouter.addRoute(`/files/trader/avatar/${filenameWithoutExtension}`, imagePath);
-                    images++;
-                    continue;
-                }
-
                 if (imagePath.includes("Achivements"))
                 {
                     imageRouter.addRoute(`/files/achievement/${filenameWithoutExtension}`, imagePath);
-                    images++;
-                    continue;
-                }
-
-                if (imagePath.includes("Quests"))
-                {
-                    imageRouter.addRoute(`/files/quest/icon/${filenameWithoutExtension}`, imagePath);
                     images++;
                 }
             }
