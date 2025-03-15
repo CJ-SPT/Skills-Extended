@@ -84,7 +84,7 @@ class SkillsExtended implements IPreSptLoadMod, IPostDBLoadMod
 
         for (const craft of crafts)
         {
-            this.InstanceManager.database.hideout.production.recipes.push(craft)
+            this.InstanceManager.database.hideout.production.recipes.push(craft);
         }
     }
 
