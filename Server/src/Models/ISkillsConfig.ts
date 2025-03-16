@@ -61,7 +61,6 @@ export interface ILockpickingConfig
     FAILURE_LOCK_XP_RATIO: number;
     XP_TABLE: Record<string, number>;
     DOOR_PICK_LEVELS: Record<string, Record<string, number>>;
-    CRAFTING_RECIPES: IHideoutProduction[];
 }
 
 export interface IProneMovementConfig

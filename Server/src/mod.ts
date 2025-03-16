@@ -5,10 +5,11 @@ import { InstanceManager } from "./Managers/InstanceManager";
 import path from "node:path";
 
 import type { DependencyContainer } from "tsyringe";
-import type { IPostDBLoadMod } from "@spt/models/external/IPostDBLoadMod";
 import type { IPreSptLoadMod } from "@spt/models/external/IPreSptLoadMod";
+import type { IPostDBLoadMod } from "@spt/models/external/IPostDBLoadMod";
 import type { CustomItemService } from "@spt/services/mod/CustomItemService";
 import type { NewItemFromCloneDetails } from "@spt/models/spt/mod/NewItemDetails";
+import type { IHideoutProduction } from "@spt/models/eft/hideout/IHideoutProduction";
 import type { ISkillsConfig } from "./Models/ISkillsConfig";
 
 import { LogTextColor } from "@spt/models/spt/logging/LogTextColor";
@@ -30,17 +31,17 @@ class SkillsExtended implements IPreSptLoadMod, IPostDBLoadMod
     private customItemService: CustomItemService;
     public SkillsConfig: ISkillsConfig;
 
-    public async preSptLoad(container: DependencyContainer): Promise<void> 
+    public preSptLoad(container: DependencyContainer): void
     {
         this.InstanceManager.preSptLoad(container);
-        await this.IOManager.preSptLoad();
+        this.IOManager.preSptLoad();
 
-        this.SkillsConfig = await this.IOManager.loadJsonFile<ISkillsConfig>(path.join(this.IOManager.ConfigPath, "SkillsConfig.json5"));
+        this.SkillsConfig = this.IOManager.loadJsonFile<ISkillsConfig>(path.join(this.IOManager.ConfigPath, "SkillsConfig.json5"));
 
         this.RouteManager.preSptLoad(this.InstanceManager, this.ProgressionManager, this.SkillsConfig, this.IOManager);    
     }
 
-    public async postDBLoad(container: DependencyContainer): Promise<void> 
+    public postDBLoad(container: DependencyContainer): void 
     {
         this.InstanceManager.logger.logWithColor("Skills Extended loading", LogTextColor.GREEN);
 
@@ -48,10 +49,10 @@ class SkillsExtended implements IPreSptLoadMod, IPostDBLoadMod
 
         this.ProgressionManager.init(this.InstanceManager, this.IOManager);
         this.customItemService = this.InstanceManager.customItemService;
-        await this.AchievementManager.postDbLoad(this.InstanceManager, this.IOManager);
+        this.AchievementManager.postDbLoad(this.InstanceManager, this.IOManager);
 
         this.addCraftsToDatabase();
-        await this.CreateItems();
+        this.CreateItems();
         // Do this after so we dont wipe locales with create items
         this.IOManager.importData();
 
@@ -59,12 +60,14 @@ class SkillsExtended implements IPreSptLoadMod, IPostDBLoadMod
         this.addItemToSpecSlots(SkillsExtendedIds.Pda);
     }
 
-    private async CreateItems(): Promise<void>
+    private CreateItems(): void
     {
-        const items = await this.IOManager.loadJsonFile<NewItemFromCloneDetails[]>(path.join(this.IOManager.ItemRootPath, "Items.json"));
+        const items = this.IOManager.loadJsonFile<NewItemFromCloneDetails[]>(path.join(this.IOManager.ItemRootPath, "Items.json"));
 
         for (const item of items)
         {
+            if (item.newId === SkillsExtendedIds.Pda) continue;
+
             this.customItemService.createItemFromClone(item);
         }
 
@@ -73,7 +76,7 @@ class SkillsExtended implements IPreSptLoadMod, IPostDBLoadMod
 
     private addCraftsToDatabase(): void
     {
-        const crafts = this.SkillsConfig.LockPicking.CRAFTING_RECIPES;
+        const crafts = this.IOManager.loadJsonFile<IHideoutProduction[]>(path.join(this.IOManager.ItemRootPath, "Crafting.json"));
 
         for (const craft of crafts)
         {

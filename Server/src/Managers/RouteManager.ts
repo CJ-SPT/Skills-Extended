@@ -9,9 +9,6 @@ import type { IOManager } from "./IOManager";
 
 import path from "node:path";
 import { LogTextColor } from "@spt/models/spt/logging/LogTextColor";
-import type { IPmcData } from "@spt/models/eft/common/IPmcData";
-import { NewSkills } from "../enums/SkillsExtendedIds";
-import { Common } from "@spt/models/eft/common/tables/IBotBase";
 
 export class RouteManager
 {

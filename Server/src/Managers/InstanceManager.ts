@@ -14,7 +14,7 @@ import type { ImporterUtil } from "@spt/utils/ImporterUtil";
 import type { SaveServer } from "@spt/servers/SaveServer";
 import type { ItemHelper } from "@spt/helpers/ItemHelper";
 import type { MailSendService } from "@spt/services/MailSendService";
-import type { FileSystem } from "@spt/utils/FileSystem";
+import type { FileSystemSync } from "@spt/utils/FileSystemSync";
 import type { HashUtil } from "@spt/utils/HashUtil";
 import type { TraderHelper } from "@spt/helpers/TraderHelper";
 import type { HttpResponseUtil } from "@spt/utils/HttpResponseUtil";
@@ -34,7 +34,7 @@ export class InstanceManager
     public itemHelper: ItemHelper;
     public logger: ILogger;
     public staticRouter: StaticRouterModService;
-    public vfs: FileSystem;
+    public vfs: FileSystemSync;
     public hashUtil: HashUtil;
     public httpResponseUtil: HttpResponseUtil;
     //#endregion
@@ -63,7 +63,7 @@ export class InstanceManager
         this.itemHelper = container.resolve<ItemHelper>("ItemHelper");
         this.logger = container.resolve<ILogger>("WinstonLogger");
         this.staticRouter = container.resolve<StaticRouterModService>("StaticRouterModService");
-        this.vfs = container.resolve<FileSystem>("FileSystem");
+        this.vfs = container.resolve<FileSystemSync>("FileSystemSync");
         this.hashUtil = container.resolve<HashUtil>("HashUtil");
         this.httpResponseUtil = container.resolve<HttpResponseUtil>("HttpResponseUtil");
     }
