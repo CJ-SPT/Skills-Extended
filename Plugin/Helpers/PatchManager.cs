@@ -91,7 +91,6 @@ internal static class PatchManager
         new BuffIconShowPatch().Enable();
         new PersonalBuffFullStringPatch().Enable(); // TODO: Refactor this patch
         new SkillIconShowPatch().Enable();
-        new SkillLevelPanelPatch().Enable();
         new SkillPanelDisablePatch().Enable();
     }
     

@@ -1,15 +1,6 @@
-﻿using Comfort.Common;
-using EFT;
-using HarmonyLib;
-using Newtonsoft.Json;
-using SkillsExtended.Controllers;
+﻿using Newtonsoft.Json;
 using SPT.Common.Http;
-using SPT.Reflection.Utils;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
 
 namespace SkillsExtended.Helpers;
 

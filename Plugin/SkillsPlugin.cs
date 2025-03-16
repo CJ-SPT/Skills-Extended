@@ -2,7 +2,6 @@
 using BepInEx.Bootstrap;
 using BepInEx.Logging;
 using Newtonsoft.Json;
-using SkillsExtended.Controllers;
 using SkillsExtended.Helpers;
 using SkillsExtended.Models;
 using SPT.Common.Http;
@@ -32,8 +31,6 @@ public class SkillsPlugin : BaseUnityPlugin
 
     private static GameObject _hook;
     
-    internal static BuffController BuffController;
-    
     internal static ManualLogSource Log;
     
     internal static bool IsOldTarkovMovementDetected { get; private set; }
@@ -58,8 +55,6 @@ public class SkillsPlugin : BaseUnityPlugin
         _hook = new GameObject("Skills Controller Object");
         DontDestroyOnLoad(_hook);
         
-        BuffController = _hook.AddComponent<BuffController>();
-
         // Compatibility for lockpicking
         if (Chainloader.PluginInfos.Keys.Contains("com.boogle.oldtarkovmovement"))
         {
