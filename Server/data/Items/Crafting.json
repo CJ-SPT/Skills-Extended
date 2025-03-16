@@ -20,7 +20,7 @@
                 "type": "Tool"
             }
         ],
-        "productionTime": 1800,
+        "productionTime": 1200,
         "needFuelForAllProductionTime": true,
         "locked": false,
         "endProduct": "6622c28aed7e3bc72e301e22",
