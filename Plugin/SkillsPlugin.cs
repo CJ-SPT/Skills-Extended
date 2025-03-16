@@ -14,7 +14,7 @@ using UnityEngine;
 
 namespace SkillsExtended;
 
-[BepInPlugin("com.dirtbikercj.SkillsExtended", "Skills Extended", "1.4.3")]
+[BepInPlugin("com.dirtbikercj.SkillsExtended", "Skills Extended", "1.5.0")]
 
 // Because I need the idle state type from it for lockpicking
 [BepInDependency("com.boogle.oldtarkovmovement", BepInDependency.DependencyFlags.SoftDependency)] 
