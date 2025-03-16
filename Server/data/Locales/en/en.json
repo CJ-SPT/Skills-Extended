@@ -1,4 +1,10 @@
 {
+    "6622c28aed7e3bc72e301e22 Name": "Lockpick set",
+    "6622c28aed7e3bc72e301e22 ShortName": "Lockpick",
+    "6622c28aed7e3bc72e301e22 Description": "A set of tools used for picking locks",
+    "662400eb756ca8948fe64fe8 Name": "Flipper zero",
+    "662400eb756ca8948fe64fe8 ShortName": "Flipper",
+    "662400eb756ca8948fe64fe8 Description": "A modified PDA device used in the criminal under world for malicious purposes",
     "FirstAid": "First Aid",
     "FirstAidDescription": "First aid skills make use of medical items quicker and more effective.",
     "FirstAidLevelingUpDescription": "The First Aid skill is improved by treating wounds with medical items.",
