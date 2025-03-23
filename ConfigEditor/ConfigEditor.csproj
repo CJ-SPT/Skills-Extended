@@ -9,6 +9,7 @@
         <UseWPF>true</UseWPF>
         <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
         <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+        <ApplicationIcon>Resources\app_icon.ico</ApplicationIcon>
     </PropertyGroup>
 
     <ItemGroup>

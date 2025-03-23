@@ -15,7 +15,7 @@ public static class ConfigProvider
 	private static readonly string AdditionalWeaponsPath = Path.Combine(BasePath, "AdditionalWeapons.json");
 	private static readonly string ServerConfigPath = Path.Combine(BasePath, "ServerConfig.json");
 	
-	private static readonly JsonSerializerOptions JsonOptions = new()
+	public static readonly JsonSerializerOptions JsonOptions = new()
 	{
 		AllowTrailingCommas = true,
 		IncludeFields = true,
@@ -42,7 +42,7 @@ public static class ConfigProvider
 		await SaveJson(SkillsConfigPath, SkillsConfig);
 	}
 	
-	private static async Task<T?> LoadJson<T>(string path)
+	public static async Task<T?> LoadJson<T>(string path)
 	{
 		if (!File.Exists(path))
 		{

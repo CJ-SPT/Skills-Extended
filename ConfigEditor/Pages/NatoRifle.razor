@@ -1,4 +1,5 @@
 ﻿@page "/NatoRifle"
+@using System.Text.Json
 @using ConfigEditor.Core.Config
 @using ConfigEditor.Core.Models
 
@@ -99,12 +100,6 @@
         <MudButton Class="align-center justify-center" Size="Size.Small" Variant="Variant.Filled" OnClick="AddWeapon">
             Add New Weapon
         </MudButton>
-
-        <MudFlexBreak />
-
-        <MudButton Class="align-center justify-center" Size="Size.Small" Variant="Variant.Filled" OnClick="RemoveSelectedWeapons">
-            Load Additional Weapon List
-        </MudButton>
         
     </MudItem>
     
@@ -113,6 +108,20 @@
     <MudItem xs="6">
         <MudTextField @bind-Value="NewWeaponId" Label="New Weapon Id" Variant="Variant.Text"/>
     </MudItem>
+    
+    <MudItem xs="6">
+        <MudFileUpload T="IBrowserFile" FilesChanged="UploadFile" Accept=".json, .json5">
+            <ActivatorContent>
+                <MudButton  Class="align-center justify-center"
+                            Variant="Variant.Filled"
+                            Color="Color.Primary"
+                            StartIcon="@Icons.Material.Filled.CloudUpload">
+                    Upload Additional weapons
+                </MudButton>
+            </ActivatorContent>
+        </MudFileUpload>
+    </MudItem>
+    
     
 </MudGrid>
 
@@ -204,5 +213,16 @@
         }
 
         SelectedIds = [];
+    }
+
+    private static async Task UploadFile(IBrowserFile file)
+    {
+        var stream = file.OpenReadStream();
+        
+        var weapons = await JsonSerializer.DeserializeAsync<AdditionalWeaponsData>(stream, ConfigProvider.JsonOptions);
+
+        if (weapons is null) return;
+            
+        WeaponIds.UnionWith(weapons.AdditionalNatoWeapons);
     }
 }
