@@ -3,10 +3,12 @@ using System.Linq;
 using System.Reflection;
 using EFT;
 using EFT.HealthSystem;
+using EFT.Interactive;
 using HarmonyLib;
 using SkillsExtended.Helpers;
 using SkillsExtended.Models;
 using SkillsExtended.Skills.Core;
+using SkillsExtended.Skills.LockPicking;
 using SPT.Reflection.Patching;
 using SPT.Reflection.Utils;
 
@@ -54,6 +56,10 @@ internal class OnGameStartedPatch : ModulePatch
         {
             Player!.Skills.OnMasteringExperienceChanged += ApplyEasternRifleXp;
         }
+
+#if DEBUG
+        LogMissingDoors(__instance);
+#endif
     }
     
     private static void ApplyMedicalXp(IEffect effect)
@@ -120,5 +126,24 @@ internal class OnGameStartedPatch : ModulePatch
         Player.ExecuteSkill(() => SkillMgrExt.BearRifleAction.Complete(EasternData.WeaponProfXp));
         
         SkillsPlugin.Log.LogDebug("APPLYING EASTERN RIFLE XP");
+    }
+
+    private static void LogMissingDoors(GameWorld gameWorld)
+    {
+        foreach (var interactableObj in LocationScene.GetAllObjectsAndWhenISayAllIActuallyMeanIt<WorldInteractiveObject>())
+        {
+            if (interactableObj.KeyId is null || interactableObj.KeyId == string.Empty) continue;
+
+            var doorLevel =
+                LockPickingHelpers.GetLevelForDoor(gameWorld.LocationId, interactableObj.KeyId);
+            
+            if (doorLevel != -1) continue;
+            
+            var logMessage = SkillsPlugin.Keys.KeyLocale.TryGetValue(interactableObj.KeyId, out var name) 
+                ? $"Door ID: {interactableObj.Id} KeyID: {interactableObj.KeyId} Key Name: {name}" 
+                : $"Door ID: {interactableObj.Id} KeyID: {interactableObj.KeyId}";
+                
+            SkillsPlugin.Log.LogError(logMessage);
+        }
     }
 }

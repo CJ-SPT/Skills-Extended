@@ -202,6 +202,9 @@ public class LockPickingGame : MonoBehaviour
         
         audioSource.volume = ConfigManager.LpMiniGameVolume.Value;
         
+        pickStrengthRemainingLower.enabled = false;
+        pickStrengthRemainingUpper.enabled = false;
+        
         _onUnlocked = action;
         
         var doorLevel = LockPickingHelpers.GetLevelForDoor(owner.Player.Location, interactiveObject.Id);
@@ -228,8 +231,8 @@ public class LockPickingGame : MonoBehaviour
         
         audioSource.volume = ConfigManager.LpMiniGameVolume.Value;
 
-        pickStrengthRemainingLower.enabled = ConfigManager.LpMiniEnableHealthBar.Value;
-        pickStrengthRemainingUpper.enabled = ConfigManager.LpMiniEnableHealthBar.Value;
+        pickStrengthRemainingLower.enabled = false;
+        pickStrengthRemainingUpper.enabled = false;
         
         SetSweetSpotRange(doorLevel);
         SetTimeLimit(doorLevel);

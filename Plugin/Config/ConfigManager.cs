@@ -39,6 +39,7 @@ public static class ConfigManager
                     Order =  _lpOrder--
                 }));
         
+        /*
         LpMiniEnableHealthBar = config.Bind(
             "LP Mini Game",
             "Mini-game health bar",
@@ -50,6 +51,7 @@ public static class ConfigManager
                 {
                     Order =  _lpOrder--
                 }));
+        */
         
         LpMiniEnablePickLossOnExit = config.Bind(
             "LP Mini Game",

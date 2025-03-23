@@ -170,14 +170,12 @@ internal static class LockPickingHelpers
 
         lpComp.keyText = LockPickingGame.GetComponentsInChildren<Text>()
             .FirstOrDefault(x => x.gameObject.name == "KeyNameText");
-
-        /*
+        
         lpComp.pickStrengthRemainingLower = LockPickingGame.GetComponentsInChildren<Image>()
             .FirstOrDefault(x => x.gameObject.name == "PickStrengthBarLower");
 
         lpComp.pickStrengthRemainingUpper = LockPickingGame.GetComponentsInChildren<Image>()
             .FirstOrDefault(x => x.gameObject.name == "PickStrengthBarUpper");
-        */
 
         LockPickingGame.SetActive(false);
     }

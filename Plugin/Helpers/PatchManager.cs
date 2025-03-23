@@ -101,6 +101,6 @@ internal static class PatchManager
 
     private static void Debug()
     {
-        new LocationSceneAwakePatch().Enable();
+        
     }
 }
