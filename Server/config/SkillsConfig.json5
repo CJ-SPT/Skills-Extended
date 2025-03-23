@@ -113,10 +113,10 @@
     },
     "LockPicking": {
         "ENABLED": true,                                    // Enable lock picking skill
-        "PICK_STRENGTH": 2.85,                              // The amount of time in seconds the lock pick can be turned on while out of position before breaking
-        "PICK_STRENGTH_PER_LEVEL": 0.015,                   // Bonus per level in percent to the amount of time before a lock pick breaks
-        "SWEET_SPOT_RANGE": 7,                              // Angle in degrees that will allow movement of the cylinder
-        "SWEET_SPOT_RANGE_PER_LEVEL": 0.005,                // Bonus per level in percent to the sweet spot angle to allow movement of the cylinder
+        "PICK_STRENGTH": 1.25,                              // The amount of time in seconds the lock pick can be turned on while out of position before breaking
+        "PICK_STRENGTH_PER_LEVEL": 0.025,                   // Bonus per level in percent to the amount of time before a lock pick breaks
+        "SWEET_SPOT_RANGE": 5,                              // Angle in degrees that will allow movement of the cylinder
+        "SWEET_SPOT_RANGE_PER_LEVEL": 0.015,                // Bonus per level in percent to the sweet spot angle to allow movement of the cylinder
         "ATTEMPTS_BEFORE_BREAK": 3,                         // Failed attempts before a lock breaks
         "INSPECT_LOCK_XP_RATIO": 0.15,                      // Ratio of lock xp given for inspecting a lock
         "FAILURE_LOCK_XP_RATIO": 0.25,                      // Ratio of lock xp given for Failing a lock
