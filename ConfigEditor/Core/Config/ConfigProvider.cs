@@ -11,10 +11,9 @@ public static class ConfigProvider
 	public static AdditionalWeaponsData? AdditionalWeapons { get; private set; }
 	
 	private static readonly string BasePath = Path.Combine(AppContext.BaseDirectory, "config");
-	private static readonly string SkillsConfigPath = Path.Combine(BasePath, "SkillsConfig.json");
+	private static readonly string SkillsConfigPath = Path.Combine(BasePath, "SkillsConfig.json5");
 	private static readonly string AdditionalWeaponsPath = Path.Combine(BasePath, "AdditionalWeapons.json");
 	private static readonly string ServerConfigPath = Path.Combine(BasePath, "ServerConfig.json");
-	private static readonly string SkillRewardsPath = Path.Combine(BasePath, "SkillRewards.json");
 	
 	private static readonly JsonSerializerOptions JsonOptions = new()
 	{
