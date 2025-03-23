@@ -38,7 +38,6 @@ export class IOManager
     public importData(): void
     {
         this.importAllLocaleData();
-        this.importAllImages();
     }
 
     /**
@@ -148,36 +147,5 @@ export class IOManager
 
         logger.logWithColor(`Skills Extended: Defaulted ${count} locale entries to english across ${Object.keys(globals).length} languages.`, LogTextColor.YELLOW);
         logger.logWithColor("Skills Extended: If you would like to provide translations, please reach out on the mod page.", LogTextColor.YELLOW);
-    }
-
-    private importAllImages(): void
-    {
-        const imageRouter = this.InstanceManager.imageRouter;
-        const logger = this.InstanceManager.logger;
-
-        const directories = [
-            path.join(this.ImageRootPath, "Achievements")
-        ];
-
-        let images = 0;
-
-        for (const directory of directories)
-        {
-            const files = fs.readdirSync(directory);
-
-            for (const image of files)
-            {
-                const imagePath = path.join(directory, image);
-                const filenameWithoutExtension = path.basename(imagePath, path.extname(imagePath));
-
-                if (imagePath.includes("Achivements"))
-                {
-                    imageRouter.addRoute(`/files/achievement/${filenameWithoutExtension}`, imagePath);
-                    images++;
-                }
-            }
-        }
-
-        logger.logWithColor(`Skills Extended: Loaded ${images} images`, LogTextColor.GREEN);
     }
 }
