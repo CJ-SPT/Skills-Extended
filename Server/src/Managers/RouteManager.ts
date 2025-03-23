@@ -2,7 +2,6 @@
 
 import { BaseClasses } from "@spt/models/enums/BaseClasses";
 import type { InstanceManager } from "./InstanceManager";
-import type { ProgressionManager } from "./ProgressionManager";
 import type { IKeys } from "../Models/IKeys";
 import type { IAdditionalWeapons, ISkillsConfig } from "../Models/ISkillsConfig";
 import type { IOManager } from "./IOManager";
@@ -13,19 +12,16 @@ import { LogTextColor } from "@spt/models/spt/logging/LogTextColor";
 export class RouteManager
 {
     private InstanceManager: InstanceManager;
-    private ProgressionManager: ProgressionManager;
     private SkillsConfig: ISkillsConfig;
     private IOManager: IOManager;
 
     public preSptLoad(
         instanceManager: InstanceManager,
-        progressionManager: ProgressionManager,
         skillsConfig: ISkillsConfig,
         ioManager: IOManager
     ): void
     {
         this.InstanceManager = instanceManager;
-        this.ProgressionManager = progressionManager;
         this.SkillsConfig = skillsConfig;
         this.IOManager = ioManager;
 
@@ -44,8 +40,6 @@ export class RouteManager
                     // eslint-disable-next-line @typescript-eslint/no-unused-vars
                     action: async (url, info, sessionId, output) => 
                     {                     
-                        this.ProgressionManager.getActivePmcData(sessionId);
-
                         const addWeaponsPath = path.join(this.IOManager.ConfigPath, "AdditionalWeapons.json");
 
                         if (this.InstanceManager.vfs.exists(addWeaponsPath))
@@ -79,39 +73,7 @@ export class RouteManager
                 }
             ],
             ""
-        );
-
-        staticRouter.registerStaticRouter(
-            "end",
-            [
-                {
-                    url: "/client/match/offline/end",
-                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                    action: async (url, info, sessionId, output) => 
-                    {                     
-                        this.ProgressionManager.checkForPendingRewards();
-                        return output;
-                    }
-                }
-            ],
-            ""
-        );
-
-        staticRouter.registerStaticRouter(
-            "select",
-            [
-                {
-                    url: "/client/game/profile/select",
-                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                    action: async (url, info, sessionId, output) => 
-                    {
-                        this.ProgressionManager.checkForPendingRewards();
-                        return output;
-                    }
-                }
-            ],
-            ""
-        );      
+        );   
     }
 
     private getKeys(): string

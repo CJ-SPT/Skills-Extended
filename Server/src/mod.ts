@@ -13,7 +13,6 @@ import type { IHideoutProduction } from "@spt/models/eft/hideout/IHideoutProduct
 import type { ISkillsConfig } from "./Models/ISkillsConfig";
 
 import { LogTextColor } from "@spt/models/spt/logging/LogTextColor";
-import { ProgressionManager } from "./Managers/ProgressionManager";
 import { IOManager } from "./Managers/IOManager";
 import { RouteManager } from "./Managers/RouteManager";
 import { AchievementManager } from "./Managers/AchievementManager";
@@ -24,7 +23,6 @@ class SkillsExtended implements IPreSptLoadMod, IPostDBLoadMod
     private InstanceManager: InstanceManager = new InstanceManager();
     
     private IOManager: IOManager = new IOManager(this.InstanceManager); 
-    private ProgressionManager: ProgressionManager = new ProgressionManager();
     private AchievementManager: AchievementManager = new AchievementManager();
     private RouteManager: RouteManager = new RouteManager();
     
@@ -38,7 +36,7 @@ class SkillsExtended implements IPreSptLoadMod, IPostDBLoadMod
 
         this.SkillsConfig = this.IOManager.loadJsonFile<ISkillsConfig>(path.join(this.IOManager.ConfigPath, "SkillsConfig.json5"));
 
-        this.RouteManager.preSptLoad(this.InstanceManager, this.ProgressionManager, this.SkillsConfig, this.IOManager);    
+        this.RouteManager.preSptLoad(this.InstanceManager, this.SkillsConfig, this.IOManager);    
     }
 
     public postDBLoad(container: DependencyContainer): void 
@@ -47,7 +45,6 @@ class SkillsExtended implements IPreSptLoadMod, IPostDBLoadMod
 
         this.InstanceManager.postDBLoad(container);
 
-        this.ProgressionManager.init(this.InstanceManager, this.IOManager);
         this.customItemService = this.InstanceManager.customItemService;
         this.AchievementManager.postDbLoad(this.InstanceManager, this.IOManager);
 
