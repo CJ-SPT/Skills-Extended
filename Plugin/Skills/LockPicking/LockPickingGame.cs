@@ -213,10 +213,11 @@ public class LockPickingGame : MonoBehaviour
         SetTimeLimit(doorLevel);
         
         SkillsPlugin.Log.LogDebug($"LEVEL:        {doorLevel}");
-        SkillsPlugin.Log.LogDebug($"SWEET SPOT:   {_sweetSpotRange}");
+        SkillsPlugin.Log.LogDebug($"FORGIVENESS RANGE DEG:   {_sweetSpotRange}");
         SkillsPlugin.Log.LogDebug($"ROTATE SPEED: {rotateSpeed}");
         SkillsPlugin.Log.LogDebug($"TIME LIMIT:   {_wiggleTimeLimit}");
-        SkillsPlugin.Log.LogDebug($"WIN ANGLE:    {rotateToWin}");
+        SkillsPlugin.Log.LogDebug($"CYLINDER ROTATE DEG:    {rotateToWin}");
+        SkillsPlugin.Log.LogDebug($"CYLINDER POSITION WIN ANGLE:    {_lockPickSetAngle}");
     }
     
     public void ActivatePractice(int doorLevel)
@@ -233,11 +234,12 @@ public class LockPickingGame : MonoBehaviour
         SetSweetSpotRange(doorLevel);
         SetTimeLimit(doorLevel);
         
-        SkillsPlugin.Log.LogDebug($"LEVEL:        {doorLevel}");
-        SkillsPlugin.Log.LogDebug($"SWEET SPOT:   {_sweetSpotRange}");
-        SkillsPlugin.Log.LogDebug($"ROTATE SPEED: {rotateSpeed}");
-        SkillsPlugin.Log.LogDebug($"TIME LIMIT:   {_wiggleTimeLimit}");
-        SkillsPlugin.Log.LogDebug($"WIN ANGLE:    {rotateToWin}");
+        SkillsPlugin.Log.LogDebug($"LEVEL:                      {doorLevel}");
+        SkillsPlugin.Log.LogDebug($"FORGIVENESS RANGE DEG:      {_sweetSpotRange}");
+        SkillsPlugin.Log.LogDebug($"ROTATE SPEED:               {rotateSpeed}");
+        SkillsPlugin.Log.LogDebug($"TIME LIMIT:                 {_wiggleTimeLimit}");
+        SkillsPlugin.Log.LogDebug($"CYLINDER ROTATE DEG:        {rotateToWin}");
+        SkillsPlugin.Log.LogDebug($"CYLINDER POSITION WIN ANGLE:    {_lockPickSetAngle}");
     }
 
     private bool ShouldClose()
@@ -263,7 +265,7 @@ public class LockPickingGame : MonoBehaviour
     private void MoveLockPick()
     {
         lockpick.eulerAngles = 
-            Mathf.Clamp((Input.mousePosition.x / Screen.width), 0.01f, 0.99f) * 180 * Vector3.forward;
+            Mathf.Clamp(Input.mousePosition.x / Screen.width, 0.01f, 0.99f) * 180 * Vector3.forward;
 
         lockpick.eulerAngles = Vector3.forward * Mathf.Clamp(lockpick.eulerAngles.z, 0, 180);
             
@@ -376,6 +378,8 @@ public class LockPickingGame : MonoBehaviour
         
         var configVal = SkillsPlugin.SkillData.LockPicking.PickStrength;
         
-        _wiggleTimeLimit = Mathf.Clamp((configVal - doorMod) * skillMod, 1f, 20f);
+        var originalLimit = Mathf.Clamp((configVal - doorMod) * skillMod, 1f, 20f);
+        
+        _wiggleTimeLimit = Utils.RandomizePercentage(originalLimit, 0.10f);
     }
 }

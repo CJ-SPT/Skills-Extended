@@ -3,6 +3,7 @@ using System.Linq;
 using EFT;
 using EFT.Interactive;
 using SkillsExtended.Helpers;
+using UnityEngine;
 
 namespace SkillsExtended.Skills.LockPicking.Actions;
 
@@ -20,11 +21,34 @@ public static class LockPickActions
         // Check if the locks broken
         if (LockPickingHelpers.DoorAttempts.TryGetValue(interactiveObject.Id, out var val))
         {
-            if (val > 3)
+            var doorLevel = LockPickingHelpers.GetLevelForDoor(owner.Player.Location, interactiveObject.Id);
+            var lpLevel = owner.Player.Skills.Lockpicking.Level;
+
+            int maxAttempts;
+
+            var levelDiff = doorLevel - lpLevel;
+
+            switch (levelDiff)
+            {
+                case >=5 and < 10:
+                    maxAttempts = 2;
+                    break;
+                case >=10:
+                    maxAttempts = 1;
+                    break;
+                default:
+                    maxAttempts = 3;
+                    break;
+            }
+            
+            if (val > maxAttempts)
             {
                 owner.DisplayPreloaderUiNotification("You cannot pick a broken lock...");
                 return;
             }
+            
+            var remainingAttempts = maxAttempts - val;
+            owner.DisplayPreloaderUiNotification($"You have {(remainingAttempts <= 0 ? 0 : remainingAttempts)} attempts remaining.");
         }
 
         var currentState = owner.Player.CurrentState;
