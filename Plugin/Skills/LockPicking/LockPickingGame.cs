@@ -163,7 +163,7 @@ public class LockPickingGame : MonoBehaviour
             return;
         }
 
-        AdjustPickStrengthImage();
+        //AdjustPickStrengthImage();
         
         MoveLockPick();
         
