@@ -1,6 +1,121 @@
 ﻿@page "/Lockpicking"
-<h1>Lock picking page, WIP come back later! :)</h1>
+@using System.Text.Json
+@using ConfigEditor.Core.Config
+@using ConfigEditor.Core.Models
+
+<MudGrid>
+    <MudItem xs="6">
+        <MudSwitch
+            Class="d-flex align-center justify-center mud-width-full py-8"
+            @bind-Value="Enabled"
+            Label="Enabled"
+            Color="Color.Success"/>
+    </MudItem>
+
+    <MudItem xs="6">
+        <MudNumericField
+            @bind-Value="PickStrength"
+            Label="Pick Strength"
+            Variant="Variant.Filled"
+            Step=".05M"
+            Min="0" Max="25"/>
+    </MudItem>
+
+    <MudItem xs="6">
+        <MudNumericField
+            @bind-Value="PerStrengthBonusPerLevel"
+            Label="Pick Strength bonus per level"
+            Variant="Variant.Filled"
+            Step=".05M"
+            Min="0" Max="1"/>
+    </MudItem>
+
+    <MudItem xs="6">
+        <MudNumericField
+            @bind-Value="SweetSpotRange"
+            Label="Sweet Spot Range"
+            Variant="Variant.Filled"
+            Step=".05M"
+            Min="0" Max="1"/>
+    </MudItem>
+
+    <MudItem xs="6">
+        <MudNumericField
+            @bind-Value="SweetSpotRangePerLevel"
+            Label="Sweet Spot Range Per Level"
+            Variant="Variant.Filled"
+            Step=".05M"
+            Min="0" Max="1"/>
+    </MudItem>
+
+    <MudItem xs="6">
+        <MudNumericField
+            @bind-Value="InspectLockXpRatio"
+            Label="Inspect lock XP ratio"
+            Variant="Variant.Filled"
+            Step=".05M"
+            Min="0" Max="1"/>
+    </MudItem>
+
+    <MudItem xs="6">
+        <MudNumericField
+            @bind-Value="FailureLockXpRatio"
+            Label="Fail lock XP ratio"
+            Variant="Variant.Filled"
+            Step=".05M"
+            Min="0" Max="1"/>
+    </MudItem>
+    
+</MudGrid>
 
 @code {
+    static LockPickingData Data => ConfigProvider.SkillsConfig!.LockPicking;
     
+    static bool Enabled
+    {
+        get => Data.Enabled;
+        set => Data.Enabled = value;
+    }
+    
+    static decimal PickStrength
+    {
+        get => (decimal)Data.PickStrength;
+        set => Data.PickStrength = (float)value;
+    }
+    
+    static decimal PerStrengthBonusPerLevel
+    {
+        get => (decimal)Data.PickStrengthPerLevel;
+        set => Data.PickStrengthPerLevel = (float)value;
+    }
+    
+    static decimal SweetSpotRange
+    {
+        get => (decimal)Data.SweetSpotRange;
+        set => Data.SweetSpotRange = (float)value;
+    }
+    
+    static decimal SweetSpotRangePerLevel
+    {
+        get => (decimal)Data.SweetSpotRangePerLevel;
+        set => Data.SweetSpotRangePerLevel = (float)value;
+    }
+    
+    static decimal InspectLockXpRatio
+    {
+        get => (decimal)Data.InspectLockXpRatio;
+        set => Data.InspectLockXpRatio = (float)value;
+    }
+    
+    static decimal FailureLockXpRatio
+    {
+        get => (decimal)Data.FailureLockXpRatio;
+        set => Data.FailureLockXpRatio = (float)value;
+    }
+    
+    static Dictionary<string, decimal> XpTable
+    {
+        get => Data.XpTable;
+        set => Data.XpTable = value;
+    }
 }

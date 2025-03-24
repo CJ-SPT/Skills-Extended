@@ -136,7 +136,7 @@ public class LockPickingData
 	public float FailureLockXpRatio;
 
 	[JsonPropertyName("XP_TABLE")] 
-	public required Dictionary<string, float> XpTable;
+	public required Dictionary<string, decimal> XpTable;
 
 	[JsonPropertyName("DOOR_PICK_LEVELS")] 
 	public required DoorPickLevels DoorPickLevels;
