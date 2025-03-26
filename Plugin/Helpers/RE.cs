@@ -15,7 +15,6 @@ public static class RE
     internal static Type StimulatorType;
 
     internal static Type OldMovementIdleState;
-    internal static Type OldMovementStationaryState;
     
     static RE()
     {
@@ -36,9 +35,8 @@ public static class RE
     public static void GetOldMovementTypes()
     {
         OldMovementIdleState = AccessTools.TypeByName("OldIdleState");
-        OldMovementStationaryState = AccessTools.TypeByName("OldStationaryState");
 
-        if (OldMovementIdleState is null || OldMovementStationaryState is null)
+        if (OldMovementIdleState is null)
         {
             throw new SkillsExtendedException("Could not find OldIdleState or OldStationaryState");
         }
