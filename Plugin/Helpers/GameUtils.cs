@@ -1,5 +1,7 @@
-﻿using Comfort.Common;
+﻿using System.Collections.Generic;
+using Comfort.Common;
 using EFT;
+using EFT.Quests;
 using JetBrains.Annotations;
 using SPT.Reflection.Utils;
 
@@ -59,7 +61,7 @@ public static class GameUtils
             throw new SkillsExtendedException("Trying to access the Profile when it's null");
         }
         
-        return GetSession()?.Profile;
+        return profile;
     }
     
     [CanBeNull]
