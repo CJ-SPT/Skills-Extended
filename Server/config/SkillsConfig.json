@@ -1,34 +1,35 @@
 {
     "FirstAid": {        
-        "ENABLED": true,                                    // Enables the First Aid skill
-        "XP_PER_ACTION": 6.25,                              // XP gained per first aid action
-        "MEDKIT_USAGE_REDUCTION": 0.30,                     // Medical kit (IFAK, AFAK...) Resource cost to heal bleeds / fractures etc.
-        "MEDKIT_USAGE_REDUCTION_ELITE": 0.50,               // Medical kit elite bonus. Default: +20% over level 50, I.E (0.3 + 0.2 = 0.5)
-        "MEDKIT_SPEED_BONUS": 0.35,                         // Medical kit total bonus at level 50.
-        "MEDKIT_SPEED_BONUS_ELITE": 0.50,                   // Medical kit elite bonus (0.35 + 0.15 = 0.50)
+        "ENABLED": true,
+        "XP_PER_ACTION": 6.25,
+        "MEDKIT_USAGE_REDUCTION": 0.30,
+        "MEDKIT_USAGE_REDUCTION_ELITE": 0.50,
+        "MEDKIT_SPEED_BONUS": 0.35,
+        "MEDKIT_SPEED_BONUS_ELITE": 0.50
     },
     "FieldMedicine": {        
-        "ENABLED": true,                                    // Enables the field medicine skill
-        "XP_PER_ACTION": 5.50,                              // XP gained per field medicine action
-        "SKILL_BONUS": 0.20,                                // Bonus to the hard cap of allowed skill boosts (60 * 1.20 = 72)
-        "SKILL_BONUS_ELITE": 0.35,                          // Elite bonus to the hard cap of allowed skill boosts
-        "DURATION_BONUS": 0.25,                             // Bonus to the duration of injectors and pain killers
-        "DURATION_BONUS_ELITE": 0.40,                       // Elite bonus to the duration of injectors and pain killers
-        "POSITIVE_EFFECT_BONUS": 0.20,                      // Bonus to the chance of positive effects
-        "POSITIVE_EFFECT_BONUS_ELITE": 0.35,                // Elite bonus to the chance of positive effects
+        "ENABLED": true,
+        "XP_PER_ACTION": 5.50,
+        "SKILL_BONUS": 0.20,
+        "SKILL_BONUS_ELITE": 0.35,
+        "DURATION_BONUS": 0.25,
+        "DURATION_BONUS_ELITE": 0.40,
+        "POSITIVE_EFFECT_BONUS": 0.20,
+        "POSITIVE_EFFECT_BONUS_ELITE": 0.35
     },
     "NatoRifle": {
-        "ENABLED": true,                                    // Enable NATO rifle skill
-        "SKILL_SHARE_ENABLED": true,                        // Allows a percentage of XP to bleed into Eastern rifle skill
-        "SKILL_SHARE_XP_RATIO": 0.10,                       // Percentage of xp to bleed into the Eastern rifle skill
-        "WEAPON_PROF_XP": 0.15,                             // XP per shot hit
-        "ERGO_MOD": 0.075,                                  // Ergonomics modifier in percent
-        "ERGO_MOD_ELITE": 0.125,                            // Ergonomics modifier in percent elite
-        "RECOIL_REDUCTION": 0.075,                          // Recoil reduction in percent
-        "RECOIL_REDUCTION_ELITE": 0.135,                    // Recoil reduction in percent elite
-        "WEAPONS": [                                        // Applicable weapons
+        "ENABLED": true,
+        "SKILL_SHARE_ENABLED": true,
+        "SKILL_SHARE_XP_RATIO": 0.10,
+        "WEAPON_PROF_XP": 0.15,
+        "ERGO_MOD": 0.075,
+        "ERGO_MOD_ELITE": 0.125,
+        "RECOIL_REDUCTION": 0.075,
+        "RECOIL_REDUCTION_ELITE": 0.135,
+        "WEAPONS": [
             "62e7c4fba689e8c9c50dfc38",
             "63171672192e68c5460cebc5",
+            "6718817435e3cfd9550d2c27",
             "5c488a752e221602b412af63",
             "5dcbd56fdbd3d91b3e5468d5",
             "5bb2475ed4351e00853264e3",
@@ -57,15 +58,15 @@
         ]
     },
     "EasternRifle": {
-        "ENABLED": true,                                    // Enable Eastern rifle skill
-        "SKILL_SHARE_ENABLED": true,                        // Allows a percentage of XP to bleed into NATO rifle skill
-        "SKILL_SHARE_XP_RATIO": 0.10,                       // Percentage of xp to bleed into the NATO rifle skill
-        "WEAPON_PROF_XP": 0.15,                             // XP per shot hit
-        "ERGO_MOD": 0.0015,                                 // Ergonomics modifier in percent
-        "ERGO_MOD_ELITE": 0.05,                             // Ergonomics modifier in percent elite
-        "RECOIL_REDUCTION": 0.002,                          // Recoil reduction modifier in percent
-        "RECOIL_REDUCTION_ELITE": 0.07,                     // Recoil reduction modifier in percent elite
-        "WEAPONS": [                                        // Applicable weapons.
+        "ENABLED": true,
+        "SKILL_SHARE_ENABLED": true,
+        "SKILL_SHARE_XP_RATIO": 0.10,
+        "WEAPON_PROF_XP": 0.15,
+        "ERGO_MOD": 0.0015,
+        "ERGO_MOD_ELITE": 0.05,
+        "RECOIL_REDUCTION": 0.002,
+        "RECOIL_REDUCTION_ELITE": 0.07,
+        "WEAPONS": [
             "6499849fc93611967b034949",
             "5ac66cb05acfc40198510a10",
             "5ac66d015acfc400180ae6e4",
@@ -112,15 +113,15 @@
         ]
     },
     "LockPicking": {
-        "ENABLED": true,                                    // Enable lock picking skill
-        "PICK_STRENGTH": 1.25,                              // The amount of time in seconds the lock pick can be turned on while out of position before breaking
-        "PICK_STRENGTH_PER_LEVEL": 0.025,                   // Bonus per level in percent to the amount of time before a lock pick breaks
-        "SWEET_SPOT_RANGE": 3.5,                            // Angle in degrees that will allow movement of the cylinder
-        "SWEET_SPOT_RANGE_PER_LEVEL": 0.015,                // Bonus per level in percent to the sweet spot angle to allow movement of the cylinder
-        "ATTEMPTS_BEFORE_BREAK": 3,                         // Failed attempts before a lock breaks
-        "INSPECT_LOCK_XP_RATIO": 0.15,                      // Ratio of lock xp given for inspecting a lock
-        "FAILURE_LOCK_XP_RATIO": 0.25,                      // Ratio of lock xp given for Failing a lock
-        "XP_TABLE": {                                       // Door XP map
+        "ENABLED": true,
+        "PICK_STRENGTH": 1.25,
+        "PICK_STRENGTH_PER_LEVEL": 0.025,
+        "SWEET_SPOT_RANGE": 3.5,
+        "SWEET_SPOT_RANGE_PER_LEVEL": 0.015,
+        "ATTEMPTS_BEFORE_BREAK": 3,
+        "INSPECT_LOCK_XP_RATIO": 0.15,
+        "FAILURE_LOCK_XP_RATIO": 0.25,
+        "XP_TABLE": {
             "0": 0.01,
             "1": 0.15,
             "2": 0.35,
@@ -144,10 +145,10 @@
             "40": 5.15,
             "45": 5.30,
             "50": 5.45,
-            "52": 5.50,
+            "52": 5.50
         },
-        "DOOR_PICK_LEVELS": {                              // WARNING: DO NOT EDIT THESE UNLESS YOU KNOW WHAT YOU ARE DOING.
-            "Factory": {                                   // THIS IS A COMPREHENSIVE LIST ALL DOORS IN THE GAME AND THEIR ASSOCIATED LEVELS. See "keyDoorIds.txt" to better understand this section.
+        "DOOR_PICK_LEVELS": {
+            "Factory": {
                 "door_Factory_Rework_Areas_00006": 7,
                 "door_Factory_Rework_Basement_00006": 7,
                 "door_Factory_Rework_Admin_Office_00014": 7,
@@ -296,7 +297,7 @@
                 "container_Shopping_Mall_DesignStuff_00346": 1,
                 "container_Shopping_Mall_DesignStuff_00347": 1,
                 "container_Shopping_Mall_DesignStuff_00348": 1,
-                "container_Shopping_Mall_DesignStuff_00349": 1,
+                "container_Shopping_Mall_DesignStuff_00349": 1
             },
             "Reserve": {
                 "door_Reserve_Base_VOHR_Camps_00011": 30,
@@ -369,7 +370,7 @@
                 "container_shoreline_DesignStuff_00208": 10,
                 "container_shoreline_DesignStuff_00211": 10,
                 "container_shoreline_DesignStuff_00212": 10,
-                "Lootable_00004": 10,
+                "Lootable_00004": 10
             },
             "Labs": {
                 "door_Laboratory_work_zone_00002": 20,
@@ -472,7 +473,7 @@
                 "trunk_City_SE_01_DesignStuff_00002": 5,
                 "container_City_SE_01_DesignStuff_00075": 1,
                 "container_City_SE_01_DesignStuff_00077": 1,
-                "container_City_SE_04_DesignStuff_00020": 1,
+                "container_City_SE_04_DesignStuff_00020": 1
             },
             "GroundZero": {
                 "door_Sandbox_bottom_area_00004": 3,
@@ -481,25 +482,25 @@
                 "door_Sandbox_Area_01_indoor_00008": 3,
                 "door_Sandbox_Area_05_indoor_00002": 8
             }
-        },
+        }
     },
     "ProneMovement": {
         "ENABLED": true,
-        "XP_PER_ACTION": 0.0025,                          // xp per movement action while prone
-        "MOVEMENT_SPEED_INCREASE_MAX": 0.30,              // Bonus at level 50 to the movement speed
-        "MOVEMENT_SPEED_INCREASE_MAX_ELITE": 0.50,        // Bonus at elite to the movement speed
-        "MOVEMENT_VOLUME_DECREASE_MAX": 0.35,             // Decrease in prone movement volume
-        "MOVEMENT_VOLUME_DECREASE_MAX_ELITE": 0.60,       // Decrease in prone movement volume at elite
+        "XP_PER_ACTION": 0.0025,
+        "MOVEMENT_SPEED_INCREASE_MAX": 0.30,
+        "MOVEMENT_SPEED_INCREASE_MAX_ELITE": 0.50,
+        "MOVEMENT_VOLUME_DECREASE_MAX": 0.35,
+        "MOVEMENT_VOLUME_DECREASE_MAX_ELITE": 0.60
     },
     "SilentOps": {
       "ENABLED": true,
-      "XP_PER_ACTION": 3.75,                              // xp per transactional exchange
-      "MELEE_SPEED_INCREASE": 0.20,                       // bonus at level 50 to melee speed
-      "VOLUME_REDUCTION": 0.40,                           // Bonus at level 50 to looting and door opening volume for the player
-      "SILENCER_PRICE_RED": 0.25,                         // Decrease in cost of silencers
+      "XP_PER_ACTION": 3.75,
+      "MELEE_SPEED_INCREASE": 0.20,
+      "VOLUME_REDUCTION": 0.40,
+      "SILENCER_PRICE_RED": 0.25
     },
     "Strength": {
       "ENABLED": true,
-      "COLLIDER_SPEED_BUFF": 0.50,                        // Bonus at level 50 to bush and swamp speed
+      "COLLIDER_SPEED_BUFF": 0.50
     }
 }
