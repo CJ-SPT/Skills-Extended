@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net472</TargetFramework>
+    <TargetFramework>net471</TargetFramework>
     <AssemblyName>SkillsExtended</AssemblyName>
     <Description>New Skills!</Description>
     <Version>1.5.0</Version>

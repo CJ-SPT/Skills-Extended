@@ -1,13 +1,11 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 
-import type { IHideoutProduction } from "@spt/models/eft/hideout/IHideoutProduction";
-
 export interface ISkillsConfig
 {
     FirstAid: IFirstAidConfig;
     FieldMedicine: IFieldMedicineConfig;
-    NatoRifle: IWeaponConfig;
-    EasternRifle: IWeaponConfig;
+    NatoWeapons: IWeaponConfig;
+    EasternWeapons: IWeaponConfig;
     LockPicking: ILockpickingConfig;
     ProneMovement: IProneMovementConfig;
     BearAuthority: IBearAuthorityConfig;

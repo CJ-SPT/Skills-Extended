@@ -174,12 +174,12 @@ public class SkillManagerExt
         return
         [
             UsecArSystemsErgoBuff
-                .Max(SkillData.NatoRifle.ErgoMod)
-                .Elite(SkillData.NatoRifle.ErgoModElite),
+                .Max(SkillData.NatoWeapons.ErgoMod)
+                .Elite(SkillData.NatoWeapons.ErgoModElite),
             
             UsecArSystemsRecoilBuff
-                .Max(SkillData.NatoRifle.RecoilReduction)
-                .Elite(SkillData.NatoRifle.RecoilReductionElite)
+                .Max(SkillData.NatoWeapons.RecoilReduction)
+                .Elite(SkillData.NatoWeapons.RecoilReductionElite)
         ];
     }
     
@@ -188,12 +188,12 @@ public class SkillManagerExt
         return
         [
             BearAkSystemsErgoBuff
-                .Max(SkillData.EasternRifle.ErgoMod)
-                .Elite(SkillData.EasternRifle.ErgoModElite),
+                .Max(SkillData.EasternWeapons.ErgoMod)
+                .Elite(SkillData.EasternWeapons.ErgoModElite),
             
             BearAkSystemsRecoilBuff
-                .Max(SkillData.EasternRifle.RecoilReduction)
-                .Elite(SkillData.EasternRifle.RecoilReductionElite)
+                .Max(SkillData.EasternWeapons.RecoilReduction)
+                .Elite(SkillData.EasternWeapons.RecoilReductionElite)
         ];
     }
     

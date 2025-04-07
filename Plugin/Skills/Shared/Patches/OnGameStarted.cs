@@ -23,8 +23,8 @@ internal class OnGameStartedPatch : ModulePatch
     
     private static SkillManagerExt SkillMgrExt => SkillManagerExt.Instance(EPlayerSide.Usec);
     
-    private static WeaponSkillData NatoData => SkillsPlugin.SkillData.NatoRifle;
-    private static WeaponSkillData EasternData => SkillsPlugin.SkillData.EasternRifle;
+    private static WeaponSkillData NatoData => SkillsPlugin.SkillData.NatoWeapons;
+    private static WeaponSkillData EasternData => SkillsPlugin.SkillData.EasternWeapons;
     private static Player Player => GameUtils.GetPlayer();
     
     protected override MethodBase GetTargetMethod()
@@ -47,12 +47,12 @@ internal class OnGameStartedPatch : ModulePatch
         
         __instance.MainPlayer.ActiveHealthController.EffectStartedEvent += ApplyMedicalXp;
         
-        if (SkillsPlugin.SkillData.NatoRifle.Enabled)
+        if (SkillsPlugin.SkillData.NatoWeapons.Enabled)
         {
             Player!.Skills.OnMasteringExperienceChanged += ApplyNatoRifleXp;
         }
         
-        if (SkillsPlugin.SkillData.EasternRifle.Enabled)
+        if (SkillsPlugin.SkillData.EasternWeapons.Enabled)
         {
             Player!.Skills.OnMasteringExperienceChanged += ApplyEasternRifleXp;
         }

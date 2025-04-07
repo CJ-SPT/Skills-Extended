@@ -62,10 +62,10 @@ internal class SkillManagerConstructorPatch : ModulePatch
 
         // If the skill is not enabled, lock it
         AccessTools.Field(typeof(SkillClass), "Locked").SetValue(__instance.UsecArsystems,
-            !SkillsPlugin.SkillData.NatoRifle.Enabled);
+            !SkillsPlugin.SkillData.NatoWeapons.Enabled);
 
         AccessTools.Field(typeof(SkillClass), "Locked").SetValue(__instance.BearAksystems,
-            !SkillsPlugin.SkillData.EasternRifle.Enabled);
+            !SkillsPlugin.SkillData.EasternWeapons.Enabled);
         
         AccessTools.Field(typeof(SkillClass), "Locked").SetValue(__instance.Lockpicking,
             !SkillsPlugin.SkillData.LockPicking.Enabled);

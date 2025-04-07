@@ -17,7 +17,7 @@
         "POSITIVE_EFFECT_BONUS": 0.20,
         "POSITIVE_EFFECT_BONUS_ELITE": 0.35
     },
-    "NatoRifle": {
+    "NatoWeapons": {
         "ENABLED": true,
         "SKILL_SHARE_ENABLED": true,
         "SKILL_SHARE_XP_RATIO": 0.10,
@@ -57,7 +57,7 @@
             "661cec09b2c6356b4d0c7a36"
         ]
     },
-    "EasternRifle": {
+    "EasternWeapons": {
         "ENABLED": true,
         "SKILL_SHARE_ENABLED": true,
         "SKILL_SHARE_XP_RATIO": 0.10,

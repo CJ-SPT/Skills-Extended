@@ -34,14 +34,14 @@ internal class UpdateWeaponsPatch : ModulePatch
     [PatchPrefix]
     public static void Prefix(EEftScreenType eftScreenType)
     {
-        if (SkillsPlugin.SkillData.NatoRifle.Enabled)
+        if (SkillsPlugin.SkillData.NatoWeapons.Enabled)
         {
             UsecWeaponInstanceIds.Clear();
             
             StaticManager.BeginCoroutine(UpdateUsecWeapons());
         }
 
-        if (SkillsPlugin.SkillData.EasternRifle.Enabled)
+        if (SkillsPlugin.SkillData.EasternWeapons.Enabled)
         {
             EasternWeaponInstanceIds.Clear();
             
@@ -55,7 +55,7 @@ internal class UpdateWeaponsPatch : ModulePatch
     {
         if (SkillManager is null) yield break; 
         
-        var natoWeapons = SkillsPlugin.SkillData.NatoRifle;
+        var natoWeapons = SkillsPlugin.SkillData.NatoWeapons;
         
         var weapons = GameUtils.GetProfile()!.Inventory.AllRealPlayerItems
             .Where(x => natoWeapons.Weapons.Contains(x.TemplateId));
@@ -106,7 +106,7 @@ internal class UpdateWeaponsPatch : ModulePatch
     {
         if (SkillManager == null) yield break;
 
-        var easternWeapons = SkillsPlugin.SkillData.EasternRifle;
+        var easternWeapons = SkillsPlugin.SkillData.EasternWeapons;
 
         var weapons = GameUtils.GetProfile()!.Inventory.AllRealPlayerItems
             .Where(x => easternWeapons.Weapons.Contains(x.TemplateId));
