@@ -18,6 +18,7 @@ namespace SkillsExtended.Helpers
             ConsoleScreen.Processor.RegisterCommand("damage", DoDamage);
             ConsoleScreen.Processor.RegisterCommand("die", DoDie);
             ConsoleScreen.Processor.RegisterCommand("fracture",DoFracture);
+            ConsoleScreen.Processor.RegisterCommand("reset_locks", ResetDoorLocks);
 
             ConsoleScreen.Processor.RegisterCommandGroup<Commands>();
         }
@@ -43,6 +44,14 @@ namespace SkillsExtended.Helpers
             {
                 SkillsPlugin.Log.LogDebug($"Template ID: {weapon.TemplateId}, locale name: {weapon.LocalizedName()}");
             }
+        }
+
+        private static void ResetDoorLocks()
+        {
+            if (!Singleton<GameWorld>.Instantiated) return;
+            
+            var gameWorld = Singleton<GameWorld>.Instance;
+            LockPickingHelpers.InitializeDoorAttempts(gameWorld.LocationId);
         }
         
         #region HEALTH
