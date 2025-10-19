@@ -1,10 +1,11 @@
-﻿using SPTarkov.Server.Core.Models.Spt.Mod;
+﻿using System.Reflection;
+using SPTarkov.Server.Core.Models.Spt.Mod;
 using Range = SemanticVersioning.Range;
 using Version = SemanticVersioning.Version;
 
 namespace SkillsExtended;
 
-public record SkillsExtendedMetadata : AbstractModMetadata
+public record ModMetadata : AbstractModMetadata
 {
     public override string ModGuid { get; init; } = "com.cj.SkillsExtended";
     public override string Name { get; init; } = "Skills Extended";
@@ -17,4 +18,6 @@ public record SkillsExtendedMetadata : AbstractModMetadata
     public override string? Url { get; init; } = "https://github.com/CJ-SPT/Skills-Extended";
     public override bool? IsBundleMod { get; init; } = true;
     public override string License { get; init; } = "Attribution-NonCommercial-NoDerivatives 4.0 International";
+    
+    public static readonly string ResourcesDirectory = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!, "Resources");
 }

@@ -16,8 +16,6 @@ public class ConfigController(
 {
     public SkillsConfig? SkillsConfig { get; private set; }
     
-    private static readonly string ResourcesDirectory = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!, "Resources");
-    
     public async Task OnLoad()
     {
         await LoadSkillsConfig();
@@ -25,7 +23,7 @@ public class ConfigController(
 
     private async Task LoadSkillsConfig()
     {
-        var path = Path.Combine(ResourcesDirectory, "configs", "SkillsConfig.json");
+        var path = Path.Combine(ModMetadata.ResourcesDirectory, "configs", "SkillsConfig.json");
         
         var text = await fileUtil.ReadFileAsync(path);
         SkillsConfig = jsonUtil.Deserialize<SkillsConfig>(text);
