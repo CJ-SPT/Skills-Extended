@@ -51,11 +51,12 @@ internal class PersonalBuffFullStringPatch : ModulePatch
         }
         if (__instance.Chance < 1f)
         {
-            stringBuilder.Append(string.Format("\n{0} {1}%", "UI/ItemAttribute/Chance".Localized(), Math.Round(__instance.Chance * (1f + chanceBuff) * 100f)));
+            stringBuilder.Append(
+                $"\n{"UI/ItemAttribute/Chance".Localized()} {Math.Round(__instance.Chance * (1f + chanceBuff) * 100f)}%");
         }
         if (__instance.Delay > 1f)
         {
-            stringBuilder.Append(string.Format("\n{0} {1}{2}", "Delay".Localized(), __instance.Delay * (1f + durationBuff), "sec".Localized()));
+            stringBuilder.Append($"\n{"Delay".Localized()} {__instance.Delay * (1f + durationBuff)}{"sec".Localized()}");
         }
         if (__instance.Duration > 0f && __instance.Duration < 7200f)
         {
