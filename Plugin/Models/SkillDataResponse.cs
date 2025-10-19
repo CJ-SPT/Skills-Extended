@@ -75,8 +75,8 @@ namespace SkillsExtended.Models
         [JsonProperty("ENABLED")]
         public bool Enabled;
 
-        [JsonProperty("WEAPON_PROF_XP")]
-        public float WeaponProfXp;
+        [JsonProperty("XP_PER_ACTION")]
+        public float XpPerAction;
 
         [JsonProperty("ERGO_MOD")]
         public float ErgoMod;
