@@ -2,8 +2,12 @@
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Models.Common;
+using SPTarkov.Server.Core.Models.Eft.Hideout;
+using SPTarkov.Server.Core.Models.Spt.Mod;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Services;
+using SPTarkov.Server.Core.Services.Mod;
 using SPTarkov.Server.Core.Utils;
 
 namespace SkillsExtended.Utils;
@@ -11,6 +15,7 @@ namespace SkillsExtended.Utils;
 [Injectable(TypePriority = OnLoadOrder.PostDBModLoader + 1)]
 public class DatabaseUtils(
     ISptLogger<DatabaseUtils> logger,
+    CustomItemService customItemService,
     DatabaseService databaseService,
     LocaleService localeService,
     ItemHelper itemHelper,
@@ -22,6 +27,8 @@ public class DatabaseUtils(
     public async Task OnLoad()
     {
         await ImportLocales();
+        await CreateItems();
+        await AddCraftsToDatabase();
     }
     
     public KeysResponse GetKeyLocales()
@@ -82,6 +89,58 @@ public class DatabaseUtils(
                 
                 return transformer;
             });
+        }
+    }
+
+    private async ValueTask CreateItems()
+    {
+        var itemsPath = Path.Combine(ModMetadata.ResourcesDirectory, "Items", "Items.json");
+        var text = await fileUtil.ReadFileAsync(itemsPath);
+        var items = jsonUtil.Deserialize<List<NewItemFromCloneDetails>>(text)!;
+
+        foreach (var item in items)
+        {
+            // Skip PDA for now
+            if (item.NewId == "662400eb756ca8948fe64fe8")
+            {
+                continue;
+            }
+
+            customItemService.CreateItemFromClone(item);
+            AddItemToSpecSlots(item.NewId!);
+        }
+    }
+
+    private void AddItemToSpecSlots(string itemId)
+    {
+        var dbItems = databaseService.GetItems();
+
+        foreach (var (id, item) in dbItems)
+        {
+            if (id != "627a4e6b255f7527fb05a0f6" && item.Id != "65e080be269cbd5c5005e529")
+            {
+                continue;
+            }
+
+            foreach (var slot in item.Properties?.Slots ?? [])
+            {
+                foreach (var filter in slot.Properties?.Filters ?? [])
+                {
+                    filter.Filter!.Add(itemId);
+                }
+            }
+        }
+    }
+
+    private async ValueTask AddCraftsToDatabase()
+    {
+        var craftsPath = Path.Combine(ModMetadata.ResourcesDirectory, "Items", "Crafting.json");
+        var text = await fileUtil.ReadFileAsync(craftsPath);
+        var productions = jsonUtil.Deserialize<List<HideoutProduction>>(text)!;
+
+        foreach (var production in productions)
+        {
+            databaseService.GetHideout().Production.Recipes!.Add(production);
         }
     }
 }

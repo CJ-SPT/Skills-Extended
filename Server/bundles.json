@@ -1,7 +1,7 @@
 {
     "manifest": [
         {
-            "key": "Resources/Bundles/lockpick.bundle",
+            "key": "lockpick.bundle",
             "dependencyKeys": [
                 "assets/commonassets/physics/physicsmaterials.bundle",
                 "shaders",
@@ -9,7 +9,7 @@
             ]
         },
         {
-            "key": "Resources/Bundles/pda.bundle",
+            "key": "pda.bundle",
             "dependencyKeys": [
                 "assets/commonassets/physics/physicsmaterials.bundle",
                 "shaders",
