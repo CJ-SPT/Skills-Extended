@@ -15,6 +15,10 @@
       <PackageReference Include="SPTarkov.Server.Web" Version="4.0.1" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Resources\Bundles\" />
+    </ItemGroup>
+
     <PropertyGroup>
         <TarkovDir Condition=" '$(TarkovDir)' == '' ">$(SolutionDir)..\..\</TarkovDir>
         <SptModDir>$(TarkovDir)SPT\user\mods\</SptModDir>
@@ -25,6 +29,7 @@
             <OutputDLL Include="$(ProjectDir)$(OutDir)$(TargetName).dll" />
             <Resources Include="$(ProjectDir)Resources\**\*.*" />
             <WebAssets Include="$(ProjectDir)wwwroot\**\*.*" />
+            <BundlesJson Include="$(ProjectDir)bundles.json" />
         </ItemGroup>
         
         <!-- Copies the output dll -->
@@ -42,6 +47,12 @@
         <Copy
                 SourceFiles="@(WebAssets)"
                 DestinationFolder="$(SptModDir)\SkillsExtended\wwwroot\%(RecursiveDir)"
+        />
+
+        <!-- Copy bundles.json -->
+        <Copy
+                SourceFiles="@(BundlesJson)"
+                DestinationFolder="$(SptModDir)\SkillsExtended"
         />
     </Target>
     
