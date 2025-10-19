@@ -4,7 +4,6 @@ using System;
 using System.Linq;
 using BepInEx.Logging;
 using System.Diagnostics;
-using System.Reflection;
 using JetBrains.Annotations;
 using FieldAttributes = Mono.Cecil.FieldAttributes;
 
@@ -38,7 +37,7 @@ public static class SkillsExtendedPatcher
     
     private static FieldDefinition CreateNewEnum(ref AssemblyDefinition assembly, [CanBeNull] string AttributeName, string EnumName, TypeDefinition EnumClass, int CustomConstant)
     {
-        var enumAttributeClass = assembly.MainModule.GetType("GAttribute21");
+        var enumAttributeClass = assembly.MainModule.GetType("GAttribute24");
         
         var attributeConstructor = enumAttributeClass.Methods.First(m => m.IsConstructor);
         

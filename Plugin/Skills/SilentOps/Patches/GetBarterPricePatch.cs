@@ -21,7 +21,7 @@ public class GetBarterPricePatch : ModulePatch
     }
 
     [PatchPostfix]
-    private static void Postfix(TraderAssortmentControllerClass __instance, ref TraderClass.GStruct264? __result, Item[] items, TraderClass ___traderClass)
+    private static void Postfix(TraderAssortmentControllerClass __instance, ref TraderClass.GStruct300? __result, Item[] items)
     {
         if (items.IsNullOrEmpty()) return;
         if (!SkillsPlugin.SkillData.SilentOps.Enabled) return;
@@ -37,7 +37,7 @@ public class GetBarterPricePatch : ModulePatch
             
             if (barterScheme is null) continue;
             
-            var num2 = Mathf.Ceil((float)barterScheme.Sum(TraderAssortmentControllerClass.Class1930.class1930_0.method_0));
+            var num2 = Mathf.Ceil((float)barterScheme.Sum(TraderAssortmentControllerClass.Class2058.class2058_0.method_0));
 
             var bonus = 1f - SkillManagerExt.Instance(EPlayerSide.Usec).SilentOpsSilencerCostRedBuff;
 
@@ -52,7 +52,7 @@ public class GetBarterPricePatch : ModulePatch
 
         Selecteditem = __instance.SelectedItem;
         
-        __result = new TraderClass.GStruct264(scheme[0][0]._tpl, (int)Mathf.Ceil(price));
+        __result = new TraderClass.GStruct300(scheme[0][0]._tpl, (int)Mathf.Ceil(price));
     }
 }
 

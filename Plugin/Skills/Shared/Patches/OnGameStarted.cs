@@ -98,12 +98,13 @@ internal class OnGameStartedPatch : ModulePatch
         
         if (NatoData.SkillShareEnabled)
         {
-            Player.ExecuteSkill(() => SkillMgrExt.BearRifleAction.Complete(NatoData.WeaponProfXp * NatoData.SkillShareXpRatio));
+            var xp = NatoData.XpPerAction * NatoData.SkillShareXpRatio;
+            Player.ExecuteSkill(() => SkillMgrExt.BearRifleAction.Complete());
             
-            SkillsPlugin.Log.LogDebug("APPLYING EASTERN RIFLE SHARED XP");
+            SkillsPlugin.Log.LogDebug($"APPLYING {xp} EASTERN RIFLE SHARED XP");
         }
         
-        Player.ExecuteSkill(() => SkillMgrExt.UsecRifleAction.Complete(NatoData.WeaponProfXp));
+        Player.ExecuteSkill(() => SkillMgrExt.UsecRifleAction.Complete(NatoData.XpPerAction));
         
         SkillsPlugin.Log.LogDebug("APPLYING NATO RIFLE XP");
     }
@@ -118,14 +119,15 @@ internal class OnGameStartedPatch : ModulePatch
         
         if (EasternData.SkillShareEnabled)
         {
-            Player.ExecuteSkill(() => SkillMgrExt.UsecRifleAction.Complete(EasternData.WeaponProfXp * EasternData.SkillShareXpRatio));
+            var xp = EasternData.XpPerAction * EasternData.SkillShareXpRatio;
+            Player.ExecuteSkill(() => SkillMgrExt.UsecRifleAction.Complete(xp));
            
-            SkillsPlugin.Log.LogDebug("APPLYING EASTERN RIFLE SHARED XP");
+            SkillsPlugin.Log.LogDebug($"APPLYING {xp} EASTERN RIFLE SHARED XP");
         }
         
-        Player.ExecuteSkill(() => SkillMgrExt.BearRifleAction.Complete(EasternData.WeaponProfXp));
+        Player.ExecuteSkill(() => SkillMgrExt.BearRifleAction.Complete(EasternData.XpPerAction));
         
-        SkillsPlugin.Log.LogDebug("APPLYING EASTERN RIFLE XP");
+        SkillsPlugin.Log.LogDebug($"APPLYING {EasternData.XpPerAction} EASTERN RIFLE XP");
     }
 
     private static void LogMissingDoors(GameWorld gameWorld)

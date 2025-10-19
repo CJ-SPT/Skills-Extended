@@ -1,0 +1,62 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <AssemblyName>SkillsExtendedServerMod</AssemblyName>
+        <RootNamespace>SkillsExtended</RootNamespace>
+        <OutputType>Library</OutputType>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="SPTarkov.Reflection" Version="4.0.1" />
+      <PackageReference Include="SPTarkov.Server.Core" Version="4.0.1" />
+      <PackageReference Include="SPTarkov.Server.Web" Version="4.0.1" />
+    </ItemGroup>
+
+    <PropertyGroup>
+        <TarkovDir Condition=" '$(TarkovDir)' == '' ">$(SolutionDir)..\..\</TarkovDir>
+        <SptModDir>$(TarkovDir)SPT\user\mods\</SptModDir>
+    </PropertyGroup>
+
+    <Target Name="CopyToServer" AfterTargets="PostBuildEvent">
+        <ItemGroup>
+            <OutputDLL Include="$(ProjectDir)$(OutDir)$(TargetName).dll" />
+            <Resources Include="$(ProjectDir)Resources\**\*.*" />
+            <WebAssets Include="$(ProjectDir)wwwroot\**\*.*" />
+            <Bundles Include="$(ProjectDir)Bundles\**\*.*" />
+            <BundlesJson Include="$(ProjectDir)bundles.json" />
+        </ItemGroup>
+        
+        <!-- Copies the output dll -->
+        <Copy 
+                SourceFiles="@(OutputDLL);" 
+                DestinationFolder="$(SptModDir)\SkillsExtended" />
+        
+        <!-- Copies the output dll -->
+        <Copy
+                SourceFiles="@(Resources);"
+                DestinationFolder="$(SptModDir)\SkillsExtended\Resources\%(RecursiveDir)"
+        />
+        
+        <!-- Copy the wwwroot folder -->
+        <Copy
+                SourceFiles="@(WebAssets)"
+                DestinationFolder="$(SptModDir)\SkillsExtended\wwwroot\%(RecursiveDir)"
+        />
+
+        <!-- Copy bundles -->
+        <Copy
+                SourceFiles="@(bundles)"
+                DestinationFolder="$(SptModDir)\SkillsExtended\bundles\%(RecursiveDir)"
+        />
+
+        <!-- Copy bundles.json -->
+        <Copy
+                SourceFiles="@(BundlesJson)"
+                DestinationFolder="$(SptModDir)\SkillsExtended"
+        />
+    </Target>
+    
+</Project>

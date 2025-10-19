@@ -17,22 +17,23 @@ public class OnEnemyKillPatch : ModulePatch
     }
 
     [PatchPostfix]
-    private static void Postfix(Player ___player_0, DamageInfoStruct damage)
+    private static void Postfix(LocationStatisticsCollectorAbstractClass __instance, DamageInfoStruct damage)
     {
         if (!SkillsPlugin.SkillData.SilentOps.Enabled) return;
-        
-        var itemInHands = ___player_0.InventoryController.ItemInHands;
+
+        var player = __instance.Player_0;
+        var itemInHands = player.InventoryController.ItemInHands;
         
         if (itemInHands is null) return;
 
         var skills = SkillManagerExt.Instance(EPlayerSide.Usec);
         var xp = SkillsPlugin.SkillData.SilentOps.XpPerAction;
 
-        if (___player_0.Skills.SilentOps.IsEliteLevel) return;
+        if (player.Skills.SilentOps.IsEliteLevel) return;
         
         if (itemInHands.GetItemComponent<KnifeComponent>() is not null)
         {
-            ___player_0.ExecuteSkill(() => skills.SilentOpsMeleeAction.Complete(xp));
+            player.ExecuteSkill(() => skills.SilentOpsMeleeAction.Complete(xp));
             Logger.LogDebug($"Applying Melee XP to Silent Ops");
         }
         
@@ -42,7 +43,7 @@ public class OnEnemyKillPatch : ModulePatch
 
             if (!isSuppressed) return;
             
-            ___player_0.ExecuteSkill(() => skills.SilentOpsGunAction.Complete(xp));
+            player.ExecuteSkill(() => skills.SilentOpsGunAction.Complete(xp));
             Logger.LogDebug($"Applying Gun XP to Silent Ops");
         }
     }
