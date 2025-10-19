@@ -15,13 +15,12 @@ internal class PersonalBuffFullStringPatch : ModulePatch
 {
     protected override MethodBase GetTargetMethod()
     {
-        return AccessTools.Method(typeof(GClass2823.GClass2848.GClass2849), nameof(GClass2823.GClass2848.GClass2849.GetStringValue));
+        return AccessTools.Method(typeof(GClass3019.GClass3044.GClass3045), nameof(GClass3019.GClass3044.GClass3045.GetStringValue));
     }
 
     [PatchPostfix]
     public static void PostFix(
-        GClass2823.GClass2848.GClass2849 __instance,
-        HashSet<string> ___hashSet_0,
+        GClass3019.GClass3044.GClass3045 __instance,
         ref string __result)
     {
         if (!SkillsPlugin.SkillData.FieldMedicine.Enabled) return;
@@ -38,7 +37,7 @@ internal class PersonalBuffFullStringPatch : ModulePatch
         }
         var stringBuilder = new StringBuilder();
         var text = __instance.BuffName.Localized();
-        if (flag && !___hashSet_0.Contains(__instance.BuffName))
+        if (flag && !GClass3019.GClass3044.GClass3045.HashSet_0.Contains(__instance.BuffName))
         {
             stringBuilder.Append("Applies".Localized() + " ");
             text = text.ToLower();

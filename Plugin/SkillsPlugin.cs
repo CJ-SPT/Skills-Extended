@@ -13,13 +13,13 @@ using UnityEngine;
 
 namespace SkillsExtended;
 
-[BepInPlugin("com.dirtbikercj.SkillsExtended", "Skills Extended", "1.5.3")]
+[BepInPlugin("com.cj.SkillsExtended", "Skills Extended", "2.0.0")]
 
 // Because I need the idle state type from it for lockpicking
 [BepInDependency("com.boogle.oldtarkovmovement", BepInDependency.DependencyFlags.SoftDependency)] 
 public class SkillsPlugin : BaseUnityPlugin
 {
-    public const int TarkovVersion = 35392;
+    public const int TarkovVersion = 40087;
     
     // Contains key information
     public static KeysResponse Keys;
@@ -27,8 +27,6 @@ public class SkillsPlugin : BaseUnityPlugin
     // Contains skill data
     public static SkillDataResponse SkillData;
     
-    public static RealismConfig RealismConfig;
-
     private static GameObject _hook;
     
     internal static ManualLogSource Log;
@@ -69,14 +67,6 @@ public class SkillsPlugin : BaseUnityPlugin
         Keys = Utils.Get<KeysResponse>("/skillsExtended/GetKeys");
         SkillData = Utils.Get<SkillDataResponse>("/skillsExtended/GetSkillsConfig");
         
-        // If realism is installed, load its config
-        if (Chainloader.PluginInfos.ContainsKey("RealismMod"))
-        {
-            var jsonString = RequestHandler.GetJson("/RealismMod/GetInfo");
-            RealismConfig = JsonConvert.DeserializeObject<RealismConfig>(jsonString);
-            Log.LogInfo("Realism mod detected");
-        }
-
         LockPickingHelpers.LoadMiniGame();
     }
 }

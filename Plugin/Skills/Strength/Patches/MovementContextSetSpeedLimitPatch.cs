@@ -24,12 +24,12 @@ public class MovementContextSetSpeedLimitPatch : ModulePatch
 
 		if (!skillData.Strength.Enabled) return true;
 
-		MovementContext.Struct303 gStruct;
+		MovementContext.Struct333 gStruct;
 		gStruct.movementContext_0 = __instance;
 		gStruct.conditions = EPhysicalCondition.None;
 
 		var flag = false;
-		foreach (var collider in __instance._enteredObstacles)
+		foreach (var collider in __instance.EnteredObstacles)
 		{
 			gStruct.conditions |= collider.ConditionsMask;
 			flag |= collider.HasSwampSpeedLimit;

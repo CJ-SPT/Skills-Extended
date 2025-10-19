@@ -19,7 +19,6 @@ internal class CanWalkPatch : ModulePatch
     public static void PostFix(
         MovementContext __instance, 
         Player ____player,
-        IObstacleCollisionFacade ____obstacleCollisionFacade,
         ref bool __result)
     {
         if (!____player.IsYourPlayer) return;
@@ -36,6 +35,6 @@ internal class CanWalkPatch : ModulePatch
         if (!skillData.Enabled) return;
         if (!skillMgrExt.FirstAidMovementSpeedBuffElite) return;
 
-        __result = ____obstacleCollisionFacade.CanMove();
+        __result = __instance.ObstacleCollisionFacade.CanMove();
     }
 }
