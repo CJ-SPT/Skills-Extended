@@ -58,7 +58,7 @@ public class DatabaseUtils(
 
     private async ValueTask ImportLocales()
     {
-        var localesPath = Path.Combine(ModMetadata.ResourcesDirectory, "Locales");
+        var localesPath = Path.Combine(SeModMetadata.ResourcesDirectory, "Locales");
 
         foreach (var file in Directory.GetFiles(localesPath))
         {
@@ -94,7 +94,7 @@ public class DatabaseUtils(
 
     private async ValueTask CreateItems()
     {
-        var itemsPath = Path.Combine(ModMetadata.ResourcesDirectory, "Items", "Items.json");
+        var itemsPath = Path.Combine(SeModMetadata.ResourcesDirectory, "Items", "Items.json");
         var text = await fileUtil.ReadFileAsync(itemsPath);
         var items = jsonUtil.Deserialize<List<NewItemFromCloneDetails>>(text)!;
 
@@ -134,7 +134,7 @@ public class DatabaseUtils(
 
     private async ValueTask AddCraftsToDatabase()
     {
-        var craftsPath = Path.Combine(ModMetadata.ResourcesDirectory, "Items", "Crafting.json");
+        var craftsPath = Path.Combine(SeModMetadata.ResourcesDirectory, "Items", "Crafting.json");
         var text = await fileUtil.ReadFileAsync(craftsPath);
         var productions = jsonUtil.Deserialize<List<HideoutProduction>>(text)!;
 

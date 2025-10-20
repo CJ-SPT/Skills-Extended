@@ -7,7 +7,7 @@ using Version = SemanticVersioning.Version;
 
 namespace SkillsExtended;
 
-public record ModMetadata : AbstractModMetadata, IModWebMetadata
+public record SeModMetadata : AbstractModMetadata, IModWebMetadata
 {
     public override string ModGuid { get; init; } = "com.cj.SkillsExtended";
     public override string Name { get; init; } = "Skills Extended";

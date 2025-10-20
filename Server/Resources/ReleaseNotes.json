@@ -1,0 +1,24 @@
+[
+  {
+    "Version": "2.0.1",
+    "CodeName": "Resurrection",
+    "ReleaseDate": "October 20, 2025",
+    "IsLatest": true,
+    "Features": [
+      "Config Editor"
+    ],
+    "Improvements": [],
+    "BugFixes": []
+  },
+  {
+    "Version": "2.0.0",
+    "CodeName": "Resurrection",
+    "ReleaseDate": "October 19, 2025",
+    "IsLatest": false,
+    "Features": [
+      "The Resurrection of the mod from its eternal bit nap in the cloud."
+    ],
+    "Improvements": [],
+    "BugFixes": []
+  }
+]
