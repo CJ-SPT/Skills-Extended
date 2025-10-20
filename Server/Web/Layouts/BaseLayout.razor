@@ -45,7 +45,7 @@
             </MudStack>
         </MudAppBar>
 
-        <MudDrawer Width="250px" @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Never" Elevation="5" Variant="@DrawerVariant.Mini" OpenMiniOnHover="true" Breakpoint="Breakpoint.None">
+        <MudDrawer Width="250px" Open="true" ClipMode="DrawerClipMode.Never" Elevation="5" Variant="@DrawerVariant.Mini" OpenMiniOnHover="true" Breakpoint="Breakpoint.None">
             <NavMenu/>
         </MudDrawer>
         <MudMainContent Class="pt-1">
@@ -55,8 +55,6 @@
 </main>
 
 @code {
-    private bool _drawerOpen = true;
-
     private async Task SaveConfig()
     {
         await ConfigController.SaveSkillsConfig();
