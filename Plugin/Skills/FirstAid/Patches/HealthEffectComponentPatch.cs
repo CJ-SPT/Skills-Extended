@@ -19,8 +19,8 @@ public class HealthEffectComponentPatch : ModulePatch
         return AccessTools.Constructor(typeof(HealthEffectsComponent), new []{typeof(Item), typeof(IHealthEffect)});
     }
 
-    private static Dictionary<string, int> _instanceIdsChangedAtLevel = [];
-    private static Dictionary<string, OriginalCosts> _originalCosts = [];
+    private static readonly Dictionary<string, int> _instanceIdsChangedAtLevel = [];
+    private static readonly Dictionary<string, OriginalCosts> _originalCosts = [];
     
     [PatchPostfix]
     public static void PostFix(Item item, IHealthEffect template)
@@ -59,9 +59,13 @@ public class HealthEffectComponentPatch : ModulePatch
                         : originalCosts.Fracture;
                 
                     var originalCost = originalCosts.Fracture;
-                    Logger.LogDebug($"Original Fracture Value: {originalCost}");
+                    
                     fracture.Cost = Mathf.FloorToInt(originalCost * (1f - skillMgrExt.FirstAidItemSpeedBuff));
+                    
+#if DEBUG
+                    Logger.LogDebug($"Original Fracture Value: {originalCost}");
                     Logger.LogDebug($"New Fracture Value: {fracture.Cost}");
+#endif
                 }
             }
                 

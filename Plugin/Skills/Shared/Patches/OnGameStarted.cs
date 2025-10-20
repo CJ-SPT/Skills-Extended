@@ -41,7 +41,9 @@ internal class OnGameStartedPatch : ModulePatch
     [PatchPostfix]
     private static void Postfix(GameWorld __instance)
     {
+#if DEBUG
         SkillsPlugin.Log.LogDebug($"Player map id: {__instance.MainPlayer.Location}");
+#endif
         
         LockPickingHelpers.InitializeDoorAttempts(__instance.LocationId);
         
@@ -73,7 +75,10 @@ internal class OnGameStartedPatch : ModulePatch
             var xpGain = SkillsPlugin.SkillData.FieldMedicine.FieldMedicineXpPerAction;
             
             Player.ExecuteSkill(() => skillMgrExt.FieldMedicineAction.Complete(xpGain));
+
+#if DEBUG
             Logger.LogDebug("APPLYING FIELD MEDICINE XP");
+#endif
             return;
         }
 
@@ -84,7 +89,10 @@ internal class OnGameStartedPatch : ModulePatch
             var xpGain = SkillsPlugin.SkillData.FirstAid.FirstAidXpPerAction;
             
             Player.ExecuteSkill(() => skillMgrExt.FirstAidAction.Complete(xpGain));
+            
+#if DEBUG
             Logger.LogDebug("APPLYING FIRST AID XP");
+#endif
         }
     }
 
@@ -100,13 +108,15 @@ internal class OnGameStartedPatch : ModulePatch
         {
             var xp = NatoData.XpPerAction * NatoData.SkillShareXpRatio;
             Player.ExecuteSkill(() => SkillMgrExt.BearRifleAction.Complete(xp));
-            
+#if DEBUG 
             SkillsPlugin.Log.LogDebug($"APPLYING {xp} EASTERN RIFLE SHARED XP");
+#endif
         }
         
         Player.ExecuteSkill(() => SkillMgrExt.UsecRifleAction.Complete(NatoData.XpPerAction));
-        
+#if DEBUG
         SkillsPlugin.Log.LogDebug("APPLYING NATO RIFLE XP");
+#endif
     }
 
     private static void ApplyEasternRifleXp(MasterSkillClass skillClass)
@@ -121,13 +131,17 @@ internal class OnGameStartedPatch : ModulePatch
         {
             var xp = EasternData.XpPerAction * EasternData.SkillShareXpRatio;
             Player.ExecuteSkill(() => SkillMgrExt.UsecRifleAction.Complete(xp));
-           
+
+#if DEBUG
             SkillsPlugin.Log.LogDebug($"APPLYING {xp} EASTERN RIFLE SHARED XP");
+#endif
         }
         
         Player.ExecuteSkill(() => SkillMgrExt.BearRifleAction.Complete(EasternData.XpPerAction));
         
+#if DEBUG
         SkillsPlugin.Log.LogDebug($"APPLYING {EasternData.XpPerAction} EASTERN RIFLE XP");
+#endif
     }
 
     private static void LogMissingDoors(GameWorld gameWorld)

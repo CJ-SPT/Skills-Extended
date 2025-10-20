@@ -71,9 +71,11 @@ public class ProneMoveVolumePatch : ModulePatch
 
         var buff = player.Skills.ProneMovementVolume;
         var bonus = 1f - buff;
-        
+
+#if DEBUG
         Logger.LogDebug($"Original Prone volume: {__result}");
         Logger.LogDebug($"Updated Prone volume: {__result * bonus}");
+#endif
         
         __result = Mathf.Clamp(__result * bonus, 0f, __result * bonus);
         

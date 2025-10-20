@@ -7,8 +7,12 @@
     "Features": [
       "Config Editor"
     ],
-    "Improvements": [],
-    "BugFixes": []
+    "Improvements": [
+      "Removed a bunch of debug logging from release builds"
+    ],
+    "BugFixes": [
+      "Fixed excessive skill share ratio being applied to the Eastern Weapons skill when using NATO weapons"
+    ]
   },
   {
     "Version": "2.0.0",

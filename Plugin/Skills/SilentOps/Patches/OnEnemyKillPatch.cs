@@ -34,7 +34,9 @@ public class OnEnemyKillPatch : ModulePatch
         if (itemInHands.GetItemComponent<KnifeComponent>() is not null)
         {
             player.ExecuteSkill(() => skills.SilentOpsMeleeAction.Complete(xp));
-            Logger.LogDebug($"Applying Melee XP to Silent Ops");
+#if DEBUG
+            Logger.LogDebug("Applying Melee XP to Silent Ops");
+#endif
         }
         
         if (itemInHands is Weapon weap)
@@ -44,7 +46,10 @@ public class OnEnemyKillPatch : ModulePatch
             if (!isSuppressed) return;
             
             player.ExecuteSkill(() => skills.SilentOpsGunAction.Complete(xp));
-            Logger.LogDebug($"Applying Gun XP to Silent Ops");
+
+#if DEBUG
+            Logger.LogDebug("Applying Gun XP to Silent Ops");
+#endif
         }
     }
 }

@@ -74,8 +74,9 @@ internal class UpdateWeaponsPatch : ModulePatch
                     weaponBack = weapon.Template.RecoilForceBack
                 };
 
+#if DEBUG
                 SkillsPlugin.Log.LogDebug($"original {weapon.LocalizedName()} ergo: {weapon.Template.Ergonomics}, up {weapon.Template.RecoilForceUp}, back {weapon.Template.RecoilForceBack}");
-
+#endif
                 UsecOriginalWeaponValues.Add(item.TemplateId, origVals);
             }
 
@@ -94,8 +95,10 @@ internal class UpdateWeaponsPatch : ModulePatch
             weapon.Template.RecoilForceUp = UsecOriginalWeaponValues[item.TemplateId].weaponUp * (1 - SkillMgrExt.UsecArSystemsRecoilBuff);
             weapon.Template.RecoilForceBack = UsecOriginalWeaponValues[item.TemplateId].weaponBack * (1 - SkillMgrExt.UsecArSystemsRecoilBuff);
 
+#if DEBUG
             SkillsPlugin.Log.LogDebug($"New {weapon.LocalizedName()} ergo: {weapon.Template.Ergonomics}, up {weapon.Template.RecoilForceUp}, back {weapon.Template.RecoilForceBack}");
-
+#endif
+            
             UsecWeaponInstanceIds.Add(item.Id, GameUtils.GetSkillManager()!.UsecArsystems.Level);
 
             yield return null;
@@ -125,9 +128,11 @@ internal class UpdateWeaponsPatch : ModulePatch
                     weaponBack = weapon.Template.RecoilForceBack
                 };
 
+#if DEBUG
                 SkillsPlugin.Log.LogDebug(
                     $"original {weapon.LocalizedName()} ergo: {weapon.Template.Ergonomics}, up {weapon.Template.RecoilForceUp}, back {weapon.Template.RecoilForceBack}");
-
+#endif
+                
                 EasternOriginalWeaponValues.Add(item.TemplateId, origVals);
             }
 
@@ -149,9 +154,11 @@ internal class UpdateWeaponsPatch : ModulePatch
             weapon.Template.RecoilForceBack = EasternOriginalWeaponValues[item.TemplateId].weaponBack *
                                               (1 - SkillMgrExt.BearAkSystemsRecoilBuff);
 
+#if DEBUG
             SkillsPlugin.Log.LogDebug(
                 $"New {weapon.LocalizedName()} ergo: {weapon.Template.Ergonomics}, up {weapon.Template.RecoilForceUp}, back {weapon.Template.RecoilForceBack}");
-
+#endif
+            
             EasternWeaponInstanceIds.Add(item.Id, SkillManager.BearAksystems.Level);
 
             yield return null;

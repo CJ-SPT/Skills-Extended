@@ -16,7 +16,7 @@ public static class WorldInteractionUtils
             throw new ArgumentNullException("owner is null...");
         }
 
-        return owner?.Player?.Id != Singleton<GameWorld>.Instance?.MainPlayer?.Id;
+        return owner.Player?.Id != Singleton<GameWorld>.Instance?.MainPlayer?.Id;
     }
 
     public static void AddLockpickingInteraction(this WorldInteractiveObject interactiveObject, ActionsReturnClass actionReturn, GamePlayerOwner owner)
