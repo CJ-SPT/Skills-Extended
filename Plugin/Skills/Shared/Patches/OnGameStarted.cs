@@ -99,7 +99,7 @@ internal class OnGameStartedPatch : ModulePatch
         if (NatoData.SkillShareEnabled)
         {
             var xp = NatoData.XpPerAction * NatoData.SkillShareXpRatio;
-            Player.ExecuteSkill(() => SkillMgrExt.BearRifleAction.Complete());
+            Player.ExecuteSkill(() => SkillMgrExt.BearRifleAction.Complete(xp));
             
             SkillsPlugin.Log.LogDebug($"APPLYING {xp} EASTERN RIFLE SHARED XP");
         }
