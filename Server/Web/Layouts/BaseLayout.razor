@@ -1,5 +1,6 @@
 ﻿@inherits LayoutComponentBase
 
+@inject ISnackbar Snackbar
 @inject ConfigController ConfigController
 
 <HeadContent>
@@ -33,6 +34,14 @@
                         Version: @ConfigController.ModMetadata.Version.ToString() for SPT: @ConfigController.ModMetadata.SptVersion.ToString()
                     </MudText>
                 </MudStack>
+                
+                <MudButton Color="Color.Success"
+                           Style="font-size: 12px;"
+                           OnClick="SaveConfig"
+                           Variant="Variant.Outlined">
+                    Save Config
+                </MudButton>  
+                
             </MudStack>
         </MudAppBar>
 
@@ -47,4 +56,10 @@
 
 @code {
     private bool _drawerOpen = true;
+
+    private async Task SaveConfig()
+    {
+        await ConfigController.SaveSkillsConfig();
+        Snackbar.Add("Config Saved.", Severity.Success);
+    }
 }

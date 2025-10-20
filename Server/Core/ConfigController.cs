@@ -22,6 +22,14 @@ public class ConfigController(
         await LoadSkillsConfig();
     }
 
+    public async Task SaveSkillsConfig()
+    {
+        var path = Path.Combine(ModMetadata.ResourcesDirectory, "configs", "SkillsConfig.json");
+        
+        var text = jsonUtil.Serialize(SkillsConfig, true);
+        await fileUtil.WriteFileAsync(path, text!);
+    }
+    
     private async Task LoadSkillsConfig()
     {
         var path = Path.Combine(ModMetadata.ResourcesDirectory, "configs", "SkillsConfig.json");
