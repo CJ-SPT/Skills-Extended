@@ -1,0 +1,93 @@
+﻿@page "/skills-extended/silent-ops"
+@layout BaseLayout;
+
+@inject ConfigController ConfigController
+
+<MudGrid Justify="Justify.Center" Style="min-height:100vh; display:flex; align-items:center;">
+    <MudItem xs="11" sm="8" md="6" lg="4">
+        <MudPaper Height="325px" Style="width:100%;">
+            <MudContainer MaxWidth="MaxWidth.Medium">
+                <MudGrid>
+                    <MudItem xs="6">
+                        <MudSwitch
+                            Class="d-flex align-center justify-center mud-width-full py-8"
+                            @bind-Value="Enabled"
+                            Label="Enabled"
+                            Color="Color.Success"/>
+                    </MudItem>
+
+                    <MudItem xs="6">
+                        <MudNumericField
+                            @bind-Value="XpPerAction"
+                            Label="XP Per Action"
+                            Variant="Variant.Filled"
+                            Step=".05M"
+                            Min="0" Max="25"/>
+                    </MudItem>
+
+                    <MudItem xs="6">
+                        <MudNumericField
+                            @bind-Value="SpeedIncrease"
+                            Label="Melee Speed Increase"
+                            Variant="Variant.Filled"
+                            Step=".05M"
+                            Min="0" Max="1"/>
+                    </MudItem>
+
+                    <MudItem xs="6">
+                        <MudNumericField
+                            @bind-Value="VolumeDecrease"
+                            Label="Volume Decrease"
+                            Variant="Variant.Filled"
+                            Step=".05M"
+                            Min="0" Max="1"/>
+                    </MudItem>
+
+                    <MudItem xs="6">
+                        <MudNumericField
+                            @bind-Value="PriceReduction"
+                            Label="Price Reduction"
+                            Variant="Variant.Filled"
+                            Step=".05M"
+                            Min="0" Max="1"/>
+                    </MudItem>
+                </MudGrid>
+            </MudContainer>
+        </MudPaper>
+    </MudItem>
+</MudGrid>
+
+@code
+{
+    SilentOpsConfig Data => ConfigController.SkillsConfig.SilentOps;
+    
+    bool Enabled
+    {
+        get => Data.Enabled;
+        set => Data.Enabled = value;
+    }
+    
+    decimal XpPerAction
+    {
+        get => (decimal)Data.XpPerAction;
+        set => Data.XpPerAction = (float)value;
+    }
+
+    decimal SpeedIncrease
+    {
+        get => (decimal)Data.MeleeSpeedIncrease;
+        set => Data.MeleeSpeedIncrease = (float)value;
+    }
+    
+    decimal VolumeDecrease
+    {
+        get => (decimal)Data.VolumeReduction;
+        set => Data.VolumeReduction = (float)value;
+    }
+    
+    decimal PriceReduction
+    {
+        get => (decimal)Data.SilencerPriceReduction;
+        set => Data.SilencerPriceReduction = (float)value;
+    }
+}

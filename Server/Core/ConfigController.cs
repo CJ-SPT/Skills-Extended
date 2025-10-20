@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using SkillsExtended.Models;
+﻿using SkillsExtended.Models;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Models.Utils;
@@ -14,7 +13,9 @@ public class ConfigController(
     JsonUtil jsonUtil
     ) : IOnLoad
 {
-    public SkillsConfig? SkillsConfig { get; private set; }
+    public ModMetadata ModMetadata { get; } = new();
+
+    public SkillsConfig SkillsConfig { get; private set; } = null!;
     
     public async Task OnLoad()
     {
@@ -26,6 +27,6 @@ public class ConfigController(
         var path = Path.Combine(ModMetadata.ResourcesDirectory, "configs", "SkillsConfig.json");
         
         var text = await fileUtil.ReadFileAsync(path);
-        SkillsConfig = jsonUtil.Deserialize<SkillsConfig>(text);
+        SkillsConfig = jsonUtil.Deserialize<SkillsConfig>(text)!;
     }
 }

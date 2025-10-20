@@ -1,0 +1,129 @@
+﻿@page "/skills-extended/lock-picking"
+@layout BaseLayout;
+
+@inject ConfigController ConfigController
+
+<MudGrid Justify="Justify.Center" Style="min-height:100vh; display:flex; align-items:center;">
+    <MudItem xs="11" sm="8" md="6" lg="4">
+        <MudPaper Height="400px" Style="width:100%;">
+            <MudContainer MaxWidth="MaxWidth.Medium">
+                <MudGrid>
+                    <MudItem xs="6">
+                        <MudSwitch
+                            Class="d-flex align-center justify-center mud-width-full py-8"
+                            @bind-Value="Enabled"
+                            Label="Enabled"
+                            Color="Color.Success"/>
+                    </MudItem>
+
+                    <MudItem xs="6">
+                        <MudNumericField
+                            @bind-Value="PickStrength"
+                            Label="Pick Strength"
+                            Variant="Variant.Filled"
+                            Step=".05M"
+                            Min="0" Max="25"/>
+                    </MudItem>
+
+                    <MudItem xs="6">
+                        <MudNumericField
+                            @bind-Value="PerStrengthBonusPerLevel"
+                            Label="Pick Strength bonus per level"
+                            Variant="Variant.Filled"
+                            Step=".05M"
+                            Min="0" Max="1"/>
+                    </MudItem>
+
+                    <MudItem xs="6">
+                        <MudNumericField
+                            @bind-Value="SweetSpotRange"
+                            Label="Sweet Spot Range"
+                            Variant="Variant.Filled"
+                            Step=".05M"
+                            Min="0" Max="1"/>
+                    </MudItem>
+
+                    <MudItem xs="6">
+                        <MudNumericField
+                            @bind-Value="SweetSpotRangePerLevel"
+                            Label="Sweet Spot Range Per Level"
+                            Variant="Variant.Filled"
+                            Step=".05M"
+                            Min="0" Max="1"/>
+                    </MudItem>
+
+                    <MudItem xs="6">
+                        <MudNumericField
+                            @bind-Value="InspectLockXpRatio"
+                            Label="Inspect lock XP ratio"
+                            Variant="Variant.Filled"
+                            Step=".05M"
+                            Min="0" Max="1"/>
+                    </MudItem>
+
+                    <MudItem xs="6">
+                        <MudNumericField
+                            @bind-Value="FailureLockXpRatio"
+                            Label="Fail lock XP ratio"
+                            Variant="Variant.Filled"
+                            Step=".05M"
+                            Min="0" Max="1"/>
+                    </MudItem>
+    
+                </MudGrid>
+            </MudContainer>
+        </MudPaper>
+    </MudItem>
+</MudGrid>
+
+@code {
+    LockPickingConfig Data => ConfigController.SkillsConfig!.LockPicking;
+    
+    bool Enabled
+    {
+        get => Data.Enabled;
+        set => Data.Enabled = value;
+    }
+    
+    decimal PickStrength
+    {
+        get => (decimal)Data.PickStrength;
+        set => Data.PickStrength = (float)value;
+    }
+    
+    decimal PerStrengthBonusPerLevel
+    {
+        get => (decimal)Data.PickStrengthPerLevel;
+        set => Data.PickStrengthPerLevel = (float)value;
+    }
+    
+    decimal SweetSpotRange
+    {
+        get => (decimal)Data.SweetSpotRange;
+        set => Data.SweetSpotRange = (float)value;
+    }
+    
+    decimal SweetSpotRangePerLevel
+    {
+        get => (decimal)Data.SweetSpotRangePerLevel;
+        set => Data.SweetSpotRangePerLevel = (float)value;
+    }
+    
+    decimal InspectLockXpRatio
+    {
+        get => (decimal)Data.InspectLockXpRatio;
+        set => Data.InspectLockXpRatio = (float)value;
+    }
+    
+    decimal FailureLockXpRatio
+    {
+        get => (decimal)Data.FailureLockXpRatio;
+        set => Data.FailureLockXpRatio = (float)value;
+    }
+    
+    Dictionary<string, float> XpTable
+    {
+        get => Data.XpTable;
+        set => Data.XpTable = value;
+    }
+}

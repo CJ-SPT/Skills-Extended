@@ -1,0 +1,50 @@
+﻿@inherits LayoutComponentBase
+
+@inject ConfigController ConfigController
+
+<HeadContent>
+    <link href="@Assets["_content/MudBlazor/MudBlazor.min.css"]" rel="stylesheet" />
+    <meta name="robots" content="noindex, nofollow">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&amp;family=Roboto:ital,wght@0,100..900;1,100..900&amp;display=swap" rel="stylesheet">
+</HeadContent>
+
+<MudThemeProvider IsDarkMode="true"/>
+<MudPopoverProvider/>
+<MudSnackbarProvider/>
+<MudDialogProvider/>
+
+<main>
+    <script src="@Assets["_content/MudBlazor/MudBlazor.min.js"]"></script>
+    <MudLayout>
+        <MudAppBar Color="Color.Dark"
+                   Fixed="true"
+                   Contextual="true"
+                   Elevation="4"
+                   Bottom="true">
+
+            <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Style="width: 100%;">
+                <MudStack Row="true" AlignItems="AlignItems.Center" Style="width: 100%;">
+                    <!-- Left side -->
+                    <MudIconButton Icon="@Icons.Custom.Brands.GitHub"
+                                   Color="Color.Inherit"
+                                   Href="@ConfigController.ModMetadata.Url"/>
+
+                    <MudText Style="font-size: 12px">
+                        Version: @ConfigController.ModMetadata.Version.ToString() for SPT: @ConfigController.ModMetadata.SptVersion.ToString()
+                    </MudText>
+                </MudStack>
+            </MudStack>
+        </MudAppBar>
+
+        <MudDrawer Width="250px" @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Never" Elevation="5" Variant="@DrawerVariant.Mini" OpenMiniOnHover="true" Breakpoint="Breakpoint.None">
+            <NavMenu/>
+        </MudDrawer>
+        <MudMainContent Class="pt-1">
+            @Body
+        </MudMainContent>
+    </MudLayout>
+</main>
+
+@code {
+    private bool _drawerOpen = true;
+}

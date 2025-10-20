@@ -1,0 +1,108 @@
+﻿@page "/skills-extended/first-aid"
+@layout BaseLayout;
+
+@inject ConfigController ConfigController
+
+<MudGrid Justify="Justify.Center" Style="min-height:100vh; display:flex; align-items:center;">
+    <MudItem xs="11" sm="8" md="6" lg="4">
+        <MudPaper Height="325px" Style="width:100%;">
+            <MudContainer MaxWidth="MaxWidth.Medium">
+                <MudGrid>
+                    <MudItem xs="6">
+                        <MudSwitch
+                            Class="d-flex align-center justify-center mud-width-full py-8"
+                            @bind-Value="Enabled" 
+                            Label="Enabled" 
+                            Color="Color.Success"/>
+                    </MudItem>
+
+                    <MudItem xs="6">
+                        <MudNumericField
+                            @bind-Value="XpPerAction"
+                            Label="XP Per Action"
+                            Variant="Variant.Filled"
+                            Step=".05M"
+                            Min="0" Max="25"/>
+                    </MudItem>
+    
+                    <MudItem xs="6">
+                        <MudNumericField
+                            @bind-Value="UsageReduction"
+                            Label="Resource Cost Reduction"
+                            Variant="Variant.Filled"
+                            Step=".05M"
+                            Min="0" Max="1"/>
+                    </MudItem>
+
+                    <MudItem xs="6">
+                        <MudNumericField
+                            @bind-Value="UsageReductionElite"
+                            Label="Resource Cost Reduction Elite"
+                            Variant="Variant.Filled"
+                            Step=".05M"
+                            Min="0" Max="1"/>
+                    </MudItem>
+    
+                    <MudItem xs="6">
+                        <MudNumericField
+                            @bind-Value="SpeedBonus"
+                            Label="Medkit Speed Bonus"
+                            Variant="Variant.Filled"
+                            Step=".05M"
+                            Min="0" Max="1"/>
+                    </MudItem>
+    
+                    <MudItem xs="6">
+                        <MudNumericField
+                            @bind-Value="SpeedBonusElite"
+                            Label="Medkit Speed Bonus Elite"
+                            Variant="Variant.Filled"
+                            Step=".05M"
+                            Min="0" Max="1"/>
+                    </MudItem>
+                </MudGrid>
+            </MudContainer>
+        </MudPaper>
+    </MudItem>
+</MudGrid>
+
+@code {
+
+    FirstAidConfig Data => ConfigController.SkillsConfig.FirstAid;
+    
+    bool Enabled
+    {
+        get => Data.Enabled;
+        set => Data.Enabled = value;
+    }
+
+    decimal XpPerAction
+    {
+        get => (decimal)Data.XpPerAction;
+        set => Data.XpPerAction = (float)value;
+    }
+    
+    decimal UsageReduction
+    {
+        get => (decimal)Data.MedkitUsageReduction;
+        set => Data.MedkitUsageReduction = (float)value;
+    }
+    
+    decimal UsageReductionElite
+    {
+        get => (decimal)Data.MedkitUsageReductionElite;
+        set => Data.MedkitUsageReductionElite = (float)value;
+    }
+    
+    decimal SpeedBonus
+    {
+        get => (decimal)Data.MedkitSpeedBonus;
+        set => Data.MedkitSpeedBonus = (float)value;
+    }
+    
+    decimal SpeedBonusElite
+    {
+        get => (decimal)Data.MedkitSpeedBonusElite;
+        set => Data.MedkitSpeedBonusElite = (float)value;
+    }
+}

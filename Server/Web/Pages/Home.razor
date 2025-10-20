@@ -1,0 +1,183 @@
+﻿@page "/skills-extended"
+@layout BaseLayout;
+
+<PageTitle>Release Notes</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Large" Class="mt-4">
+    <MudPaper Elevation="0" Class="pa-6">
+        <MudText Typo="Typo.h3" Class="mb-2">Release Notes</MudText>
+        
+        <MudStack Row="true" Class="mb-4" Spacing="2">
+            <MudChip T="string" Color="Color.Primary" OnClick="@(() => FilterByType("all"))" 
+                     Variant="@(_selectedFilter == "all" ? Variant.Filled : Variant.Outlined)">
+                All
+            </MudChip>
+            <MudChip T="string" Color="Color.Success" OnClick="@(() => FilterByType("feature"))"
+                     Variant="@(_selectedFilter == "feature" ? Variant.Filled : Variant.Outlined)">
+                Features
+            </MudChip>
+            <MudChip T="string" Color="Color.Info" OnClick="@(() => FilterByType("improvement"))"
+                     Variant="@(_selectedFilter == "improvement" ? Variant.Filled : Variant.Outlined)">
+                Improvements
+            </MudChip>
+            <MudChip T="string" Color="Color.Error" OnClick="@(() => FilterByType("bugfix"))"
+                     Variant="@(_selectedFilter == "bugfix" ? Variant.Filled : Variant.Outlined)">
+                Bug Fixes
+            </MudChip>
+        </MudStack>
+
+        @foreach (var release in FilteredReleases)
+        {
+            <MudPaper Elevation="2" Class="mb-4">
+                <MudExpansionPanels>
+                    <MudExpansionPanel>
+                        <TitleContent>
+                            <div class="d-flex align-center justify-space-between" style="width: 100%">
+                                <div class="d-flex align-center gap-2">
+                                    <MudText Typo="Typo.h6">Version @release.Version</MudText>
+                                    
+                                    @if (!string.IsNullOrEmpty(release.CodeName))
+                                    {
+                                        <MudChip T="string" Size="Size.Small" Color="Color.Tertiary">Codename: @release.CodeName</MudChip>
+                                    }
+                                    
+                                    @if (release.IsLatest)
+                                    {
+                                        <MudChip T="string" Size="Size.Small" Color="Color.Success">Latest</MudChip>
+                                    }
+                                    
+                                </div>
+                                <MudText Typo="Typo.body2" Color="Color.Secondary">@release.ReleaseDate.ToString("MMM dd, yyyy")</MudText>
+                            </div>
+                        </TitleContent>
+                        <ChildContent>
+                            <MudDivider Class="mb-4" />
+                            
+                            @if (release.Features.Any())
+                            {
+                                <div class="mb-4">
+                                    <MudText Typo="Typo.h6" Color="Color.Success" Class="mb-2">
+                                        <MudIcon Icon="@Icons.Material.Filled.NewReleases" Size="Size.Small" /> New Features
+                                    </MudText>
+                                    <MudList T="string" Dense="true">
+                                        @foreach (var feature in release.Features)
+                                        {
+                                            <MudListItem T="string" Icon="@Icons.Material.Filled.CheckCircle" IconColor="Color.Success">
+                                                @feature
+                                            </MudListItem>
+                                        }
+                                    </MudList>
+                                </div>
+                            }
+
+                            @if (release.Improvements.Any())
+                            {
+                                <div class="mb-4">
+                                    <MudText Typo="Typo.h6" Color="Color.Info" Class="mb-2">
+                                        <MudIcon Icon="@Icons.Material.Filled.TrendingUp" Size="Size.Small" /> Improvements
+                                    </MudText>
+                                    <MudList T="string" Dense="true">
+                                        @foreach (var improvement in release.Improvements)
+                                        {
+                                            <MudListItem T="string" Icon="@Icons.Material.Filled.ArrowUpward" IconColor="Color.Info">
+                                                @improvement
+                                            </MudListItem>
+                                        }
+                                    </MudList>
+                                </div>
+                            }
+
+                            @if (release.BugFixes.Any())
+                            {
+                                <div class="mb-4">
+                                    <MudText Typo="Typo.h6" Color="Color.Error" Class="mb-2">
+                                        <MudIcon Icon="@Icons.Material.Filled.BugReport" Size="Size.Small" /> Bug Fixes
+                                    </MudText>
+                                    <MudList T="string" Dense="true">
+                                        @foreach (var bugfix in release.BugFixes)
+                                        {
+                                            <MudListItem T="string" Icon="@Icons.Material.Filled.Build" IconColor="Color.Error">
+                                                @bugfix
+                                            </MudListItem>
+                                        }
+                                    </MudList>
+                                </div>
+                            }
+                        </ChildContent>
+                    </MudExpansionPanel>
+                </MudExpansionPanels>
+            </MudPaper>
+        }
+    </MudPaper>
+</MudContainer>
+
+@code {
+    private string _selectedFilter = "all";
+    private List<ReleaseNote> _releases = [];
+    private List<ReleaseNote> FilteredReleases => GetFilteredReleases();
+
+    protected override void OnInitialized()
+    {
+        LoadReleaseNotes();
+    }
+
+    private void LoadReleaseNotes()
+    {
+        _releases =
+        [
+            new ReleaseNote
+            {
+                Version = "0.1.0",
+                CodeName = "Tycoon",
+                ReleaseDate = new DateTime(2025, 10, 15),
+                IsLatest = true,
+                Features =  [
+                    "Trader editor",
+                    "Locale Editor",
+                    "Presets",
+                    "MongoId generator",
+                ],
+                BugFixes = [
+                    "None"
+                ],
+                Improvements = [
+                    "None"
+                ]
+            }
+        ];
+    }
+
+    private void FilterByType(string type)
+    {
+        _selectedFilter = type;
+    }
+
+    private List<ReleaseNote> GetFilteredReleases()
+    {
+        if (_selectedFilter == "all")
+            return _releases;
+        
+        return _releases.Select(r => new ReleaseNote
+        {
+            Version = r.Version,
+            ReleaseDate = r.ReleaseDate,
+            IsLatest = r.IsLatest,
+            Features = _selectedFilter == "feature" ? r.Features : new List<string>(),
+            Improvements = _selectedFilter == "improvement" ? r.Improvements : new List<string>(),
+            BugFixes = _selectedFilter == "bugfix" ? r.BugFixes : new List<string>()
+        })
+        .Where(r => r.Features.Any() || r.Improvements.Any() || r.BugFixes.Any())
+        .ToList();
+    }
+
+    private class ReleaseNote
+    {
+        public string Version { get; set; } = string.Empty;
+        public string CodeName { get; set; } = string.Empty;
+        public DateTime ReleaseDate { get; set; }
+        public bool IsLatest { get; set; }
+        public List<string> Features { get; set; } = new();
+        public List<string> Improvements { get; set; } = new();
+        public List<string> BugFixes { get; set; } = new();
+    }
+}

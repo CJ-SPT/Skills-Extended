@@ -4,8 +4,8 @@ namespace SkillsExtended.Models;
 
 public record SkillsConfig
 {
-    public required FirstAidSubConfig FirstAid { get; set; }
-    public required FieldMedicineSubConfig FieldMedicine { get; set; }
+    public required FirstAidConfig FirstAid { get; set; }
+    public required FieldMedicineConfig FieldMedicine { get; set; }
     public required WeaponConfig NatoWeapons { get; set; }
     public required WeaponConfig EasternWeapons { get; set; }
     public required LockPickingConfig LockPicking { get; set; }
@@ -23,7 +23,7 @@ public record BaseSubConfig
     public required float XpPerAction { get; set; }
 }
 
-public record FirstAidSubConfig : BaseSubConfig
+public record FirstAidConfig : BaseSubConfig
 {
     [JsonPropertyName("MEDKIT_USAGE_REDUCTION")]
     public required float MedkitUsageReduction { get; set; }
@@ -38,7 +38,7 @@ public record FirstAidSubConfig : BaseSubConfig
     public required float MedkitSpeedBonusElite { get; set; }
 }
 
-public record FieldMedicineSubConfig : BaseSubConfig
+public record FieldMedicineConfig : BaseSubConfig
 {
     [JsonPropertyName("SKILL_BONUS")]
     public required float SkillBonus { get; set; }

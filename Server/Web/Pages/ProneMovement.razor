@@ -1,0 +1,108 @@
+﻿@page "/skills-extended/prone-movement"
+@layout BaseLayout;
+
+@inject ConfigController ConfigController
+
+<MudGrid Justify="Justify.Center" Style="min-height:100vh; display:flex; align-items:center;">
+    <MudItem xs="11" sm="8" md="6" lg="4">
+        <MudPaper Height="325px" Style="width:100%;">
+            <MudContainer MaxWidth="MaxWidth.Medium">
+                <MudGrid>
+                    <MudItem xs="6">
+                        <MudSwitch
+                            Class="d-flex align-center justify-center mud-width-full py-8"
+                            @bind-Value="Enabled"
+                            Label="Enabled"
+                            Color="Color.Success"/>
+                    </MudItem>
+
+                    <MudItem xs="6">
+                        <MudNumericField
+                            @bind-Value="XpPerAction"
+                            Label="XP Per Action"
+                            Variant="Variant.Filled"
+                            Step=".05M"
+                            Min="0" Max="25"/>
+                    </MudItem>
+    
+                    <MudItem xs="6">
+                        <MudNumericField
+                            @bind-Value="SpeedIncrease"
+                            Label="Movement Speed Increase"
+                            Variant="Variant.Filled"
+                            Step=".05M"
+                            Min="0" Max="1"/>
+                    </MudItem>
+
+                    <MudItem xs="6">
+                        <MudNumericField
+                            @bind-Value="SpeedIncreaseElite"
+                            Label="Movement Speed Increase Elite"
+                            Variant="Variant.Filled"
+                            Step=".05M"
+                            Min="0" Max="1"/>
+                    </MudItem>
+
+                    <MudItem xs="6">
+                        <MudNumericField
+                            @bind-Value="VolumeDecrease"
+                            Label="Volume Decrease"
+                            Variant="Variant.Filled"
+                            Step=".05M"
+                            Min="0" Max="1"/>
+                    </MudItem>
+
+                    <MudItem xs="6">
+                        <MudNumericField
+                            @bind-Value="VolumeDecreaseElite"
+                            Label="Volume Decrease Elite"
+                            Variant="Variant.Filled"
+                            Step=".05M"
+                            Min="0" Max="1"/>
+                    </MudItem>
+                </MudGrid>
+            </MudContainer>
+        </MudPaper>
+    </MudItem>
+</MudGrid>
+
+@code
+{
+    ProneMovementConfig Data => ConfigController.SkillsConfig.ProneMovement;
+    
+    bool Enabled
+    {
+        get => Data.Enabled;
+        set => Data.Enabled = value;
+    }
+    
+    decimal XpPerAction
+    {
+        get => (decimal)Data.XpPerAction;
+        set => Data.XpPerAction = (float)value;
+    }
+
+    decimal SpeedIncrease
+    {
+        get => (decimal)Data.MovementSpeedIncreaseMax;
+        set => Data.MovementSpeedIncreaseMax = (float)value;
+    }
+    
+    decimal SpeedIncreaseElite
+    {
+        get => (decimal)Data.MovementSpeedIncreaseMaxElite;
+        set => Data.MovementSpeedIncreaseMaxElite = (float)value;
+    }
+    
+    decimal VolumeDecrease
+    {
+        get => (decimal)Data.MovementVolumeDecreaseMax;
+        set => Data.MovementVolumeDecreaseMax = (float)value;
+    }
+    
+    decimal VolumeDecreaseElite
+    {
+        get => (decimal)Data.MovementVolumeDecreaseMaxElite;
+        set => Data.MovementVolumeDecreaseMaxElite = (float)value;
+    }
+}
