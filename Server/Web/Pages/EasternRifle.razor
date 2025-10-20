@@ -4,8 +4,8 @@
 @inject ConfigController ConfigController
 
 <MudGrid Justify="Justify.Center" Style="min-height:100vh; display:flex; align-items:center;">
-    <MudItem xs="11" sm="8" md="6" lg="4">
-        <MudPaper Height="675px" Style="width:100%;">
+    <MudItem xs="12" sm="8" md="6" lg="4">
+        <MudPaper Height="700px" Width="500px">
             <MudContainer MaxWidth="MaxWidth.Medium">
                 <MudGrid>
                     <MudItem xs="6">
@@ -83,51 +83,52 @@
                         <MudDivider/>
                     </MudItem>
 
-                    <MudItem xs="6">
+                    <MudItem xs="8" Class="d-flex align-center justify-center">
+                        
                         <MudSelect @bind-Value="SelectedWeaponId"
                                    @bind-SelectedValues="SelectedIds"
                                    MultiSelection="true"
-                                   Variant="Variant.Filled"
+                                   Variant="Variant.Outlined"
                                    Label="Weapon Ids">
                             @foreach (var id in WeaponIds)
                             {
-                                <MudSelectItem Value="id">@id</MudSelectItem>
+                                <MudSelectItem Value="id" Class="text-xs">@id</MudSelectItem>
                             }
                         </MudSelect>
+                        
                     </MudItem>
 
-                    <MudItem xs="6">
-                        <MudButton Class="align-center justify-center" Size="Size.Small" Variant="Variant.Filled"
+                    <MudItem xs="4" Class="d-flex align-center justify-center">
+                        
+                        <MudButton Variant="Variant.Outlined"
+                                   Size="Size.Small"
                                    OnClick="RemoveSelectedWeapons">
                             Remove Selected
                         </MudButton>
-
-                        <MudButton Class="align-center justify-center" Size="Size.Small" Variant="Variant.Filled"
-                                   OnClick="AddWeapon">
-                            Add New Weapon
-                        </MudButton>
+                        
                     </MudItem>
 
                     <MudFlexBreak/>
 
-                    <MudItem xs="6">
-                        <MudTextField @bind-Value="NewWeaponId" Label="New Weapon Id" Variant="Variant.Text"/>
+                    <MudItem xs="8" Class="d-flex align-center justify-center">
+    
+                        <MudTextField 
+                            @bind-Value="NewWeaponId" 
+                            Label="New Weapon Id" 
+                            Variant="Variant.Outlined"/>
+    
                     </MudItem>
 
-                    <MudItem xs="6">
-                        <MudFileUpload T="IBrowserFile" FilesChanged="UploadFile" Accept=".json, .json5">
-                            <ActivatorContent>
-                                <MudButton Class="align-center justify-center"
-                                           Variant="Variant.Filled"
-                                           Color="Color.Primary"
-                                           StartIcon="@Icons.Material.Filled.CloudUpload"
-                                           Size="Size.Small">
-                                    Upload Additional weapons
-                                </MudButton>
-                            </ActivatorContent>
-                        </MudFileUpload>
+                    <MudItem xs="4" Class="d-flex align-center justify-center">
+    
+                        <MudButton Variant="Variant.Outlined"
+                                   Size="Size.Medium"
+                                   OnClick="AddWeapon">
+                            Add Weapon
+                        </MudButton>
+    
                     </MudItem>
-
+                    
                 </MudGrid>
             </MudContainer>
         </MudPaper>
