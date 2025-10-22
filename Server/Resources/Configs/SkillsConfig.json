@@ -237,6 +237,7 @@
                 "door_Factory_Rework_Basement_00031": 1
             },
             "Woods": {
+                "door_woods_combined_00010": 3,
                 "door_woods_combined_00025": 2,
                 "door_woods_combined_00017": 3,
                 "Lootable_00063": 3
@@ -449,6 +450,7 @@
                 "door_Shoreline_Sanatorium_indoor_00246": 3,
                 "door_Shoreline_Sanatorium_indoor_00248": 3,
                 "door_Shoreline_Sanatorium_indoor_00283": 2,
+                "door_Shoreline_Sanatorium_indoor_00289": 2,
                 "container_shoreline_DesignStuff_00208": 2,
                 "container_shoreline_DesignStuff_00211": 2,
                 "container_shoreline_DesignStuff_00212": 2,
