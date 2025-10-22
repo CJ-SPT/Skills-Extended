@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using EFT;
 using EFT.Interactive;
+using SkillsExtended.Helpers;
 using SkillsExtended.Skills.Core;
 
 namespace SkillsExtended.Skills.LockPicking.Actions;
@@ -32,18 +33,16 @@ public sealed class LockPickActionHandler
     private void AddFailedAttemptToCounter()
     {
         // Add to the counter
-        if (!LockPickingHelpers.DoorAttempts.ContainsKey(InteractiveObject.Id))
-        {
-            LockPickingHelpers.DoorAttempts.Add(InteractiveObject.Id, 1);
-        }
-        else
+        if (!LockPickingHelpers.DoorAttempts.TryAdd(InteractiveObject.Id, 1))
         {
             LockPickingHelpers.DoorAttempts[InteractiveObject.Id]++;
         }
 
         // Break the lock if more than 3 failed attempts
-        if (LockPickingHelpers.DoorAttempts[InteractiveObject.Id] < SkillsPlugin.SkillData.LockPicking.AttemptsBeforeBreak) 
+        if (LockPickingHelpers.DoorAttempts[InteractiveObject.Id] < SkillsPlugin.SkillData.LockPicking.AttemptsBeforeBreak)
+        {
             return;
+        }
         
         Owner.DisplayPreloaderUiNotification("You broke the lock...");
         InteractiveObject.KeyId = string.Empty;
@@ -53,15 +52,22 @@ public sealed class LockPickActionHandler
     
     private void RemoveUseFromLockPick()
     {
+        var skillManager = GameUtils.GetSkillManager();
+        
         // We are elite level, do not remove a use.
-        if (SkillManagerExt.Instance(EPlayerSide.Usec).LockPickingUseBuffElite.Value) return;
+        if (skillManager?.SkillManagerExtended.LockPickingUseBuffElite.Value ?? false)
+        {
+            return;
+        }
         
         // Remove a use from a lock pick in the inventory
         var lockPicks = LockPickingHelpers.GetLockPicksInInventory();
         
         var lockPick = lockPicks.First();
-
-        if (lockPick is not KeyItemClass pick) return;
+        if (lockPick is not KeyItemClass pick)
+        {
+            return;
+        }
         
         pick.KeyComponent.NumberOfUsages++;
 

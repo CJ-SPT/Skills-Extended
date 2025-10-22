@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using EFT;
 using HarmonyLib;
+using SkillsExtended.Helpers;
 using SkillsExtended.Skills.Core;
 using SPT.Reflection.Patching;
 
@@ -14,13 +15,13 @@ internal class PersonalBuffPatch : ModulePatch
     }
 
     [PatchPostfix]
-    public static void PostFix(GClass3019.GClass3044.GClass3045 __result)
+    public static void PostFix(SkillManager skills, GClass3019.GClass3044.GClass3045 __result)
     {
         if (!SkillsPlugin.SkillData.FieldMedicine.Enabled) return;
         if (__result.BuffName == "Pain") return;
         
-        var durationBuff = SkillManagerExt.Instance(EPlayerSide.Usec).FieldMedicineDurationBonus;
-        var chanceBuff = SkillManagerExt.Instance(EPlayerSide.Usec).FieldMedicineChanceBonus;
+        var durationBuff = skills.SkillManagerExtended.FieldMedicineDurationBonus;
+        var chanceBuff = skills.SkillManagerExtended.FieldMedicineChanceBonus;
         
         __result.Duration *= 1f + durationBuff;
         __result.Delay *= __result.Delay == 1f 

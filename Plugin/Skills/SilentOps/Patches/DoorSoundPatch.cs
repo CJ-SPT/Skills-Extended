@@ -3,6 +3,7 @@ using Comfort.Common;
 using EFT;
 using EFT.Interactive;
 using HarmonyLib;
+using SkillsExtended.Helpers;
 using SkillsExtended.Skills.Core;
 using SPT.Reflection.Patching;
 using UnityEngine;
@@ -11,6 +12,8 @@ namespace SkillsExtended.Skills.SilentOps.Patches;
 
 public class DoorSoundPatch : ModulePatch
 {
+    private static SkillManager SkillManager => GameUtils.GetSkillManager();
+    
     protected override MethodBase GetTargetMethod()
     {
         return AccessTools.Method(typeof(WorldInteractiveObject), nameof(WorldInteractiveObject.PlaySound));
@@ -37,7 +40,7 @@ public class DoorSoundPatch : ModulePatch
     private static void PlayDoorOpenSound(WorldInteractiveObject door)
     {
         var openSound = door.OpenSound[Random.Range(0, door.OpenSound.Length)];
-        var bonus = 1f - SkillManagerExt.Instance(EPlayerSide.Usec).SilentOpsReduceVolumeBuff;
+        var bonus = 1f - SkillManager.SkillManagerExtended.SilentOpsReduceVolumeBuff;
         
         if (openSound)
         {
@@ -55,7 +58,7 @@ public class DoorSoundPatch : ModulePatch
     private static void PlayDoorSqueakSound(WorldInteractiveObject door)
     {
         var squeakSound = door.SqueakSound[Random.Range(0, door.SqueakSound.Length)];
-        var bonus = 1f - SkillManagerExt.Instance(EPlayerSide.Usec).SilentOpsReduceVolumeBuff;    
+        var bonus = 1f - SkillManager.SkillManagerExtended.SilentOpsReduceVolumeBuff;    
         
         if (squeakSound)
         {

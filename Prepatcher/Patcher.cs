@@ -4,22 +4,27 @@ using System;
 using System.Linq;
 using BepInEx.Logging;
 using System.Diagnostics;
+using System.IO;
+using System.Reflection;
 using JetBrains.Annotations;
 using FieldAttributes = Mono.Cecil.FieldAttributes;
 
 public static class SkillsExtendedPatcher
 {
-    public static IEnumerable<string> TargetDLLs { get; } = new string[] { "Assembly-CSharp.dll" };
-    public static TypeDefinition SkillManager;
+    public static IEnumerable<string> TargetDLLs { get; } = ["Assembly-CSharp.dll"];
+    private static TypeDefinition _skillManager;
+
+    private static readonly string PatcherPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+    private static readonly string PluginPath = Path.Combine(PatcherPath, "..", "plugins", "SkillsExtended", "SkillsExtended.dll");
     
     public static void Patch(ref AssemblyDefinition assembly)
     {
         try
         {
-            SkillManager = assembly.MainModule.GetType("EFT.SkillManager");
+            _skillManager = assembly.MainModule.GetType("EFT.SkillManager");
             
             PatchNewBuffs(ref assembly);
-            //PatchSkillManagerSide(ref assembly);
+            PatchSkillManager(ref assembly);
             
             Logger.CreateLogSource("Skills Extended PrePatch").LogInfo("Patching Complete!");
         } catch (Exception ex)
@@ -250,43 +255,17 @@ public static class SkillsExtendedPatcher
         buffEnum.Fields.Add(incBushSpeedElite);
     }
     
-    private static void PatchSkillManagerSide(ref AssemblyDefinition assembly)
+    private static void PatchSkillManager(ref AssemblyDefinition assembly)
     {
-        var ePlayerSide = assembly.MainModule.GetType("EFT.EPlayerSide");
+        var skillsExtendedModule = ModuleDefinition.ReadModule(PluginPath);
+        var skillManagerExtendedType = skillsExtendedModule.GetType("SkillsExtended.Skills.Core.SkillManagerExt");
+        var skillManagerExtendedTypeRef = assembly.MainModule.ImportReference(skillManagerExtendedType);
         
-        // This is the intermediate object the skill manager gets deserialized onto
-        var jsonObj = assembly.MainModule.GetType("GClass1956");
-
-        var mainModule = assembly.MainModule;
-        
-        var sideField = new FieldDefinition(
-            "Side", 
+        var skillManagerExtField = new FieldDefinition(
+            "SkillManagerExtended", 
             FieldAttributes.Public, 
-            ePlayerSide);
+            skillManagerExtendedTypeRef);
         
-        var sideFieldJson = new FieldDefinition(
-            "Side", 
-            FieldAttributes.Public, 
-            ePlayerSide);
-        
-        SkillManager.Fields.Add(sideField);
-        jsonObj.Fields.Add(sideFieldJson);
-        
-        var isPlayerField = new FieldDefinition(
-            "IsYourPlayer", 
-            FieldAttributes.Public, 
-            mainModule.ImportReference(typeof(bool)));
-
-        isPlayerField.Constant = false;
-        
-        var isPlayerFieldJson = new FieldDefinition(
-            "IsYourPlayer", 
-            FieldAttributes.Public, 
-            mainModule.ImportReference(typeof(bool)));
-        
-        isPlayerFieldJson.Constant = false;
-        
-        SkillManager.Fields.Add(isPlayerField);
-        jsonObj.Fields.Add(isPlayerFieldJson);
+        _skillManager.Fields.Add(skillManagerExtField);
     }
 }

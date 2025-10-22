@@ -1,9 +1,25 @@
 [
   {
+    "Version": "2.0.2",
+    "CodeName": "Resurrection",
+    "ReleaseDate": "October 22, 2025",
+    "IsLatest": true,
+    "Features": [
+      "Reintroduces custom achievements"
+    ],
+    "Improvements": [],
+    "BugFixes": [
+      "Fixed skill buffs zeroing out after a scav raid",
+      "Fixed missing `Old House` door on woods",
+      "Fixed missing `Knossos LLC facility` door on shoreline (Labyrinth still WIP)",
+      "Fixed linux path bug"
+    ]
+  },
+  {
     "Version": "2.0.1",
     "CodeName": "Resurrection",
     "ReleaseDate": "October 20, 2025",
-    "IsLatest": true,
+    "IsLatest": false,
     "Features": [
       "Config Editor"
     ],

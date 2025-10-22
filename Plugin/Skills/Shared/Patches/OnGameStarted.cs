@@ -21,8 +21,6 @@ internal class OnGameStartedPatch : ModulePatch
     private static Type _painKillerType;
     private static Type _medEffectType;
     
-    private static SkillManagerExt SkillMgrExt => SkillManagerExt.Instance(EPlayerSide.Usec);
-    
     private static WeaponSkillData NatoData => SkillsPlugin.SkillData.NatoWeapons;
     private static WeaponSkillData EasternData => SkillsPlugin.SkillData.EasternWeapons;
     private static Player Player => GameUtils.GetPlayer();
@@ -66,11 +64,14 @@ internal class OnGameStartedPatch : ModulePatch
     
     private static void ApplyMedicalXp(IEffect effect)
     {
-        var skillMgrExt = SkillManagerExt.Instance(EPlayerSide.Usec);
+        var skillMgrExt = Player.Skills.SkillManagerExtended;
         
         if (SkillsPlugin.SkillData.FieldMedicine.Enabled && _stimType.IsInstanceOfType(effect) || _painKillerType.IsInstanceOfType(effect))
         {
-            if (GameUtils.GetPlayer()!.Skills.FieldMedicine.IsEliteLevel) return;
+            if (GameUtils.GetPlayer()!.Skills.FieldMedicine.IsEliteLevel)
+            {
+                return;
+            }
             
             var xpGain = SkillsPlugin.SkillData.FieldMedicine.FieldMedicineXpPerAction;
             
@@ -84,7 +85,10 @@ internal class OnGameStartedPatch : ModulePatch
 
         if (SkillsPlugin.SkillData.FirstAid.Enabled && _medEffectType.IsInstanceOfType(effect))
         {
-            if (GameUtils.GetPlayer()!.Skills.FirstAid.IsEliteLevel) return;
+            if (GameUtils.GetPlayer()!.Skills.FirstAid.IsEliteLevel)
+            {
+                return;
+            }
             
             var xpGain = SkillsPlugin.SkillData.FirstAid.FirstAidXpPerAction;
             
@@ -98,22 +102,29 @@ internal class OnGameStartedPatch : ModulePatch
 
     private static void ApplyNatoRifleXp(MasterSkillClass skillClass)
     {
-        if (GameUtils.GetSkillManager()!.UsecArsystems.IsEliteLevel) return;
+        if (GameUtils.GetSkillManager()!.UsecArsystems.IsEliteLevel)
+        {
+            return;
+        }
         
         var weaponInHand = Player.HandsController.GetItem();
-
-        if (!NatoData.Weapons.Contains(weaponInHand.TemplateId)) return;
+        if (!NatoData.Weapons.Contains(weaponInHand.TemplateId))
+        {
+            return;
+        }
+        
+        var skillMgrExt = Player.Skills.SkillManagerExtended;
         
         if (NatoData.SkillShareEnabled)
         {
             var xp = NatoData.XpPerAction * NatoData.SkillShareXpRatio;
-            Player.ExecuteSkill(() => SkillMgrExt.BearRifleAction.Complete(xp));
+            Player.ExecuteSkill(() => skillMgrExt.BearRifleAction.Complete(xp));
 #if DEBUG 
             SkillsPlugin.Log.LogDebug($"APPLYING {xp} EASTERN RIFLE SHARED XP");
 #endif
         }
         
-        Player.ExecuteSkill(() => SkillMgrExt.UsecRifleAction.Complete(NatoData.XpPerAction));
+        Player.ExecuteSkill(() => skillMgrExt.UsecRifleAction.Complete(NatoData.XpPerAction));
 #if DEBUG
         SkillsPlugin.Log.LogDebug("APPLYING NATO RIFLE XP");
 #endif
@@ -121,23 +132,30 @@ internal class OnGameStartedPatch : ModulePatch
 
     private static void ApplyEasternRifleXp(MasterSkillClass skillClass)
     {
-        if (GameUtils.GetSkillManager()!.BearAksystems.IsEliteLevel) return;
+        if (GameUtils.GetSkillManager()!.BearAksystems.IsEliteLevel)
+        {
+            return;
+        }
         
         var weaponInHand = Player!.HandsController.GetItem();
-
-        if (!EasternData.Weapons.Contains(weaponInHand.TemplateId)) return;
+        if (!EasternData.Weapons.Contains(weaponInHand.TemplateId))
+        {
+            return;
+        }
         
+        
+        var skillMgrExt = Player.Skills.SkillManagerExtended;
         if (EasternData.SkillShareEnabled)
         {
             var xp = EasternData.XpPerAction * EasternData.SkillShareXpRatio;
-            Player.ExecuteSkill(() => SkillMgrExt.UsecRifleAction.Complete(xp));
+            Player.ExecuteSkill(() => skillMgrExt.UsecRifleAction.Complete(xp));
 
 #if DEBUG
             SkillsPlugin.Log.LogDebug($"APPLYING {xp} EASTERN RIFLE SHARED XP");
 #endif
         }
         
-        Player.ExecuteSkill(() => SkillMgrExt.BearRifleAction.Complete(EasternData.XpPerAction));
+        Player.ExecuteSkill(() => skillMgrExt.BearRifleAction.Complete(EasternData.XpPerAction));
         
 #if DEBUG
         SkillsPlugin.Log.LogDebug($"APPLYING {EasternData.XpPerAction} EASTERN RIFLE XP");
@@ -148,12 +166,17 @@ internal class OnGameStartedPatch : ModulePatch
     {
         foreach (var interactableObj in LocationScene.GetAllObjectsAndWhenISayAllIActuallyMeanIt<WorldInteractiveObject>())
         {
-            if (interactableObj.KeyId is null || interactableObj.KeyId == string.Empty) continue;
+            if (interactableObj.KeyId is null || interactableObj.KeyId == string.Empty)
+            {
+                continue;
+            }
 
-            var doorLevel =
-                LockPickingHelpers.GetLevelForDoor(gameWorld.LocationId, interactableObj.KeyId);
-            
-            if (doorLevel != -1) continue;
+            var doorLevel = LockPickingHelpers.GetLevelForDoor(gameWorld.LocationId, interactableObj.KeyId);
+
+            if (doorLevel != -1)
+            {
+                continue;
+            }
             
             var logMessage = SkillsPlugin.Keys.KeyLocale.TryGetValue(interactableObj.KeyId, out var name) 
                 ? $"Door ID: {interactableObj.Id} KeyID: {interactableObj.KeyId} Key Name: {name}" 

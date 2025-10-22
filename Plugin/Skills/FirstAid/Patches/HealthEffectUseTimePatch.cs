@@ -2,6 +2,7 @@
 using EFT;
 using EFT.InventoryLogic;
 using HarmonyLib;
+using SkillsExtended.Helpers;
 using SkillsExtended.Skills.Core;
 using SPT.Reflection.Patching;
 
@@ -18,10 +19,20 @@ internal class HealthEffectUseTimePatch : ModulePatch
     public static void PostFix(ref float __result, HealthEffectsComponent __instance)
     {
         var firstAid = SkillsPlugin.SkillData.FirstAid;
+
+        if (!firstAid.Enabled)
+        {
+            return;
+        }
+
+        var skillManager = GameUtils.GetSkillManager();
+        if (skillManager == null)
+        {
+            Logger.LogError("Skill Manager is null");
+            return;
+        }
         
-        if (!firstAid.Enabled) return;
-            
-        __result *= (1f - SkillManagerExt.Instance(EPlayerSide.Usec).FirstAidItemSpeedBuff);
+        __result *= 1f - skillManager.SkillManagerExtended.FirstAidItemSpeedBuff;
     }
 }
 
@@ -36,9 +47,19 @@ internal class SpawnPatch : ModulePatch
     public static void PreFix(ref float animationSpeed)
     {
         var firstAid = SkillsPlugin.SkillData.FirstAid;
+
+        if (!firstAid.Enabled)
+        {
+            return;
+        }
         
-        if (!firstAid.Enabled) return;
+        var skillManager = GameUtils.GetSkillManager();
+        if (skillManager == null)
+        {
+            Logger.LogError("Skill Manager is null");
+            return;
+        }
             
-        animationSpeed *= (1f + SkillManagerExt.Instance(EPlayerSide.Usec).FirstAidItemSpeedBuff);
+        animationSpeed *= 1f + skillManager.SkillManagerExtended.FirstAidItemSpeedBuff;
     }
 }

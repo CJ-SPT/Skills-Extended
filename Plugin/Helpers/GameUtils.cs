@@ -17,6 +17,11 @@ public static class GameUtils
     {
         return Singleton<GameWorld>.Instantiated && Singleton<GameWorld>.Instance is not HideoutGameWorld;
     }
+
+    public static bool IsScav()
+    {
+        return IsInRaid() && GetPlayer()?.Side == EPlayerSide.Savage;
+    }
     
     /// <summary>
     /// We are in hideout, but not in raid
@@ -52,10 +57,21 @@ public static class GameUtils
     }
     
     [CanBeNull]
-    public static Profile GetProfile(bool throwIfNull = false)
+    public static Profile GetProfile(EPlayerSide playerSide, bool throwIfNull = false)
     {
-        var profile = GetSession()?.Profile;
+        Profile profile = null;
 
+        switch (playerSide)
+        {
+            case EPlayerSide.Bear:
+            case EPlayerSide.Usec:
+                profile = GetSession()?.Profile;
+                break;
+            case EPlayerSide.Savage:
+                profile = GetSession()?.ProfileOfPet;
+                break;
+        }
+        
         if (throwIfNull && profile is null)
         {
             throw new SkillsExtendedException("Trying to access the Profile when it's null");
@@ -65,16 +81,9 @@ public static class GameUtils
     }
     
     [CanBeNull]
-    public static SkillManager GetSkillManager(bool throwIfNull = false)
+    public static SkillManager GetSkillManager()
     {
-        var skills = GetProfile()?.Skills;
-
-        if (throwIfNull && skills is null)
-        {
-            throw new SkillsExtendedException("Trying to access the SkillManager when it is null");
-        }
-        
-        return skills;
+        return IsInRaid() ? GetPlayer()?.Skills : GetProfile(EPlayerSide.Usec)?.Skills;
     }
 
     [CanBeNull]

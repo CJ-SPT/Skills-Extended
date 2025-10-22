@@ -24,7 +24,7 @@ public class ConfigController(
 
     public async Task SaveSkillsConfig()
     {
-        var path = Path.Combine(SeModMetadata.ResourcesDirectory, "configs", "SkillsConfig.json");
+        var path = Path.Combine(SeModMetadata.ResourcesDirectory, "Configs", "SkillsConfig.json");
         
         var text = jsonUtil.Serialize(SkillsConfig, true);
         await fileUtil.WriteFileAsync(path, text!);
@@ -32,7 +32,7 @@ public class ConfigController(
     
     private async Task LoadSkillsConfig()
     {
-        var path = Path.Combine(SeModMetadata.ResourcesDirectory, "configs", "SkillsConfig.json");
+        var path = Path.Combine(SeModMetadata.ResourcesDirectory, "Configs", "SkillsConfig.json");
         
         var text = await fileUtil.ReadFileAsync(path);
         SkillsConfig = jsonUtil.Deserialize<SkillsConfig>(text)!;

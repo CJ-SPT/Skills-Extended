@@ -25,6 +25,8 @@ public class LockPickingGame : MonoBehaviour
     public RectTransform cylinder;
     public RectTransform lockpick;
 
+    private SkillManager SkillManager => GameUtils.GetSkillManager();
+    
     /// <summary>
     /// How accurately close we need to be to the sweet spot.
     /// If set to 1, we need to be exactly at the sweet spot position,
@@ -363,9 +365,9 @@ public class LockPickingGame : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    private static void SetSweetSpotRange(int doorLevel)
+    private void SetSweetSpotRange(int doorLevel)
     {
-        var skillMod = 1 + SkillManagerExt.Instance(EPlayerSide.Usec).LockPickingForgiveness;
+        var skillMod = 1 + SkillManager.SkillManagerExtended.LockPickingForgiveness;
         var doorMod = Mathf.Clamp(doorLevel / 35f, 0.05f, 1.5f);
 
 #if DEBUG
@@ -381,9 +383,9 @@ public class LockPickingGame : MonoBehaviour
         _sweetSpotRange = Mathf.Clamp((configVal - doorMod) * skillMod, 0f, 20f);
     }
     
-    private static void SetTimeLimit(int doorLevel)
+    private void SetTimeLimit(int doorLevel)
     {
-        var skillMod = 1 + SkillManagerExt.Instance(EPlayerSide.Usec).LockPickingTimeBuff;
+        var skillMod = 1 + SkillManager.SkillManagerExtended.LockPickingTimeBuff;
         var doorMod = Mathf.Clamp(doorLevel / 50f, 0.05f, 1f);
         
         var configVal = SkillsPlugin.SkillData.LockPicking.PickStrength;

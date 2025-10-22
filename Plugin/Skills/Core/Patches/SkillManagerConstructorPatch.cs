@@ -17,10 +17,20 @@ internal class SkillManagerConstructorPatch : ModulePatch
             [], 
             null);
 
+    [PatchPrefix]
+    public static void Prefix(SkillManager __instance)
+    {
+        __instance.SkillManagerExtended = new SkillManagerExt();
+        
+#if DEBUG
+        SkillsPlugin.Log.LogDebug("Created SkillManagerExt");        
+#endif
+    }
+    
     [PatchPostfix]
     public static void Postfix(SkillManager __instance, ref SkillClass[] ___DisplayList, ref SkillClass[] ___Skills)
     {
-        var insertIndex = 12;
+        const int insertIndex = 12;
         
         // Action and buff lists intentionally empty here, this is for display list purposes only
         
