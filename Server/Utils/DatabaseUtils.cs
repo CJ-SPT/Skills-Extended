@@ -3,12 +3,14 @@ using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Common;
+using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Hideout;
 using SPTarkov.Server.Core.Models.Spt.Mod;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Services.Mod;
 using SPTarkov.Server.Core.Utils;
+using Path = System.IO.Path;
 
 namespace SkillsExtended.Utils;
 
@@ -29,6 +31,7 @@ public class DatabaseUtils(
         await ImportLocales();
         await CreateItems();
         await AddCraftsToDatabase();
+        await LoadAchievements();
     }
     
     public KeysResponse GetKeyLocales()
@@ -141,6 +144,20 @@ public class DatabaseUtils(
         foreach (var production in productions)
         {
             databaseService.GetHideout().Production.Recipes!.Add(production);
+        }
+    }
+
+    private async ValueTask LoadAchievements()
+    {
+        var achievementsPath = Path.Combine(SeModMetadata.ResourcesDirectory, "Achievements");
+        var achievementsDb = databaseService.GetAchievements();
+        
+        foreach (var file in Directory.GetFiles(achievementsPath))
+        {
+            var text  = await fileUtil.ReadFileAsync(file);
+            var achievements = jsonUtil.Deserialize<List<Achievement>>(text)!;
+            
+            achievementsDb.AddRange(achievements);
         }
     }
 }
