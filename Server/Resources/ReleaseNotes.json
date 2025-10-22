@@ -7,7 +7,7 @@
     "Features": [],
     "Improvements": [],
     "BugFixes": [
-      "Fixed skill buffs zeroing out after a scav raid",
+      "Fixed skill buffs zeroing out after a scav raid, this was a rather large refactor and everything needs tested",
       "Fixed missing `Old House` door on woods",
       "Fixed missing `Knossos LLC facility` door on shoreline"
     ]
