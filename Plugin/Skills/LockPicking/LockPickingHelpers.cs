@@ -65,7 +65,9 @@ internal static class LockPickingHelpers
     /// <returns>All lock pick items in the players inventory</returns>
     public static IEnumerable<Item> GetLockPicksInInventory()
     {
-        return GameUtils.GetProfile().Inventory.GetPlayerItems(EPlayerItems.Equipment)
+        var player = Singleton<GameWorld>.Instance.MainPlayer;
+        
+        return player.Inventory.GetPlayerItems(EPlayerItems.Equipment)
             .Where(x => x.TemplateId == "6622c28aed7e3bc72e301e22");
     }
 
@@ -75,7 +77,9 @@ internal static class LockPickingHelpers
     /// <returns>true if in inventory</returns>
     public static bool IsFlipperZeroInInventory()
     {
-        return GameUtils.GetProfile().Inventory.GetPlayerItems(EPlayerItems.Equipment)
+        var player = Singleton<GameWorld>.Instance.MainPlayer;
+        
+        return player.Inventory.GetPlayerItems(EPlayerItems.Equipment)
             .Any(x => x.TemplateId == "662400eb756ca8948fe64fe8");
     }
 
@@ -84,12 +88,13 @@ internal static class LockPickingHelpers
     public static void ApplyLockPickActionXp(WorldInteractiveObject interactiveObject, GamePlayerOwner owner, bool isInspect = false, bool isFailure = false)
     {
         var doorLevel = GetLevelForDoor(owner.Player.Location, interactiveObject.Id);
-
         var xpExists = SkillsPlugin.SkillData.LockPicking.XpTable.TryGetValue(doorLevel.ToString(), out var xp);
-
         var player = Singleton<GameWorld>.Instance.MainPlayer;
-        
-        if (!xpExists || player.Skills.Lockpicking.IsEliteLevel) return;
+
+        if (!xpExists || player.Skills.Lockpicking.IsEliteLevel)
+        {
+            return;
+        }
         
         xpToApply = isInspect
             ? xp * SkillsPlugin.SkillData.LockPicking.InspectLockXpRatio
@@ -104,9 +109,13 @@ internal static class LockPickingHelpers
 
     private static void CompleteLockPickAction()
     {
-        if (xpToApply == 0.0f) return;
+        if (xpToApply == 0.0f)
+        {
+            return;
+        }
         
-        SkillManagerExt.Instance(EPlayerSide.Usec).LockPickAction.Complete(xpToApply);
+        var player = Singleton<GameWorld>.Instance.MainPlayer;
+        player.Skills.SkillManagerExtended.LockPickAction.Complete(xpToApply);
     }
     
     public static void DisplayInspectInformation(WorldInteractiveObject interactiveObject, GamePlayerOwner owner)

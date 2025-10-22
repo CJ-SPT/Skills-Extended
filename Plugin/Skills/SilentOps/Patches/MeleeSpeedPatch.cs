@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using EFT;
 using HarmonyLib;
+using SkillsExtended.Helpers;
 using SkillsExtended.Skills.Core;
 using SPT.Reflection.Patching;
 
@@ -16,10 +17,11 @@ public class MeleeSpeedPatch : ModulePatch
     [PatchPrefix]
     private static void Prefix(ref float speed)
     {
-        if (!SkillsPlugin.SkillData.SilentOps.Enabled) return;
-        
-        var bonus = 1 + SkillManagerExt.Instance(EPlayerSide.Usec).SilentOpsIncMeleeSpeedBuff;
+        if (!SkillsPlugin.SkillData.SilentOps.Enabled)
+        {
+            return;
+        }
 
-        speed *= bonus;
+        speed *= 1 + GameUtils.GetSkillManager()!.SkillManagerExtended.SilentOpsIncMeleeSpeedBuff;
     }
 }

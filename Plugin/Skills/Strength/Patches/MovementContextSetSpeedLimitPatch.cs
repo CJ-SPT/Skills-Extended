@@ -20,9 +20,12 @@ public class MovementContextSetSpeedLimitPatch : ModulePatch
 	public static bool Prefix(MovementContext __instance)
 	{
 		var skillData = SkillsPlugin.SkillData;
-		var skillMgrExt = SkillManagerExt.Instance(EPlayerSide.Usec);
-
-		if (!skillData.Strength.Enabled) return true;
+		if (!skillData.Strength.Enabled)
+		{
+			return true;
+		}
+		
+		var skillMgrExt = GameUtils.GetSkillManager()!.SkillManagerExtended;
 
 		MovementContext.Struct333 gStruct;
 		gStruct.movementContext_0 = __instance;

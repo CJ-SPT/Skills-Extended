@@ -37,9 +37,10 @@ namespace SkillsExtended.Helpers
         
         private static void GetAllWeaponIDsInInventory()
         {
-            var weapons = GameUtils.GetProfile().Inventory?.AllRealPlayerItems;
-            weapons = weapons.Where(x => x is Weapon);
 
+            var side = GameUtils.IsScav() ? EPlayerSide.Savage : EPlayerSide.Usec;
+            var weapons = GameUtils.GetProfile(side)?.Inventory?.AllRealPlayerItems.Where(x => x is Weapon);
+            
             foreach (var weapon in weapons)
             {
                 SkillsPlugin.Log.LogDebug($"Template ID: {weapon.TemplateId}, locale name: {weapon.LocalizedName()}");

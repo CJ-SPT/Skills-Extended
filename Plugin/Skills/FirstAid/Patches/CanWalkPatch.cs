@@ -29,7 +29,7 @@ internal class CanWalkPatch : ModulePatch
             return;
         }
         
-        var skillMgrExt = SkillManagerExt.Instance(EPlayerSide.Usec);
+        var skillMgrExt = ____player.Skills.SkillManagerExtended;
         var skillData = SkillsPlugin.SkillData.FirstAid;
 
         if (!skillData.Enabled) return;

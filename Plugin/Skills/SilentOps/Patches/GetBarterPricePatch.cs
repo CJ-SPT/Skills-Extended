@@ -3,6 +3,7 @@ using System.Reflection;
 using EFT;
 using EFT.InventoryLogic;
 using HarmonyLib;
+using SkillsExtended.Helpers;
 using SkillsExtended.Skills.Core;
 using SPT.Reflection.Patching;
 using SPT.Reflection.Utils;
@@ -23,23 +24,28 @@ public class GetBarterPricePatch : ModulePatch
     [PatchPostfix]
     private static void Postfix(TraderAssortmentControllerClass __instance, ref TraderClass.GStruct300? __result, Item[] items)
     {
-        if (items.IsNullOrEmpty()) return;
-        if (!SkillsPlugin.SkillData.SilentOps.Enabled) return;
+        if (!SkillsPlugin.SkillData.SilentOps.Enabled || items.IsNullOrEmpty())
+        {
+            return;
+        }
         
         var scheme = __instance.GetSchemeForItem(items[0]);
-
-        if (scheme is null) return;
+        if (scheme is null)
+        {
+            return;
+        }
         
         float price = 0;
         foreach (var item in items)
         {
             var barterScheme = __instance.GetSchemeForItem(item);
-            
-            if (barterScheme is null) continue;
+            if (barterScheme is null)
+            {
+                continue;
+            }
             
             var num2 = Mathf.Ceil((float)barterScheme.Sum(TraderAssortmentControllerClass.Class2058.class2058_0.method_0));
-
-            var bonus = 1f - SkillManagerExt.Instance(EPlayerSide.Usec).SilentOpsSilencerCostRedBuff;
+            var bonus = 1f - GameUtils.GetSkillManager()!.SkillManagerExtended.SilentOpsSilencerCostRedBuff;
 
             // Silencer Type
             if (item is SilencerItemClass)
@@ -68,11 +74,12 @@ public class RequiredItemsCountPatch : ModulePatch
     [PatchPostfix]
     private static void Postfix(GClass2064 __instance, ref int __result)
     {
-        // Suppressor type
-        if (GetBarterPricePatch.Selecteditem is not SilencerItemClass) return;
-        if (!SkillsPlugin.SkillData.SilentOps.Enabled) return;
+        if (!SkillsPlugin.SkillData.SilentOps.Enabled || GetBarterPricePatch.Selecteditem is not SilencerItemClass)
+        {
+            return;
+        }
         
-        var bonus = 1f - SkillManagerExt.Instance(EPlayerSide.Usec).SilentOpsSilencerCostRedBuff;
+        var bonus = 1f - GameUtils.GetSkillManager()!.SkillManagerExtended.SilentOpsSilencerCostRedBuff;
 
         __result = (int)Mathf.Ceil(__result * bonus);
     }

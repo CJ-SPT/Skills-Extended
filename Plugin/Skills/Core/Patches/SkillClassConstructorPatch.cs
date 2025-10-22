@@ -37,7 +37,7 @@ internal class SkillClassCtorPatch : ModulePatch
         ref SkillManager.SkillActionClass[] actions)
     {
         var skillData = SkillsPlugin.SkillData;
-        var skillMgrExt = SkillManagerExt.Instance(EPlayerSide.Usec);
+        var skillMgrExt = skillManager.SkillManagerExtended;
         
         if (id == ESkillId.FirstAid)
         {
@@ -119,7 +119,7 @@ internal class SkillClassCtorPatch : ModulePatch
         var actionList = actions.ToList();
 
         var skillData = SkillsPlugin.SkillData;
-        var skillMgrExt = SkillManagerExt.Instance(EPlayerSide.Usec);
+        var skillMgrExt = skillManager.SkillManagerExtended;
         
         if (id == ESkillId.Strength)
         {
