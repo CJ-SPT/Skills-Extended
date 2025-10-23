@@ -375,7 +375,7 @@ public class LockPickingGame : MonoBehaviour
         SkillsPlugin.Log.LogDebug($"DOOR: {doorMod}");
 #endif
         
-        var configVal = SkillsPlugin.SkillData.LockPicking.SweetSpotRange;
+        var configVal = SkillsPlugin.SkillData.LockPicking.SweetSpotRangeBase;
 
 #if DEBUG
         SkillsPlugin.Log.LogDebug($"SWEET SPOT RANGE: {configVal}");
@@ -388,7 +388,7 @@ public class LockPickingGame : MonoBehaviour
         var skillMod = 1 + SkillManager.SkillManagerExtended.LockPickingTimeBuff;
         var doorMod = Mathf.Clamp(doorLevel / 50f, 0.05f, 1f);
         
-        var configVal = SkillsPlugin.SkillData.LockPicking.PickStrength;
+        var configVal = SkillsPlugin.SkillData.LockPicking.PickStrengthBase;
         
         var originalLimit = Mathf.Clamp((configVal - doorMod) * skillMod, 1f, 20f);
         

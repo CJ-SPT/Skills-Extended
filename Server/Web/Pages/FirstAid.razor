@@ -28,38 +28,21 @@
                     <MudItem xs="6">
                         <MudNumericField
                             @bind-Value="UsageReduction"
-                            Label="Resource Cost Reduction"
+                            Label="Resource Cost Reduction Per Level"
                             Variant="Variant.Filled"
                             Step=".05M"
                             Min="0" Max="1"/>
                     </MudItem>
-
-                    <MudItem xs="6">
-                        <MudNumericField
-                            @bind-Value="UsageReductionElite"
-                            Label="Resource Cost Reduction Elite"
-                            Variant="Variant.Filled"
-                            Step=".05M"
-                            Min="0" Max="1"/>
-                    </MudItem>
-    
+                    
                     <MudItem xs="6">
                         <MudNumericField
                             @bind-Value="SpeedBonus"
-                            Label="Medkit Speed Bonus"
+                            Label="Medkit Speed Bonus Per Level"
                             Variant="Variant.Filled"
                             Step=".05M"
                             Min="0" Max="1"/>
                     </MudItem>
-    
-                    <MudItem xs="6">
-                        <MudNumericField
-                            @bind-Value="SpeedBonusElite"
-                            Label="Medkit Speed Bonus Elite"
-                            Variant="Variant.Filled"
-                            Step=".05M"
-                            Min="0" Max="1"/>
-                    </MudItem>
+                    
                 </MudGrid>
             </MudContainer>
         </MudPaper>
@@ -88,21 +71,9 @@
         set => Data.MedkitUsageReduction = (float)value;
     }
     
-    decimal UsageReductionElite
-    {
-        get => (decimal)Data.MedkitUsageReductionElite;
-        set => Data.MedkitUsageReductionElite = (float)value;
-    }
-    
     decimal SpeedBonus
     {
         get => (decimal)Data.MedkitSpeedBonus;
         set => Data.MedkitSpeedBonus = (float)value;
-    }
-    
-    decimal SpeedBonusElite
-    {
-        get => (decimal)Data.MedkitSpeedBonusElite;
-        set => Data.MedkitSpeedBonusElite = (float)value;
     }
 }

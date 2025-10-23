@@ -120,14 +120,8 @@ public class SkillManagerExt
     {
         return
         [
-            FirstAidItemSpeedBuff
-                .Max(SkillData.FirstAid.ItemSpeedBonus)
-                .Elite(SkillData.FirstAid.ItemSpeedBonusElite),
-
-            FirstAidResourceCostBuff
-                .Max(SkillData.FirstAid.MedkitUsageReduction)
-                .Elite(SkillData.FirstAid.MedkitUsageReductionElite),
-            
+            FirstAidItemSpeedBuff.PerLevel(SkillData.FirstAid.ItemSpeedBonus),
+            FirstAidResourceCostBuff.PerLevel(SkillData.FirstAid.MedkitUsageReduction),
             FirstAidMovementSpeedBuffElite
         ];
     }
@@ -136,17 +130,9 @@ public class SkillManagerExt
     {
         return
         [
-            FieldMedicineSkillCap
-                .Max(SkillData.FieldMedicine.SkillBonus)
-                .Elite(SkillData.FieldMedicine.SkillBonusElite),
-            
-            FieldMedicineDurationBonus
-                .Max(SkillData.FieldMedicine.DurationBonus)
-                .Elite(SkillData.FieldMedicine.DurationBonusElite),
-            
-            FieldMedicineChanceBonus
-                .Max(SkillData.FieldMedicine.PositiveEffectChanceBonus)
-                .Elite(SkillData.FieldMedicine.PositiveEffectChanceBonusElite)
+            FieldMedicineSkillCap.PerLevel(SkillData.FieldMedicine.SkillBonus),
+            FieldMedicineDurationBonus.PerLevel(SkillData.FieldMedicine.DurationBonus),
+            FieldMedicineChanceBonus.PerLevel(SkillData.FieldMedicine.PositiveEffectChanceBonus)
         ];
     }
     
@@ -154,13 +140,8 @@ public class SkillManagerExt
     {
         return
         [
-            UsecArSystemsErgoBuff
-                .Max(SkillData.NatoWeapons.ErgoMod)
-                .Elite(SkillData.NatoWeapons.ErgoModElite),
-            
-            UsecArSystemsRecoilBuff
-                .Max(SkillData.NatoWeapons.RecoilReduction)
-                .Elite(SkillData.NatoWeapons.RecoilReductionElite)
+            UsecArSystemsErgoBuff.PerLevel(SkillData.NatoWeapons.ErgoMod),
+            UsecArSystemsRecoilBuff.PerLevel(SkillData.NatoWeapons.RecoilReduction)
         ];
     }
     
@@ -168,13 +149,8 @@ public class SkillManagerExt
     {
         return
         [
-            BearAkSystemsErgoBuff
-                .Max(SkillData.EasternWeapons.ErgoMod)
-                .Elite(SkillData.EasternWeapons.ErgoModElite),
-            
-            BearAkSystemsRecoilBuff
-                .Max(SkillData.EasternWeapons.RecoilReduction)
-                .Elite(SkillData.EasternWeapons.RecoilReductionElite)
+            BearAkSystemsErgoBuff.PerLevel(SkillData.EasternWeapons.ErgoMod),
+            BearAkSystemsRecoilBuff.PerLevel(SkillData.EasternWeapons.RecoilReduction)
         ];
     }
     
@@ -182,12 +158,8 @@ public class SkillManagerExt
     {
         return
         [
-            LockPickingTimeBuff
-                .PerLevel(SkillData.LockPicking.PickStrengthPerLevel),
-            
-            LockPickingForgiveness
-                .PerLevel(SkillData.LockPicking.SweetSpotRangePerLevel),
-            
+            LockPickingTimeBuff.PerLevel(SkillData.LockPicking.PickStrengthPerLevel),
+            LockPickingForgiveness.PerLevel(SkillData.LockPicking.SweetSpotRangePerLevel),
             LockPickingUseBuffElite
         ];
     }
@@ -196,14 +168,9 @@ public class SkillManagerExt
     {
         return
         [
-            SilentOpsIncMeleeSpeedBuff
-                .Max(SkillData.SilentOps.MeleeSpeedInc),
-            
-            SilentOpsReduceVolumeBuff
-                .Max(SkillData.SilentOps.VolumeReduction),
-            
-            SilentOpsSilencerCostRedBuff
-                .Max(SkillData.SilentOps.SilencerPriceReduction)
+            SilentOpsIncMeleeSpeedBuff.Max(SkillData.SilentOps.MeleeSpeedInc),
+            SilentOpsReduceVolumeBuff.Max(SkillData.SilentOps.VolumeReduction),
+            SilentOpsSilencerCostRedBuff.Max(SkillData.SilentOps.SilencerPriceReduction)
         ];
     }
 }

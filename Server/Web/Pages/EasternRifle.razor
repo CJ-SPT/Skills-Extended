@@ -45,39 +45,21 @@
                     <MudItem xs="6">
                         <MudNumericField
                             @bind-Value="ErgoMod"
-                            Label="Ergo Modifier"
+                            Label="Ergo Modifier Per Level"
                             Variant="Variant.Filled"
                             Step=".05M"
                             Min="0" Max="1"/>
                     </MudItem>
-
-                    <MudItem xs="6">
-                        <MudNumericField
-                            @bind-Value="ErgoModElite"
-                            Label="Ergo Modifier Elite"
-                            Variant="Variant.Filled"
-                            Step=".05M"
-                            Min="0" Max="1"/>
-                    </MudItem>
-
+                    
                     <MudItem xs="6">
                         <MudNumericField
                             @bind-Value="RecoilReduction"
-                            Label="Recoil Reduction"
+                            Label="Recoil Reduction Per Level"
                             Variant="Variant.Filled"
                             Step=".05M"
                             Min="0" Max="1"/>
                     </MudItem>
-
-                    <MudItem xs="6">
-                        <MudNumericField
-                            @bind-Value="RecoilReductionElite"
-                            Label="Recoil Reduction Elite"
-                            Variant="Variant.Filled"
-                            Step=".05M"
-                            Min="0" Max="1"/>
-                    </MudItem>
-
+                    
                     <MudItem xs="12">
                         <h1 Class="d-flex align-center justify-center mud-width-full py-2">Weapons</h1>
                         <MudDivider/>
@@ -168,25 +150,13 @@
         get => (decimal)Config.ErgoMod;
         set => Config.ErgoMod = (float)value;
     }
-
-    decimal ErgoModElite
-    {
-        get => (decimal)Config.ErgoModElite;
-        set => Config.ErgoModElite = (float)value;
-    }
-
+    
     decimal RecoilReduction
     {
         get => (decimal)Config.RecoilReduction;
         set => Config.RecoilReduction = (float)value;
     }
-
-    decimal RecoilReductionElite
-    {
-        get => (decimal)Config.RecoilReductionElite;
-        set => Config.RecoilReductionElite = (float)value;
-    }
-
+    
     string SelectedWeaponId;
     string NewWeaponId;
 

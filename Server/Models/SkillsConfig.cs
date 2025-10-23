@@ -11,6 +11,7 @@ public record SkillsConfig
     public required LockPickingConfig LockPicking { get; set; }
     public required ProneMovementConfig ProneMovement { get; set; }
     public required SilentOpsConfig SilentOps { get; set; }
+    
     public required StrengthConfig Strength { get; set; }
 }
 
@@ -25,38 +26,23 @@ public record BaseSubConfig
 
 public record FirstAidConfig : BaseSubConfig
 {
-    [JsonPropertyName("MEDKIT_USAGE_REDUCTION")]
+    [JsonPropertyName("MEDKIT_USAGE_REDUCTION_PER_LEVEL")]
     public required float MedkitUsageReduction { get; set; }
     
-    [JsonPropertyName("MEDKIT_USAGE_REDUCTION_ELITE")]
-    public required float MedkitUsageReductionElite { get; set; }
-    
-    [JsonPropertyName("MEDKIT_SPEED_BONUS")]
+    [JsonPropertyName("MEDKIT_SPEED_BONUS_PER_LEVEL")]
     public required float MedkitSpeedBonus { get; set; }
-    
-    [JsonPropertyName("MEDKIT_SPEED_BONUS_ELITE")]
-    public required float MedkitSpeedBonusElite { get; set; }
 }
 
 public record FieldMedicineConfig : BaseSubConfig
 {
-    [JsonPropertyName("SKILL_BONUS")]
+    [JsonPropertyName("SKILL_BONUS_PER_LEVEL")]
     public required float SkillBonus { get; set; }
     
-    [JsonPropertyName("SKILL_BONUS_ELITE")]
-    public required float SkillBonusElite { get; set; }
-    
-    [JsonPropertyName("DURATION_BONUS")]
+    [JsonPropertyName("DURATION_BONUS_PER_LEVEL")]
     public required float DurationBonus { get; set; }
     
-    [JsonPropertyName("DURATION_BONUS_ELITE")]
-    public required float DurationBonusElite { get; set; }
-    
-    [JsonPropertyName("POSITIVE_EFFECT_BONUS")]
+    [JsonPropertyName("POSITIVE_EFFECT_BONUS_PER_LEVEL")]
     public required float PositiveEffectBonus { get; set; }
-    
-    [JsonPropertyName("POSITIVE_EFFECT_BONUS_ELITE")]
-    public required float PositiveEffectBonusElite { get; set; }
 }
 
 public record WeaponConfig : BaseSubConfig
@@ -67,17 +53,11 @@ public record WeaponConfig : BaseSubConfig
     [JsonPropertyName("SKILL_SHARE_XP_RATIO")]
     public required float SkillShareXpRatio { get; set; }
     
-    [JsonPropertyName("ERGO_MOD")]
+    [JsonPropertyName("ERGO_MOD_PER_LEVEL")]
     public required float ErgoMod { get; set; }
 
-    [JsonPropertyName("ERGO_MOD_ELITE")]
-    public required float ErgoModElite { get; set; }
-
-    [JsonPropertyName("RECOIL_REDUCTION")]
+    [JsonPropertyName("RECOIL_REDUCTION_MOD_PER_LEVEL")]
     public required float RecoilReduction { get; set; }
-
-    [JsonPropertyName("RECOIL_REDUCTION_ELITE")]
-    public required float RecoilReductionElite { get; set; }
 
     [JsonPropertyName("WEAPONS")]
     public required HashSet<string> Weapons { get; set; }
@@ -97,13 +77,13 @@ public record LockPickingConfig
     [JsonPropertyName("ENABLED")]
     public required bool Enabled { get; set; }
 
-    [JsonPropertyName("PICK_STRENGTH")]
-    public required float PickStrength { get; set; }
+    [JsonPropertyName("PICK_STRENGTH_BASE")]
+    public required float PickStrengthBase { get; set; }
 
     [JsonPropertyName("PICK_STRENGTH_PER_LEVEL")]
     public required float PickStrengthPerLevel { get; set; }
 
-    [JsonPropertyName("SWEET_SPOT_RANGE")]
+    [JsonPropertyName("SWEET_SPOT_RANGE_BASE")]
     public required float SweetSpotRange { get; set; }
 
     [JsonPropertyName("SWEET_SPOT_RANGE_PER_LEVEL")]
@@ -127,28 +107,22 @@ public record LockPickingConfig
 
 public record ProneMovementConfig : BaseSubConfig
 {
-    [JsonPropertyName("MOVEMENT_SPEED_INCREASE_MAX")]
-    public required float MovementSpeedIncreaseMax { get; set; }
+    [JsonPropertyName("MOVEMENT_SPEED_INCREASE_PER_LEVEL")]
+    public required float MovementSpeedInc { get; set; }
 
-    [JsonPropertyName("MOVEMENT_SPEED_INCREASE_MAX_ELITE")]
-    public required float MovementSpeedIncreaseMaxElite { get; set; }
-
-    [JsonPropertyName("MOVEMENT_VOLUME_DECREASE_MAX")]
-    public required float MovementVolumeDecreaseMax { get; set; }
-
-    [JsonPropertyName("MOVEMENT_VOLUME_DECREASE_MAX_ELITE")]
-    public required float MovementVolumeDecreaseMaxElite { get; set; }
+    [JsonPropertyName("MOVEMENT_VOLUME_DECREASE_PER_LEVEL")]
+    public required float MovementVolumeDec { get; set; }
 }
 
 public record SilentOpsConfig : BaseSubConfig
 {
-    [JsonPropertyName("MELEE_SPEED_INCREASE")]
+    [JsonPropertyName("MELEE_SPEED_INCREASE_PER_LEVEL")]
     public required float MeleeSpeedIncrease { get; set; }
 
-    [JsonPropertyName("VOLUME_REDUCTION")]
+    [JsonPropertyName("VOLUME_REDUCTION_PER_LEVEL")]
     public required float VolumeReduction { get; set; }
 
-    [JsonPropertyName("SILENCER_PRICE_RED")]
+    [JsonPropertyName("SILENCER_PRICE_RED_PER_LEVEL")]
     public required float SilencerPriceReduction { get; set; }
 }
 
@@ -157,6 +131,6 @@ public record StrengthConfig
     [JsonPropertyName("ENABLED")]
     public required bool Enabled { get; set; }
     
-    [JsonPropertyName("COLLIDER_SPEED_BUFF")]
+    [JsonPropertyName("COLLIDER_SPEED_BUFF_PER_LEVEL")]
     public required float ColliderSpeedBuff { get; set; }
 }

@@ -45,34 +45,16 @@
                     <MudItem xs="6">
                         <MudNumericField
                             @bind-Value="ErgoMod"
-                            Label="Ergo Modifier"
+                            Label="Ergo Modifier Per Level"
                             Variant="Variant.Filled"
                             Step=".05M"
                             Min="0" Max="1"/>
                     </MudItem>
-
-                    <MudItem xs="6">
-                        <MudNumericField
-                            @bind-Value="ErgoModElite"
-                            Label="Ergo Modifier Elite"
-                            Variant="Variant.Filled"
-                            Step=".05M"
-                            Min="0" Max="1"/>
-                    </MudItem>
-
+                    
                     <MudItem xs="6">
                         <MudNumericField
                             @bind-Value="RecoilReduction"
-                            Label="Recoil Reduction"
-                            Variant="Variant.Filled"
-                            Step=".05M"
-                            Min="0" Max="1"/>
-                    </MudItem>
-
-                    <MudItem xs="6">
-                        <MudNumericField
-                            @bind-Value="RecoilReductionElite"
-                            Label="Recoil Reduction Elite"
+                            Label="Recoil Reduction Per Level"
                             Variant="Variant.Filled"
                             Step=".05M"
                             Min="0" Max="1"/>
@@ -168,23 +150,11 @@
         get => (decimal)Data.ErgoMod;
         set => Data.ErgoMod = (float)value;
     }
-
-    decimal ErgoModElite
-    {
-        get => (decimal)Data.ErgoModElite;
-        set => Data.ErgoModElite = (float)value;
-    }
-
+    
     decimal RecoilReduction
     {
         get => (decimal)Data.RecoilReduction;
         set => Data.RecoilReduction = (float)value;
-    }
-
-    decimal RecoilReductionElite
-    {
-        get => (decimal)Data.RecoilReductionElite;
-        set => Data.RecoilReductionElite = (float)value;
     }
 
     static string SelectedWeaponId;

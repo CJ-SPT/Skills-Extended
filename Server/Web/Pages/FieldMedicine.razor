@@ -28,56 +28,30 @@
                     <MudItem xs="6">
                         <MudNumericField
                             @bind-Value="SkillBonus"
-                            Label="Skill Bonus"
+                            Label="Skill Bonus Cap Increase Per Level"
                             Variant="Variant.Filled"
                             Step=".05M"
                             Min="0" Max="1"/>
                     </MudItem>
-
-                    <MudItem xs="6">
-                        <MudNumericField
-                            @bind-Value="SkillBonusElite"
-                            Label="Skill Bonus Elite"
-                            Variant="Variant.Filled"
-                            Step=".05M"
-                            Min="0" Max="1"/>
-                    </MudItem>
-    
+                    
                     <MudItem xs="6">
                         <MudNumericField
                             @bind-Value="DurationBonus"
-                            Label="Duration Bonus"
+                            Label="Duration Bonus Increase Per Level"
                             Variant="Variant.Filled"
                             Step=".05M"
                             Min="0" Max="1"/>
                     </MudItem>
-    
-                    <MudItem xs="6">
-                        <MudNumericField
-                            @bind-Value="DurationBonusElite"
-                            Label="Duration Bonus Elite"
-                            Variant="Variant.Filled"
-                            Step=".05M"
-                            Min="0" Max="1"/>
-                    </MudItem>
-
+                    
                     <MudItem xs="6">
                         <MudNumericField
                             @bind-Value="PositiveEffectBonus"
-                            Label="Positive Effect Bonus"
+                            Label="Positive Effect Bonus Per Level"
                             Variant="Variant.Filled"
                             Step=".05M"
                             Min="0" Max="1"/>
                     </MudItem>
-
-                    <MudItem xs="6">
-                        <MudNumericField
-                            @bind-Value="PositiveEffectBonusElite"
-                            Label="Positive Effect Bonus Elite"
-                            Variant="Variant.Filled"
-                            Step=".05M"
-                            Min="0" Max="1"/>
-                    </MudItem>
+                    
                 </MudGrid>
             </MudContainer>
         </MudPaper>
@@ -105,33 +79,15 @@
         set => Data.SkillBonus = (float)value;
     }
     
-    decimal SkillBonusElite
-    {
-        get => (decimal)Data.SkillBonusElite;
-        set => Data.SkillBonusElite = (float)value;
-    }
-    
     decimal DurationBonus
     {
         get => (decimal)Data.DurationBonus;
         set => Data.DurationBonus = (float)value;
     }
     
-    decimal DurationBonusElite
-    {
-        get => (decimal)Data.DurationBonusElite;
-        set => Data.DurationBonusElite = (float)value;
-    }
-    
     decimal PositiveEffectBonus
     {
         get => (decimal)Data.PositiveEffectBonus;
         set => Data.PositiveEffectBonus = (float)value;
-    }
-    
-    decimal PositiveEffectBonusElite
-    {
-        get => (decimal)Data.PositiveEffectBonusElite;
-        set => Data.PositiveEffectBonusElite = (float)value;
     }
 }
