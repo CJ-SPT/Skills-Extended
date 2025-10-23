@@ -10,7 +10,9 @@
       "Added better tooltips for some config editor fields",
       "Updated RU locale to be inline with the EN locale"
     ],
-    "BugFixes": []
+    "BugFixes": [
+      "Crafts should now exist for RU locales."
+    ]
   },
   {
     "Version": "2.0.2",
