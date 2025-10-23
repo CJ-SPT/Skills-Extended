@@ -7,6 +7,7 @@
     "Features": [],
     "Improvements": [
       "Massively simplified the config system, values should now all make sense and reflect correctly in-game",
+      "Added better tooltips for some config editor fields",
       "Updated RU locale to be inline with the EN locale"
     ],
     "BugFixes": []
