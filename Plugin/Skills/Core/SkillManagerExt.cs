@@ -168,9 +168,9 @@ public class SkillManagerExt
     {
         return
         [
-            SilentOpsIncMeleeSpeedBuff.Max(SkillData.SilentOps.MeleeSpeedInc),
-            SilentOpsReduceVolumeBuff.Max(SkillData.SilentOps.VolumeReduction),
-            SilentOpsSilencerCostRedBuff.Max(SkillData.SilentOps.SilencerPriceReduction)
+            SilentOpsIncMeleeSpeedBuff.PerLevel(SkillData.SilentOps.MeleeSpeedInc),
+            SilentOpsReduceVolumeBuff.PerLevel(SkillData.SilentOps.VolumeReduction),
+            SilentOpsSilencerCostRedBuff.PerLevel(SkillData.SilentOps.SilencerPriceReduction)
         ];
     }
 }
