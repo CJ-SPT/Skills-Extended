@@ -9,7 +9,9 @@
       "Massively simplified the config system, values should now all make sense and reflect correctly in-game",
       "Rebalance of many config values, these are subject to change and feedback",
       "Added better tooltips for some config editor fields",
-      "Updated RU locale to be inline with the EN locale"
+      "Updated RU locale to be inline with the EN locale",
+      "Base pick time before it breaks is now 1.50 seconds up from 1.25 seconds",
+      "Pick sweet spot range is now 3.75 degrees up from 3.50 degrees"
     ],
     "BugFixes": [
       "Crafts should now exist for RU locales",

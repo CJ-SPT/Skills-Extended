@@ -207,9 +207,9 @@
     },
     "LockPicking": {
         "ENABLED": true,
-        "PICK_STRENGTH_BASE": 1.25,
+        "PICK_STRENGTH_BASE": 1.50,
         "PICK_STRENGTH_PER_LEVEL": 0.025,
-        "SWEET_SPOT_RANGE_BASE": 3.5,
+        "SWEET_SPOT_RANGE_BASE": 3.75,
         "SWEET_SPOT_RANGE_PER_LEVEL": 0.015,
         "ATTEMPTS_BEFORE_BREAK": 3,
         "INSPECT_LOCK_XP_RATIO": 0.15,
