@@ -21,10 +21,6 @@ internal class SkillManagerConstructorPatch : ModulePatch
     public static void Prefix(SkillManager __instance)
     {
         __instance.SkillManagerExtended = new SkillManagerExt();
-        
-#if DEBUG
-        SkillsPlugin.Log.LogDebug("Created SkillManagerExt");        
-#endif
     }
     
     [PatchPostfix]
