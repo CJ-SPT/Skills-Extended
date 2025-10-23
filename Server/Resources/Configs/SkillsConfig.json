@@ -2,30 +2,23 @@
     "FirstAid": {        
         "ENABLED": true,
         "XP_PER_ACTION": 6.25,
-        "MEDKIT_USAGE_REDUCTION": 0.30,
-        "MEDKIT_USAGE_REDUCTION_ELITE": 0.50,
-        "MEDKIT_SPEED_BONUS": 0.35,
-        "MEDKIT_SPEED_BONUS_ELITE": 0.50
+        "MEDKIT_USAGE_REDUCTION_PER_LEVEL": 0.005,
+        "MEDKIT_SPEED_BONUS_PER_LEVEL": 0.006
     },
     "FieldMedicine": {        
         "ENABLED": true,
         "XP_PER_ACTION": 5.50,
-        "SKILL_BONUS": 0.20,
-        "SKILL_BONUS_ELITE": 0.35,
-        "DURATION_BONUS": 0.25,
-        "DURATION_BONUS_ELITE": 0.40,
-        "POSITIVE_EFFECT_BONUS": 0.20,
-        "POSITIVE_EFFECT_BONUS_ELITE": 0.35
+        "SKILL_BONUS_PER_LEVEL": 0.005,
+        "DURATION_BONUS_PER_LEVEL": 0.01,
+        "POSITIVE_EFFECT_BONUS_PER_LEVEL": 0.005
     },
     "NatoWeapons": {
         "ENABLED": true,
         "XP_PER_ACTION": 0.1275,
         "SKILL_SHARE_ENABLED": true,
         "SKILL_SHARE_XP_RATIO": 0.10,
-        "ERGO_MOD": 0.075,
-        "ERGO_MOD_ELITE": 0.125,
-        "RECOIL_REDUCTION": 0.075,
-        "RECOIL_REDUCTION_ELITE": 0.135,
+        "ERGO_MOD_PER_LEVEL": 0.006,
+        "RECOIL_REDUCTION_MOD_PER_LEVEL": 0.004,
         "WEAPONS": [
             "__CARBINES__",
             "5f2a9575926fd9352339381f",
@@ -119,10 +112,8 @@
         "XP_PER_ACTION": 0.1275,
         "SKILL_SHARE_ENABLED": true,
         "SKILL_SHARE_XP_RATIO": 0.10,
-        "ERGO_MOD": 0.0015,
-        "ERGO_MOD_ELITE": 0.05,
-        "RECOIL_REDUCTION": 0.002,
-        "RECOIL_REDUCTION_ELITE": 0.07,
+        "ERGO_MOD_PER_LEVEL": 0.004,
+        "RECOIL_REDUCTION_MOD_PER_LEVEL": 0.003,
         "WEAPONS": [
             "__CARBINES__",
             "644674a13d52156624001fbc",
@@ -215,9 +206,9 @@
     },
     "LockPicking": {
         "ENABLED": true,
-        "PICK_STRENGTH": 1.25,
+        "PICK_STRENGTH_BASE": 1.25,
         "PICK_STRENGTH_PER_LEVEL": 0.025,
-        "SWEET_SPOT_RANGE": 3.5,
+        "SWEET_SPOT_RANGE_BASE": 3.5,
         "SWEET_SPOT_RANGE_PER_LEVEL": 0.015,
         "ATTEMPTS_BEFORE_BREAK": 3,
         "INSPECT_LOCK_XP_RATIO": 0.15,
@@ -571,20 +562,18 @@
     "ProneMovement": {
         "ENABLED": true,
         "XP_PER_ACTION": 0.0025,
-        "MOVEMENT_SPEED_INCREASE_MAX": 0.30,
-        "MOVEMENT_SPEED_INCREASE_MAX_ELITE": 0.50,
-        "MOVEMENT_VOLUME_DECREASE_MAX": 0.35,
-        "MOVEMENT_VOLUME_DECREASE_MAX_ELITE": 0.60
+        "MOVEMENT_SPEED_INCREASE_PER_LEVEL": 0.006,
+        "MOVEMENT_VOLUME_DECREASE_PER_LEVEL": 0.008
     },
     "SilentOps": {
       "ENABLED": true,
       "XP_PER_ACTION": 3.75,
-      "MELEE_SPEED_INCREASE": 0.20,
-      "VOLUME_REDUCTION": 0.40,
-      "SILENCER_PRICE_RED": 0.25
+      "MELEE_SPEED_INCREASE_PER_LEVEL": 0.005,
+      "VOLUME_REDUCTION_PER_LEVEL": 0.01,
+      "SILENCER_PRICE_RED_PER_LEVEL": 0.005
     },
     "Strength": {
       "ENABLED": true,
-      "COLLIDER_SPEED_BUFF": 0.50
+      "COLLIDER_SPEED_BUFF_PER_LEVEL": 0.01
     }
 }

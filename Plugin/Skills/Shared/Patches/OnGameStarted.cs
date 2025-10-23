@@ -73,7 +73,7 @@ internal class OnGameStartedPatch : ModulePatch
                 return;
             }
             
-            var xpGain = SkillsPlugin.SkillData.FieldMedicine.FieldMedicineXpPerAction;
+            var xpGain = SkillsPlugin.SkillData.FieldMedicine.XpPerAction;
             
             Player.ExecuteSkill(() => skillMgrExt.FieldMedicineAction.Complete(xpGain));
 
@@ -90,7 +90,7 @@ internal class OnGameStartedPatch : ModulePatch
                 return;
             }
             
-            var xpGain = SkillsPlugin.SkillData.FirstAid.FirstAidXpPerAction;
+            var xpGain = SkillsPlugin.SkillData.FirstAid.XpPerAction;
             
             Player.ExecuteSkill(() => skillMgrExt.FirstAidAction.Complete(xpGain));
             

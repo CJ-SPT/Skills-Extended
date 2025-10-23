@@ -1,9 +1,21 @@
 [
   {
+    "Version": "2.0.3",
+    "CodeName": "Resurrection",
+    "ReleaseDate": "October 23, 2025",
+    "IsLatest": true,
+    "Features": [],
+    "Improvements": [
+      "Massively simplified the config system, values should now all make sense and reflect correctly in-game",
+      "Updated RU locale to be inline with the EN locale"
+    ],
+    "BugFixes": []
+  },
+  {
     "Version": "2.0.2",
     "CodeName": "Resurrection",
     "ReleaseDate": "October 22, 2025",
-    "IsLatest": true,
+    "IsLatest": false,
     "Features": [
       "Reintroduces custom achievements"
     ],

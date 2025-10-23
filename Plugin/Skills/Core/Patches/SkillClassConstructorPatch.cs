@@ -57,37 +57,29 @@ internal class SkillClassCtorPatch : ModulePatch
             
             case ESkillId.UsecArsystems:
                 buffs = skillMgrExt.UsecArBuffs();
-                actions =
-                [
+                actions = [
                     skillMgrExt.UsecRifleAction.Factor(0.5f)
                 ];
                 break;
             
             case ESkillId.BearAksystems:
                 buffs = skillMgrExt.BearAkBuffs();
-                actions =
-                [
+                actions = [
                     skillMgrExt.BearRifleAction.Factor(0.5f)
                 ];
                 break;
             
             case ESkillId.Lockpicking:
                 buffs = skillMgrExt.LockPickingBuffs();
-                actions = 
-                [
+                actions = [
                     skillMgrExt.LockPickAction.Factor(0.25f)
                 ];
                 break;
             
             case ESkillId.ProneMovement:
                 buffs = [
-                    skillManager.ProneMovementSpeed
-                        .Max(skillData.ProneMovement.MovementSpeedIncMax)
-                        .Elite(skillData.ProneMovement.MovementSpeedIncMaxElite),
-                
-                    skillManager.ProneMovementVolume
-                        .Max(skillData.ProneMovement.MovementVolumeDecMax)
-                        .Elite(skillData.ProneMovement.MovementVolumeDecMaxElite)
+                    skillManager.ProneMovementSpeed.PerLevel(skillData.ProneMovement.MovementSpeedInc),
+                    skillManager.ProneMovementVolume.PerLevel(skillData.ProneMovement.MovementVolumeDec)
                 ];
                 actions = [
                     skillManager.ProneAction.Factor(0.25f)
@@ -118,14 +110,8 @@ internal class SkillClassCtorPatch : ModulePatch
         
         if (id == ESkillId.Strength)
         {
-            buffList.Add(
-                skillMgrExt.StrengthBushSpeedIncBuff
-                    .Max(skillData.Strength.ColliderSpeedBuff)
-                );
-            
-            buffList.Add(
-                skillMgrExt.StrengthBushSpeedIncBuffElite
-            );
+            buffList.Add(skillMgrExt.StrengthBushSpeedIncBuff.PerLevel(skillData.Strength.ColliderSpeedBuff));
+            buffList.Add(skillMgrExt.StrengthBushSpeedIncBuffElite);
         }
         
         buffs = buffList.ToArray();

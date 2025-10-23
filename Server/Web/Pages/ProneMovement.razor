@@ -33,16 +33,7 @@
                             Step=".05M"
                             Min="0" Max="1"/>
                     </MudItem>
-
-                    <MudItem xs="6">
-                        <MudNumericField
-                            @bind-Value="SpeedIncreaseElite"
-                            Label="Movement Speed Increase Elite"
-                            Variant="Variant.Filled"
-                            Step=".05M"
-                            Min="0" Max="1"/>
-                    </MudItem>
-
+                    
                     <MudItem xs="6">
                         <MudNumericField
                             @bind-Value="VolumeDecrease"
@@ -51,15 +42,7 @@
                             Step=".05M"
                             Min="0" Max="1"/>
                     </MudItem>
-
-                    <MudItem xs="6">
-                        <MudNumericField
-                            @bind-Value="VolumeDecreaseElite"
-                            Label="Volume Decrease Elite"
-                            Variant="Variant.Filled"
-                            Step=".05M"
-                            Min="0" Max="1"/>
-                    </MudItem>
+                    
                 </MudGrid>
             </MudContainer>
         </MudPaper>
@@ -84,25 +67,13 @@
 
     decimal SpeedIncrease
     {
-        get => (decimal)Data.MovementSpeedIncreaseMax;
-        set => Data.MovementSpeedIncreaseMax = (float)value;
-    }
-    
-    decimal SpeedIncreaseElite
-    {
-        get => (decimal)Data.MovementSpeedIncreaseMaxElite;
-        set => Data.MovementSpeedIncreaseMaxElite = (float)value;
+        get => (decimal)Data.MovementSpeedInc;
+        set => Data.MovementSpeedInc = (float)value;
     }
     
     decimal VolumeDecrease
     {
-        get => (decimal)Data.MovementVolumeDecreaseMax;
-        set => Data.MovementVolumeDecreaseMax = (float)value;
-    }
-    
-    decimal VolumeDecreaseElite
-    {
-        get => (decimal)Data.MovementVolumeDecreaseMaxElite;
-        set => Data.MovementVolumeDecreaseMaxElite = (float)value;
+        get => (decimal)Data.MovementVolumeDec;
+        set => Data.MovementVolumeDec = (float)value;
     }
 }

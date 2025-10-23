@@ -36,19 +36,13 @@ public struct FirstAidData
     public bool Enabled;
 
     [JsonProperty("XP_PER_ACTION")] 
-    public float FirstAidXpPerAction;
+    public float XpPerAction;
 
-    [JsonProperty("MEDKIT_USAGE_REDUCTION")]
+    [JsonProperty("MEDKIT_USAGE_REDUCTION_PER_LEVEL")]
     public float MedkitUsageReduction;
-
-    [JsonProperty("MEDKIT_USAGE_REDUCTION_ELITE")]
-    public float MedkitUsageReductionElite;
-
-    [JsonProperty("MEDKIT_SPEED_BONUS")] 
+    
+    [JsonProperty("MEDKIT_SPEED_BONUS_PER_LEVEL")] 
     public float ItemSpeedBonus;
-
-    [JsonProperty("MEDKIT_SPEED_BONUS_ELITE")]
-    public float ItemSpeedBonusElite;
 }
 
 public struct FieldMedicineData
@@ -57,25 +51,16 @@ public struct FieldMedicineData
     public bool Enabled;
 
     [JsonProperty("XP_PER_ACTION")] 
-    public float FieldMedicineXpPerAction;
+    public float XpPerAction;
 
-    [JsonProperty("SKILL_BONUS")] 
+    [JsonProperty("SKILL_BONUS_PER_LEVEL")] 
     public float SkillBonus;
-
-    [JsonProperty("SKILL_BONUS_ELITE")] 
-    public float SkillBonusElite;
-
-    [JsonProperty("DURATION_BONUS")] 
+    
+    [JsonProperty("DURATION_BONUS_PER_LEVEL")] 
     public float DurationBonus;
 
-    [JsonProperty("DURATION_BONUS_ELITE")] 
-    public float DurationBonusElite;
-
-    [JsonProperty("POSITIVE_EFFECT_BONUS")]
+    [JsonProperty("POSITIVE_EFFECT_BONUS_PER_LEVEL")]
     public float PositiveEffectChanceBonus;
-
-    [JsonProperty("POSITIVE_EFFECT_BONUS_ELITE")]
-    public float PositiveEffectChanceBonusElite;
 }
 
 public struct WeaponSkillData
@@ -85,27 +70,21 @@ public struct WeaponSkillData
 
     [JsonProperty("XP_PER_ACTION")] 
     public float XpPerAction;
-
-    [JsonProperty("ERGO_MOD")] 
-    public float ErgoMod;
-
-    [JsonProperty("ERGO_MOD_ELITE")] 
-    public float ErgoModElite;
-
-    [JsonProperty("RECOIL_REDUCTION")] 
-    public float RecoilReduction;
-
-    [JsonProperty("RECOIL_REDUCTION_ELITE")]
-    public float RecoilReductionElite;
-
+    
     [JsonProperty("SKILL_SHARE_ENABLED")] 
     public bool SkillShareEnabled;
 
     [JsonProperty("SKILL_SHARE_XP_RATIO")] 
     public float SkillShareXpRatio;
 
+    [JsonProperty("ERGO_MOD_PER_LEVEL")] 
+    public float ErgoMod;
+
+    [JsonProperty("RECOIL_REDUCTION_MOD_PER_LEVEL")] 
+    public float RecoilReduction;
+    
     [JsonProperty("WEAPONS")] 
-    public List<string> Weapons;
+    public HashSet<string> Weapons;
 }
 
 public struct LockPickingData
@@ -113,14 +92,14 @@ public struct LockPickingData
     [JsonProperty("ENABLED")] 
     public bool Enabled;
 
-    [JsonProperty("PICK_STRENGTH")] 
-    public float PickStrength;
+    [JsonProperty("PICK_STRENGTH_BASE")] 
+    public float PickStrengthBase;
 
     [JsonProperty("PICK_STRENGTH_PER_LEVEL")]
     public float PickStrengthPerLevel;
 
-    [JsonProperty("SWEET_SPOT_RANGE")] 
-    public float SweetSpotRange;
+    [JsonProperty("SWEET_SPOT_RANGE_BASE")] 
+    public float SweetSpotRangeBase;
 
     [JsonProperty("SWEET_SPOT_RANGE_PER_LEVEL")]
     public float SweetSpotRangePerLevel;
@@ -183,17 +162,11 @@ public struct ProneMovementData
     [JsonProperty("XP_PER_ACTION")] 
     public float XpPerAction;
 
-    [JsonProperty("MOVEMENT_SPEED_INCREASE_MAX")]
-    public float MovementSpeedIncMax;
+    [JsonProperty("MOVEMENT_SPEED_INCREASE_PER_LEVEL")]
+    public float MovementSpeedInc;
 
-    [JsonProperty("MOVEMENT_SPEED_INCREASE_MAX_ELITE")]
-    public float MovementSpeedIncMaxElite;
-
-    [JsonProperty("MOVEMENT_VOLUME_DECREASE_MAX")]
-    public float MovementVolumeDecMax;
-
-    [JsonProperty("MOVEMENT_VOLUME_DECREASE_MAX_ELITE")]
-    public float MovementVolumeDecMaxElite;
+    [JsonProperty("MOVEMENT_VOLUME_DECREASE_PER_LEVEL")]
+    public float MovementVolumeDec;
 }
 
 public struct SilentOpsData
@@ -204,13 +177,13 @@ public struct SilentOpsData
     [JsonProperty("XP_PER_ACTION")] 
     public float XpPerAction;
 
-    [JsonProperty("MELEE_SPEED_INCREASE")] 
+    [JsonProperty("MELEE_SPEED_INCREASE_PER_LEVEL")] 
     public float MeleeSpeedInc;
 
-    [JsonProperty("VOLUME_REDUCTION")] 
+    [JsonProperty("VOLUME_REDUCTION_PER_LEVEL")] 
     public float VolumeReduction;
 
-    [JsonProperty("SILENCER_PRICE_RED")] 
+    [JsonProperty("SILENCER_PRICE_RED_PER_LEVEL")] 
     public float SilencerPriceReduction;
 }
 
@@ -219,6 +192,6 @@ public struct StrengthData
     [JsonProperty("ENABLED")] 
     public bool Enabled;
 
-    [JsonProperty("COLLIDER_SPEED_BUFF")] 
+    [JsonProperty("COLLIDER_SPEED_BUFF_PER_LEVEL")] 
     public float ColliderSpeedBuff;
 }
