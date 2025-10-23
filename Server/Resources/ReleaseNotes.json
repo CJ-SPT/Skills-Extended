@@ -11,11 +11,11 @@
       "Added better tooltips for some config editor fields",
       "Updated RU locale to be inline with the EN locale",
       "Base pick time before it breaks is now 1.50 seconds up from 1.25 seconds",
-      "Pick sweet spot range is now 3.75 degrees up from 3.50 degrees"
+      "Pick sweet spot range is now 3.75 degrees up from 3.50 degrees",
+      "Added AK-50 to the NATO weapons list"
     ],
     "BugFixes": [
-      "Crafts should now exist for RU locales",
-      "Added AK-50 to the NATO weapons list"
+      "Crafts should now exist for RU locales"
     ]
   },
   {
