@@ -11,7 +11,8 @@
       "Updated RU locale to be inline with the EN locale"
     ],
     "BugFixes": [
-      "Crafts should now exist for RU locales."
+      "Crafts should now exist for RU locales",
+      "Added AK-50 to the NATO weapons list"
     ]
   },
   {
