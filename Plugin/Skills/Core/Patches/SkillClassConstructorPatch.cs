@@ -39,73 +39,68 @@ internal class SkillClassCtorPatch : ModulePatch
         var skillData = SkillsPlugin.SkillData;
         var skillMgrExt = skillManager.SkillManagerExtended;
         
-        if (id == ESkillId.FirstAid)
+        switch (id)
         {
-            buffs = skillMgrExt.FirstAidBuffs();
-            actions = [
-                skillMgrExt.FirstAidAction.Factor(0.35f)
-            ];
-        }
-        
-        if (id == ESkillId.FieldMedicine)
-        {
-            buffs = skillMgrExt.FieldMedicineBuffs();
-            actions = [
-                skillMgrExt.FieldMedicineAction.Factor(0.35f)
-            ];
-        }
-        
-        if (id == ESkillId.UsecArsystems)
-        {
-            buffs = skillMgrExt.UsecArBuffs();
-            actions =
-            [
-                skillMgrExt.UsecRifleAction.Factor(0.5f)
-            ];
-        }
-        
-        if (id == ESkillId.BearAksystems)
-        {
-            buffs = skillMgrExt.BearAkBuffs();
-            actions =
-            [
-                skillMgrExt.BearRifleAction.Factor(0.5f)
-            ];
-        }
-        
-        if (id == ESkillId.Lockpicking)
-        {
-            buffs = skillMgrExt.LockPickingBuffs();
-            actions = 
-            [
-                skillMgrExt.LockPickAction.Factor(0.25f)
-            ];
-        }
-        
-        if (id == ESkillId.ProneMovement)
-        {
-            buffs = [
-                skillManager.ProneMovementSpeed
-                    .Max(skillData.ProneMovement.MovementSpeedIncMax)
-                    .Elite(skillData.ProneMovement.MovementSpeedIncMaxElite),
+            case ESkillId.FirstAid:
+                buffs = skillMgrExt.FirstAidBuffs();
+                actions = [
+                    skillMgrExt.FirstAidAction.Factor(0.35f)
+                ];
+                break;
+            
+            case ESkillId.FieldMedicine:
+                buffs = skillMgrExt.FieldMedicineBuffs();
+                actions = [
+                    skillMgrExt.FieldMedicineAction.Factor(0.35f)
+                ];
+                break;
+            
+            case ESkillId.UsecArsystems:
+                buffs = skillMgrExt.UsecArBuffs();
+                actions =
+                [
+                    skillMgrExt.UsecRifleAction.Factor(0.5f)
+                ];
+                break;
+            
+            case ESkillId.BearAksystems:
+                buffs = skillMgrExt.BearAkBuffs();
+                actions =
+                [
+                    skillMgrExt.BearRifleAction.Factor(0.5f)
+                ];
+                break;
+            
+            case ESkillId.Lockpicking:
+                buffs = skillMgrExt.LockPickingBuffs();
+                actions = 
+                [
+                    skillMgrExt.LockPickAction.Factor(0.25f)
+                ];
+                break;
+            
+            case ESkillId.ProneMovement:
+                buffs = [
+                    skillManager.ProneMovementSpeed
+                        .Max(skillData.ProneMovement.MovementSpeedIncMax)
+                        .Elite(skillData.ProneMovement.MovementSpeedIncMaxElite),
                 
-                skillManager.ProneMovementVolume
-                    .Max(skillData.ProneMovement.MovementVolumeDecMax)
-                    .Elite(skillData.ProneMovement.MovementVolumeDecMaxElite)
-            ];
-            actions = 
-            [
-                skillManager.ProneAction.Factor(0.25f)
-            ];
-        }
-        
-        if (id == ESkillId.SilentOps)
-        {
-            buffs = skillMgrExt.SilentOpsBuffs();
-            actions = [
-                skillMgrExt.SilentOpsMeleeAction.Factor(0.75f),
-                skillMgrExt.SilentOpsGunAction.Factor(0.50f)
-            ];
+                    skillManager.ProneMovementVolume
+                        .Max(skillData.ProneMovement.MovementVolumeDecMax)
+                        .Elite(skillData.ProneMovement.MovementVolumeDecMaxElite)
+                ];
+                actions = [
+                    skillManager.ProneAction.Factor(0.25f)
+                ];
+                break;
+            
+            case ESkillId.SilentOps:
+                buffs = skillMgrExt.SilentOpsBuffs();
+                actions = [
+                    skillMgrExt.SilentOpsMeleeAction.Factor(0.75f),
+                    skillMgrExt.SilentOpsGunAction.Factor(0.50f)
+                ];
+                break;
         }
     }
 
