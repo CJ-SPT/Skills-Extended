@@ -15,7 +15,12 @@ public static class SkillsExtendedPatcher
     private static TypeDefinition _skillManager;
 
     private static readonly string PatcherPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-    private static readonly string PluginPath = Path.Combine(PatcherPath, "..", "plugins", "SkillsExtended", "SkillsExtended.dll");
+
+#if DEBUG
+    private static readonly string DumpedAsmPath = Path.Combine(PatcherPath, "..", "DumpedAssemblies", "EscapeFromTarkov");
+#endif
+
+	private static readonly string PluginPath = Path.Combine(PatcherPath, "..", "plugins", "SkillsExtended", "SkillsExtended.dll");
     
     public static void Patch(ref AssemblyDefinition assembly)
     {
@@ -27,6 +32,15 @@ public static class SkillsExtendedPatcher
             PatchSkillManager(ref assembly);
             
             Logger.CreateLogSource("Skills Extended PrePatch").LogInfo("Patching Complete!");
+
+#if DEBUG
+            if (!Directory.Exists(DumpedAsmPath))
+                Directory.CreateDirectory(DumpedAsmPath);
+            var dumpPath = Path.Combine(DumpedAsmPath, "Assembly-CSharp.dll");
+            assembly.Write(dumpPath);
+            Logger.CreateLogSource("Skills Extended PrePatch").LogInfo("Dumped Patched Assembly to: " + dumpPath);
+#endif
+
         } catch (Exception ex)
         {
             // Get stack trace for the exception with source file information

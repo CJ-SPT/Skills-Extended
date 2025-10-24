@@ -22,7 +22,7 @@
 		<!-- Tarkov -->
 		<Reference Include="Assembly-CSharp">
 			<HintPath>$(TarkovDumpedAssemblyDir)Assembly-CSharp.dll</HintPath>
-			<Private>True</Private>
+			<Private>False</Private>
 		</Reference>
 		<Reference Include="ItemComponent.Types">
 			<HintPath>$(TarkovManagedDir)ItemComponent.Types.dll</HintPath>
