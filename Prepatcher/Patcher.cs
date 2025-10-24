@@ -20,7 +20,7 @@ public static class SkillsExtendedPatcher
     private static readonly string DumpedAsmPath = Path.Combine(PatcherPath, "..", "DumpedAssemblies", "EscapeFromTarkov");
 #endif
 
-	private static readonly string PluginPath = Path.Combine(PatcherPath, "..", "plugins", "SkillsExtended", "SkillsExtended.dll");
+    private static readonly string PluginPath = Path.Combine(PatcherPath, "..", "plugins", "SkillsExtended", "SkillsExtended.dll");
     
     public static void Patch(ref AssemblyDefinition assembly)
     {
@@ -94,7 +94,10 @@ public static class SkillsExtendedPatcher
         
         // Existing skills
         StrengthBuffs(assembly, buffEnums, ref index);
-    }
+        EnduranceBuffs(assembly, buffEnums, ref index);
+        VitalityBuffs(assembly, buffEnums, ref index);
+        HealthBuffs(assembly, buffEnums, ref index);
+	}
 
     private static void FirstAidBuffs(AssemblyDefinition assembly, TypeDefinition buffEnum, ref int index)
     {
@@ -264,12 +267,88 @@ public static class SkillsExtendedPatcher
             "StrengthColliderSpeedBuffElite", 
             buffEnum, 
             index++);
-        
+
+        var strArmsHP = CreateNewEnum(
+            ref assembly, 
+            "StrengthArmsHPBuff", 
+            "StrengthArmsHPBuff", 
+            buffEnum, 
+            index++);
+
+        var strArmsHPElite = CreateNewEnum(
+            ref assembly, 
+            "StrengthArmsHPBuffElite", 
+            "StrengthArmsHPBuffElite", 
+            buffEnum, 
+            index++);
+
         buffEnum.Fields.Add(incBushSpeed);
         buffEnum.Fields.Add(incBushSpeedElite);
+        buffEnum.Fields.Add(strArmsHP);
+        buffEnum.Fields.Add(strArmsHPElite);
     }
-    
-    private static void PatchSkillManager(ref AssemblyDefinition assembly)
+
+    private static void EnduranceBuffs(AssemblyDefinition assembly, TypeDefinition buffEnum, ref int index)
+    {
+        var endLegsHP = CreateNewEnum(
+            ref assembly, 
+            "EnduranceLegsHPBuff", 
+            "EnduranceLegsHPBuff", 
+            buffEnum, 
+            index++);
+
+        var endLegsHPElite = CreateNewEnum(
+            ref assembly, 
+            "EnduranceLegsHPBuffElite", 
+            "EnduranceLegsHPBuffElite", 
+            buffEnum, 
+            index++);
+
+        buffEnum.Fields.Add(endLegsHP);
+        buffEnum.Fields.Add(endLegsHPElite);
+	}
+
+    private static void VitalityBuffs(AssemblyDefinition assembly, TypeDefinition buffEnum, ref int index)
+    {
+        var vitTorsoHP = CreateNewEnum(
+            ref assembly, 
+            "VitalityTorsoHPBuff", 
+            "VitalityTorsoHPBuff", 
+            buffEnum, 
+            index++);
+
+        var vitTorsoHPElite = CreateNewEnum(
+            ref assembly, 
+            "VitalityTorsoHPBuffElite", 
+            "VitalityTorsoHPBuffElite", 
+            buffEnum, 
+            index++);
+
+        buffEnum.Fields.Add(vitTorsoHP);
+        buffEnum.Fields.Add(vitTorsoHPElite);
+	}
+
+    private static void HealthBuffs(AssemblyDefinition assembly, TypeDefinition buffEnum, ref int index)
+    {
+        var hltHeadHP = CreateNewEnum(
+            ref assembly,
+            "HealthHeadHPBuff",
+            "HealthHeadHPBuff",
+            buffEnum,
+            index++);
+
+        var hltHeadHPElite = CreateNewEnum(
+            ref assembly,
+            "HealthHeadHPBuffElite",
+            "HealthHeadHPBuffElite",
+            buffEnum,
+            index++);
+
+        buffEnum.Fields.Add(hltHeadHP);
+        buffEnum.Fields.Add(hltHeadHPElite);
+    }
+
+	private static void PatchSkillManager(ref AssemblyDefinition assembly)
     {
         var skillsExtendedModule = ModuleDefinition.ReadModule(PluginPath);
         var skillManagerExtendedType = skillsExtendedModule.GetType("SkillsExtended.Skills.Core.SkillManagerExt");
