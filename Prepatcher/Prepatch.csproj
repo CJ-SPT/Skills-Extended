@@ -1,38 +1,56 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
-    <AssemblyName>SkillsExtended_PrePatch</AssemblyName>
-    <Version>2.1.0</Version>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <LangVersion>latest</LangVersion>
-    <Configurations>Debug;Release;BETA</Configurations>
-    <RootNamespace>Skills_Extended_Patcher</RootNamespace>
-  </PropertyGroup>
-  
-  <ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
-    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="all" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <Reference Include="0Harmony">
-      <HintPath>..\..\..\Bepinex\Core\0Harmony.dll</HintPath>
-    </Reference>
-    <Reference Include="BepInEx">
-      <HintPath>..\..\..\Bepinex\Core\BepInEx.dll</HintPath>
-    </Reference>
-    <Reference Include="Mono.Cecil">
-      <HintPath>..\..\..\Bepinex\Core\Mono.Cecil.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine">
-      <HintPath>..\..\..\EscapeFromTarkov_data\managed\unityEngine.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.CoreModule">
-      <HintPath>..\..\..\EscapeFromTarkov_data\managed\UnityEngine.CoreModule.dll</HintPath>
-    </Reference>
-  </ItemGroup>
+	<PropertyGroup>
+		<TargetFramework>netstandard2.1</TargetFramework>
+		<AssemblyName>SkillsExtended_PrePatch</AssemblyName>
+		<Version>2.1.0</Version>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<LangVersion>latest</LangVersion>
+		<Configurations>Debug;Release;BETA</Configurations>
+		<RootNamespace>Skills_Extended_Patcher</RootNamespace>
+	</PropertyGroup>
+	
+	<ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
+		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="all" />
+	</ItemGroup>
+
+	<PropertyGroup>
+		<TarkovDir Condition=" '$(TarkovDir)' == '' ">$(SolutionDir)..\..\</TarkovDir>
+		<TarkovPluginsSPTDir>$(TarkovDir)BepInEx\plugins\spt\</TarkovPluginsSPTDir>
+		<TarkovManagedDir>$(TarkovDir)EscapeFromTarkov_Data\Managed\</TarkovManagedDir>
+		<TarkovBepInExDir>$(TarkovDir)BepInEx\</TarkovBepInExDir>
+		<TarkovBepInExCoreDir>$(TarkovBepInExDir)core\</TarkovBepInExCoreDir>
+		<TarkovBepInExPatchersDir>$(TarkovBepInExDir)patchers\</TarkovBepInExPatchersDir>
+		<TarkovDumpedAssemblyDir>$(TarkovDir)BepInEx\DumpedAssemblies\EscapeFromTarkov\</TarkovDumpedAssemblyDir>
+	</PropertyGroup>
+	
+	<ItemGroup>
+		<!-- Harmony/Bepinex -->
+		<Reference Include="0Harmony">
+			<HintPath>$(TarkovBepInExCoreDir)0Harmony.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="BepinEx">
+			<HintPath>$(TarkovBepInExCoreDir)BepInEx.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="Mono.Cecil">
+			<HintPath>$(TarkovBepInExCoreDir)Mono.Cecil.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+
+		<!-- Unity -->
+		<Reference Include="UnityEngine">
+			<HintPath>$(TarkovManagedDir)UnityEngine.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="UnityEngine.CoreModule">
+			<HintPath>$(TarkovManagedDir)UnityEngine.CoreModule.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+	</ItemGroup>
 
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-		<Exec Command="copy &quot;$(TargetPath)&quot; &quot;..\..\..\BepInEx\patchers\$(TargetName).dll&quot;&#xD;&#xA;if $(ConfigurationName) == Debug (&#xD;&#xA;    copy &quot;$(ProjectDir)$(OutDir)$(TargetName).pdb&quot; &quot;..\..\..\BepInEx\BepInEx\patchers\$(TargetName).pdb&quot;&#xD;&#xA;) else (&#xD;&#xA;    del &quot;..\..\..\BepInEx\BepInEx\patchers\$(TargetName).pdb&quot;&#xD;&#xA;)&#xD;&#xA;&#xD;&#xA;del &quot;..\..\..\BepInEx\config\com.dirtbikercj.template.cfg&quot;" />
+		<Exec Command="copy &quot;$(TargetPath)&quot; &quot;$(TarkovBepInExPatchersDir)$(TargetName).dll&quot;&#xD;&#xA;if $(ConfigurationName) == Debug (&#xD;&#xA;    copy &quot;$(ProjectDir)$(OutDir)$(TargetName).pdb&quot; &quot;$(TarkovBepInExPatchersDir)$(TargetName).pdb&quot;&#xD;&#xA;) else (&#xD;&#xA;    del &quot;$(TarkovBepInExPatchersDir)$(TargetName).pdb&quot;&#xD;&#xA;)&#xD;&#xA;&#xD;&#xA;del &quot;$(TarkovBepInExDir)config\com.dirtbikercj.template.cfg&quot;" />
 	</Target>
 </Project>

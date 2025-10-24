@@ -30,117 +30,117 @@
 		</Reference>
 		<Reference Include="bsg.console.core">
 			<HintPath>$(TarkovManagedDir)bsg.console.core.dll</HintPath>
-			<Private>True</Private>
+			<Private>False</Private>
 		</Reference>
 		
 		<!-- Unity -->
 		<Reference Include="Comfort">
 			<HintPath>$(TarkovManagedDir)Comfort.dll</HintPath>
-			<Private>True</Private>
+			<Private>False</Private>
 		</Reference>
 		<Reference Include="Comfort.Unity">
 			<HintPath>$(TarkovManagedDir)Comfort.Unity.dll</HintPath>
-			<Private>True</Private>
+			<Private>False</Private>
 		</Reference>
 		<Reference Include="Newtonsoft.Json">
 			<HintPath>$(TarkovManagedDir)Newtonsoft.Json.dll</HintPath>
-			<Private>True</Private>
+			<Private>False</Private>
 		</Reference>
 		<Reference Include="Sirenix.Serialization">
 			<HintPath>$(TarkovManagedDir)Sirenix.Serialization.dll</HintPath>
-			<Private>True</Private>
+			<Private>False</Private>
 		</Reference>
 		<Reference Include="Unity.TextMeshPro">
 			<HintPath>$(TarkovManagedDir)Unity.TextMeshPro.dll</HintPath>
-			<Private>True</Private>
+			<Private>False</Private>
 		</Reference>
 		<Reference Include="Unity.Postprocessing.Runtimee">
 			<HintPath>$(TarkovManagedDir)Unity.Postprocessing.Runtime.dll</HintPath>
-			<Private>True</Private>
+			<Private>False</Private>
 		</Reference>
 		<Reference Include="UnityEngine">
 			<HintPath>$(TarkovManagedDir)UnityEngine.dll</HintPath>
-			<Private>True</Private>
+			<Private>False</Private>
 		</Reference>
 		<Reference Include="UnityEngine.CoreModule">
 			<HintPath>$(TarkovManagedDir)UnityEngine.CoreModule.dll</HintPath>
-			<Private>True</Private>
+			<Private>False</Private>
 		</Reference>
 		<Reference Include="UnityEngine.PhysicModule">
 			<HintPath>$(TarkovManagedDir)UnityEngine.PhysicsModule.dll</HintPath>
-			<Private>True</Private>
+			<Private>False</Private>
 		</Reference>
 		<Reference Include="UnityEngine.ImageConversionModule">
 			<HintPath>$(TarkovManagedDir)UnityEngine.ImageConversionModule.dll</HintPath>
-			<Private>True</Private>
+			<Private>False</Private>
 		</Reference>
 		<Reference Include="UnityEngine.InputLegacyModule">
 			<HintPath>$(TarkovManagedDir)UnityEngine.InputLegacyModule.dll</HintPath>
-			<Private>True</Private>
+			<Private>False</Private>
 		</Reference>
 		<Reference Include="UnityEngine.IMGUIModule">
 			<HintPath>$(TarkovManagedDir)UnityEngine.IMGUIModule.dll</HintPath>
-			<Private>True</Private>
+			<Private>False</Private>
 		</Reference>
 		<Reference Include="UnityEngine.TextRenderingModule">
 			<HintPath>$(TarkovManagedDir)UnityEngine.TextRenderingModule.dll</HintPath>
-			<Private>True</Private>
+			<Private>False</Private>
 		</Reference>
 		<Reference Include="UnityEngine.UI">
 			<HintPath>$(TarkovManagedDir)UnityEngine.UI.dll</HintPath>
-			<Private>True</Private>
+			<Private>False</Private>
 		</Reference>
 		<Reference Include="UnityEngine.UIModule">
 			<HintPath>$(TarkovManagedDir)UnityEngine.UIModule.dll</HintPath>
-			<Private>True</Private>
+			<Private>False</Private>
 		</Reference>
 		<Reference Include="UnityEngine.AIModule">
 			<HintPath>$(TarkovManagedDir)UnityEngine.AIModule.dll</HintPath>
-			<Private>True</Private>
+			<Private>False</Private>
 		</Reference>
 		<Reference Include="UnityEngine.ParticleSystemModule">
 			<HintPath>$(TarkovManagedDir)UnityEngine.ParticleSystemModule.dll</HintPath>
-			<Private>True</Private>
+			<Private>False</Private>
 		</Reference>
 		<Reference Include="UnityEngine.AssetBundleModule">
 			<HintPath>$(TarkovManagedDir)UnityEngine.AssetBundleModule.dll</HintPath>
-			<Private>True</Private>
+			<Private>False</Private>
 		</Reference>
 		<Reference Include="UnityEngine.AudioModule">
 			<HintPath>$(TarkovManagedDir)UnityEngine.AudioModule.dll</HintPath>
-			<Private>True</Private>
+			<Private>False</Private>
 		</Reference>
 		<Reference Include="UnityEngine.AnimationModule">
 			<HintPath>$(TarkovManagedDir)UnityEngine.AnimationModule.dll</HintPath>
-			<Private>True</Private>
+			<Private>False</Private>
 		</Reference>
 
 		<!-- Harmony/Bepinex -->
 		<Reference Include="0Harmony">
 			<HintPath>$(TarkovBepInExCoreDir)0Harmony.dll</HintPath>
-			<Private>True</Private>
+			<Private>False</Private>
 		</Reference>
 		<Reference Include="BepinEx">
 			<HintPath>$(TarkovBepInExCoreDir)BepInEx.dll</HintPath>
-			<Private>True</Private>
+			<Private>False</Private>
 		</Reference>
 		<Reference Include="BepinEx.Preloader">
 			<HintPath>$(TarkovBepInExCoreDir)BepInEx.Preloader.dll</HintPath>
-			<Private>True</Private>
+			<Private>False</Private>
 		</Reference>
 
 		<!-- SPT -->
 		<Reference Include="spt-reflection">
 			<HintPath>$(TarkovPluginsSPTDir)spt-reflection.dll</HintPath>
-			<Private>True</Private>
+			<Private>False</Private>
 		</Reference>
 		<Reference Include="spt-custom">
 			<HintPath>$(TarkovPluginsSPTDir)spt-custom.dll</HintPath>
-			<Private>True</Private>
+			<Private>False</Private>
 		</Reference>
 		<Reference Include="spt-common">
 			<HintPath>$(TarkovPluginsSPTDir)spt-common.dll</HintPath>
-			<Private>True</Private>
+			<Private>False</Private>
 		</Reference>
 
 	</ItemGroup>
