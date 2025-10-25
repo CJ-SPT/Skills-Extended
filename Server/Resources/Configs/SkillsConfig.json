@@ -557,6 +557,16 @@
                 "trunk_Sandbox_roads_00032": 1,
                 "door_Sandbox_Area_01_indoor_00008": 1,
                 "door_Sandbox_Area_05_indoor_00002": 1
+            },
+            "Labyrinth": {
+                "door_Labyrinth_Area_Spawn_01_00003": 3,
+                "door_Labyrinth_Temp_Albert_00002": 3,
+                "door_Labyrinth_Area_03_00000": 3,
+                "door_Labyrinth_Area_02_00001": 3,
+                "door_Labyrinth_Area_06_00000": 3,
+                "door_Labyrinth_Area_06_00003": 3,
+                "door_Labyrinth_Area_06_00004": 3,
+                "door_Labyrinth_Area_06_00005": 3
             }
         }
     },

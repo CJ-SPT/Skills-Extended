@@ -152,6 +152,9 @@ public struct DoorPickLevels
     
     [JsonProperty("GroundZero")] 
     public Dictionary<string, int> GroundZero;
+    
+    [JsonProperty("Labyrinth")] 
+    public Dictionary<string, int> Labyrinth;
 }
 
 public struct ProneMovementData

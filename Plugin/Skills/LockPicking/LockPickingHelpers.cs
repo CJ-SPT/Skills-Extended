@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using SkillsExtended.Helpers;
+using SkillsExtended.Models;
 using SkillsExtended.Skills.Core;
 using UnityEngine;
 using UnityEngine.UI;
@@ -20,21 +21,63 @@ internal static class LockPickingHelpers
     public static readonly List<string> InspectedDoors = [];
     
     public static GameObject LockPickingGame;
+
+    private static LockPickingData LockPickingData => SkillsPlugin.SkillData.LockPicking;
     
     private static readonly Dictionary<string, Dictionary<string, int>> LocationDoorIdLevels = new()
     {
-        {"factory4_day", SkillsPlugin.SkillData.LockPicking.DoorPickLevels.Factory},
-        {"factory4_night", SkillsPlugin.SkillData.LockPicking.DoorPickLevels.Factory},
-        {"Woods", SkillsPlugin.SkillData.LockPicking.DoorPickLevels.Woods},
-        {"bigmap", SkillsPlugin.SkillData.LockPicking.DoorPickLevels.Customs},
-        {"Interchange", SkillsPlugin.SkillData.LockPicking.DoorPickLevels.Interchange},
-        {"RezervBase", SkillsPlugin.SkillData.LockPicking.DoorPickLevels.Reserve},
-        {"Shoreline", SkillsPlugin.SkillData.LockPicking.DoorPickLevels.Shoreline},
-        {"laboratory", SkillsPlugin.SkillData.LockPicking.DoorPickLevels.Labs},
-        {"Lighthouse", SkillsPlugin.SkillData.LockPicking.DoorPickLevels.Lighthouse},
-        {"TarkovStreets", SkillsPlugin.SkillData.LockPicking.DoorPickLevels.Streets},
-        {"Sandbox", SkillsPlugin.SkillData.LockPicking.DoorPickLevels.GroundZero},
-        {"Sandbox_high", SkillsPlugin.SkillData.LockPicking.DoorPickLevels.GroundZero},
+        {
+            "factory4_day", 
+            LockPickingData.DoorPickLevels.Factory
+        },
+        {
+            "factory4_night", 
+            LockPickingData.DoorPickLevels.Factory
+        },
+        {
+            "Woods", 
+            LockPickingData.DoorPickLevels.Woods
+        },
+        {
+            "bigmap", 
+            LockPickingData.DoorPickLevels.Customs
+        },
+        {
+            "Interchange", 
+            LockPickingData.DoorPickLevels.Interchange
+        },
+        {
+            "RezervBase", 
+            LockPickingData.DoorPickLevels.Reserve
+        },
+        {
+            "Shoreline", 
+            LockPickingData.DoorPickLevels.Shoreline
+        },
+        {
+            "laboratory", 
+            LockPickingData.DoorPickLevels.Labs
+        },
+        {
+            "Lighthouse", 
+            LockPickingData.DoorPickLevels.Lighthouse
+        },
+        {
+            "TarkovStreets", 
+            LockPickingData.DoorPickLevels.Streets
+        },
+        {
+            "Sandbox", 
+            LockPickingData.DoorPickLevels.GroundZero
+        },
+        {
+            "Sandbox_high", 
+            LockPickingData.DoorPickLevels.GroundZero
+        },
+        {
+            "Labyrinth", 
+            LockPickingData.DoorPickLevels.Labyrinth
+        }
     };
     
     /// <summary>
@@ -51,12 +94,7 @@ internal static class LockPickingHelpers
             return -1;
         }
         
-        if (levels.TryGetValue(doorId, out var level))
-        {
-            return level;
-        }
-
-        return -1;
+        return levels.GetValueOrDefault(doorId, -1);
     }
 
     /// <summary>

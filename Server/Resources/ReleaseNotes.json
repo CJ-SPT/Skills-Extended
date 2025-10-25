@@ -1,9 +1,23 @@
 [
   {
-    "Version": "2.0.3",
+    "Version": "2.1.0",
     "CodeName": "Resurrection",
     "ReleaseDate": "October 23, 2025",
     "IsLatest": true,
+    "Features": [],
+    "Improvements": [
+      "Labyrinth doors are now able to be lock picked"
+    ],
+    "BugFixes": [
+      "Fixes \"The given key `Labyrinth` was not present in the dictionary\"",
+      "Fixes a BSG bug where the `Military Checkpoint` key could not be used on customs"
+    ]
+  },
+  {
+    "Version": "2.0.3",
+    "CodeName": "Resurrection",
+    "ReleaseDate": "October 23, 2025",
+    "IsLatest": false,
     "Features": [],
     "Improvements": [
       "Massively simplified the config system, values should now all make sense and reflect correctly in-game",
