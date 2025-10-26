@@ -112,9 +112,23 @@ internal class SkillClassCtorPatch : ModulePatch
         {
             buffList.Add(skillMgrExt.StrengthBushSpeedIncBuff.PerLevel(skillData.Strength.ColliderSpeedBuff));
             buffList.Add(skillMgrExt.StrengthBushSpeedIncBuffElite);
-        }
-        
-        buffs = buffList.ToArray();
+            buffList.Add(skillMgrExt.StrengthArmsHPBuff.PerLevel(skillData.Strength.ArmsHpBuff).Elite(skillData.Strength.ArmsHpElite));
+		}
+        else if (id == ESkillId.Endurance)
+        {
+            buffList.Add(skillMgrExt.EnduranceLegsHPBuff.PerLevel(skillData.Endurance.LegsHpBuff).Elite(skillData.Endurance.LegsHpElite));
+		}
+        else if (id == ESkillId.Vitality)
+        {
+            buffList.Add(skillMgrExt.VitalityTorsoHPBuff.PerLevel(skillData.Vitality.TorsoHpBuff).Elite(skillData.Vitality.TorsoHpElite));
+		}
+        else if (id == ESkillId.Health)
+        {
+            buffList.Add(skillMgrExt.HealthHeadHPBuff.PerLevel(skillData.Health.HeadHpBuff).Elite(skillData.Health.HeadHpElite));
+		}
+
+
+		buffs = buffList.ToArray();
         actions = actionList.ToArray();
     }
 }

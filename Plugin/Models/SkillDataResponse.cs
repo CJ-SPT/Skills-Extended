@@ -28,6 +28,15 @@ public struct SkillDataResponse
 
     [JsonProperty("Strength")] 
     public StrengthData Strength;
+
+    [JsonProperty("Endurance")]
+    public EnduranceData Endurance;
+
+    [JsonProperty("Vitality")]
+    public VitalityData Vitality;
+
+    [JsonProperty("Health")]
+    public HealthData Health;
 }
 
 public struct FirstAidData
@@ -194,4 +203,61 @@ public struct StrengthData
 
     [JsonProperty("COLLIDER_SPEED_BUFF_PER_LEVEL")] 
     public float ColliderSpeedBuff;
+
+    [JsonProperty("BASE_ARMS_HP")]
+    public float BaseArmsHp;
+
+	[JsonProperty("ARMS_HP_PER_LEVEL")]
+    public float ArmsHpBuff;
+
+    [JsonProperty("ARMS_HP_ELITE")]
+    public float ArmsHpElite;
+}
+
+public struct EnduranceData
+{
+    [JsonProperty("ENABLED")] 
+    public bool Enabled;
+
+    [JsonProperty("BASE_LEGS_HP")]
+    public float BaseLegsHp;
+
+	[JsonProperty("LEGS_HP_PER_LEVEL")]
+    public float LegsHpBuff;
+
+    [JsonProperty("LEGS_HP_ELITE")]
+    public float LegsHpElite;
+}
+
+public struct VitalityData
+{
+    [JsonProperty("ENABLED")] 
+    public bool Enabled;
+
+    [JsonProperty("BASE_THORAX_HP")]
+    public float BaseThoraxHp;
+
+    [JsonProperty("BASE_STOMACH_HP")]
+    public float BaseStomachHp;
+
+	[JsonProperty("TORSO_HP_PER_LEVEL")]
+    public float TorsoHpBuff;
+
+    [JsonProperty("TORSO_HP_ELITE")]
+    public float TorsoHpElite;
+}
+
+public struct HealthData
+{
+    [JsonProperty("ENABLED")] 
+    public bool Enabled;
+
+	[JsonProperty("BASE_HEAD_HP")]
+	public float BaseHeadHp;
+
+	[JsonProperty("HEAD_HP_PER_LEVEL")]
+    public float HeadHpBuff;
+
+    [JsonProperty("HEAD_HP_ELITE")]
+    public float HeadHpElite;
 }

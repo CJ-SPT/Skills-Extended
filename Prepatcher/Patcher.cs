@@ -348,17 +348,17 @@ public static class SkillsExtendedPatcher
         buffEnum.Fields.Add(hltHeadHPElite);
     }
 
-	private static void PatchSkillManager(ref AssemblyDefinition assembly)
+    private static void PatchSkillManager(ref AssemblyDefinition assembly)
     {
         var skillsExtendedModule = ModuleDefinition.ReadModule(PluginPath);
         var skillManagerExtendedType = skillsExtendedModule.GetType("SkillsExtended.Skills.Core.SkillManagerExt");
         var skillManagerExtendedTypeRef = assembly.MainModule.ImportReference(skillManagerExtendedType);
-        
+
         var skillManagerExtField = new FieldDefinition(
-            "SkillManagerExtended", 
-            FieldAttributes.Public, 
+            "SkillManagerExtended",
+            FieldAttributes.Public,
             skillManagerExtendedTypeRef);
-        
-        _skillManager.Fields.Add(skillManagerExtField);
-    }
+
+		_skillManager.Fields.Add(skillManagerExtField);
+	}
 }

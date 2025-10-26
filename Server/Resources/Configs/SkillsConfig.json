@@ -574,7 +574,29 @@
       "SILENCER_PRICE_RED_PER_LEVEL": 0.005
     },
     "Strength": {
-      "ENABLED": true,
-      "COLLIDER_SPEED_BUFF_PER_LEVEL": 0.01
+        "ENABLED": true,
+        "COLLIDER_SPEED_BUFF_PER_LEVEL": 0.01,
+        "BASE_ARMS_HP": 60,
+        "ARMS_HP_PER_LEVEL": 0.02,
+        "ARMS_HP_ELITE": 0.2
+    },
+    "Endurance": {
+        "ENABLED": true,
+        "BASE_LEGS_HP": 65,
+        "LEGS_HP_PER_LEVEL": 0.02,
+        "LEGS_HP_ELITE": 0.2
+    },
+    "Vitality": {
+        "ENABLED": true,
+        "BASE_THORAX_HP": 85,
+        "BASE_STOMACH_HP": 70,
+        "TORSO_HP_PER_LEVEL": 0.02,
+        "TORSO_HP_ELITE": 0.2
+    },
+    "Health" : {
+        "ENABLED": true,
+        "BASE_HEAD_HP":  35,
+        "HEAD_HP_PER_LEVEL": 0.02,
+		"HEAD_HP_ELITE": 0.2
     }
 }

@@ -102,11 +102,55 @@ public class SkillManagerExt
         BuffType = SkillManager.EBuffType.Elite
     };
 
-    #endregion
-    
-    #region ACTIONS
+    public readonly SkillManager.SkillBuffClass StrengthArmsHPBuff = new()
+    {
+        Id = EBuffId.StrengthArmsHPBuff
+    };
 
-    public readonly SkillManager.SkillActionClass FirstAidAction = new();
+    public readonly SkillManager.GClass2257 StrengthArmsHPBuffElite = new()
+    {
+        Id = EBuffId.StrengthArmsHPBuffElite,
+        BuffType = SkillManager.EBuffType.Elite
+    };
+
+	public readonly SkillManager.SkillBuffClass EnduranceLegsHPBuff = new()
+    {
+        Id = EBuffId.EnduranceLegsHPBuff
+    };
+
+    public readonly SkillManager.GClass2257 EnduranceLegsHPBuffElite = new()
+    {
+        Id = EBuffId.EnduranceLegsHPBuffElite,
+        BuffType = SkillManager.EBuffType.Elite
+    };
+
+	public readonly SkillManager.SkillBuffClass VitalityTorsoHPBuff = new()
+    {
+        Id = EBuffId.VitalityTorsoHPBuff
+    };
+
+    public readonly SkillManager.GClass2257 VitalityTorsoHPBuffElite = new()
+    {
+        Id = EBuffId.VitalityTorsoHPBuffElite,
+        BuffType = SkillManager.EBuffType.Elite
+    };
+
+	public readonly SkillManager.SkillBuffClass HealthHeadHPBuff = new()
+    {
+        Id = EBuffId.HealthHeadHPBuff
+    };
+
+    public readonly SkillManager.GClass2257 HealthHeadHPBuffElite = new()
+    {
+        Id = EBuffId.HealthHeadHPBuffElite,
+        BuffType = SkillManager.EBuffType.Elite
+    };
+
+	#endregion
+
+	#region ACTIONS
+
+	public readonly SkillManager.SkillActionClass FirstAidAction = new();
     public readonly SkillManager.SkillActionClass FieldMedicineAction = new();
     public readonly SkillManager.SkillActionClass UsecRifleAction = new();
     public readonly SkillManager.SkillActionClass BearRifleAction = new();
@@ -173,4 +217,40 @@ public class SkillManagerExt
             SilentOpsSilencerCostRedBuff.PerLevel(SkillData.SilentOps.SilencerPriceReduction)
         ];
     }
+
+    public SkillManager.SkillBuffAbstractClass[] ArmsHPBuff()
+    {
+        return
+        [
+            StrengthArmsHPBuff.PerLevel(SkillData.Strength.ArmsHpBuff),
+			StrengthArmsHPBuffElite
+		];
+	}
+
+    public SkillManager.SkillBuffAbstractClass[] LegsHPBuff()
+    {
+        return
+        [
+            EnduranceLegsHPBuff.PerLevel(SkillData.Endurance.LegsHpBuff),
+            EnduranceLegsHPBuffElite
+        ];
+	}
+
+    public SkillManager.SkillBuffAbstractClass[] TorsoHPBuff()
+    {
+        return
+        [
+            VitalityTorsoHPBuff.PerLevel(SkillData.Vitality.TorsoHpBuff),
+            VitalityTorsoHPBuffElite
+        ];
+	}
+
+    public SkillManager.SkillBuffAbstractClass[] HeadHPBuff()
+    {
+        return
+        [
+            HealthHeadHPBuff.PerLevel(SkillData.Health.HeadHpBuff),
+            HealthHeadHPBuffElite
+        ];
+	}
 }
