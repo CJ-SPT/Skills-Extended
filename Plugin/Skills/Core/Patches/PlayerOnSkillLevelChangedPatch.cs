@@ -1,4 +1,7 @@
-﻿using HarmonyLib;
+﻿using EFT;
+using EFT.HealthSystem;
+
+using HarmonyLib;
 
 using SPT.Reflection.Patching;
 
@@ -6,8 +9,6 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
-
-using EFT;
 
 namespace SkillsExtended.Skills.Core.Patches
 {
@@ -19,7 +20,7 @@ namespace SkillsExtended.Skills.Core.Patches
 		}
 
 		[PatchPrefix]
-		public static void Prefix(Player __instance, AbstractSkillClass skill)
+		public static void Prefix(Player __instance, AbstractSkillClass skill, IHealthController ____healthController)
 		{
 			if (!__instance.IsYourPlayer) return;
 
@@ -44,6 +45,15 @@ namespace SkillsExtended.Skills.Core.Patches
 					if (skillData.Health.Enabled)
 						LimbsHPBuff.LimbsHPBuff.HeadHPBuff(__instance, skillData);
 					break;
+			}
+
+			if (____healthController is HealthControllerClass)
+			{
+				Profile profile = __instance.Profile;
+
+				profile.Health = (____healthController as HealthControllerClass).Store();
+
+				SkillsPlugin.Log.LogInfo($"[PlayerOnSkillLevelChangedPatch] Updated player health profile after {skillId} skill level changed.");
 			}
 		}
 	}

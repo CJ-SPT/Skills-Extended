@@ -39,8 +39,7 @@ internal static class PatchManager
         new SkillClassOnTriggerPatch().Enable();
         new SkillManagerConstructorPatch().Enable();
         new PlayerOnSkillLevelChangedPatch().Enable();
-        new ProfileCTORPatch().Enable();
-		// new ActiveHealthControllerCTORPatch().Enable();
+        new MainMenuControllerClassMethod5Patch().Enable();
 		// new SkillManagerDeserializePatch().Enable();
 	}
 

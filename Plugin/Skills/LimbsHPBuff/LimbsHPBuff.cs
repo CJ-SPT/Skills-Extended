@@ -3,6 +3,7 @@
 using EFT;
 using EFT.HealthSystem;
 
+using SkillsExtended.Models;
 using SkillsExtended.Skills.Core;
 
 using System;
@@ -23,22 +24,28 @@ namespace SkillsExtended.Skills.LimbsHPBuff
 				instance,
 				EBodyPart.LeftArm,
 				skillData.Strength.BaseArmsHp,
-				(!skillMgrExt.StrengthArmsHPBuffElite ? skillMgrExt.StrengthArmsHPBuff : skillMgrExt.StrengthArmsHPBuff + skillData.Strength.ArmsHpElite)
+				skillMgrExt.StrengthArmsHPBuff
 			);
 			ApplyLimbsHPBuff(
 				instance,
 				EBodyPart.RightArm,
 				skillData.Strength.BaseArmsHp,
-				(!skillMgrExt.StrengthArmsHPBuffElite ? skillMgrExt.StrengthArmsHPBuff : skillMgrExt.StrengthArmsHPBuff + skillData.Strength.ArmsHpElite)
+				skillMgrExt.StrengthArmsHPBuff
 			);
 		}
 
 		internal static void ArmsHPBuff(ProfileBodyPartHealthClass limbHealthClass, Models.SkillDataResponse skillData, SkillManagerExt skillMgrExt)
 		{
+			Logger.CreateLogSource("SkillsExtended").LogInfo($"[LimbsHPBuff] Applying Arms HP Buff...");
+
+			Logger.CreateLogSource("SkillsExtended").LogInfo($"[LimbsHPBuff] Arm before buff: Current HP: {limbHealthClass.Health.Current}/{limbHealthClass.Health.Maximum}");
+
+			Logger.CreateLogSource("SkillsExtended").LogInfo($"[LimbsHPBuff] Arms HP Buff: {skillMgrExt.StrengthArmsHPBuff.Value}");
+
 			ApplyLimbsHPBuff(
 				limbHealthClass,
 				skillData.Strength.BaseArmsHp,
-				(!skillMgrExt.StrengthArmsHPBuffElite ? skillMgrExt.StrengthArmsHPBuff : skillMgrExt.StrengthArmsHPBuff + skillData.Strength.ArmsHpElite)
+				skillMgrExt.StrengthArmsHPBuff
 			);
 		}
 
@@ -49,13 +56,13 @@ namespace SkillsExtended.Skills.LimbsHPBuff
 				instance,
 				EBodyPart.LeftLeg,
 				skillData.Endurance.BaseLegsHp,
-				(!skillMgrExt.EnduranceLegsHPBuffElite ? skillMgrExt.EnduranceLegsHPBuff : skillMgrExt.EnduranceLegsHPBuff + skillData.Endurance.LegsHpElite)
+				skillMgrExt.EnduranceLegsHPBuff
 			);
 			ApplyLimbsHPBuff(
 				instance,
 				EBodyPart.RightLeg,
 				skillData.Endurance.BaseLegsHp,
-				(!skillMgrExt.EnduranceLegsHPBuffElite ? skillMgrExt.EnduranceLegsHPBuff : skillMgrExt.EnduranceLegsHPBuff + skillData.Endurance.LegsHpElite)
+				skillMgrExt.EnduranceLegsHPBuff
 			);
 		}
 
@@ -64,7 +71,7 @@ namespace SkillsExtended.Skills.LimbsHPBuff
 			ApplyLimbsHPBuff(
 				limbHealthClass,
 				skillData.Endurance.BaseLegsHp,
-				(!skillMgrExt.EnduranceLegsHPBuffElite ? skillMgrExt.EnduranceLegsHPBuff : skillMgrExt.EnduranceLegsHPBuff + skillData.Endurance.LegsHpElite)
+				skillMgrExt.EnduranceLegsHPBuff
 			);
 		}
 
@@ -75,13 +82,13 @@ namespace SkillsExtended.Skills.LimbsHPBuff
 				instance,
 				EBodyPart.Chest,
 				skillData.Vitality.BaseThoraxHp,
-				(!skillMgrExt.VitalityTorsoHPBuffElite ? skillMgrExt.VitalityTorsoHPBuff : skillMgrExt.VitalityTorsoHPBuff + skillData.Vitality.TorsoHpElite)
+				skillMgrExt.VitalityTorsoHPBuff
 			);
 			ApplyLimbsHPBuff(
 				instance,
 				EBodyPart.Stomach,
 				skillData.Vitality.BaseStomachHp,
-				(!skillMgrExt.VitalityTorsoHPBuffElite ? skillMgrExt.VitalityTorsoHPBuff : skillMgrExt.VitalityTorsoHPBuff + skillData.Vitality.TorsoHpElite)
+				skillMgrExt.VitalityTorsoHPBuff
 			);
 		}
 
@@ -90,7 +97,7 @@ namespace SkillsExtended.Skills.LimbsHPBuff
 			ApplyLimbsHPBuff(
 				limbHealthClass,
 				skillData.Vitality.BaseThoraxHp,
-				(!skillMgrExt.VitalityTorsoHPBuffElite ? skillMgrExt.VitalityTorsoHPBuff : skillMgrExt.VitalityTorsoHPBuff + skillData.Vitality.TorsoHpElite)
+				skillMgrExt.VitalityTorsoHPBuff
 			);
 		}
 
@@ -99,7 +106,7 @@ namespace SkillsExtended.Skills.LimbsHPBuff
 			ApplyLimbsHPBuff(
 				limbHealthClass,
 				skillData.Vitality.BaseStomachHp,
-				(!skillMgrExt.VitalityTorsoHPBuffElite ? skillMgrExt.VitalityTorsoHPBuff : skillMgrExt.VitalityTorsoHPBuff + skillData.Vitality.TorsoHpElite)
+				skillMgrExt.VitalityTorsoHPBuff
 			);
 		}
 
@@ -110,7 +117,7 @@ namespace SkillsExtended.Skills.LimbsHPBuff
 				instance,
 				EBodyPart.Head,
 				skillData.Health.BaseHeadHp,
-				(!skillMgrExt.HealthHeadHPBuffElite ? skillMgrExt.HealthHeadHPBuff : skillMgrExt.HealthHeadHPBuff + skillData.Health.HeadHpElite)
+				skillMgrExt.HealthHeadHPBuff
 			);
 		}
 
@@ -119,7 +126,7 @@ namespace SkillsExtended.Skills.LimbsHPBuff
 			ApplyLimbsHPBuff(
 				limbHealthClass,
 				skillData.Health.BaseHeadHp,
-				(!skillMgrExt.HealthHeadHPBuffElite ? skillMgrExt.HealthHeadHPBuff : skillMgrExt.HealthHeadHPBuff + skillData.Health.HeadHpElite)
+				skillMgrExt.HealthHeadHPBuff
 			);
 		}
 

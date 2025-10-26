@@ -275,17 +275,9 @@ public static class SkillsExtendedPatcher
             buffEnum, 
             index++);
 
-        var strArmsHPElite = CreateNewEnum(
-            ref assembly, 
-            "StrengthArmsHPBuffElite", 
-            "StrengthArmsHPBuffElite", 
-            buffEnum, 
-            index++);
-
         buffEnum.Fields.Add(incBushSpeed);
         buffEnum.Fields.Add(incBushSpeedElite);
         buffEnum.Fields.Add(strArmsHP);
-        buffEnum.Fields.Add(strArmsHPElite);
     }
 
     private static void EnduranceBuffs(AssemblyDefinition assembly, TypeDefinition buffEnum, ref int index)
@@ -297,15 +289,7 @@ public static class SkillsExtendedPatcher
             buffEnum, 
             index++);
 
-        var endLegsHPElite = CreateNewEnum(
-            ref assembly, 
-            "EnduranceLegsHPBuffElite", 
-            "EnduranceLegsHPBuffElite", 
-            buffEnum, 
-            index++);
-
         buffEnum.Fields.Add(endLegsHP);
-        buffEnum.Fields.Add(endLegsHPElite);
 	}
 
     private static void VitalityBuffs(AssemblyDefinition assembly, TypeDefinition buffEnum, ref int index)
@@ -317,15 +301,7 @@ public static class SkillsExtendedPatcher
             buffEnum, 
             index++);
 
-        var vitTorsoHPElite = CreateNewEnum(
-            ref assembly, 
-            "VitalityTorsoHPBuffElite", 
-            "VitalityTorsoHPBuffElite", 
-            buffEnum, 
-            index++);
-
         buffEnum.Fields.Add(vitTorsoHP);
-        buffEnum.Fields.Add(vitTorsoHPElite);
 	}
 
     private static void HealthBuffs(AssemblyDefinition assembly, TypeDefinition buffEnum, ref int index)
@@ -337,15 +313,7 @@ public static class SkillsExtendedPatcher
             buffEnum,
             index++);
 
-        var hltHeadHPElite = CreateNewEnum(
-            ref assembly,
-            "HealthHeadHPBuffElite",
-            "HealthHeadHPBuffElite",
-            buffEnum,
-            index++);
-
         buffEnum.Fields.Add(hltHeadHP);
-        buffEnum.Fields.Add(hltHeadHPElite);
     }
 
     private static void PatchSkillManager(ref AssemblyDefinition assembly)

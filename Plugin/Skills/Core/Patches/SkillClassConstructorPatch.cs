@@ -112,19 +112,19 @@ internal class SkillClassCtorPatch : ModulePatch
         {
             buffList.Add(skillMgrExt.StrengthBushSpeedIncBuff.PerLevel(skillData.Strength.ColliderSpeedBuff));
             buffList.Add(skillMgrExt.StrengthBushSpeedIncBuffElite);
-            buffList.Add(skillMgrExt.StrengthArmsHPBuff.PerLevel(skillData.Strength.ArmsHpBuff).Elite(skillData.Strength.ArmsHpElite));
+            buffList.Add(skillMgrExt.StrengthArmsHPBuff.PerLevel(skillData.Strength.ArmsHpBuff).Elite(skillData.Strength.ArmsHpBuff * 50 + skillData.Strength.ArmsHpElite));
 		}
         else if (id == ESkillId.Endurance)
         {
-            buffList.Add(skillMgrExt.EnduranceLegsHPBuff.PerLevel(skillData.Endurance.LegsHpBuff).Elite(skillData.Endurance.LegsHpElite));
+            buffList.Add(skillMgrExt.EnduranceLegsHPBuff.PerLevel(skillData.Endurance.LegsHpBuff).Elite(skillData.Endurance.LegsHpBuff * 50 + skillData.Endurance.LegsHpElite));
 		}
         else if (id == ESkillId.Vitality)
         {
-            buffList.Add(skillMgrExt.VitalityTorsoHPBuff.PerLevel(skillData.Vitality.TorsoHpBuff).Elite(skillData.Vitality.TorsoHpElite));
+            buffList.Add(skillMgrExt.VitalityTorsoHPBuff.PerLevel(skillData.Vitality.TorsoHpBuff).Elite(skillData.Vitality.TorsoHpBuff * 50 + skillData.Vitality.TorsoHpElite));
 		}
         else if (id == ESkillId.Health)
         {
-            buffList.Add(skillMgrExt.HealthHeadHPBuff.PerLevel(skillData.Health.HeadHpBuff).Elite(skillData.Health.HeadHpElite));
+            buffList.Add(skillMgrExt.HealthHeadHPBuff.PerLevel(skillData.Health.HeadHpBuff).Elite(skillData.Health.HeadHpBuff * 50 + skillData.Health.HeadHpElite));
 		}
 
 
