@@ -77,6 +77,7 @@ public static class SkillsExtendedPatcher
         EasternRifleBuffs(assembly, buffEnums, ref index);
         LockPickingBuffs(assembly, buffEnums, ref index);
         SilentOpsBuffs(assembly, buffEnums, ref index);
+        ShadowConnectionsBuffs(assembly, buffEnums, ref index);
         
         // Existing skills
         StrengthBuffs(assembly, buffEnums, ref index);
@@ -253,6 +254,35 @@ public static class SkillsExtendedPatcher
         
         buffEnum.Fields.Add(incBushSpeed);
         buffEnum.Fields.Add(incBushSpeedElite);
+    }
+
+    private static void ShadowConnectionsBuffs(AssemblyDefinition assembly, TypeDefinition buffEnum, ref int index)
+    {
+        var decScavCooldown = CreateNewEnum(
+            ref assembly,
+            "ScavCooldownTimeDec",
+            "ScavCooldownTimeDec",
+            buffEnum,
+            index++);
+        
+        var decScavCooldownElite = CreateNewEnum(
+            ref assembly,
+            "ScavCooldownTimeElite",
+            "ScavCooldownTimeElite",
+            buffEnum,
+            index++);
+        
+        
+        var decCultistCircleReturn = CreateNewEnum(
+            ref assembly,
+            "CultistCircleReturnTimeDec",
+            "CultistCircleReturnTimeDec",
+            buffEnum,
+            index++);
+        
+        buffEnum.Fields.Add(decScavCooldown);
+        buffEnum.Fields.Add(decScavCooldownElite);
+        buffEnum.Fields.Add(decCultistCircleReturn);
     }
     
     private static void PatchSkillManager(ref AssemblyDefinition assembly)

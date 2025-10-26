@@ -13,6 +13,7 @@ public record SkillsConfig
     public required SilentOpsConfig SilentOps { get; set; }
     
     public required StrengthConfig Strength { get; set; }
+    public required ShadowConnectionsConfig ShadowConnections { get; set; }
 }
 
 public record BaseSubConfig
@@ -133,4 +134,13 @@ public record StrengthConfig
     
     [JsonPropertyName("COLLIDER_SPEED_BUFF_PER_LEVEL")]
     public required float ColliderSpeedBuff { get; set; }
+}
+
+public record ShadowConnectionsConfig : BaseSubConfig
+{
+    [JsonPropertyName("SCAV_COOLDOWN_TIME_PER_LEVEL")]
+    public required float ScavCooldownTimeDec { get; set; }
+    
+    [JsonPropertyName("CULTIST_CIRCLE_RETURN_TIME_PER_LEVEL")]
+    public required float CultistCircleReturnTimeDec { get; set; }
 }

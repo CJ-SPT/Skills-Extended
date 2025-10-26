@@ -586,5 +586,11 @@
     "Strength": {
       "ENABLED": true,
       "COLLIDER_SPEED_BUFF_PER_LEVEL": 0.01
+    },
+    "ShadowConnections": {
+      "ENABLED": true,
+      "XP_PER_ACTION": 1,
+      "SCAV_COOLDOWN_TIME_PER_LEVEL": 0.01,
+      "CULTIST_CIRCLE_RETURN_TIME_PER_LEVEL": 0.01
     }
 }

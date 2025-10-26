@@ -87,6 +87,15 @@ internal class BuffIconShowPatch : ModulePatch
             case EBuffId.StrengthColliderSpeedBuff:
                 ____icon.sprite = staticIcons.BuffIdSprites.GetValueOrDefault(EBuffId.StrengthBuffSprintSpeedInc);
                 break;
+            
+            case EBuffId.ScavCooldownTimeDec:
+            case EBuffId.ScavCooldownTimeElite:
+                ____icon.sprite = staticIcons.BuffIdSprites.GetValueOrDefault(EBuffId.CharismaFenceRepPenaltyReduction);
+                break;
+            
+            case EBuffId.CultistCircleReturnTimeDec:
+                ____icon.sprite = staticIcons.BuffIdSprites.GetValueOrDefault(EBuffId.CovertMovementSpeed);
+                break;
         }
         
         __instance.UpdateBuff();

@@ -18,14 +18,20 @@ public class OnEnemyKillPatch : ModulePatch
     }
 
     [PatchPostfix]
-    private static void Postfix(LocationStatisticsCollectorAbstractClass __instance, DamageInfoStruct damage)
+    private static void Postfix(LocationStatisticsCollectorAbstractClass __instance, WildSpawnType role)
+    {
+        HandleSilentOps(__instance);
+        HandleShadowConnections(__instance, role);
+    }
+
+    private static void HandleSilentOps(LocationStatisticsCollectorAbstractClass statisticsCollector)
     {
         if (!SkillsPlugin.SkillData.SilentOps.Enabled)
         {
             return;
         }
 
-        var player = __instance.Player_0;
+        var player = statisticsCollector.Player_0;
         var itemInHands = player.InventoryController.ItemInHands;
 
         if (itemInHands is null)
@@ -61,5 +67,20 @@ public class OnEnemyKillPatch : ModulePatch
             Logger.LogDebug("Applying Gun XP to Silent Ops");
 #endif
         }
+    }
+
+    private static void HandleShadowConnections(LocationStatisticsCollectorAbstractClass statisticsCollector, WildSpawnType role)
+    {
+        if (!SkillsPlugin.SkillData.ShadowConnections.Enabled)
+        {
+            return;
+        }
+
+        if (role != WildSpawnType.sectantWarrior && role != WildSpawnType.sectantPriest)
+        {
+            return;
+        }
+        
+        
     }
 }

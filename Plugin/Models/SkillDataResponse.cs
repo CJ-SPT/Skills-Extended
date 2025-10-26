@@ -28,6 +28,9 @@ public struct SkillDataResponse
 
     [JsonProperty("Strength")] 
     public StrengthData Strength;
+    
+    [JsonProperty("ShadowConnections")]
+    public ShadowConnectionsData ShadowConnections;
 }
 
 public struct FirstAidData
@@ -197,4 +200,19 @@ public struct StrengthData
 
     [JsonProperty("COLLIDER_SPEED_BUFF_PER_LEVEL")] 
     public float ColliderSpeedBuff;
+}
+
+public struct ShadowConnectionsData
+{
+    [JsonProperty("ENABLED")]
+    public bool Enabled;
+    
+    [JsonProperty("XP_PER_ACTION")]
+    public float XpPerAction;
+    
+    [JsonProperty("SCAV_COOLDOWN_TIME_PER_LEVEL")] 
+    public float ScavCooldownTimeReduction;
+    
+    [JsonProperty("CULTIST_CIRCLE_RETURN_TIME_PER_LEVEL")] 
+    public float CultistCircleReturnTimeReduction;
 }

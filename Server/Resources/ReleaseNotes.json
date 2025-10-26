@@ -4,7 +4,9 @@
     "CodeName": "Rapport",
     "ReleaseDate": "October 23, 2025",
     "IsLatest": true,
-    "Features": [],
+    "Features": [
+      "New Skill `Shadow Connections`"
+    ],
     "Improvements": [
       "Labyrinth doors are now able to be lock picked"
     ],
