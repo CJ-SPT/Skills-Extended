@@ -11,9 +11,9 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="SPTarkov.Reflection" Version="4.0.1" />
-      <PackageReference Include="SPTarkov.Server.Core" Version="4.0.1" />
-      <PackageReference Include="SPTarkov.Server.Web" Version="4.0.1" />
+      <PackageReference Include="SPTarkov.Reflection" Version="4.0.2" />
+      <PackageReference Include="SPTarkov.Server.Core" Version="4.0.2" />
+      <PackageReference Include="SPTarkov.Server.Web" Version="4.0.2" />
     </ItemGroup>
 
     <PropertyGroup>
