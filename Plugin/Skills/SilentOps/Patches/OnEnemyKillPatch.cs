@@ -80,7 +80,15 @@ public class OnEnemyKillPatch : ModulePatch
         {
             return;
         }
+
+        var player = statisticsCollector.Player_0;
+        var skillManagerExt = player.Skills.SkillManagerExtended;
+        var xp = SkillsPlugin.SkillData.ShadowConnections.XpPerAction;
         
+        statisticsCollector.Player_0.ExecuteSkill(() => skillManagerExt.ShadowConnectionsKillAction.Complete(xp));
         
+#if DEBUG
+        Logger.LogDebug("Applying Gun XP to Shadow Connections");
+#endif
     }
 }
