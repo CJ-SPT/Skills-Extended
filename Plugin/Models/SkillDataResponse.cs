@@ -205,7 +205,7 @@ public struct StrengthData
     public float ColliderSpeedBuff;
 
     [JsonProperty("BASE_ARMS_HP")]
-    public float BaseArmsHp;
+    public int BaseArmsHp;
 
 	[JsonProperty("ARMS_HP_PER_LEVEL")]
     public float ArmsHpBuff;
@@ -220,7 +220,7 @@ public struct EnduranceData
     public bool Enabled;
 
     [JsonProperty("BASE_LEGS_HP")]
-    public float BaseLegsHp;
+    public int BaseLegsHp;
 
 	[JsonProperty("LEGS_HP_PER_LEVEL")]
     public float LegsHpBuff;
@@ -235,10 +235,10 @@ public struct VitalityData
     public bool Enabled;
 
     [JsonProperty("BASE_THORAX_HP")]
-    public float BaseThoraxHp;
+    public int BaseThoraxHp;
 
     [JsonProperty("BASE_STOMACH_HP")]
-    public float BaseStomachHp;
+    public int BaseStomachHp;
 
 	[JsonProperty("TORSO_HP_PER_LEVEL")]
     public float TorsoHpBuff;
@@ -253,7 +253,7 @@ public struct HealthData
     public bool Enabled;
 
 	[JsonProperty("BASE_HEAD_HP")]
-	public float BaseHeadHp;
+	public int BaseHeadHp;
 
 	[JsonProperty("HEAD_HP_PER_LEVEL")]
     public float HeadHpBuff;

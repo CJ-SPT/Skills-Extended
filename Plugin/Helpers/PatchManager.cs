@@ -38,8 +38,11 @@ internal static class PatchManager
         new SkillClassCtorPatch().Enable();
         new SkillClassOnTriggerPatch().Enable();
         new SkillManagerConstructorPatch().Enable();
-        // new SkillManagerDeserializePatch().Enable();
-    }
+        new PlayerOnSkillLevelChangedPatch().Enable();
+        new ProfileCTORPatch().Enable();
+		// new ActiveHealthControllerCTORPatch().Enable();
+		// new SkillManagerDeserializePatch().Enable();
+	}
 
     private static void SkillFieldMedicine()
     {

@@ -1,5 +1,7 @@
 ﻿using HarmonyLib;
 
+using BepInEx.Logging;
+
 using SPT.Reflection.Patching;
 
 using System;
@@ -13,14 +15,10 @@ using EFT.InventoryLogic;
 
 namespace SkillsExtended.Skills.Core.Patches
 {
-	public class ActiveHealthControllerCTORPatch
+	public class ActiveHealthControllerCTORPatch : ModulePatch
 	{
-		protected virtual MethodBase GetTargetMethod() =>
-			typeof(ActiveHealthController).GetConstructor(
-				BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic,
-				null,
-				new Type[] { typeof(Player), typeof(Profile.ProfileHealthClass), typeof(InventoryController), typeof(SkillManager) },
-				null);
+		protected override MethodBase GetTargetMethod() =>
+			typeof(ActiveHealthController).GetConstructors(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)[0];
 
 		[PatchPostfix]
 		public static void Postfix(
@@ -30,6 +28,10 @@ namespace SkillsExtended.Skills.Core.Patches
 			InventoryController inventory,
 			SkillManager skills)
 		{
+#if DEBUG
+			Logger.LogInfo("[ActiveHealthControllerCTORPatch] ActiveHealthController constructor applied postfix.");
+#endif
+
 			if (!player.IsYourPlayer) return;
 			var skillData = SkillsPlugin.SkillData;
 			var skillMgrExt = skills.SkillManagerExtended;

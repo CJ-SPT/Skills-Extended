@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
+using static EFT.Profile.ProfileHealthClass;
 using static EFT.SkillManager;
 
 namespace SkillsExtended.Skills.LimbsHPBuff
@@ -32,6 +33,15 @@ namespace SkillsExtended.Skills.LimbsHPBuff
 			);
 		}
 
+		internal static void ArmsHPBuff(ProfileBodyPartHealthClass limbHealthClass, Models.SkillDataResponse skillData, SkillManagerExt skillMgrExt)
+		{
+			ApplyLimbsHPBuff(
+				limbHealthClass,
+				skillData.Strength.BaseArmsHp,
+				(!skillMgrExt.StrengthArmsHPBuffElite ? skillMgrExt.StrengthArmsHPBuff : skillMgrExt.StrengthArmsHPBuff + skillData.Strength.ArmsHpElite)
+			);
+		}
+
 		internal static void LegsHPBuff(Player instance, Models.SkillDataResponse skillData)
 		{
 			var skillMgrExt = instance.Skills.SkillManagerExtended;
@@ -44,6 +54,15 @@ namespace SkillsExtended.Skills.LimbsHPBuff
 			ApplyLimbsHPBuff(
 				instance,
 				EBodyPart.RightLeg,
+				skillData.Endurance.BaseLegsHp,
+				(!skillMgrExt.EnduranceLegsHPBuffElite ? skillMgrExt.EnduranceLegsHPBuff : skillMgrExt.EnduranceLegsHPBuff + skillData.Endurance.LegsHpElite)
+			);
+		}
+
+		internal static void LegsHPBuff(ProfileBodyPartHealthClass limbHealthClass, Models.SkillDataResponse skillData, SkillManagerExt skillMgrExt)
+		{
+			ApplyLimbsHPBuff(
+				limbHealthClass,
 				skillData.Endurance.BaseLegsHp,
 				(!skillMgrExt.EnduranceLegsHPBuffElite ? skillMgrExt.EnduranceLegsHPBuff : skillMgrExt.EnduranceLegsHPBuff + skillData.Endurance.LegsHpElite)
 			);
@@ -66,6 +85,24 @@ namespace SkillsExtended.Skills.LimbsHPBuff
 			);
 		}
 
+		internal static void ThoraxHPBuff(ProfileBodyPartHealthClass limbHealthClass, Models.SkillDataResponse skillData, SkillManagerExt skillMgrExt)
+		{
+			ApplyLimbsHPBuff(
+				limbHealthClass,
+				skillData.Vitality.BaseThoraxHp,
+				(!skillMgrExt.VitalityTorsoHPBuffElite ? skillMgrExt.VitalityTorsoHPBuff : skillMgrExt.VitalityTorsoHPBuff + skillData.Vitality.TorsoHpElite)
+			);
+		}
+
+		internal static void StomachHPBuff(ProfileBodyPartHealthClass limbHealthClass, Models.SkillDataResponse skillData, SkillManagerExt skillMgrExt)
+		{
+			ApplyLimbsHPBuff(
+				limbHealthClass,
+				skillData.Vitality.BaseStomachHp,
+				(!skillMgrExt.VitalityTorsoHPBuffElite ? skillMgrExt.VitalityTorsoHPBuff : skillMgrExt.VitalityTorsoHPBuff + skillData.Vitality.TorsoHpElite)
+			);
+		}
+
 		internal static void HeadHPBuff(Player instance, Models.SkillDataResponse skillData)
 		{
 			var skillMgrExt = instance.Skills.SkillManagerExtended;
@@ -77,17 +114,35 @@ namespace SkillsExtended.Skills.LimbsHPBuff
 			);
 		}
 
+		internal static void HeadHPBuff(ProfileBodyPartHealthClass limbHealthClass, Models.SkillDataResponse skillData, SkillManagerExt skillMgrExt)
+		{
+			ApplyLimbsHPBuff(
+				limbHealthClass,
+				skillData.Health.BaseHeadHp,
+				(!skillMgrExt.HealthHeadHPBuffElite ? skillMgrExt.HealthHeadHPBuff : skillMgrExt.HealthHeadHPBuff + skillData.Health.HeadHpElite)
+			);
+		}
+
 		internal static void ApplyLimbsHPBuff(Player player, EBodyPart limb, float limbBaseHP, float limbHPBuffFactor)
 		{
 			GClass3009<ActiveHealthController.GClass3008>.BodyPartState bodyPartState = player.ActiveHealthController.Dictionary_0[limb];
 
-			int newLimbMaxHP = ((int)Math.Round(limbBaseHP * (1 + limbHPBuffFactor), 0, MidpointRounding.AwayFromZero));
+			int newLimbMaxHP = ((int)Math.Ceiling(limbBaseHP * (1 + limbHPBuffFactor)));
 
 			bodyPartState.Health = new HealthValue(Math.Min(bodyPartState.Health.Current, newLimbMaxHP), newLimbMaxHP);
 
 #if DEBUG
-			Logger.CreateLogSource("SkillsExtended").LogInfo($"[LimbsHPBuff] Applied {limb.ToString()} HP Buff. New Max HP: {newLimbMaxHP}, Current HP: {bodyPartState.Health.Current}/{bodyPartState.Health.Maximum}");
+			Logger.CreateLogSource("SkillsExtended").LogInfo($"[LimbsHPBuff] Applied {limb.ToString()} HPBuff with {limbHPBuffFactor} factor. New Max HP: {newLimbMaxHP}, Current HP: {bodyPartState.Health.Current}/{bodyPartState.Health.Maximum}");
 #endif
+		}
+
+		internal static void ApplyLimbsHPBuff(ProfileBodyPartHealthClass limbHealthClass, float limbBaseHP, float limbHPBuffFactor)
+		{
+			int newLimbMaxHP = ((int)Math.Ceiling(limbBaseHP * (1 + limbHPBuffFactor)));
+
+			limbHealthClass.Health.Maximum = newLimbMaxHP;
+
+			Logger.CreateLogSource("SkillsExtended").LogInfo($"[LimbsHPBuff] Applied to LimbProfile HPBuff with {limbHPBuffFactor} factor. New Max HP: {newLimbMaxHP}, Current HP: {limbHealthClass.Health.Current}/{limbHealthClass.Health.Maximum}");
 		}
 	}
 }

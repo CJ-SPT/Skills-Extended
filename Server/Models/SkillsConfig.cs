@@ -1,4 +1,6 @@
-﻿using System.Text.Json.Serialization;
+﻿using SPTarkov.Server.Core.Models.Spt.Config;
+
+using System.Text.Json.Serialization;
 
 namespace SkillsExtended.Models;
 
@@ -13,6 +15,12 @@ public record SkillsConfig
     public required SilentOpsConfig SilentOps { get; set; }
     
     public required StrengthConfig Strength { get; set; }
+
+    public required EnduranceConfig Endurance { get; set; }
+
+    public required VitalityConfig Vitality { get; set; }
+
+    public required HealthConfig Health { get; set; }
 }
 
 public record BaseSubConfig
@@ -133,4 +141,61 @@ public record StrengthConfig
     
     [JsonPropertyName("COLLIDER_SPEED_BUFF_PER_LEVEL")]
     public required float ColliderSpeedBuff { get; set; }
+
+    [JsonPropertyName("BASE_ARMS_HP")]
+    public required int BaseArmsHp { get; set; }
+
+    [JsonPropertyName("ARMS_HP_PER_LEVEL")]
+    public required float ArmsHpPerLevel { get; set; }
+
+    [JsonPropertyName("ARMS_HP_ELITE")]
+    public required float ArmsHpElite { get; set; }
+}
+
+public record EnduranceConfig
+{
+    [JsonPropertyName("ENABLED")]
+    public required bool Enabled { get; set; }
+
+    [JsonPropertyName("BASE_LEGS_HP")]
+    public required int BaseLegsHp { get; set; }
+
+    [JsonPropertyName("LEGS_HP_PER_LEVEL")]
+    public required float LegsHpPerLevel { get; set; }
+
+    [JsonPropertyName("LEGS_HP_ELITE")]
+    public required float LegsHpElite { get; set; }
+}
+
+public record VitalityConfig
+{
+    [JsonPropertyName("ENABLED")]
+    public required bool Enabled { get; set; }
+
+    [JsonPropertyName("BASE_THORAX_HP")]
+    public required int BaseThoraxHp { get; set; }
+
+    [JsonPropertyName("BASE_STOMACH_HP")]
+    public required int BaseStomachHp { get; set; }
+
+	[JsonPropertyName("TORSO_HP_PER_LEVEL")]
+    public required float TorsoHpPerLevel { get; set; }
+
+    [JsonPropertyName("TORSO_HP_ELITE")]
+    public required float TorsoHpElite { get; set; }
+}
+
+public record HealthConfig
+{
+    [JsonPropertyName("ENABLED")]
+    public required bool Enabled { get; set; }
+
+	[JsonPropertyName("BASE_HEAD_HP")]
+    public required int BaseHeadHp { get; set; }
+
+    [JsonPropertyName("HEAD_HP_PER_LEVEL")]
+    public required float HeadHpPerLevel { get; set; }
+
+    [JsonPropertyName("HEAD_HP_ELITE")]
+    public required float HeadHpElite { get; set; }
 }

@@ -25,6 +25,7 @@ namespace SkillsExtended.Skills.Core.Patches
 
 			var skillData = SkillsPlugin.SkillData;
 			var skillId = skill.Id;
+
 			switch (skillId)
 			{
 				case ESkillId.Strength:
