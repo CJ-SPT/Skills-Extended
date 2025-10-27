@@ -9,9 +9,9 @@
     ],
     "Improvements": [
       "Labyrinth doors are now able to be lock picked",
+      "Added `Attempts per door before lock breaks` to the config web page",
       "Update Russian locales",
-      "Update Korean locales",
-      "Added `Attempts per door before lock breaks` to the config web page"
+      "Update Korean locales"
     ],
     "BugFixes": [
       "Fixes \"The given key `Labyrinth` was not present in the dictionary\"",
