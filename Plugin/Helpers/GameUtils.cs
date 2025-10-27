@@ -59,19 +59,13 @@ public static class GameUtils
     [CanBeNull]
     public static Profile GetProfile(EPlayerSide playerSide, bool throwIfNull = false)
     {
-        Profile profile = null;
-
-        switch (playerSide)
+        var profile = playerSide switch
         {
-            case EPlayerSide.Bear:
-            case EPlayerSide.Usec:
-                profile = GetSession()?.Profile;
-                break;
-            case EPlayerSide.Savage:
-                profile = GetSession()?.ProfileOfPet;
-                break;
-        }
-        
+            EPlayerSide.Bear or EPlayerSide.Usec => GetSession()?.Profile,
+            EPlayerSide.Savage => GetSession()?.ProfileOfPet,
+            _ => null
+        };
+
         if (throwIfNull && profile is null)
         {
             throw new SkillsExtendedException("Trying to access the Profile when it's null");
@@ -91,11 +85,22 @@ public static class GameUtils
     {
         var player = GetGameWorld()?.MainPlayer;
 
-        if (throwIfNull && player is null)
+        if (throwIfNull && !player)
         {
             throw new SkillsExtendedException("Trying to access the Player when it is null");
         }
         
         return player;
+    }
+    
+    public static EPlayerSide GetPlayerSide()
+    {
+        var profile = GetSession()?.Profile;
+        if (profile is null)
+        {
+            throw new SkillsExtendedException("Player is null when trying to check PlayerSide");
+        }
+        
+        return profile.Side;
     }
 }
