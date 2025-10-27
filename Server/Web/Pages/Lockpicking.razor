@@ -51,6 +51,15 @@
                             Step=".05M"
                             Min="0" Max="1"/>
                     </MudItem>
+                    
+                    <MudItem xs="6">
+                        <MudNumericField
+                            @bind-Value="AttemptsBeforeBreak"
+                            Label="Attempts per door before lock breaks"
+                            Variant="Variant.Filled"
+                            Step="1"
+                            Min="0" Max="100"/>
+                    </MudItem>
 
                     <MudItem xs="6">
                         <MudNumericField
@@ -107,6 +116,12 @@
     {
         get => (decimal)Data.SweetSpotRangePerLevel;
         set => Data.SweetSpotRangePerLevel = (float)value;
+    }
+    
+    int AttemptsBeforeBreak
+    {
+        get => Data.AttemptsBeforeBreak;
+        set => Data.AttemptsBeforeBreak = value;
     }
     
     decimal InspectLockXpRatio
