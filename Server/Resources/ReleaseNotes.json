@@ -12,7 +12,9 @@
     ],
     "BugFixes": [
       "Fixes \"The given key `Labyrinth` was not present in the dictionary\"",
-      "Fixes a BSG bug where the `Military Checkpoint` key could not be used on customs"
+      "Fixes a BSG bug where the `Military Checkpoint` key could not be used on customs",
+      "Fixes Strength speed buff for bushes and swamps",
+      "Fixes Strength elite buff for jumping and sprinting in bushes and swamps"
     ]
   },
   {

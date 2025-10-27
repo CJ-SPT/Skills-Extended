@@ -83,7 +83,7 @@ internal static class PatchManager
 
     private static void SkillStrength()
     {
-        //new MovementContextSetSpeedLimitPatch().Enable();
+        new MovementContextSetSpeedLimitPatch().Enable();
     }
     
     private static void SkillsUI()

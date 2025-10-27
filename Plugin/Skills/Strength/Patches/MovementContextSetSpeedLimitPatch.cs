@@ -13,7 +13,7 @@ public class MovementContextSetSpeedLimitPatch : ModulePatch
 {
 	protected override MethodBase GetTargetMethod()
 	{
-		return AccessTools.Method(typeof(MovementContext), nameof(MovementContext.method_0), [typeof(float), typeof(string)]);
+		return AccessTools.Method(typeof(MovementContext), nameof(MovementContext.method_0));
 	}
 
 	[PatchPrefix]
@@ -41,8 +41,8 @@ public class MovementContextSetSpeedLimitPatch : ModulePatch
 		__instance.method_28(EPhysicalCondition.ProneDisabled, ref gStruct);
 		__instance.method_28(EPhysicalCondition.ProneMovementDisabled, ref gStruct);
 
-		// Allow jumping/sprinting in swamps
-		if (skillMgrExt.StrengthBushSpeedIncBuffElite)
+		var bushSpeedElite = skillMgrExt.StrengthBushSpeedIncBuffElite;
+		if (!bushSpeedElite)
 		{
 			__instance.method_28(EPhysicalCondition.SprintDisabled, ref gStruct);
 			__instance.method_28(EPhysicalCondition.JumpDisabled, ref gStruct);
@@ -55,7 +55,15 @@ public class MovementContextSetSpeedLimitPatch : ModulePatch
 
 		if (flag)
 		{
-			__instance.AddStateSpeedLimit(0.2f * (1 + skillMgrExt.StrengthBushSpeedIncBuff), Player.ESpeedLimit.Swamp);
+			var speedLimit = bushSpeedElite.Value 
+				? 1f
+				: 0.2f * (1 + skillMgrExt.StrengthBushSpeedIncBuff);
+
+#if DEBUG
+			Logger.LogDebug($"Collider speed limit: {speedLimit} :: IsElite {bushSpeedElite.Value}");
+#endif
+			
+			__instance.AddStateSpeedLimit(speedLimit, Player.ESpeedLimit.Swamp);
 			return false;
 		}
 		
