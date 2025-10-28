@@ -13,6 +13,7 @@ public class PatchRegister : IOnLoad
         new StartSacrificePatch().Enable();
         new ScavCooldownTimerPatch().Enable();
         new QuestMoneyRewardPatch().Enable();
+        new QuestExperienceRewardPatch().Enable();
         
         return Task.CompletedTask;
     }
