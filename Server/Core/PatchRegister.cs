@@ -14,6 +14,7 @@ public class PatchRegister : IOnLoad
         new ScavCooldownTimerPatch().Enable();
         new QuestMoneyRewardPatch().Enable();
         new QuestExperienceRewardPatch().Enable();
+        new GetTraderAssortPatch().Enable();
         
         return Task.CompletedTask;
     }
