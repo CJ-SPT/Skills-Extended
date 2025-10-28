@@ -592,5 +592,21 @@
       "XP_PER_ACTION": 1,
       "SCAV_COOLDOWN_TIME_PER_LEVEL": 0.01,
       "CULTIST_CIRCLE_RETURN_TIME_PER_LEVEL": 0.01
+    },
+    "BearRawPower": {
+      "ENABLED": true,
+      "XP_PER_ACTION": 1,
+      "FACTION_LOCKED": true,
+      "PRAPOR_TRADING_COST_PER_LEVEL": 0.005,
+      "QUEST_EXP_REWARD_PER_LEVEL": 0.005,
+      "ALL_TRADER_COST_DECREASE": 0.07
+    },
+    "UsecNegotiations": {
+      "ENABLED": true,
+      "XP_PER_ACTION": 1,
+      "FACTION_LOCKED": true,
+      "PEACEKEEPER_TRADING_COST_PER_LEVEL": 0.005,
+      "QUEST_MONEY_REWARD_PER_LEVEL": 0.005,
+      "ALL_TRADER_COST_DECREASE": 0.07
     }
 }

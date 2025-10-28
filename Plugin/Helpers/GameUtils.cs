@@ -96,11 +96,7 @@ public static class GameUtils
     public static EPlayerSide GetPlayerSide()
     {
         var profile = GetSession()?.Profile;
-        if (profile is null)
-        {
-            throw new SkillsExtendedException("Player is null when trying to check PlayerSide");
-        }
         
-        return profile.Side;
+        return profile?.Side ?? EPlayerSide.Savage;
     }
 }

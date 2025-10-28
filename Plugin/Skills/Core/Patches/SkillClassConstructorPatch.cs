@@ -101,6 +101,19 @@ internal class SkillClassCtorPatch : ModulePatch
                 ];
                 break;
                 
+            case ESkillId.BearRawpower:
+                buffs = skillMgrExt.BearRawPowerBuffs();
+                actions = [
+                    skillMgrExt.BearRawPowerKillAction.Factor(1.0f)
+                ];
+                break;
+            
+            case ESkillId.UsecNegotiations:
+                buffs = skillMgrExt.UsecNegotiationsBuffs();
+                actions = [
+                    skillMgrExt.UsecNegotiationsKillAction.Factor(1.0f)
+                ];
+                break;
         }
     }
 

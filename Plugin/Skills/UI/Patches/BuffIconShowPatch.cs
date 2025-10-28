@@ -2,6 +2,7 @@
 using EFT;
 using EFT.HealthSystem;
 using EFT.InventoryLogic;
+using EFT.Quests;
 using EFT.UI;
 using HarmonyLib;
 using SPT.Reflection.Patching;
@@ -88,14 +89,30 @@ internal class BuffIconShowPatch : ModulePatch
                 ____icon.sprite = staticIcons.BuffIdSprites.GetValueOrDefault(EBuffId.StrengthBuffSprintSpeedInc);
                 break;
             
-            case EBuffId.ScavCooldownTimeDec:
-            case EBuffId.ScavCooldownTimeElite:
+            case EBuffId.ShadowConnectionsScavCooldownTimeDec:
+            case EBuffId.ShadowConnectionsScavCooldownTimeElite:
                 ____icon.sprite = staticIcons.BuffIdSprites.GetValueOrDefault(EBuffId.CharismaFenceRepPenaltyReduction);
                 break;
             
-            case EBuffId.CultistCircleReturnTimeDec:
+            case EBuffId.ShadowConnectionsCultistCircleReturnTimeDec:
                 ____icon.sprite = staticIcons.BuffIdSprites.GetValueOrDefault(EBuffId.CovertMovementSpeed);
                 break;
+            
+            case EBuffId.UsecNegotiationsPeacekeeperTraderCostDec:
+            case EBuffId.UsecNegotiationsAllTraderCostDec:
+            case EBuffId.BearRawPowerPraporTraderCostDec:
+            case EBuffId.BearRawPowerAllTraderCostDec:
+                ____icon.sprite = staticIcons.BarterSign;
+                break;
+            
+            case EBuffId.UsecNegotiationRewardMoneyInc:
+                ____icon.sprite = staticIcons.CurrencyTypeSmallSprites.GetValueOrDefault(ECurrencyType.RUB);
+                break;
+            
+            case EBuffId.BearRawPowerQuestRewardExpInc:
+                ____icon.sprite = staticIcons.QuestIconTypeSprites.GetValueOrDefault(EQuestIconType.Levelling);
+                break;
+                
         }
         
         __instance.UpdateBuff();

@@ -5,7 +5,9 @@
     "ReleaseDate": "October 23, 2025",
     "IsLatest": true,
     "Features": [
-      "New Skill `Shadow Connections`"
+      "New Skill `Shadow Connections`",
+      "New Skill `Bear Raw Power`",
+      "New Skill `Usec Negotiations`"
     ],
     "Improvements": [
       "Labyrinth doors are now able to be lock picked",
@@ -18,7 +20,8 @@
       "Fixes a BSG bug where the `Military Checkpoint` key could not be used on customs",
       "Fixes Strength speed buff for bushes and swamps",
       "Fixes Strength elite buff for jumping and sprinting in bushes and swamps",
-      "Should fix missing crafts for Korean locales"
+      "Should fix missing crafts for Korean locales",
+      "Fixed various typo's in english locales"
     ]
   },
   {

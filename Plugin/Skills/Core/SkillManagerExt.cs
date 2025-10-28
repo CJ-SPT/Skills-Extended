@@ -104,19 +104,52 @@ public class SkillManagerExt
 
     public readonly SkillManager.SkillBuffClass ScavCooldownTimeReductionBuff = new()
     {
-        Id = EBuffId.ScavCooldownTimeDec
+        Id = EBuffId.ShadowConnectionsScavCooldownTimeDec
     };
 
     public readonly SkillManager.SkillBuffClass CultistCircleReturnTimeReductionBuff = new()
     {
-        Id = EBuffId.CultistCircleReturnTimeDec
+        Id = EBuffId.ShadowConnectionsCultistCircleReturnTimeDec
     };
 
     public readonly SkillManager.GClass2257 ScavCooldownTimeReductionEliteBuff = new()
     {
-        Id = EBuffId.ScavCooldownTimeElite,
+        Id = EBuffId.ShadowConnectionsScavCooldownTimeElite,
         BuffType = SkillManager.EBuffType.Elite
     };
+    
+    public readonly SkillManager.SkillBuffClass BearRawPowerPraporTraderCostDec = new()
+    {
+        Id = EBuffId.BearRawPowerPraporTraderCostDec
+    };
+
+    public readonly SkillManager.SkillBuffClass BearRawPowerQuestRewardExpInc = new()
+    {
+        Id = EBuffId.BearRawPowerQuestRewardExpInc
+    };
+
+    public readonly SkillManager.SkillBuffClass BearRawPowerAllTraderCostDec = new()
+    {
+        Id = EBuffId.BearRawPowerAllTraderCostDec,
+        BuffType = SkillManager.EBuffType.Elite
+    };
+    
+    public readonly SkillManager.SkillBuffClass UsecNegotiationsPeacekeeperTraderCostDec = new()
+    {
+        Id = EBuffId.UsecNegotiationsPeacekeeperTraderCostDec
+    };
+
+    public readonly SkillManager.SkillBuffClass UsecNegotiationRewardMoneyInc = new()
+    {
+        Id = EBuffId.UsecNegotiationRewardMoneyInc,
+    };
+
+    public readonly SkillManager.SkillBuffClass UsecNegotiationsAllTraderCostDec = new()
+    {
+        Id = EBuffId.UsecNegotiationsAllTraderCostDec,
+        BuffType = SkillManager.EBuffType.Elite
+    };
+    
 
     #endregion
 
@@ -130,6 +163,8 @@ public class SkillManagerExt
     public readonly SkillManager.SkillActionClass SilentOpsGunAction = new();
     public readonly SkillManager.SkillActionClass SilentOpsMeleeAction = new();
     public readonly SkillManager.SkillActionClass ShadowConnectionsKillAction = new();
+    public readonly SkillManager.SkillActionClass BearRawPowerKillAction = new();
+    public readonly SkillManager.SkillActionClass UsecNegotiationsKillAction = new();
 
     #endregion
 
@@ -198,6 +233,26 @@ public class SkillManagerExt
             ScavCooldownTimeReductionBuff.PerLevel(SkillData.ShadowConnections.ScavCooldownTimeReduction),
             CultistCircleReturnTimeReductionBuff.PerLevel(SkillData.ShadowConnections.CultistCircleReturnTimeReduction),
             ScavCooldownTimeReductionEliteBuff
+        ];
+    }
+    
+    public SkillManager.SkillBuffAbstractClass[] BearRawPowerBuffs()
+    {
+        return
+        [
+            BearRawPowerPraporTraderCostDec.PerLevel(SkillData.BearRawPower.PraporTradingCostDec),
+            BearRawPowerQuestRewardExpInc.PerLevel(SkillData.BearRawPower.QuestExpRewardInc),
+            BearRawPowerAllTraderCostDec.Elite(SkillData.BearRawPower.AllTraderCostDecrease)
+        ];
+    }
+    
+    public SkillManager.SkillBuffAbstractClass[] UsecNegotiationsBuffs()
+    {
+        return
+        [
+            UsecNegotiationsPeacekeeperTraderCostDec.PerLevel(SkillData.UsecNegotiations.PeacekeeperTradingCostDec),
+            UsecNegotiationRewardMoneyInc.PerLevel(SkillData.UsecNegotiations.QuestMoneyRewardInc),
+            UsecNegotiationsAllTraderCostDec.Elite(SkillData.UsecNegotiations.AllTraderCostDecrease)
         ];
     }
 }
