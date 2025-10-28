@@ -102,7 +102,7 @@ public class GetTraderAssortPatch : AbstractPatch
         var normalizedDiscount = Math.Clamp(1 - discount, 0.0f, 1.0f);
 
 #if DEBUG
-        Console.WriteLine($"Normalized discount: {normalizedDiscount}");
+        Console.WriteLine($"discount: {discount}%");
         Console.WriteLine($"Original price: {barter.Count}");
 #endif
         
