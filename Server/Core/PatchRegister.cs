@@ -12,6 +12,7 @@ public class PatchRegister : IOnLoad
         new CultistProductionPatch().Enable();
         new StartSacrificePatch().Enable();
         new ScavCooldownTimerPatch().Enable();
+        new QuestMoneyRewardPatch().Enable();
         
         return Task.CompletedTask;
     }
