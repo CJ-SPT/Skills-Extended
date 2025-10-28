@@ -16,8 +16,8 @@ internal class SkillPanelDisablePatch : ModulePatch
     {
         return skill.Id switch
         {
-            //ESkillId.UsecNegotiations => SkillUtils.IsUsecNegotiationsAvailable(),
-            //ESkillId.BearRawpower => SkillUtils.IsBearRawPowerAvailable(),
+            ESkillId.UsecNegotiations => SkillUtils.IsUsecNegotiationsAvailable(),
+            ESkillId.BearRawpower => SkillUtils.IsBearRawPowerAvailable(),
             _ => !skill.Locked
         };
     }
