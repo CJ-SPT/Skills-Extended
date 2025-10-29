@@ -8,7 +8,6 @@ using System.Linq;
 using System.Reflection;
 using SkillsExtended.Helpers;
 using SkillsExtended.Models;
-using SkillsExtended.Skills.Core;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
@@ -18,6 +17,8 @@ namespace SkillsExtended.Skills.LockPicking;
 internal static class LockPickingHelpers
 {
     public static readonly Dictionary<string, int> DoorAttempts = [];
+    public static readonly Dictionary<string, float> DoorSweetSpotRanges = [];
+    
     public static readonly List<string> InspectedDoors = [];
     
     public static GameObject LockPickingGame;
@@ -227,14 +228,31 @@ internal static class LockPickingHelpers
         LockPickingGame.SetActive(false);
     }
     
-    public static void InitializeDoorAttempts(string location)
+    public static void InitializeLockpickingForLocation(string location)
     {
         InspectedDoors.Clear();
         DoorAttempts.Clear();
+        DoorSweetSpotRanges.Clear();
         
         foreach (var door in LocationDoorIdLevels[location].Keys)
         {
             DoorAttempts.Add(door, 0);
         }
+        
+        var skillManager = GameUtils.GetSkillManager()?.SkillManagerExtended;
+        var sweetSpotRangeBase = SkillsPlugin.SkillData.LockPicking.SweetSpotRangeBase;
+        
+        foreach (var (doorId, level) in LocationDoorIdLevels[location])
+        {
+            var skillMod = 1 + skillManager?.LockPickingForgiveness;
+            var doorMod = Mathf.Clamp(level / 35f, 0.05f, 1.5f);
+            var sweetSpotRange = Mathf.Clamp((sweetSpotRangeBase - doorMod) * skillMod, 0f, 20f);
+            
+            DoorSweetSpotRanges[doorId] = sweetSpotRange;
+        }
+
+#if DEBUG
+        SkillsPlugin.Log.LogDebug($"Initialized `{LocationDoorIdLevels[location].Count}` doors on map `{location}`");
+#endif
     }
 }

@@ -52,7 +52,7 @@ namespace SkillsExtended.Helpers
             if (!Singleton<GameWorld>.Instantiated) return;
             
             var gameWorld = Singleton<GameWorld>.Instance;
-            LockPickingHelpers.InitializeDoorAttempts(gameWorld.LocationId);
+            LockPickingHelpers.InitializeLockpickingForLocation(gameWorld.LocationId);
         }
         
         #region HEALTH

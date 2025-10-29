@@ -114,7 +114,7 @@ public struct LockPickingData
     public float SweetSpotRangePerLevel;
 
     [JsonProperty("ATTEMPTS_BEFORE_BREAK")]
-    public float AttemptsBeforeBreak;
+    public int AttemptsBeforeBreak;
 
     [JsonProperty("INSPECT_LOCK_XP_RATIO")]
     public float InspectLockXpRatio;
