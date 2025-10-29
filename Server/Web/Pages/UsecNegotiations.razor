@@ -1,0 +1,107 @@
+﻿@page "/skills-extended/usec-negotiations"
+@layout BaseLayout;
+
+@inject ConfigController ConfigController
+
+<MudGrid Justify="Justify.Center" Style="min-height:100vh; display:flex; align-items:center;">
+    <MudItem xs="11" sm="8" md="6" lg="4">
+        <MudPaper Height="325px" Style="width:100%;">
+            <MudContainer MaxWidth="MaxWidth.Medium">
+                <MudGrid>
+                    <MudItem xs="6">
+                        <MudSwitch
+                            Class="d-flex align-center justify-center mud-width-full py-8"
+                            @bind-Value="Enabled"
+                            Label="Enabled"
+                            Color="Color.Success"/>
+                    </MudItem>
+                    
+                    <MudItem xs="6">
+                        <MudSwitch
+                            Class="d-flex align-center justify-center mud-width-full py-8"
+                            @bind-Value="FactionLocked"
+                            Label="Faction Locked"
+                            Color="Color.Success"/>
+                    </MudItem>
+
+                    <MudItem xs="6">
+                        <MudNumericField
+                            @bind-Value="XpPerAction"
+                            Label="XP Per Action"
+                            Variant="Variant.Filled"
+                            Step=".05f"
+                            Min="0" Max="25"/>
+                    </MudItem>
+    
+                    <MudItem xs="6">
+                        <MudNumericField
+                            @bind-Value="PeacekeeperTradingCostDec"
+                            Label="Peacekeeper Trading Cost Per Level"
+                            Variant="Variant.Filled"
+                            Step=".05f"
+                            Min="0" Max="1"/>
+                    </MudItem>
+                    
+                    <MudItem xs="6">
+                        <MudNumericField
+                            @bind-Value="QuestMoneyRewardInc"
+                            Label="Quest Money Reward Per Level"
+                            Variant="Variant.Filled"
+                            Step=".05f"
+                            Min="0" Max="1"/>
+                    </MudItem>
+                    
+                    <MudItem xs="6">
+                        <MudNumericField
+                            @bind-Value="AllTraderCostDecrease"
+                            Label="All Trader Cost"
+                            Variant="Variant.Filled"
+                            Step=".05f"
+                            Min="0" Max="99"/>
+                    </MudItem>
+                    
+                </MudGrid>
+            </MudContainer>
+        </MudPaper>
+    </MudItem>
+</MudGrid>
+
+@code {
+    UsecNegotiationsConfig Data => ConfigController.SkillsConfig.UsecNegotiations;
+    
+    bool Enabled
+    {
+        get => Data.Enabled;
+        set => Data.Enabled = value;
+    }
+    
+    float XpPerAction
+    {
+        get => Data.XpPerAction;
+        set => Data.XpPerAction = value;
+    }
+    
+    bool FactionLocked
+    {
+        get => Data.FactionLocked;
+        set => Data.FactionLocked = value;
+    }
+
+    float PeacekeeperTradingCostDec
+    {
+        get => Data.PeacekeeperTradingCostDec;
+        set => Data.PeacekeeperTradingCostDec = value;
+    }
+    
+    float QuestMoneyRewardInc
+    {
+        get => Data.QuestMoneyRewardInc;
+        set => Data.QuestMoneyRewardInc = value;
+    }
+    
+    float AllTraderCostDecrease
+    {
+        get => Data.AllTraderCostDecrease;
+        set => Data.AllTraderCostDecrease = value;
+    }
+}

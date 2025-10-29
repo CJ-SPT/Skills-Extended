@@ -1,0 +1,78 @@
+﻿@page "/skills-extended/shadow-connections"
+@layout BaseLayout;
+
+@inject ConfigController ConfigController
+
+<MudGrid Justify="Justify.Center" Style="min-height:100vh; display:flex; align-items:center;">
+    <MudItem xs="11" sm="8" md="6" lg="4">
+        <MudPaper Height="225px" Style="width:100%;">
+            <MudContainer MaxWidth="MaxWidth.Medium">
+                <MudGrid>
+                    <MudItem xs="6">
+                        <MudSwitch
+                            Class="d-flex align-center justify-center mud-width-full py-8"
+                            @bind-Value="Enabled"
+                            Label="Enabled"
+                            Color="Color.Success"/>
+                    </MudItem>
+
+                    <MudItem xs="6">
+                        <MudNumericField
+                            @bind-Value="XpPerAction"
+                            Label="XP Per Action"
+                            Variant="Variant.Filled"
+                            Step=".05f"
+                            Min="0" Max="25"/>
+                    </MudItem>
+    
+                    <MudItem xs="6">
+                        <MudNumericField
+                            @bind-Value="ScavCoolDownTimerDec"
+                            Label="Scav Cooldown Timer Per Level"
+                            Variant="Variant.Filled"
+                            Step=".05f"
+                            Min="0" Max="1"/>
+                    </MudItem>
+                    
+                    <MudItem xs="6">
+                        <MudNumericField
+                            @bind-Value="CultistCircleReturnTimeDec"
+                            Label="Cultist Circle Return Time Per Level"
+                            Variant="Variant.Filled"
+                            Step=".05f"
+                            Min="0" Max="1"/>
+                    </MudItem>
+                    
+                </MudGrid>
+            </MudContainer>
+        </MudPaper>
+    </MudItem>
+</MudGrid>
+
+@code {
+    ShadowConnectionsConfig Data => ConfigController.SkillsConfig.ShadowConnections;
+    
+    bool Enabled
+    {
+        get => Data.Enabled;
+        set => Data.Enabled = value;
+    }
+    
+    float XpPerAction
+    {
+        get => Data.XpPerAction;
+        set => Data.XpPerAction = value;
+    }
+
+    float ScavCoolDownTimerDec
+    {
+        get => Data.ScavCooldownTimeDec;
+        set => Data.ScavCooldownTimeDec = value;
+    }
+    
+    float CultistCircleReturnTimeDec
+    {
+        get => Data.CultistCircleReturnTimeDec;
+        set => Data.CultistCircleReturnTimeDec = value;
+    }
+}
