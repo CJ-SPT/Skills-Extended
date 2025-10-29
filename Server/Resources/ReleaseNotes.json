@@ -14,8 +14,9 @@
       "Labyrinth doors are now able to be lock picked",
       "Added `Attempts per door before lock breaks` to the config web page",
       "All locales are set to english across all languages, then that languages locale file is loaded on-top of it to prevent missing locales. English is better than none.",
-      "Update Russian locales",
-      "Update Korean locales"
+      "Updated Russian locales",
+      "Updated Korean locales",
+      "Updated Spanish locales"
     ],
     "BugFixes": [
       "Fixes \"The given key `Labyrinth` was not present in the dictionary\"",
