@@ -1,0 +1,66 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <Version>2.1.0</Version>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Plugin\Plugin.csproj" />
+      <ProjectReference Include="..\Prepatcher\Prepatch.csproj" />
+      <ProjectReference Include="..\Server\Server.csproj" />
+    </ItemGroup>
+
+    <PropertyGroup>
+        <TarkovDir Condition=" '$(TarkovDir)' == '' ">$(SolutionDir)..\..\</TarkovDir>
+    </PropertyGroup>
+
+    <!-- Gets the commit hash from git -->
+    <Target Name="SetSourceRevisionId" BeforeTargets="InitializeSourceControlInformation">
+        <Exec
+                Command="git describe --long --always --dirty --exclude=* --abbrev=8"
+                ConsoleToMSBuild="True"
+                IgnoreExitCode="False"
+        >
+            <Output PropertyName="SourceRevisionId" TaskParameter="ConsoleOutput"/>
+        </Exec>
+    </Target>
+
+    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+        <ItemGroup>
+            <Plugin     Include="$(TarkovDir)BepInEx\plugins\SkillsExtended\**\*.*" />
+            <PrePatch   Include="$(TarkovDir)BepInEx\patchers\SkillsExtended_PrePatch.dll" />
+            <Server     Include="$(TarkovDir)SPT\user\mods\SkillsExtended\**\*.*"/>
+        </ItemGroup>
+        
+        <!-- Clean the release directory -->
+        <RemoveDir Directories="$(SolutionDir)release" />
+
+        <!-- Copy the plugin -->
+        <Copy
+                SourceFiles="@(Plugin)"
+                DestinationFolder="$(SolutionDir)release\SkillsExtended\BepInEx\plugins\SkillsExtended\%(RecursiveDir)"
+        />
+
+        <!-- Copy the prepatch -->
+        <Copy
+                SourceFiles="@(PrePatch);"
+                DestinationFolder="$(SolutionDir)release\SkillsExtended\BepInEx\patchers\"
+        />
+
+        <!-- Copy the server mod -->
+        <Copy
+                SourceFiles="@(Server);"
+                DestinationFolder="$(SolutionDir)release\SkillsExtended\SPT\user\mods\SkillsExtended\%(RecursiveDir)"
+        />
+
+        <!-- Zip the mod into a release format -->
+        <ZipDirectory
+                SourceDirectory="$(SolutionDir)release\SkillsExtended\"
+                DestinationFile="$(SolutionDir)release\SkillsExtended-$(Version)-$(Configuration)-$(SourceRevisionId).zip"
+        />
+    </Target>
+    
+</Project>

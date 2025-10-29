@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.1</TargetFramework>
     <AssemblyName>SkillsExtended</AssemblyName>
     <Description>New Skills!</Description>
-    <Version>1.5.0</Version>
+    <Version>2.1.0</Version>
     <LangVersion>latest</LangVersion>
 	<Configurations>Debug;Release;BETA</Configurations>
 	<RootNamespace>SkillsExtended</RootNamespace>
@@ -115,48 +115,17 @@
 		</Reference>
 
 	</ItemGroup>
-
-	<ItemGroup>
-	  <ProjectReference Include="..\Prepatcher\Prepatch.csproj" />
-	</ItemGroup>
-
-	<!-- Gets the commit hash from git -->
-	<Target Name="SetSourceRevisionId" BeforeTargets="InitializeSourceControlInformation">
-		<Exec
-				Command="git describe --long --always --dirty --exclude=* --abbrev=8"
-				ConsoleToMSBuild="True"
-				IgnoreExitCode="False"
-		>
-			<Output PropertyName="SourceRevisionId" TaskParameter="ConsoleOutput"/>
-		</Exec>
-	</Target>
-	
+    
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
 		<ItemGroup>
 			<OutputDLL Include="$(ProjectDir)$(OutDir)$(TargetName).dll" />
 			<Resources Include="$(ProjectDir)Resources\**\*.*" />
-			<PrePatch Include ="$(ProjectDir)$(OutDir)SkillsExtended_PrePatch.dll" />
 		</ItemGroup>
 
 		<!-- Copies the output and resources to tarkov game folder -->
 		<Copy
 				SourceFiles="@(OutputDLL);@(Resources);"
 				DestinationFolder="$(TarkovDir)BepInEx\plugins\SkillsExtended\%(RecursiveDir)"
-		/>
-
-		<!-- Creates a release zip file -->
-		<RemoveDir Directories="$(ProjectDir)release" />
-		<Copy
-				SourceFiles="@(OutputDLL);@(Resources);"
-				DestinationFolder="$(ProjectDir)release\SkillsExtended\BepInEx\plugins\SkillsExtended\%(RecursiveDir)"
-		/>
-		<Copy
-				SourceFiles="@(PrePatch);"
-				DestinationFolder="$(ProjectDir)release\SkillsExtended\BepInEx\patchers\%(RecursiveDir)"
-		/>
-		<ZipDirectory
-				SourceDirectory="$(ProjectDir)release\SkillsExtended\"
-				DestinationFile="$(ProjectDir)release\SkillsExtended-$(SourceRevisionId).zip"
 		/>
 	</Target>
 
