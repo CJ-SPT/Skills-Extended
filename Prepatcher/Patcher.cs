@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System;
 using System.Linq;
-using BepInEx.Logging;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using JetBrains.Annotations;
+using Skills_Extended_Patcher;
+using UnityEngine;
 using FieldAttributes = Mono.Cecil.FieldAttributes;
+using Logger = BepInEx.Logging.Logger;
 
 public static class SkillsExtendedPatcher
 {
@@ -19,6 +21,17 @@ public static class SkillsExtendedPatcher
     
     public static void Patch(ref AssemblyDefinition assembly)
     {
+        if (!File.Exists(PluginPath))
+        {
+            var result = MessageBoxHelper.Show(
+                @"Could not find BepInEx\plugins\SkillsExtended\SkillsExtended.dll in the plugins folder. Mod is not installed correctly. Exiting.", 
+                "Skills Extended error.", 
+                MessageBoxHelper.MessageBoxType.OK);
+            
+            Environment.Exit(1);
+            return;
+        }
+        
         try
         {
             _skillManager = assembly.MainModule.GetType("EFT.SkillManager");
