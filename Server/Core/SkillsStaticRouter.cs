@@ -13,19 +13,19 @@ public class SkillsStaticRouter : StaticRouter
     private static ISptLogger<SkillsStaticRouter>? _logger;
     private static ConfigController? _configController;
     private static JsonUtil? _jsonUtil;
-    private static DatabaseUtils? _databaseUtils;
+    private static DatabaseImporter? _databaseImporter;
     
     public SkillsStaticRouter(
         ISptLogger<SkillsStaticRouter> logger,
         ConfigController configController,
         JsonUtil jsonUtil,
-        DatabaseUtils databaseUtils
+        DatabaseImporter databaseImporter
     ) : base(jsonUtil, GetRoutes())
     {
         _logger = logger;
         _configController = configController;
         _jsonUtil = jsonUtil;
-        _databaseUtils = databaseUtils;
+        _databaseImporter = databaseImporter;
     }
     
     private static List<RouteAction> GetRoutes()
@@ -49,6 +49,6 @@ public class SkillsStaticRouter : StaticRouter
 
     private static ValueTask<string> GetSerializedKeysResponse()
     {
-        return new ValueTask<string>(_jsonUtil!.Serialize(_databaseUtils!.GetKeyLocales())!);
+        return new ValueTask<string>(_jsonUtil!.Serialize(_databaseImporter!.GetKeyLocales())!);
     }
 }

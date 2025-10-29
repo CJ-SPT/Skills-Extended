@@ -12,11 +12,11 @@ using SPTarkov.Server.Core.Services.Mod;
 using SPTarkov.Server.Core.Utils;
 using Path = System.IO.Path;
 
-namespace SkillsExtended.Utils;
+namespace SkillsExtended.Core;
 
 [Injectable(TypePriority = OnLoadOrder.PostDBModLoader + 1)]
-public class DatabaseUtils(
-    ISptLogger<DatabaseUtils> logger,
+public class DatabaseImporter(
+    ISptLogger<DatabaseImporter> logger,
     CustomItemService customItemService,
     DatabaseService databaseService,
     LocaleService localeService,
@@ -25,10 +25,9 @@ public class DatabaseUtils(
     JsonUtil  jsonUtil
     ) : IOnLoad
 {
-    
     public async Task OnLoad()
     {
-        await ImportLocales();
+        await LoadLocales();
         await CreateItems();
         await AddCraftsToDatabase();
         await LoadAchievements();
@@ -59,39 +58,63 @@ public class DatabaseUtils(
         return keysResponse;
     }
 
-    private async ValueTask ImportLocales()
+    private async ValueTask LoadLocales()
     {
         var localesPath = Path.Combine(SeModMetadata.ResourcesDirectory, "Locales");
 
+        var importedLocales = new Dictionary<string, Dictionary<string, string>>();
         foreach (var file in Directory.GetFiles(localesPath))
         {
             var lang = Path.GetFileNameWithoutExtension(file);
             var text = await fileUtil.ReadFileAsync(file);
             var locales = jsonUtil.Deserialize<Dictionary<string, string>>(text)!;
-            
-            ImportLocale(lang, locales);
+            importedLocales[lang] = locales;
         }
+        
+        ImportLocales(importedLocales);
     }
     
-    private void ImportLocale(string lang, Dictionary<string, string> locales)
+    private void ImportLocales(Dictionary<string, Dictionary<string, string>> allLocales)
     {
-        if (!databaseService.GetLocales().Global.TryGetValue(lang, out var lazyLoad))
+        if (!allLocales.TryGetValue("en", out var enLocales))
         {
-            logger.Error($"[Skills Extended] Could not find localization for '{lang}'");
+            logger.Error("[Skills Extended] No default locales found. Mod will not function.");
             return;
         }
 
-        foreach (var (key, value) in locales)
+        // Set all languages to english first.
+        foreach (var (_, lazyLoad) in databaseService.GetLocales().Global)
         {
             lazyLoad.AddTransformer(transformer =>
             {
-                if (!transformer?.TryAdd(key, value) ?? false)
+                foreach (var (key, value) in enLocales)
                 {
-                    transformer[key] = value;
+                    transformer![key] = value;
                 }
                 
                 return transformer;
             });
+        }
+
+        // Apply an override for other languages
+        foreach (var (lang, locales) in allLocales.Where(kvp => kvp.Key != "en"))
+        {
+            if (databaseService.GetLocales().Global.TryGetValue(lang, out var lazyLoad))
+            {
+                lazyLoad.AddTransformer(transformer =>
+                {
+                    foreach (var (key, value) in locales)
+                    {
+                        transformer![key] = value;
+                    }
+
+                    return transformer;
+                });
+                
+                continue;
+            }
+            
+            logger.Error($"[Skills Extended] Could not find language {lang} in global locales.");
         }
     }
 
