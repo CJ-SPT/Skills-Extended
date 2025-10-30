@@ -27,6 +27,8 @@
       "Fixes Strength speed buff for bushes and swamps",
       "Fixes Strength elite buff for jumping and sprinting in bushes and swamps",
       "Fixes Silent Ops buff scaling not behaving as intended",
+      "Fixes Field medicine skill cap buff (NOTE: Not all buffs can take advantage of this, I will work on that later)",
+      "Fixes Field medicine increasing the chance of negative effects",
       "Fixes various typo's in english locales",
       "Fixes locale related exceptions for all locales",
       "Fixes missing crafts for all locales",
