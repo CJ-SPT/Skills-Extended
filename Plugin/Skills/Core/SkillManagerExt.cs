@@ -255,4 +255,18 @@ public class SkillManagerExt
             UsecNegotiationsAllTraderCostDec.Elite(SkillData.UsecNegotiations.AllTraderCostDecrease)
         ];
     }
+
+    public void AdjustStimulatorBuff(Buff buff)
+    {
+        buff.Duration *= 1f + FieldMedicineDurationBonus;
+        if (!buff.Chance.ApproxEquals(1f))
+        {
+            buff.Chance *= 1f + FieldMedicineChanceBonus;
+        }
+
+#if DEBUG
+        SkillsPlugin.Log.LogDebug($"Buff {buff.BuffName} duration adjusted to {buff.Duration}");
+        SkillsPlugin.Log.LogDebug($"Buff {buff.BuffName} chance adjusted to {buff.Chance}");
+#endif
+    }
 }

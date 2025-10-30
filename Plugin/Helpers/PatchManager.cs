@@ -38,13 +38,14 @@ internal static class PatchManager
         new SkillClassCtorPatch().Enable();
         new SkillClassOnTriggerPatch().Enable();
         new SkillManagerConstructorPatch().Enable();
-        // new SkillManagerDeserializePatch().Enable();
     }
 
     private static void SkillFieldMedicine()
     {
         new PersonalBuffPatch().Enable();
-        new SummaryLevelPatch().Enable();
+        new StimulatorApplyBuffPatch().Enable();
+        new PersonalBuffFullStringPatch().Enable();
+        new AbstractSkillClassSummaryLevelPatch().Enable();
     }
     
     private static void SkillFirstAid()
@@ -89,7 +90,6 @@ internal static class PatchManager
     private static void SkillsUI()
     {
         new BuffIconShowPatch().Enable();
-        new PersonalBuffFullStringPatch().Enable(); // TODO: Refactor this patch
         new SkillIconShowPatch().Enable();
         new SkillPanelDisablePatch().Enable();
     }

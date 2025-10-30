@@ -17,7 +17,7 @@
     "FieldMedicineDescription": "Field medicine expertise facilitates the understanding of field narcotics.",
     "FieldMedicineLevelingUpDescription": "The Field Medicine skill is improved by using injectors and medication.",
     "FieldMedicineSkillCap": "Increases the hard skill cap of 60 by [{0:0.#%}]",
-    "FieldMedicineDurationBonus": "Increases the delay and duration of all injector effects by [{0:0.#%}]",
+    "FieldMedicineDurationBonus": "Increases the duration of all injector effects by [{0:0.#%}]",
     "FieldMedicineChanceBonus": "Increases the chance of receiving a positive effect from injectors by [{0:0.#%}]",
     
     "UsecArsystems": "NATO Weapon Proficiency",
