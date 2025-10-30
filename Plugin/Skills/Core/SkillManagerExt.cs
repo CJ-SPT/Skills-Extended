@@ -6,104 +6,153 @@ namespace SkillsExtended.Skills.Core;
 public class SkillManagerExt
 {
     private static SkillDataResponse SkillData => SkillsPlugin.SkillData;
-    
+
     #region BUFFS
 
     public readonly SkillManager.SkillBuffClass FirstAidItemSpeedBuff = new()
     {
         Id = EBuffId.FirstAidHealingSpeed,
     };
-    
+
     public readonly SkillManager.SkillBuffClass FirstAidResourceCostBuff = new()
     {
         Id = EBuffId.FirstAidResourceCost,
     };
-    
+
     public readonly SkillManager.GClass2257 FirstAidMovementSpeedBuffElite = new()
     {
         Id = EBuffId.FirstAidMovementSpeedElite,
         BuffType = SkillManager.EBuffType.Elite
     };
-    
+
     public readonly SkillManager.SkillBuffClass FieldMedicineSkillCap = new()
     {
         Id = EBuffId.FieldMedicineSkillCap,
     };
-    
+
     public readonly SkillManager.SkillBuffClass FieldMedicineDurationBonus = new()
     {
         Id = EBuffId.FieldMedicineDurationBonus,
     };
-    
+
     public readonly SkillManager.SkillBuffClass FieldMedicineChanceBonus = new()
     {
         Id = EBuffId.FieldMedicineChanceBonus,
     };
-    
+
     public readonly SkillManager.SkillBuffClass UsecArSystemsErgoBuff = new()
     {
         Id = EBuffId.UsecArSystemsErgo,
     };
-    
+
     public readonly SkillManager.SkillBuffClass UsecArSystemsRecoilBuff = new()
     {
         Id = EBuffId.UsecArSystemsRecoil,
     };
-    
+
     public readonly SkillManager.SkillBuffClass BearAkSystemsErgoBuff = new()
     {
         Id = EBuffId.BearAkSystemsErgo,
     };
-    
+
     public readonly SkillManager.SkillBuffClass BearAkSystemsRecoilBuff = new()
     {
         Id = EBuffId.BearAkSystemsRecoil,
     };
-    
+
     public readonly SkillManager.SkillBuffClass LockPickingTimeBuff = new()
     {
         Id = EBuffId.LockpickingTimeIncrease,
     };
-    
+
     public readonly SkillManager.SkillBuffClass LockPickingForgiveness = new()
     {
         Id = EBuffId.LockpickingForgivenessAngle,
     };
-    
+
     public readonly SkillManager.GClass2257 LockPickingUseBuffElite = new()
     {
         Id = EBuffId.LockpickingUseElite,
         BuffType = SkillManager.EBuffType.Elite
     };
-    
+
     public readonly SkillManager.SkillBuffClass SilentOpsIncMeleeSpeedBuff = new()
     {
         Id = EBuffId.SilentOpsIncMeleeSpeed,
     };
-    
+
     public readonly SkillManager.SkillBuffClass SilentOpsReduceVolumeBuff = new()
     {
         Id = EBuffId.SilentOpsRedVolume
     };
-    
+
     public readonly SkillManager.SkillBuffClass SilentOpsSilencerCostRedBuff = new()
     {
         Id = EBuffId.SilentOpsSilencerCostRed
     };
-    
+
     public readonly SkillManager.SkillBuffClass StrengthBushSpeedIncBuff = new()
     {
         Id = EBuffId.StrengthColliderSpeedBuff
     };
-    
+
     public readonly SkillManager.GClass2257 StrengthBushSpeedIncBuffElite = new()
     {
         Id = EBuffId.StrengthColliderSpeedBuffElite,
         BuffType = SkillManager.EBuffType.Elite
     };
 
-    #endregion
+    public readonly SkillManager.SkillBuffClass ScavCooldownTimeReductionBuff = new()
+    {
+        Id = EBuffId.ShadowConnectionsScavCooldownTimeDec
+    };
+
+    public readonly SkillManager.SkillBuffClass CultistCircleReturnTimeReductionBuff = new()
+    {
+        Id = EBuffId.ShadowConnectionsCultistCircleReturnTimeDec
+    };
+
+    public readonly SkillManager.GClass2257 ScavCooldownTimeReductionEliteBuff = new()
+    {
+        Id = EBuffId.ShadowConnectionsScavCooldownTimeElite,
+        BuffType = SkillManager.EBuffType.Elite
+    };
     
+    public readonly SkillManager.SkillBuffClass BearRawPowerPraporTraderCostDec = new()
+    {
+        Id = EBuffId.BearRawPowerPraporTraderCostDec
+    };
+
+    public readonly SkillManager.SkillBuffClass BearRawPowerQuestRewardExpInc = new()
+    {
+        Id = EBuffId.BearRawPowerQuestRewardExpInc
+    };
+
+    public readonly SkillManager.SkillBuffClass BearRawPowerAllTraderCostDec = new()
+    {
+        Id = EBuffId.BearRawPowerAllTraderCostDec,
+        BuffType = SkillManager.EBuffType.Elite
+    };
+    
+    public readonly SkillManager.SkillBuffClass UsecNegotiationsPeacekeeperTraderCostDec = new()
+    {
+        Id = EBuffId.UsecNegotiationsPeacekeeperTraderCostDec
+    };
+
+    public readonly SkillManager.SkillBuffClass UsecNegotiationRewardMoneyInc = new()
+    {
+        Id = EBuffId.UsecNegotiationRewardMoneyInc,
+    };
+
+    public readonly SkillManager.SkillBuffClass UsecNegotiationsAllTraderCostDec = new()
+    {
+        Id = EBuffId.UsecNegotiationsAllTraderCostDec,
+        BuffType = SkillManager.EBuffType.Elite
+    };
+    
+
+    #endregion
+
     #region ACTIONS
 
     public readonly SkillManager.SkillActionClass FirstAidAction = new();
@@ -113,9 +162,12 @@ public class SkillManagerExt
     public readonly SkillManager.SkillActionClass LockPickAction = new();
     public readonly SkillManager.SkillActionClass SilentOpsGunAction = new();
     public readonly SkillManager.SkillActionClass SilentOpsMeleeAction = new();
+    public readonly SkillManager.SkillActionClass ShadowConnectionsKillAction = new();
+    public readonly SkillManager.SkillActionClass BearRawPowerKillAction = new();
+    public readonly SkillManager.SkillActionClass UsecNegotiationsKillAction = new();
 
     #endregion
-    
+
     public SkillManager.SkillBuffAbstractClass[] FirstAidBuffs()
     {
         return
@@ -125,7 +177,7 @@ public class SkillManagerExt
             FirstAidMovementSpeedBuffElite
         ];
     }
-    
+
     public SkillManager.SkillBuffAbstractClass[] FieldMedicineBuffs()
     {
         return
@@ -135,7 +187,7 @@ public class SkillManagerExt
             FieldMedicineChanceBonus.PerLevel(SkillData.FieldMedicine.PositiveEffectChanceBonus)
         ];
     }
-    
+
     public SkillManager.SkillBuffAbstractClass[] UsecArBuffs()
     {
         return
@@ -144,7 +196,7 @@ public class SkillManagerExt
             UsecArSystemsRecoilBuff.PerLevel(SkillData.NatoWeapons.RecoilReduction)
         ];
     }
-    
+
     public SkillManager.SkillBuffAbstractClass[] BearAkBuffs()
     {
         return
@@ -153,7 +205,7 @@ public class SkillManagerExt
             BearAkSystemsRecoilBuff.PerLevel(SkillData.EasternWeapons.RecoilReduction)
         ];
     }
-    
+
     public SkillManager.SkillBuffAbstractClass[] LockPickingBuffs()
     {
         return
@@ -163,7 +215,7 @@ public class SkillManagerExt
             LockPickingUseBuffElite
         ];
     }
-    
+
     public SkillManager.SkillBuffAbstractClass[] SilentOpsBuffs()
     {
         return
@@ -172,5 +224,49 @@ public class SkillManagerExt
             SilentOpsReduceVolumeBuff.PerLevel(SkillData.SilentOps.VolumeReduction),
             SilentOpsSilencerCostRedBuff.PerLevel(SkillData.SilentOps.SilencerPriceReduction)
         ];
+    }
+
+    public SkillManager.SkillBuffAbstractClass[] ShadowConnectionsBuffs()
+    {
+        return
+        [
+            ScavCooldownTimeReductionBuff.PerLevel(SkillData.ShadowConnections.ScavCooldownTimeReduction),
+            CultistCircleReturnTimeReductionBuff.PerLevel(SkillData.ShadowConnections.CultistCircleReturnTimeReduction),
+            ScavCooldownTimeReductionEliteBuff
+        ];
+    }
+    
+    public SkillManager.SkillBuffAbstractClass[] BearRawPowerBuffs()
+    {
+        return
+        [
+            BearRawPowerPraporTraderCostDec.PerLevel(SkillData.BearRawPower.PraporTradingCostDec),
+            BearRawPowerQuestRewardExpInc.PerLevel(SkillData.BearRawPower.QuestExpRewardInc),
+            BearRawPowerAllTraderCostDec.Elite(SkillData.BearRawPower.AllTraderCostDecrease)
+        ];
+    }
+    
+    public SkillManager.SkillBuffAbstractClass[] UsecNegotiationsBuffs()
+    {
+        return
+        [
+            UsecNegotiationsPeacekeeperTraderCostDec.PerLevel(SkillData.UsecNegotiations.PeacekeeperTradingCostDec),
+            UsecNegotiationRewardMoneyInc.PerLevel(SkillData.UsecNegotiations.QuestMoneyRewardInc),
+            UsecNegotiationsAllTraderCostDec.Elite(SkillData.UsecNegotiations.AllTraderCostDecrease)
+        ];
+    }
+
+    public void AdjustStimulatorBuff(Buff buff)
+    {
+        buff.Duration *= 1f + FieldMedicineDurationBonus;
+        if (!buff.Chance.ApproxEquals(1f))
+        {
+            buff.Chance *= 1f + FieldMedicineChanceBonus;
+        }
+
+#if DEBUG
+        SkillsPlugin.Log.LogDebug($"Buff {buff.BuffName} duration adjusted to {buff.Duration}");
+        SkillsPlugin.Log.LogDebug($"Buff {buff.BuffName} chance adjusted to {buff.Chance}");
+#endif
     }
 }

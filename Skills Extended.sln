@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plugin", "Plugin\Plugin.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server", "Server\Server.csproj", "{DCACB91E-E3D4-49C9-8781-1A93C79A1829}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "__BUILD_RELEASE__", "__BUILD_RELEASE__\__BUILD_RELEASE__.csproj", "{3D3CF761-76FF-4614-BF53-D3E246E40F92}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		BETA|Any CPU = BETA|Any CPU
@@ -34,6 +36,12 @@ Global
 		{DCACB91E-E3D4-49C9-8781-1A93C79A1829}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DCACB91E-E3D4-49C9-8781-1A93C79A1829}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DCACB91E-E3D4-49C9-8781-1A93C79A1829}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3D3CF761-76FF-4614-BF53-D3E246E40F92}.BETA|Any CPU.ActiveCfg = Debug|Any CPU
+		{3D3CF761-76FF-4614-BF53-D3E246E40F92}.BETA|Any CPU.Build.0 = Debug|Any CPU
+		{3D3CF761-76FF-4614-BF53-D3E246E40F92}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3D3CF761-76FF-4614-BF53-D3E246E40F92}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3D3CF761-76FF-4614-BF53-D3E246E40F92}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3D3CF761-76FF-4614-BF53-D3E246E40F92}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

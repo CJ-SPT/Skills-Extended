@@ -7,7 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using SkillsExtended.Helpers;
-using SkillsExtended.Skills.Core;
+using SkillsExtended.Models;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
@@ -17,24 +17,68 @@ namespace SkillsExtended.Skills.LockPicking;
 internal static class LockPickingHelpers
 {
     public static readonly Dictionary<string, int> DoorAttempts = [];
+    public static readonly Dictionary<string, float> DoorSweetSpotRanges = [];
+    
     public static readonly List<string> InspectedDoors = [];
     
     public static GameObject LockPickingGame;
+
+    private static LockPickingData LockPickingData => SkillsPlugin.SkillData.LockPicking;
     
     private static readonly Dictionary<string, Dictionary<string, int>> LocationDoorIdLevels = new()
     {
-        {"factory4_day", SkillsPlugin.SkillData.LockPicking.DoorPickLevels.Factory},
-        {"factory4_night", SkillsPlugin.SkillData.LockPicking.DoorPickLevels.Factory},
-        {"Woods", SkillsPlugin.SkillData.LockPicking.DoorPickLevels.Woods},
-        {"bigmap", SkillsPlugin.SkillData.LockPicking.DoorPickLevels.Customs},
-        {"Interchange", SkillsPlugin.SkillData.LockPicking.DoorPickLevels.Interchange},
-        {"RezervBase", SkillsPlugin.SkillData.LockPicking.DoorPickLevels.Reserve},
-        {"Shoreline", SkillsPlugin.SkillData.LockPicking.DoorPickLevels.Shoreline},
-        {"laboratory", SkillsPlugin.SkillData.LockPicking.DoorPickLevels.Labs},
-        {"Lighthouse", SkillsPlugin.SkillData.LockPicking.DoorPickLevels.Lighthouse},
-        {"TarkovStreets", SkillsPlugin.SkillData.LockPicking.DoorPickLevels.Streets},
-        {"Sandbox", SkillsPlugin.SkillData.LockPicking.DoorPickLevels.GroundZero},
-        {"Sandbox_high", SkillsPlugin.SkillData.LockPicking.DoorPickLevels.GroundZero},
+        {
+            "factory4_day", 
+            LockPickingData.DoorPickLevels.Factory
+        },
+        {
+            "factory4_night", 
+            LockPickingData.DoorPickLevels.Factory
+        },
+        {
+            "Woods", 
+            LockPickingData.DoorPickLevels.Woods
+        },
+        {
+            "bigmap", 
+            LockPickingData.DoorPickLevels.Customs
+        },
+        {
+            "Interchange", 
+            LockPickingData.DoorPickLevels.Interchange
+        },
+        {
+            "RezervBase", 
+            LockPickingData.DoorPickLevels.Reserve
+        },
+        {
+            "Shoreline", 
+            LockPickingData.DoorPickLevels.Shoreline
+        },
+        {
+            "laboratory", 
+            LockPickingData.DoorPickLevels.Labs
+        },
+        {
+            "Lighthouse", 
+            LockPickingData.DoorPickLevels.Lighthouse
+        },
+        {
+            "TarkovStreets", 
+            LockPickingData.DoorPickLevels.Streets
+        },
+        {
+            "Sandbox", 
+            LockPickingData.DoorPickLevels.GroundZero
+        },
+        {
+            "Sandbox_high", 
+            LockPickingData.DoorPickLevels.GroundZero
+        },
+        {
+            "Labyrinth", 
+            LockPickingData.DoorPickLevels.Labyrinth
+        }
     };
     
     /// <summary>
@@ -51,12 +95,7 @@ internal static class LockPickingHelpers
             return -1;
         }
         
-        if (levels.TryGetValue(doorId, out var level))
-        {
-            return level;
-        }
-
-        return -1;
+        return levels.GetValueOrDefault(doorId, -1);
     }
 
     /// <summary>
@@ -189,14 +228,31 @@ internal static class LockPickingHelpers
         LockPickingGame.SetActive(false);
     }
     
-    public static void InitializeDoorAttempts(string location)
+    public static void InitializeLockpickingForLocation(string location)
     {
         InspectedDoors.Clear();
         DoorAttempts.Clear();
+        DoorSweetSpotRanges.Clear();
         
         foreach (var door in LocationDoorIdLevels[location].Keys)
         {
             DoorAttempts.Add(door, 0);
         }
+        
+        var skillManager = GameUtils.GetSkillManager()?.SkillManagerExtended;
+        var sweetSpotRangeBase = SkillsPlugin.SkillData.LockPicking.SweetSpotRangeBase;
+        
+        foreach (var (doorId, level) in LocationDoorIdLevels[location])
+        {
+            var skillMod = 1 + skillManager?.LockPickingForgiveness;
+            var doorMod = Mathf.Clamp(level / 35f, 0.05f, 1.5f);
+            var sweetSpotRange = Mathf.Clamp((sweetSpotRangeBase - doorMod) * skillMod, 0f, 20f);
+            
+            DoorSweetSpotRanges[doorId] = sweetSpotRange;
+        }
+
+#if DEBUG
+        SkillsPlugin.Log.LogDebug($"Initialized `{LocationDoorIdLevels[location].Count}` doors on map `{location}`");
+#endif
     }
 }

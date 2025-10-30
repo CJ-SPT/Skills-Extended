@@ -93,6 +93,27 @@ internal class SkillClassCtorPatch : ModulePatch
                     skillMgrExt.SilentOpsGunAction.Factor(0.50f)
                 ];
                 break;
+            
+            case ESkillId.Shadowconnections:
+                buffs = skillMgrExt.ShadowConnectionsBuffs();
+                actions = [
+                    skillMgrExt.ShadowConnectionsKillAction.Factor(1.0f)
+                ];
+                break;
+                
+            case ESkillId.BearRawpower:
+                buffs = skillMgrExt.BearRawPowerBuffs();
+                actions = [
+                    skillMgrExt.BearRawPowerKillAction.Factor(1.0f)
+                ];
+                break;
+            
+            case ESkillId.UsecNegotiations:
+                buffs = skillMgrExt.UsecNegotiationsBuffs();
+                actions = [
+                    skillMgrExt.UsecNegotiationsKillAction.Factor(1.0f)
+                ];
+                break;
         }
     }
 

@@ -3,7 +3,6 @@ using System.Linq;
 using EFT;
 using EFT.Interactive;
 using SkillsExtended.Helpers;
-using UnityEngine;
 
 namespace SkillsExtended.Skills.LockPicking.Actions;
 
@@ -11,6 +10,11 @@ public static class LockPickActions
 {
     public static void PickLock(WorldInteractiveObject interactiveObject, GamePlayerOwner owner)
     {
+        if (LockPickingHelpers.LockPickingGame.activeSelf)
+        {
+            return;
+        }
+        
         // Check if a lock pick exists in the inventory
         if (!LockPickingHelpers.GetLockPicksInInventory().Any())
         {
@@ -21,26 +25,7 @@ public static class LockPickActions
         // Check if the locks broken
         if (LockPickingHelpers.DoorAttempts.TryGetValue(interactiveObject.Id, out var val))
         {
-            var doorLevel = LockPickingHelpers.GetLevelForDoor(owner.Player.Location, interactiveObject.Id);
-            var lpLevel = owner.Player.Skills.Lockpicking.Level;
-
-            int maxAttempts;
-
-            var levelDiff = doorLevel - lpLevel;
-
-            switch (levelDiff)
-            {
-                case >=5 and < 10:
-                    maxAttempts = 2;
-                    break;
-                case >=10:
-                    maxAttempts = 1;
-                    break;
-                default:
-                    maxAttempts = 3;
-                    break;
-            }
-            
+            var maxAttempts = SkillsPlugin.SkillData.LockPicking.AttemptsBeforeBreak;
             if (val > maxAttempts)
             {
                 owner.DisplayPreloaderUiNotification("You cannot pick a broken lock...");
@@ -55,19 +40,22 @@ public static class LockPickActions
         var type = currentState.GetType();
         
         // Only allow lockpicking if the player is stationary
-        if (currentState is IdleStateClass || 
-            RE.OldMovementIdleState.IsAssignableFrom(type))
+        if (currentState is IdleStateClass || RE.OldMovementIdleState.IsAssignableFrom(type))
         {
             var level = LockPickingHelpers.GetLevelForDoor(owner.Player.Location, interactiveObject.Id);
 
             // Return out if the door level is not found
             if (level == -1)
             {
-                NotificationManagerClass.DisplayMessageNotification(
-                    $"ERROR: Door {interactiveObject.Id} on map {owner.Player.Location} not found in lookup table, screenshot and report this error to the developer.",
-                    EFT.Communications.ENotificationDurationType.Long,
-                    EFT.Communications.ENotificationIconType.Alert);
+                var error = $"ERROR: Door {interactiveObject.Id} on map {owner.Player.Location} not found in lookup table, screenshot and report this error to the developer.";
+                ShowErrorNotification(error);
+                return;
+            }
 
+            if (!LockPickingHelpers.DoorSweetSpotRanges.TryGetValue(interactiveObject.Id, out var range))
+            {
+                var error = $"ERROR: Door {interactiveObject.Id} on map {owner.Player.Location} sweet spot range not initialized, screenshot and report this error to the developer.";
+                ShowErrorNotification(error);
                 return;
             }
             
@@ -80,7 +68,7 @@ public static class LockPickActions
             LockPickingHelpers.LockPickingGame.SetActive(true);
             
             LockPickingHelpers.LockPickingGame.GetComponent<LockPickingGame>()
-                .Activate(owner, interactiveObject, handler.PickLockAction);
+                .Activate(owner, interactiveObject, handler.PickLockAction, range);
 
             return;
         }
@@ -155,5 +143,14 @@ public static class LockPickActions
         
         action.Invoke();
         LockPickingHelpers.DisplayInspectInformation(interactiveObject, owner);
+    }
+
+    private static void ShowErrorNotification(string errorMessage)
+    {
+        NotificationManagerClass.DisplayMessageNotification(
+            errorMessage,
+            EFT.Communications.ENotificationDurationType.Long,
+            EFT.Communications.ENotificationIconType.Alert);
+
     }
 }

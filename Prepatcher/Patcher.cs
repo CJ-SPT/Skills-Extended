@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System;
 using System.Linq;
-using BepInEx.Logging;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using JetBrains.Annotations;
+using Skills_Extended_Patcher;
+using UnityEngine;
 using FieldAttributes = Mono.Cecil.FieldAttributes;
+using Logger = BepInEx.Logging.Logger;
 
 public static class SkillsExtendedPatcher
 {
@@ -19,6 +21,17 @@ public static class SkillsExtendedPatcher
     
     public static void Patch(ref AssemblyDefinition assembly)
     {
+        if (!File.Exists(PluginPath))
+        {
+            var result = MessageBoxHelper.Show(
+                @"Could not find BepInEx\plugins\SkillsExtended\SkillsExtended.dll in the plugins folder. Mod is not installed correctly. Exiting.", 
+                "Skills Extended error.", 
+                MessageBoxHelper.MessageBoxType.OK);
+            
+            Environment.Exit(1);
+            return;
+        }
+        
         try
         {
             _skillManager = assembly.MainModule.GetType("EFT.SkillManager");
@@ -77,6 +90,9 @@ public static class SkillsExtendedPatcher
         EasternRifleBuffs(assembly, buffEnums, ref index);
         LockPickingBuffs(assembly, buffEnums, ref index);
         SilentOpsBuffs(assembly, buffEnums, ref index);
+        ShadowConnectionsBuffs(assembly, buffEnums, ref index);
+        BearRawPowerBuffs(assembly,  buffEnums, ref index);
+        UsecNegotiationsBuffs(assembly, buffEnums, ref index);
         
         // Existing skills
         StrengthBuffs(assembly, buffEnums, ref index);
@@ -253,6 +269,91 @@ public static class SkillsExtendedPatcher
         
         buffEnum.Fields.Add(incBushSpeed);
         buffEnum.Fields.Add(incBushSpeedElite);
+    }
+
+    private static void ShadowConnectionsBuffs(AssemblyDefinition assembly, TypeDefinition buffEnum, ref int index)
+    {
+        var decScavCooldown = CreateNewEnum(
+            ref assembly,
+            "ShadowConnectionsScavCooldownTimeDec",
+            "ShadowConnectionsScavCooldownTimeDec",
+            buffEnum,
+            index++);
+        
+        var decScavCooldownElite = CreateNewEnum(
+            ref assembly,
+            "ShadowConnectionsScavCooldownTimeElite",
+            "ShadowConnectionsScavCooldownTimeElite",
+            buffEnum,
+            index++);
+        
+        
+        var decCultistCircleReturn = CreateNewEnum(
+            ref assembly,
+            "ShadowConnectionsCultistCircleReturnTimeDec",
+            "ShadowConnectionsCultistCircleReturnTimeDec",
+            buffEnum,
+            index++);
+        
+        buffEnum.Fields.Add(decScavCooldown);
+        buffEnum.Fields.Add(decScavCooldownElite);
+        buffEnum.Fields.Add(decCultistCircleReturn);
+    }
+
+    private static void BearRawPowerBuffs(AssemblyDefinition assembly, TypeDefinition buffEnum, ref int index)
+    {
+        var praporTraderCostDec = CreateNewEnum(
+            ref assembly,
+            "BearRawPowerPraporTraderCostDec",
+            "BearRawPowerPraporTraderCostDec",
+            buffEnum,
+            index++);
+        
+        var questRewardExpInc = CreateNewEnum(
+            ref assembly,
+            "BearRawPowerQuestRewardExpInc",
+            "BearRawPowerQuestRewardExpInc",
+            buffEnum,
+            index++);
+        
+        var bearRawPowerAllTraderCostDec = CreateNewEnum(
+            ref assembly,
+            "BearRawPowerAllTraderCostDec",
+            "BearRawPowerAllTraderCostDec",
+            buffEnum,
+            index++);
+        
+        buffEnum.Fields.Add(praporTraderCostDec);
+        buffEnum.Fields.Add(questRewardExpInc);
+        buffEnum.Fields.Add(bearRawPowerAllTraderCostDec);
+    }
+
+    private static void UsecNegotiationsBuffs(AssemblyDefinition assembly, TypeDefinition buffEnum, ref int index)
+    {
+        var peacekeeperTraderCostDec = CreateNewEnum(
+            ref assembly,
+            "UsecNegotiationsPeacekeeperTraderCostDec",
+            "UsecNegotiationsPeacekeeperTraderCostDec",
+            buffEnum,
+            index++);
+        
+        var questRewardMoneyInc = CreateNewEnum(
+            ref assembly,
+            "UsecNegotiationRewardMoneyInc",
+            "UsecNegotiationRewardMoneyInc",
+            buffEnum,
+            index++);
+        
+        var usecNegotiationsAllTraderCostDec = CreateNewEnum(
+            ref assembly,
+            "UsecNegotiationsAllTraderCostDec",
+            "UsecNegotiationsAllTraderCostDec",
+            buffEnum,
+            index++);
+        
+        buffEnum.Fields.Add(peacekeeperTraderCostDec);
+        buffEnum.Fields.Add(questRewardMoneyInc);
+        buffEnum.Fields.Add(usecNegotiationsAllTraderCostDec);
     }
     
     private static void PatchSkillManager(ref AssemblyDefinition assembly)

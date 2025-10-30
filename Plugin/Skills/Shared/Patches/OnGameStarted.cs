@@ -43,7 +43,7 @@ internal class OnGameStartedPatch : ModulePatch
         SkillsPlugin.Log.LogDebug($"Player map id: {__instance.MainPlayer.Location}");
 #endif
         
-        LockPickingHelpers.InitializeDoorAttempts(__instance.LocationId);
+        LockPickingHelpers.InitializeLockpickingForLocation(__instance.LocationId);
         
         __instance.MainPlayer.ActiveHealthController.EffectStartedEvent += ApplyMedicalXp;
         
@@ -56,6 +56,8 @@ internal class OnGameStartedPatch : ModulePatch
         {
             Player!.Skills.OnMasteringExperienceChanged += ApplyEasternRifleXp;
         }
+        
+        FixDoors();
 
 #if DEBUG
         LogMissingDoors(__instance);
@@ -160,6 +162,23 @@ internal class OnGameStartedPatch : ModulePatch
 #if DEBUG
         SkillsPlugin.Log.LogDebug($"APPLYING {EasternData.XpPerAction} EASTERN RIFLE XP");
 #endif
+    }
+
+    private static void FixDoors()
+    {
+        var doors = LocationScene.GetAllObjectsAndWhenISayAllIActuallyMeanIt<WorldInteractiveObject>();
+
+        foreach (var door in doors)
+        {
+            // Fix Military checkpoint key because BSG cant assign a key to doors
+            if (door.Id != "door_custom_multiScene_00000")
+            {
+                continue;
+            }
+                
+            door.KeyId = "5913915886f774123603c392";
+            break;
+        }
     }
 
     private static void LogMissingDoors(GameWorld gameWorld)

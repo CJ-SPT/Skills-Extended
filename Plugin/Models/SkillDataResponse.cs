@@ -28,6 +28,15 @@ public struct SkillDataResponse
 
     [JsonProperty("Strength")] 
     public StrengthData Strength;
+    
+    [JsonProperty("ShadowConnections")]
+    public ShadowConnectionsData ShadowConnections;
+    
+    [JsonProperty("BearRawPower")]
+    public BearRawPowerData BearRawPower;
+    
+    [JsonProperty("UsecNegotiations")]
+    public UsecNegotiationsData UsecNegotiations;
 }
 
 public struct FirstAidData
@@ -105,7 +114,7 @@ public struct LockPickingData
     public float SweetSpotRangePerLevel;
 
     [JsonProperty("ATTEMPTS_BEFORE_BREAK")]
-    public float AttemptsBeforeBreak;
+    public int AttemptsBeforeBreak;
 
     [JsonProperty("INSPECT_LOCK_XP_RATIO")]
     public float InspectLockXpRatio;
@@ -152,6 +161,9 @@ public struct DoorPickLevels
     
     [JsonProperty("GroundZero")] 
     public Dictionary<string, int> GroundZero;
+    
+    [JsonProperty("Labyrinth")] 
+    public Dictionary<string, int> Labyrinth;
 }
 
 public struct ProneMovementData
@@ -194,4 +206,61 @@ public struct StrengthData
 
     [JsonProperty("COLLIDER_SPEED_BUFF_PER_LEVEL")] 
     public float ColliderSpeedBuff;
+}
+
+public struct ShadowConnectionsData
+{
+    [JsonProperty("ENABLED")]
+    public bool Enabled;
+    
+    [JsonProperty("XP_PER_ACTION")]
+    public float XpPerAction;
+    
+    [JsonProperty("SCAV_COOLDOWN_TIME_PER_LEVEL")] 
+    public float ScavCooldownTimeReduction;
+    
+    [JsonProperty("CULTIST_CIRCLE_RETURN_TIME_PER_LEVEL")] 
+    public float CultistCircleReturnTimeReduction;
+}
+
+public struct BearRawPowerData
+{
+    [JsonProperty("ENABLED")]
+    public bool Enabled;
+    
+    [JsonProperty("XP_PER_ACTION")]
+    public float XpPerAction;
+
+    [JsonProperty("FACTION_LOCKED")] 
+    public bool FactionLocked;
+
+    [JsonProperty("PRAPOR_TRADING_COST_PER_LEVEL")]
+    public float PraporTradingCostDec;
+
+    [JsonProperty("QUEST_EXP_REWARD_PER_LEVEL")]
+    public float QuestExpRewardInc;
+
+    [JsonProperty("ALL_TRADER_COST_DECREASE")]
+    public float AllTraderCostDecrease;
+}
+
+public struct UsecNegotiationsData
+{
+    [JsonProperty("ENABLED")]
+    public bool Enabled;
+    
+    [JsonProperty("XP_PER_ACTION")]
+    public float XpPerAction;
+
+    [JsonProperty("FACTION_LOCKED")] 
+    public bool FactionLocked;
+
+    [JsonProperty("PEACEKEEPER_TRADING_COST_PER_LEVEL")]
+    public float PeacekeeperTradingCostDec;
+
+    [JsonProperty("QUEST_MONEY_REWARD_PER_LEVEL")]
+    public float QuestMoneyRewardInc;
+
+    [JsonProperty("ALL_TRADER_COST_DECREASE")]
+    public float AllTraderCostDecrease;
 }

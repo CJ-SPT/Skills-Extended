@@ -1,9 +1,48 @@
 [
   {
+    "Version": "2.1.0",
+    "CodeName": "Rapport",
+    "ReleaseDate": "October 30, 2025",
+    "IsLatest": true,
+    "Features": [
+      "New Skill `Shadow Connections`",
+      "New Skill `Bear Raw Power`",
+      "New Skill `Usec Negotiations`",
+      "New config editor pages for the above skills"
+    ],
+    "Improvements": [
+      "Labyrinth doors are now able to be lock picked",
+      "Added `Attempts per door before lock breaks` to the config web page",
+      "All locales are set to english across all languages, then that languages locale file is loaded on-top of it to prevent missing locales. English is better than none",
+      "There is as now an error box that pops up when launching the game if the SkillsExtended.dll is not found in the plugins folder but the patcher exists",
+      "Door lock sweet spot ranges are now static for the duration of the raid, previously they would be randomized on every attempt leading to confusion",
+      "Field Medicine no longer increases the delay of stimulator effects, this often times increased the delay of positive effects",
+      "Updated Russian locales",
+      "Updated Korean locales",
+      "Updated Spanish locales",
+      "General code quality improvements"
+    ],
+    "BugFixes": [
+      "Fixes \"The given key `Labyrinth` was not present in the dictionary\"",
+      "Fixes a BSG bug where the `Military Checkpoint` key could not be used on customs",
+      "Fixes Strength speed buff for bushes and swamps",
+      "Fixes Strength elite buff for jumping and sprinting in bushes and swamps",
+      "Fixes Silent Ops buff scaling not behaving as intended",
+      "Fixes Field medicine skill cap buff (NOTE: Not all buffs can take advantage of this, I will work on that later)",
+      "Fixes Field medicine increasing the chance of negative stimulator effects",
+      "Fixes various typo's in english locales",
+      "Fixes locale related exceptions for all locales",
+      "Fixes missing crafts for all locales",
+      "Fixes a bug where changing lockpicking max attempts did nothing",
+      "Fixes an exploit where backing out of the lockpicking game did not remove a use from the lock-pick set",
+      "Fixes a bug where pressing the interact key while already in the lock-picking game reset the locks position and incremented the counter for tries on that door"
+    ]
+  },
+  {
     "Version": "2.0.3",
     "CodeName": "Resurrection",
     "ReleaseDate": "October 23, 2025",
-    "IsLatest": true,
+    "IsLatest": false,
     "Features": [],
     "Improvements": [
       "Massively simplified the config system, values should now all make sense and reflect correctly in-game",

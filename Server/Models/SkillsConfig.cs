@@ -13,6 +13,11 @@ public record SkillsConfig
     public required SilentOpsConfig SilentOps { get; set; }
     
     public required StrengthConfig Strength { get; set; }
+    public required ShadowConnectionsConfig ShadowConnections { get; set; }
+    
+    public required BearRawPowerConfig BearRawPower { get; set; }
+    
+    public required UsecNegotiationsConfig UsecNegotiations { get; set; }
 }
 
 public record BaseSubConfig
@@ -133,4 +138,43 @@ public record StrengthConfig
     
     [JsonPropertyName("COLLIDER_SPEED_BUFF_PER_LEVEL")]
     public required float ColliderSpeedBuff { get; set; }
+}
+
+public record ShadowConnectionsConfig : BaseSubConfig
+{
+    [JsonPropertyName("SCAV_COOLDOWN_TIME_PER_LEVEL")]
+    public required float ScavCooldownTimeDec { get; set; }
+    
+    [JsonPropertyName("CULTIST_CIRCLE_RETURN_TIME_PER_LEVEL")]
+    public required float CultistCircleReturnTimeDec { get; set; }
+}
+
+public record BearRawPowerConfig : BaseSubConfig
+{
+    [JsonPropertyName("FACTION_LOCKED")]
+    public required bool FactionLocked { get; set; }
+    
+    [JsonPropertyName("PRAPOR_TRADING_COST_PER_LEVEL")]
+    public required float PraporTradingCostDec { get; set; }
+    
+    [JsonPropertyName("QUEST_EXP_REWARD_PER_LEVEL")]
+    public required float QuestExpRewardInc { get; set; }
+    
+    [JsonPropertyName("ALL_TRADER_COST_DECREASE")]
+    public required float AllTraderCostDecrease { get; set; }
+}
+
+public record UsecNegotiationsConfig : BaseSubConfig
+{
+    [JsonPropertyName("FACTION_LOCKED")]
+    public required bool FactionLocked { get; set; }
+    
+    [JsonPropertyName("PEACEKEEPER_TRADING_COST_PER_LEVEL")]
+    public required float PeacekeeperTradingCostDec { get; set; }
+    
+    [JsonPropertyName("QUEST_MONEY_REWARD_PER_LEVEL")]
+    public required float QuestMoneyRewardInc { get; set; }
+    
+    [JsonPropertyName("ALL_TRADER_COST_DECREASE")]
+    public required float AllTraderCostDecrease { get; set; }
 }
