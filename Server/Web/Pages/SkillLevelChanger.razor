@@ -1,0 +1,96 @@
+﻿@page "/skills-extended/skill-level-changer"
+@using SPTarkov.Server.Core.Models.Eft.Common.Tables
+@using SPTarkov.Server.Core.Models.Eft.Profile
+@layout BaseLayout;
+
+@inject SkillLevelAdjuster SkillLevelAdjuster
+
+<MudGrid Justify="Justify.Center" Style="min-height:100vh; display:flex; align-items:center;">
+    <MudItem xs="12">
+        <MudPaper Style="width:100%;">
+            <MudContainer MaxWidth="MaxWidth.Medium">
+                <MudGrid>
+                    <MudItem xs="6">
+                        <MudSelect @bind-Value="_selectedProfile"
+                                   Variant="Variant.Outlined"
+                                   Label="Profile"
+                                   Dense="true"
+                                   OnClose="OnStateChanged"
+                                   ReadOnly="false"
+                                   Clearable="false"
+                                   Modal="true">
+                            @foreach (var (_, profile) in SkillLevelAdjuster.GetAllProfiles())
+                            {
+                                <MudSelectItem Value="profile">@profile.ProfileInfo?.Username</MudSelectItem>
+                            }
+                        </MudSelect>
+                    </MudItem>
+                    
+                    <MudItem xs="6">
+                        <MudSelect @bind-Value="_selectedSide"
+                                   Variant="Variant.Outlined"
+                                   Label="Side"
+                                   Dense="true"
+                                   OnClose="OnStateChanged"
+                                   ReadOnly="false"
+                                   Clearable="false"
+                                   Modal="true">
+                            @foreach (var side in _sideList)
+                            {
+                                <MudSelectItem Value="side">@side</MudSelectItem>
+                            }
+                        </MudSelect>
+                    </MudItem>
+                    
+                    @foreach (var skill in GetSelectedSkills()) 
+                    {
+                        <MudItem xs="6">
+                            <MudPaper Class="pa-4" Elevation="2">
+                                <MudSlider @bind-Value="@skill.Progress"
+                                           Min="0" Max="5100"
+                                           T="double">
+                                    Skill: @skill.Id Value: @skill.Progress
+                                </MudSlider>
+                            </MudPaper>
+                        </MudItem>
+                    }
+                    
+                </MudGrid>
+            </MudContainer>
+        </MudPaper>
+    </MudItem>
+</MudGrid>
+
+@code {
+    private SptProfile? _selectedProfile;
+    private readonly HashSet<string> _sideList =
+    [
+        "Pmc",
+        "Scav"
+    ];
+    private string _selectedSide;
+
+    private IEnumerable<CommonSkill> GetSelectedSkills()
+    {
+        if (_selectedProfile is null || string.IsNullOrEmpty(_selectedSide))
+        {
+            return [];
+        }
+
+        var skills = _selectedSide == "Pmc"
+            ? _selectedProfile.CharacterData?.PmcData?.Skills?.Common
+            : _selectedProfile.CharacterData?.ScavData?.Skills?.Common;
+        
+        return skills ?? [];
+    }
+
+    private void OnStateChanged()
+    {
+       StateHasChanged();
+    }
+    
+    private void OnStateChangedDouble(double val)
+    {
+        StateHasChanged();
+    }
+}
