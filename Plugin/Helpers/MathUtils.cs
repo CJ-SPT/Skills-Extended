@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-using SPT.Common.Http;
-using System;
+﻿using System;
 
 namespace SkillsExtended.Helpers;
 
