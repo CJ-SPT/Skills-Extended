@@ -44,24 +44,14 @@ public class HealthEffectComponentPatch : ModulePatch
             return;
         }
             
-        if (InstanceIdsChangedAtLevel.TryGetValue(meds.TemplateId, out var level))
-        {
-            // We've changed this item at this level
-            if (level == skillManager.FirstAid.Level)
-            {
-                return;
-            }
-                
-            InstanceIdsChangedAtLevel.Remove(meds.TemplateId);
-        }
-            
+        ResetLevelChangedAt(meds, skillManager);
+        
         if (!OriginalCosts.TryGetValue(meds.TemplateId, out var originalCosts))
         {
             originalCosts = new OriginalCostsData(0, 0, 0);
             OriginalCosts.Add(meds.TemplateId, originalCosts);
         }
-            
-            
+        
         if (
             !AdjustLightBleedCost(template, originalCosts, skillManager) && 
             !AdjustHeavyBleedCost(template, originalCosts, skillManager) && 
@@ -78,6 +68,17 @@ public class HealthEffectComponentPatch : ModulePatch
 #endif
     }
 
+    private static void ResetLevelChangedAt(MedicalItemClass meds, SkillManager skillManager)
+    {
+        if (!InstanceIdsChangedAtLevel.TryGetValue(meds.TemplateId, out var level) || 
+            level == skillManager.FirstAid.Level)
+        {
+            return;
+        }
+        
+        InstanceIdsChangedAtLevel.Remove(meds.TemplateId);
+    }
+    
     private static bool AdjustFractureCost(
         IHealthEffect template, 
         OriginalCostsData originalCosts,
