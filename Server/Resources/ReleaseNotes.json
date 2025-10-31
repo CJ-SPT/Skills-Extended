@@ -1,9 +1,22 @@
 [
   {
-    "Version": "2.1.0",
+    "Version": "2.1.1",
     "CodeName": "Rapport",
     "ReleaseDate": "October 30, 2025",
     "IsLatest": true,
+    "Features": [],
+    "Improvements": [
+      "All config value percentages are now real numbers. Meaning if you want 1.5% per level, the value is 1.5%, not 0.015"
+    ],
+    "BugFixes": [
+      "Fixes a bug where original stored value before modification for Light bleeds and Heavy bleeds were set to the fracture cost"
+    ]
+  },
+  {
+    "Version": "2.1.0",
+    "CodeName": "Rapport",
+    "ReleaseDate": "October 30, 2025",
+    "IsLatest": false,
     "Features": [
       "New Skill `Shadow Connections`",
       "New Skill `Bear Raw Power`",

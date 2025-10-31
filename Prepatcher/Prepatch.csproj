@@ -3,8 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <AssemblyName>SkillsExtended_PrePatch</AssemblyName>
-    <Version>2.1.0</Version>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Version>2.1.1</Version>
     <LangVersion>latest</LangVersion>
     <Configurations>Debug;Release;BETA</Configurations>
     <RootNamespace>Skills_Extended_Patcher</RootNamespace>
