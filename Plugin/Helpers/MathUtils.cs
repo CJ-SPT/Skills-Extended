@@ -4,21 +4,8 @@ using System;
 
 namespace SkillsExtended.Helpers;
 
-public static class Utils
+public static class MathUtils
 {
-    // Get Json from the server
-    public static T Get<T>(string url)
-    {
-        var req = RequestHandler.GetJson(url);
-            
-        if (string.IsNullOrEmpty(req))
-        {
-            throw new InvalidOperationException("The response from the server is null or empty.");
-        }
-
-        return JsonConvert.DeserializeObject<T>(req);
-    }
-    
     public static float RandomizePercentage(float value, float percentage = 0.10f)
     {
         if (percentage is < 0 or > 1)
@@ -54,5 +41,15 @@ public static class Utils
 
         ;
         return UnityEngine.Random.Range(min, max + 1); 
+    }
+
+    /// <summary>
+    ///     Normalizes a float so that 0.75 = 0.0075 or 0.75%
+    /// </summary>
+    /// <param name="value">value to normalize</param>
+    /// <returns>float as percentage</returns>
+    public static float NormalizePercentage(this float value)
+    {
+        return value / 100f;
     }
 }

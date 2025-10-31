@@ -64,9 +64,28 @@ public class SkillsPlugin : BaseUnityPlugin
 
     private void Start()
     {
-        Keys = Utils.Get<KeysResponse>("/skillsExtended/GetKeys");
-        SkillData = Utils.Get<SkillDataResponse>("/skillsExtended/GetSkillsConfig");
+        Keys = Get<KeysResponse>("/skillsExtended/GetKeys");
+        SkillData = Get<SkillDataResponse>("/skillsExtended/GetSkillsConfig");
         
         LockPickingHelpers.LoadMiniGame();
+    }
+    
+    /// <summary>
+    ///     Get json from the server
+    /// </summary>
+    /// <param name="url">url to request</param>
+    /// <typeparam name="T">Type of response</typeparam>
+    /// <returns>Response</returns>
+    /// <exception cref="InvalidOperationException"></exception>
+    private static T Get<T>(string url)
+    {
+        var req = RequestHandler.GetJson(url);
+            
+        if (string.IsNullOrEmpty(req))
+        {
+            throw new InvalidOperationException("The response from the server is null or empty.");
+        }
+
+        return JsonConvert.DeserializeObject<T>(req);
     }
 }

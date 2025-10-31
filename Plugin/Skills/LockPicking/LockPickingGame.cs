@@ -426,7 +426,7 @@ public class LockPickingGame : MonoBehaviour
         
         var originalLimit = Mathf.Clamp((configVal - doorMod) * skillMod, 1f, 20f);
         
-        _wiggleTimeLimit = Utils.RandomizePercentage(originalLimit, 0.10f);
+        _wiggleTimeLimit = MathUtils.RandomizePercentage(originalLimit, 0.10f);
     }
 
 #if DEBUG
