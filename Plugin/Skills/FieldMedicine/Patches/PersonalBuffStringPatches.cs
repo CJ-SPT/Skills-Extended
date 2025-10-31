@@ -9,11 +9,11 @@ internal class PersonalBuffFullStringPatch : ModulePatch
 {
     protected override MethodBase GetTargetMethod()
     {
-        return AccessTools.Method(typeof(Buff), nameof(Buff.GetStringValue));
+        return AccessTools.Method(typeof(InjectorBuff), nameof(InjectorBuff.GetStringValue));
     }
 
     [PatchPrefix]
-    public static void Prefix(Buff __instance)
+    public static void Prefix(InjectorBuff __instance)
     {
         if (!SkillsPlugin.SkillData.FieldMedicine.Enabled)
         {
@@ -21,6 +21,6 @@ internal class PersonalBuffFullStringPatch : ModulePatch
         }
 
         var skillManager = GameUtils.GetSkillManager()?.SkillManagerExtended;
-        skillManager?.AdjustStimulatorBuff((Buff)__instance.Clone());
+        skillManager?.AdjustStimulatorBuff((InjectorBuff)__instance.Clone());
     }
 }

@@ -11,17 +11,17 @@ internal class PersonalBuffPatch : ModulePatch
 {
     protected override MethodBase GetTargetMethod()
     {
-        return AccessTools.Method(typeof(BuffSettingsContainer), nameof(BuffSettingsContainer.GetPersonalBuffSettings));
+        return AccessTools.Method(typeof(BuffSettings), nameof(BuffSettings.GetPersonalBuffSettings));
     }
 
     [PatchPostfix]
-    public static void PostFix(SkillManager skills, Buff __result)
+    public static void PostFix(SkillManager skills, InjectorBuff __result)
     {
         if (!SkillsPlugin.SkillData.FieldMedicine.Enabled || !__result.IsBuff)
         {
             return;
         }
         
-        skills.SkillManagerExtended.AdjustStimulatorBuff((Buff)__result.Clone());
+        skills.SkillManagerExtended.AdjustStimulatorBuff((InjectorBuff)__result.Clone());
     }
 }

@@ -14,7 +14,7 @@ public class SkillManagerExt
         Id = EBuffId.FirstAidHealingSpeed,
     };
 
-    public readonly SkillManager.SkillBuffClass FirstAidResourceCostBuff = new()
+    public readonly NegativeSkillBuffInt FirstAidResourceCostBuff = new()
     {
         Id = EBuffId.FirstAidResourceCost,
     };
@@ -256,17 +256,17 @@ public class SkillManagerExt
         ];
     }
 
-    public void AdjustStimulatorBuff(Buff buff)
+    public void AdjustStimulatorBuff(InjectorBuff injectorBuff)
     {
-        buff.Duration *= 1f + FieldMedicineDurationBonus;
-        if (!buff.Chance.ApproxEquals(1f))
+        injectorBuff.Duration *= 1f + FieldMedicineDurationBonus;
+        if (!injectorBuff.Chance.ApproxEquals(1f))
         {
-            buff.Chance *= 1f + FieldMedicineChanceBonus;
+            injectorBuff.Chance *= 1f + FieldMedicineChanceBonus;
         }
 
 #if DEBUG
-        SkillsPlugin.Log.LogDebug($"Buff {buff.BuffName} duration adjusted to {buff.Duration}");
-        SkillsPlugin.Log.LogDebug($"Buff {buff.BuffName} chance adjusted to {buff.Chance}");
+        SkillsPlugin.Log.LogDebug($"Buff {injectorBuff.BuffName} duration adjusted to {injectorBuff.Duration}");
+        SkillsPlugin.Log.LogDebug($"Buff {injectorBuff.BuffName} chance adjusted to {injectorBuff.Chance}");
 #endif
     }
 }
