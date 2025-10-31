@@ -48,7 +48,7 @@ public static class MathUtils
     /// </summary>
     /// <param name="value">value to normalize</param>
     /// <returns>float as percentage</returns>
-    public static float NormalizePercentage(this float value)
+    public static float NormalizeToPercentage(this float value)
     {
         return value / 100f;
     }
