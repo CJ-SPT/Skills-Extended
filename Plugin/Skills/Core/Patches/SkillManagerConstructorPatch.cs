@@ -20,7 +20,7 @@ internal class SkillManagerConstructorPatch : ModulePatch
     [PatchPrefix]
     public static void Prefix(SkillManager __instance)
     {
-        __instance.SkillManagerExtended = new SkillManagerExt();
+        __instance.SkillManagerExtended = new SkillManagerExt(__instance);
     }
     
     [PatchPostfix]

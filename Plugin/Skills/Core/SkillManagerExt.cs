@@ -1,9 +1,10 @@
 ﻿using EFT;
+using SkillsExtended.Helpers;
 using SkillsExtended.Models;
 
 namespace SkillsExtended.Skills.Core;
 
-public class SkillManagerExt
+public class SkillManagerExt(SkillManager skillManager)
 {
     private static SkillDataResponse SkillData => SkillsPlugin.SkillData;
 
@@ -172,8 +173,8 @@ public class SkillManagerExt
     {
         return
         [
-            FirstAidItemSpeedBuff.PerLevel(SkillData.FirstAid.ItemSpeedBonus),
-            FirstAidResourceCostBuff.PerLevel(SkillData.FirstAid.MedkitUsageReduction),
+            FirstAidItemSpeedBuff.PerLevel(SkillData.FirstAid.ItemSpeedBonus.NormalizeToPercentage()),
+            FirstAidResourceCostBuff.PerLevel(SkillData.FirstAid.MedkitUsageReduction.NormalizeToPercentage()),
             FirstAidMovementSpeedBuffElite
         ];
     }
@@ -182,9 +183,9 @@ public class SkillManagerExt
     {
         return
         [
-            FieldMedicineSkillCap.PerLevel(SkillData.FieldMedicine.SkillBonus),
-            FieldMedicineDurationBonus.PerLevel(SkillData.FieldMedicine.DurationBonus),
-            FieldMedicineChanceBonus.PerLevel(SkillData.FieldMedicine.PositiveEffectChanceBonus)
+            FieldMedicineSkillCap.PerLevel(SkillData.FieldMedicine.SkillBonus.NormalizeToPercentage()),
+            FieldMedicineDurationBonus.PerLevel(SkillData.FieldMedicine.DurationBonus.NormalizeToPercentage()),
+            FieldMedicineChanceBonus.PerLevel(SkillData.FieldMedicine.PositiveEffectChanceBonus.NormalizeToPercentage()),
         ];
     }
 
@@ -192,8 +193,8 @@ public class SkillManagerExt
     {
         return
         [
-            UsecArSystemsErgoBuff.PerLevel(SkillData.NatoWeapons.ErgoMod),
-            UsecArSystemsRecoilBuff.PerLevel(SkillData.NatoWeapons.RecoilReduction)
+            UsecArSystemsErgoBuff.PerLevel(SkillData.NatoWeapons.ErgoMod.NormalizeToPercentage()),
+            UsecArSystemsRecoilBuff.PerLevel(SkillData.NatoWeapons.RecoilReduction.NormalizeToPercentage())
         ];
     }
 
@@ -201,8 +202,8 @@ public class SkillManagerExt
     {
         return
         [
-            BearAkSystemsErgoBuff.PerLevel(SkillData.EasternWeapons.ErgoMod),
-            BearAkSystemsRecoilBuff.PerLevel(SkillData.EasternWeapons.RecoilReduction)
+            BearAkSystemsErgoBuff.PerLevel(SkillData.EasternWeapons.ErgoMod.NormalizeToPercentage()),
+            BearAkSystemsRecoilBuff.PerLevel(SkillData.EasternWeapons.RecoilReduction.NormalizeToPercentage())
         ];
     }
 
@@ -210,19 +211,28 @@ public class SkillManagerExt
     {
         return
         [
-            LockPickingTimeBuff.PerLevel(SkillData.LockPicking.PickStrengthPerLevel),
-            LockPickingForgiveness.PerLevel(SkillData.LockPicking.SweetSpotRangePerLevel),
+            LockPickingTimeBuff.PerLevel(SkillData.LockPicking.PickStrengthPerLevel.NormalizeToPercentage()),
+            LockPickingForgiveness.PerLevel(SkillData.LockPicking.SweetSpotRangePerLevel.NormalizeToPercentage()),
             LockPickingUseBuffElite
         ];
     }
 
+    public SkillManager.SkillBuffAbstractClass[] ProneMovementBuffs()
+    {
+        return
+        [
+            skillManager.ProneMovementSpeed.PerLevel(SkillData.ProneMovement.MovementSpeedInc.NormalizeToPercentage()),
+            skillManager.ProneMovementVolume.PerLevel(SkillData.ProneMovement.MovementVolumeDec.NormalizeToPercentage())
+        ];
+    }
+    
     public SkillManager.SkillBuffAbstractClass[] SilentOpsBuffs()
     {
         return
         [
-            SilentOpsIncMeleeSpeedBuff.PerLevel(SkillData.SilentOps.MeleeSpeedInc),
-            SilentOpsReduceVolumeBuff.PerLevel(SkillData.SilentOps.VolumeReduction),
-            SilentOpsSilencerCostRedBuff.PerLevel(SkillData.SilentOps.SilencerPriceReduction)
+            SilentOpsIncMeleeSpeedBuff.PerLevel(SkillData.SilentOps.MeleeSpeedInc.NormalizeToPercentage()),
+            SilentOpsReduceVolumeBuff.PerLevel(SkillData.SilentOps.VolumeReduction.NormalizeToPercentage()),
+            SilentOpsSilencerCostRedBuff.PerLevel(SkillData.SilentOps.SilencerPriceReduction.NormalizeToPercentage())
         ];
     }
 
@@ -230,8 +240,8 @@ public class SkillManagerExt
     {
         return
         [
-            ScavCooldownTimeReductionBuff.PerLevel(SkillData.ShadowConnections.ScavCooldownTimeReduction),
-            CultistCircleReturnTimeReductionBuff.PerLevel(SkillData.ShadowConnections.CultistCircleReturnTimeReduction),
+            ScavCooldownTimeReductionBuff.PerLevel(SkillData.ShadowConnections.ScavCooldownTimeReduction.NormalizeToPercentage()),
+            CultistCircleReturnTimeReductionBuff.PerLevel(SkillData.ShadowConnections.CultistCircleReturnTimeReduction.NormalizeToPercentage()),
             ScavCooldownTimeReductionEliteBuff
         ];
     }
@@ -240,9 +250,9 @@ public class SkillManagerExt
     {
         return
         [
-            BearRawPowerPraporTraderCostDec.PerLevel(SkillData.BearRawPower.PraporTradingCostDec),
-            BearRawPowerQuestRewardExpInc.PerLevel(SkillData.BearRawPower.QuestExpRewardInc),
-            BearRawPowerAllTraderCostDec.Elite(SkillData.BearRawPower.AllTraderCostDecrease)
+            BearRawPowerPraporTraderCostDec.PerLevel(SkillData.BearRawPower.PraporTradingCostDec.NormalizeToPercentage()),
+            BearRawPowerQuestRewardExpInc.PerLevel(SkillData.BearRawPower.QuestExpRewardInc.NormalizeToPercentage()),
+            BearRawPowerAllTraderCostDec.Elite(SkillData.BearRawPower.AllTraderCostDecrease.NormalizeToPercentage())
         ];
     }
     
@@ -250,9 +260,9 @@ public class SkillManagerExt
     {
         return
         [
-            UsecNegotiationsPeacekeeperTraderCostDec.PerLevel(SkillData.UsecNegotiations.PeacekeeperTradingCostDec),
-            UsecNegotiationRewardMoneyInc.PerLevel(SkillData.UsecNegotiations.QuestMoneyRewardInc),
-            UsecNegotiationsAllTraderCostDec.Elite(SkillData.UsecNegotiations.AllTraderCostDecrease)
+            UsecNegotiationsPeacekeeperTraderCostDec.PerLevel(SkillData.UsecNegotiations.PeacekeeperTradingCostDec.NormalizeToPercentage()),
+            UsecNegotiationRewardMoneyInc.PerLevel(SkillData.UsecNegotiations.QuestMoneyRewardInc.NormalizeToPercentage()),
+            UsecNegotiationsAllTraderCostDec.Elite(SkillData.UsecNegotiations.AllTraderCostDecrease.NormalizeToPercentage())
         ];
     }
 

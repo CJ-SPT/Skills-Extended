@@ -1,6 +1,8 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Reflection;
 using EFT;
+using SkillsExtended.Helpers;
 using SPT.Reflection.Patching;
 
 namespace SkillsExtended.Skills.Core.Patches;
@@ -36,7 +38,6 @@ internal class SkillClassCtorPatch : ModulePatch
         ref SkillManager.SkillBuffAbstractClass[] buffs, 
         ref SkillManager.SkillActionClass[] actions)
     {
-        var skillData = SkillsPlugin.SkillData;
         var skillMgrExt = skillManager.SkillManagerExtended;
         
         switch (id)
@@ -77,10 +78,7 @@ internal class SkillClassCtorPatch : ModulePatch
                 break;
             
             case ESkillId.ProneMovement:
-                buffs = [
-                    skillManager.ProneMovementSpeed.PerLevel(skillData.ProneMovement.MovementSpeedInc),
-                    skillManager.ProneMovementVolume.PerLevel(skillData.ProneMovement.MovementVolumeDec)
-                ];
+                buffs = skillMgrExt.ProneMovementBuffs();
                 actions = [
                     skillManager.ProneAction.Factor(0.25f)
                 ];
@@ -128,11 +126,13 @@ internal class SkillClassCtorPatch : ModulePatch
 
         var skillData = SkillsPlugin.SkillData;
         var skillMgrExt = skillManager.SkillManagerExtended;
-        
-        if (id == ESkillId.Strength)
+
+        switch (id)
         {
-            buffList.Add(skillMgrExt.StrengthBushSpeedIncBuff.PerLevel(skillData.Strength.ColliderSpeedBuff));
-            buffList.Add(skillMgrExt.StrengthBushSpeedIncBuffElite);
+            case ESkillId.Strength:
+                buffList.Add(skillMgrExt.StrengthBushSpeedIncBuff.PerLevel(skillData.Strength.ColliderSpeedBuff.NormalizeToPercentage()));
+                buffList.Add(skillMgrExt.StrengthBushSpeedIncBuffElite);
+                break;
         }
         
         buffs = buffList.ToArray();
