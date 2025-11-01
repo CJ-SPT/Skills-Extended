@@ -18,7 +18,7 @@ internal class HealthEffectUseTimePatch : ModulePatch
     [PatchPostfix]
     public static void PostFix(ref float __result, HealthEffectsComponent __instance)
     {
-        var firstAid = SkillsPlugin.SkillData.FirstAid;
+        var firstAid = Plugin.SkillData.FirstAid;
 
         if (!firstAid.Enabled)
         {
@@ -46,7 +46,7 @@ internal class SpawnPatch : ModulePatch
     [PatchPrefix]
     public static void PreFix(ref float animationSpeed)
     {
-        var firstAid = SkillsPlugin.SkillData.FirstAid;
+        var firstAid = Plugin.SkillData.FirstAid;
 
         if (!firstAid.Enabled)
         {

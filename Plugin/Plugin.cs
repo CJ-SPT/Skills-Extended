@@ -9,29 +9,37 @@ using System;
 using System.Linq;
 using SkillsExtended.Config;
 using SkillsExtended.Skills.LockPicking;
-using UnityEngine;
+using SPT.Reflection.Patching;
 
 namespace SkillsExtended;
 
-[BepInPlugin("com.cj.SkillsExtended", "Skills Extended", "2.1.1")]
+[BepInPlugin("com.cj.SkillsExtended", "Skills Extended", SkillsExtendedInfo.Version)]
 
 // Because I need the idle state type from it for lockpicking
 [BepInDependency("com.boogle.oldtarkovmovement", BepInDependency.DependencyFlags.SoftDependency)] 
-public class SkillsPlugin : BaseUnityPlugin
+public class Plugin : BaseUnityPlugin
 {
-    public const int TarkovVersion = 40087;
-    
-    // Contains key information
-    public static KeysResponse Keys;
+    /// <summary>
+    ///     Key Information
+    /// </summary>
+    public static KeysResponse Keys { get; private set; }
 
-    // Contains skill data
-    public static SkillDataResponse SkillData;
+    /// <summary>
+    ///     Skills config
+    /// </summary>
+    public static SkillDataResponse SkillData { get; private set; }
     
-    private static GameObject _hook;
+    /// <summary>
+    ///     Logger
+    /// </summary>
+    internal static ManualLogSource Log { get; private set; }
     
-    internal static ManualLogSource Log;
-    
+    /// <summary>
+    ///     Is old tarkov movement present
+    /// </summary>
     internal static bool IsOldTarkovMovementDetected { get; private set; }
+    
+    private static PatchManager _patchManager;
     
     private void Awake()
     {
@@ -41,25 +49,18 @@ public class SkillsPlugin : BaseUnityPlugin
         }
         
         Log = Logger;
-        
-        PatchManager.PatchAll();
         ConfigManager.RegisterConfig(Config);
+
+        _patchManager = new PatchManager(this, true);
+        _patchManager.EnablePatches();
         
 #if DEBUG
-        Logger.LogWarning("PRE RELEASE BUILD - NO SUPPORT");
+        Logger.LogWarning($"PRE RELEASE BUILD OF `{SkillsExtendedInfo.Version}` - NO SUPPORT");
         Logger.LogWarning("DEBUG BUILD FEATURES ENABLED");
         ConsoleCommands.RegisterCommands();
 #endif
-        _hook = new GameObject("Skills Controller Object");
-        DontDestroyOnLoad(_hook);
         
-        // Compatibility for lockpicking
-        if (Chainloader.PluginInfos.Keys.Contains("com.boogle.oldtarkovmovement"))
-        {
-            RE.GetOldMovementTypes();
-            IsOldTarkovMovementDetected = true;
-            Logger.LogInfo("Enabling compatibility for old tarkov movement");
-        }
+        DetectSoftDependencies();
     }
 
     private void Start()
@@ -87,5 +88,16 @@ public class SkillsPlugin : BaseUnityPlugin
         }
 
         return JsonConvert.DeserializeObject<T>(req);
+    }
+
+    private static void DetectSoftDependencies()
+    {
+        // Compatibility for lockpicking
+        if (Chainloader.PluginInfos.Keys.Contains("com.boogle.oldtarkovmovement"))
+        {
+            RE.GetOldMovementTypes();
+            IsOldTarkovMovementDetected = true;
+            Log.LogInfo("Enabling compatibility for old tarkov movement");
+        }
     }
 }

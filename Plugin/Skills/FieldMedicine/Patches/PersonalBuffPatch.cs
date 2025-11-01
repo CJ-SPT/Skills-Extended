@@ -17,7 +17,7 @@ internal class PersonalBuffPatch : ModulePatch
     [PatchPostfix]
     public static void PostFix(SkillManager skills, InjectorBuff __result)
     {
-        if (!SkillsPlugin.SkillData.FieldMedicine.Enabled || !__result.IsBuff)
+        if (!Plugin.SkillData.FieldMedicine.Enabled || !__result.IsBuff)
         {
             return;
         }

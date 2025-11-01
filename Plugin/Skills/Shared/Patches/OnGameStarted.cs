@@ -21,8 +21,8 @@ internal class OnGameStartedPatch : ModulePatch
     private static Type _painKillerType;
     private static Type _medEffectType;
     
-    private static WeaponSkillData NatoData => SkillsPlugin.SkillData.NatoWeapons;
-    private static WeaponSkillData EasternData => SkillsPlugin.SkillData.EasternWeapons;
+    private static WeaponSkillData NatoData => Plugin.SkillData.NatoWeapons;
+    private static WeaponSkillData EasternData => Plugin.SkillData.EasternWeapons;
     private static Player Player => GameUtils.GetPlayer();
     
     protected override MethodBase GetTargetMethod()
@@ -40,19 +40,19 @@ internal class OnGameStartedPatch : ModulePatch
     private static void Postfix(GameWorld __instance)
     {
 #if DEBUG
-        SkillsPlugin.Log.LogDebug($"Player map id: {__instance.MainPlayer.Location}");
+        Plugin.Log.LogDebug($"Player map id: {__instance.MainPlayer.Location}");
 #endif
         
         LockPickingHelpers.InitializeLockpickingForLocation(__instance.LocationId);
         
         __instance.MainPlayer.ActiveHealthController.EffectStartedEvent += ApplyMedicalXp;
         
-        if (SkillsPlugin.SkillData.NatoWeapons.Enabled)
+        if (Plugin.SkillData.NatoWeapons.Enabled)
         {
             Player!.Skills.OnMasteringExperienceChanged += ApplyNatoRifleXp;
         }
         
-        if (SkillsPlugin.SkillData.EasternWeapons.Enabled)
+        if (Plugin.SkillData.EasternWeapons.Enabled)
         {
             Player!.Skills.OnMasteringExperienceChanged += ApplyEasternRifleXp;
         }
@@ -68,14 +68,14 @@ internal class OnGameStartedPatch : ModulePatch
     {
         var skillMgrExt = Player.Skills.SkillManagerExtended;
         
-        if (SkillsPlugin.SkillData.FieldMedicine.Enabled && _stimType.IsInstanceOfType(effect) || _painKillerType.IsInstanceOfType(effect))
+        if (Plugin.SkillData.FieldMedicine.Enabled && _stimType.IsInstanceOfType(effect) || _painKillerType.IsInstanceOfType(effect))
         {
             if (GameUtils.GetPlayer()!.Skills.FieldMedicine.IsEliteLevel)
             {
                 return;
             }
             
-            var xpGain = SkillsPlugin.SkillData.FieldMedicine.XpPerAction;
+            var xpGain = Plugin.SkillData.FieldMedicine.XpPerAction;
             
             Player.ExecuteSkill(() => skillMgrExt.FieldMedicineAction.Complete(xpGain));
 
@@ -85,14 +85,14 @@ internal class OnGameStartedPatch : ModulePatch
             return;
         }
 
-        if (SkillsPlugin.SkillData.FirstAid.Enabled && _medEffectType.IsInstanceOfType(effect))
+        if (Plugin.SkillData.FirstAid.Enabled && _medEffectType.IsInstanceOfType(effect))
         {
             if (GameUtils.GetPlayer()!.Skills.FirstAid.IsEliteLevel)
             {
                 return;
             }
             
-            var xpGain = SkillsPlugin.SkillData.FirstAid.XpPerAction;
+            var xpGain = Plugin.SkillData.FirstAid.XpPerAction;
             
             Player.ExecuteSkill(() => skillMgrExt.FirstAidAction.Complete(xpGain));
             
@@ -122,13 +122,13 @@ internal class OnGameStartedPatch : ModulePatch
             var xp = NatoData.XpPerAction * NatoData.SkillShareXpRatio;
             Player.ExecuteSkill(() => skillMgrExt.BearRifleAction.Complete(xp));
 #if DEBUG 
-            SkillsPlugin.Log.LogDebug($"APPLYING {xp} EASTERN RIFLE SHARED XP");
+            Plugin.Log.LogDebug($"APPLYING {xp} EASTERN RIFLE SHARED XP");
 #endif
         }
         
         Player.ExecuteSkill(() => skillMgrExt.UsecRifleAction.Complete(NatoData.XpPerAction));
 #if DEBUG
-        SkillsPlugin.Log.LogDebug("APPLYING NATO RIFLE XP");
+        Plugin.Log.LogDebug("APPLYING NATO RIFLE XP");
 #endif
     }
 
@@ -153,14 +153,14 @@ internal class OnGameStartedPatch : ModulePatch
             Player.ExecuteSkill(() => skillMgrExt.UsecRifleAction.Complete(xp));
 
 #if DEBUG
-            SkillsPlugin.Log.LogDebug($"APPLYING {xp} EASTERN RIFLE SHARED XP");
+            Plugin.Log.LogDebug($"APPLYING {xp} EASTERN RIFLE SHARED XP");
 #endif
         }
         
         Player.ExecuteSkill(() => skillMgrExt.BearRifleAction.Complete(EasternData.XpPerAction));
         
 #if DEBUG
-        SkillsPlugin.Log.LogDebug($"APPLYING {EasternData.XpPerAction} EASTERN RIFLE XP");
+        Plugin.Log.LogDebug($"APPLYING {EasternData.XpPerAction} EASTERN RIFLE XP");
 #endif
     }
 
@@ -197,11 +197,11 @@ internal class OnGameStartedPatch : ModulePatch
                 continue;
             }
             
-            var logMessage = SkillsPlugin.Keys.KeyLocale.TryGetValue(interactableObj.KeyId, out var name) 
+            var logMessage = Plugin.Keys.KeyLocale.TryGetValue(interactableObj.KeyId, out var name) 
                 ? $"Door ID: {interactableObj.Id} KeyID: {interactableObj.KeyId} Key Name: {name}" 
                 : $"Door ID: {interactableObj.Id} KeyID: {interactableObj.KeyId}";
                 
-            SkillsPlugin.Log.LogError(logMessage);
+            Plugin.Log.LogError(logMessage);
         }
     }
 }

@@ -8,6 +8,7 @@
     <LangVersion>latest</LangVersion>
 	<Configurations>Debug;Release;BETA</Configurations>
 	<RootNamespace>SkillsExtended</RootNamespace>
+	<Nullable>disable</Nullable>
   </PropertyGroup>
 
 	<PropertyGroup>

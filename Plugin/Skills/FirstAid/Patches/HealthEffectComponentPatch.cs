@@ -21,7 +21,7 @@ public class HealthEffectComponentPatch : ModulePatch
     [PatchPostfix]
     public static void PostFix(Item item, IHealthEffect template)
     {
-        var skillData = SkillsPlugin.SkillData.FirstAid;
+        var skillData = Plugin.SkillData.FirstAid;
         if (!skillData.Enabled)
         {
             return;

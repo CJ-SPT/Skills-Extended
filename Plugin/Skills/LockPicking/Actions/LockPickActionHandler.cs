@@ -39,7 +39,7 @@ public sealed class LockPickActionHandler
         }
 
         // Break the lock if more than 3 failed attempts
-        if (LockPickingHelpers.DoorAttempts[InteractiveObject.Id] < SkillsPlugin.SkillData.LockPicking.AttemptsBeforeBreak)
+        if (LockPickingHelpers.DoorAttempts[InteractiveObject.Id] < Plugin.SkillData.LockPicking.AttemptsBeforeBreak)
         {
             return;
         }

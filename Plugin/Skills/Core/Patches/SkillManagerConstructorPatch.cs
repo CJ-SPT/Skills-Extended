@@ -116,27 +116,27 @@ internal class SkillManagerConstructorPatch : ModulePatch
     private static void LockSkills(SkillManager skillManager)
     {
         AccessTools.Field(typeof(SkillClass), "Locked").SetValue(skillManager.UsecArsystems,
-            !SkillsPlugin.SkillData.NatoWeapons.Enabled);
+            !Plugin.SkillData.NatoWeapons.Enabled);
 
         AccessTools.Field(typeof(SkillClass), "Locked").SetValue(skillManager.BearAksystems,
-            !SkillsPlugin.SkillData.EasternWeapons.Enabled);
+            !Plugin.SkillData.EasternWeapons.Enabled);
         
         AccessTools.Field(typeof(SkillClass), "Locked").SetValue(skillManager.Lockpicking,
-            !SkillsPlugin.SkillData.LockPicking.Enabled);
+            !Plugin.SkillData.LockPicking.Enabled);
         
         AccessTools.Field(typeof(SkillClass), "Locked").SetValue(skillManager.FieldMedicine,
-            !SkillsPlugin.SkillData.FieldMedicine.Enabled);
+            !Plugin.SkillData.FieldMedicine.Enabled);
 
         AccessTools.Field(typeof(SkillClass), "Locked").SetValue(skillManager.FirstAid,
-            !SkillsPlugin.SkillData.FirstAid.Enabled);
+            !Plugin.SkillData.FirstAid.Enabled);
         
         AccessTools.Field(typeof(SkillClass), "Locked").SetValue(skillManager.ProneMovement,
-            !SkillsPlugin.SkillData.ProneMovement.Enabled);
+            !Plugin.SkillData.ProneMovement.Enabled);
         
         AccessTools.Field(typeof(SkillClass), "Locked").SetValue(skillManager.SilentOps,
-            !SkillsPlugin.SkillData.SilentOps.Enabled);
+            !Plugin.SkillData.SilentOps.Enabled);
         
         AccessTools.Field(typeof(SkillClass), "Locked").SetValue(skillManager.Shadowconnections,
-            !SkillsPlugin.SkillData.ShadowConnections.Enabled);
+            !Plugin.SkillData.ShadowConnections.Enabled);
     }
 }

@@ -19,7 +19,7 @@ public class MovementContextSetSpeedLimitPatch : ModulePatch
 	[PatchPrefix]
 	public static bool Prefix(MovementContext __instance)
 	{
-		var skillData = SkillsPlugin.SkillData;
+		var skillData = Plugin.SkillData;
 		if (!skillData.Strength.Enabled)
 		{
 			return true;

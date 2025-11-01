@@ -124,7 +124,7 @@ internal class SkillClassCtorPatch : ModulePatch
         var buffList = buffs.ToList();
         var actionList = actions.ToList();
 
-        var skillData = SkillsPlugin.SkillData;
+        var skillData = Plugin.SkillData;
         var skillMgrExt = skillManager.SkillManagerExtended;
 
         switch (id)

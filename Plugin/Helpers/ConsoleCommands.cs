@@ -43,7 +43,7 @@ namespace SkillsExtended.Helpers
             
             foreach (var weapon in weapons)
             {
-                SkillsPlugin.Log.LogDebug($"Template ID: {weapon.TemplateId}, locale name: {weapon.LocalizedName()}");
+                Plugin.Log.LogDebug($"Template ID: {weapon.TemplateId}, locale name: {weapon.LocalizedName()}");
             }
         }
 

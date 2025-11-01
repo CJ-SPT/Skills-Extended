@@ -16,7 +16,7 @@ public class AbstractSkillClassSummaryLevelPatch : ModulePatch
     [PatchPrefix]
     public static bool Prefix(AbstractSkillClass __instance, ref int __result)
     {
-        if (!SkillsPlugin.SkillData.FieldMedicine.Enabled)
+        if (!Plugin.SkillData.FieldMedicine.Enabled)
         {
             return true;
         }
