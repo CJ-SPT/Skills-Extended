@@ -33,10 +33,7 @@ public class AbstractSkillClassSummaryLevelPatch : ModulePatch
         var level = __instance.Level;
         var buff = __instance.Buff;
         __result = Mathf.CeilToInt(Mathf.Min(buff > 0 ? newSkillCap : 51, level + buff));
-
-#if DEBUG
-        Logger.LogDebug($"New Skill Cap: {__result}");
-#endif
+        
         return false;
     }
 }
