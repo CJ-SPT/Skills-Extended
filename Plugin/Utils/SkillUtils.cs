@@ -1,6 +1,6 @@
 ﻿using EFT;
 
-namespace SkillsExtended.Helpers;
+namespace SkillsExtended.Utils;
 
 public static class SkillUtils
 {

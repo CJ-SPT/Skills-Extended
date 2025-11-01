@@ -1,10 +1,11 @@
 ﻿using System;
 using EFT.HealthSystem;
 using HarmonyLib;
+using SkillsExtended.Exceptions;
 
 namespace SkillsExtended.Helpers;
 
-public static class RE
+public static class ReflectionHelper
 {
     internal static Type BleedType;
     internal static Type LightBleedType;
@@ -16,7 +17,7 @@ public static class RE
 
     internal static Type OldMovementIdleState;
     
-    static RE()
+    static ReflectionHelper()
     {
         BleedType = AccessTools.Inner(typeof(ActiveHealthController), "LightBleeding");
         LightBleedType = AccessTools.Inner(typeof(ActiveHealthController), "LightBleeding");

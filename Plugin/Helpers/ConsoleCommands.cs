@@ -6,6 +6,7 @@ using System;
 using System.Linq;
 using EFT.Console.Core;
 using SkillsExtended.Skills.LockPicking;
+using SkillsExtended.Utils;
 
 namespace SkillsExtended.Helpers
 {

@@ -3,6 +3,7 @@ using EFT;
 using EFT.Interactive;
 using SkillsExtended.Helpers;
 using SkillsExtended.Skills.Core;
+using SkillsExtended.Utils;
 
 namespace SkillsExtended.Skills.LockPicking.Actions;
 

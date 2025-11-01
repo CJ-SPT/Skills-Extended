@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SkillsExtended.Helpers;
+namespace SkillsExtended.Utils;
 
 public static class MathUtils
 {

@@ -2,6 +2,7 @@
 using EFT;
 using HarmonyLib;
 using SkillsExtended.Helpers;
+using SkillsExtended.Utils;
 using SPT.Reflection.Patching;
 
 namespace SkillsExtended.Skills.Core.Patches;

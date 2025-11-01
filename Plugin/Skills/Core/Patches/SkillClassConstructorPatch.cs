@@ -3,6 +3,7 @@ using System.Linq;
 using System.Reflection;
 using EFT;
 using SkillsExtended.Helpers;
+using SkillsExtended.Utils;
 using SPT.Reflection.Patching;
 
 namespace SkillsExtended.Skills.Core.Patches;

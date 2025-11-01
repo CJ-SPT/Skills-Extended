@@ -5,6 +5,7 @@ using EFT.InventoryLogic;
 using HarmonyLib;
 using SkillsExtended.Helpers;
 using SkillsExtended.Skills.Core;
+using SkillsExtended.Utils;
 using SPT.Reflection.Patching;
 using SPT.Reflection.Utils;
 using UnityEngine;

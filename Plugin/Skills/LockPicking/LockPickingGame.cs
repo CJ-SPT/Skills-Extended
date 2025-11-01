@@ -7,6 +7,7 @@ using JetBrains.Annotations;
 using SkillsExtended.Config;
 using SkillsExtended.Helpers;
 using SkillsExtended.Skills.Core;
+using SkillsExtended.Utils;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;

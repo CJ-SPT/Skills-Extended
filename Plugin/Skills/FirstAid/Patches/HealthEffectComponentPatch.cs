@@ -4,6 +4,7 @@ using EFT;
 using EFT.InventoryLogic;
 using HarmonyLib;
 using SkillsExtended.Helpers;
+using SkillsExtended.Utils;
 using SPT.Reflection.Patching;
 
 namespace SkillsExtended.Skills.FirstAid.Patches;
