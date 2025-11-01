@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using HarmonyLib;
 using SkillsExtended.Core;
+using SkillsExtended.Extensions;
 using SkillsExtended.Utils;
 using SPTarkov.Reflection.Patching;
 using SPTarkov.Server.Core.DI;
@@ -68,7 +69,7 @@ public class GetTraderAssortPatch : AbstractPatch
         {
             if (profile.Info?.Side == "Usec" || !usecConfig.FactionLocked)
             {
-                discount += usecConfig.PeacekeeperTradingCostDec * usecLevel;
+                discount += usecConfig.PeacekeeperTradingCostDec.NormalizeToPercentage() * usecLevel;
             }
         }
 
@@ -77,7 +78,7 @@ public class GetTraderAssortPatch : AbstractPatch
         {
             if (profile.Info?.Side == "Bear" || !usecConfig.FactionLocked)
             {
-                discount += bearConfig.PraporTradingCostDec * bearLevel;
+                discount += bearConfig.PraporTradingCostDec.NormalizeToPercentage() * bearLevel;
             }
         }
         
@@ -86,7 +87,7 @@ public class GetTraderAssortPatch : AbstractPatch
         {
             if (profile.Info?.Side == "Usec" || !usecConfig.FactionLocked)
             {
-                discount += usecConfig.AllTraderCostDecrease;
+                discount += usecConfig.AllTraderCostDecrease.NormalizeToPercentage();
             }
         }
 
@@ -95,14 +96,15 @@ public class GetTraderAssortPatch : AbstractPatch
         {
             if (profile.Info?.Side == "Bear" || !bearConfig.FactionLocked)
             {
-                discount += bearConfig.AllTraderCostDecrease;
+                discount += bearConfig.AllTraderCostDecrease.NormalizeToPercentage();
             }
         }
         
-        var normalizedDiscount = Math.Clamp(1 - discount, 0.0f, 1.0f);
+        var normalizedDiscount = Math.Clamp(1 - discount, 0.10f, 1.0f);
 
 #if DEBUG
         Console.WriteLine($"discount: {discount}%");
+        Console.WriteLine($"normalized discount: {normalizedDiscount}%");
         Console.WriteLine($"Original price: {barter.Count}");
 #endif
         
