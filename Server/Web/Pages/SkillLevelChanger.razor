@@ -44,7 +44,7 @@
                     
                     @foreach (var skill in GetSelectedSkills()) 
                     {
-                        <MudItem xs="6">
+                        <MudItem xs="4">
                             <MudPaper Class="pa-4" Elevation="2">
                                 <MudSlider @bind-Value="@skill.Progress"
                                            Min="0" Max="5100"
