@@ -2,7 +2,7 @@
   {
     "Version": "2.1.1",
     "CodeName": "Rapport",
-    "ReleaseDate": "October 30, 2025",
+    "ReleaseDate": "November 1, 2025",
     "IsLatest": true,
     "Features": [
       "Adds a skill level changer to the config web page"
@@ -11,7 +11,8 @@
       "All config value percentages are now real numbers. Meaning if you want 1.5% per level, the value is 1.5%, not 0.015"
     ],
     "BugFixes": [
-      "Fixes a bug where the original stored value before modification for Light bleeds and Heavy bleeds was set to the fracture cost"
+      "Fixes a bug where the original stored value before modification for Light bleeds and Heavy bleeds was set to the fracture cost",
+      "Fixes a bug where a benign error message stating could not find skill X in profile would appear in the server"
     ]
   },
   {
