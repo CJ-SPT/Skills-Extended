@@ -35,6 +35,11 @@ public class GeneratePlayerScavPatch : AbstractPatch
     [PatchPrefix]
     public static void Prefix(MongoId sessionId, ref string role)
     {
+        if (!ConfigController.SkillsConfig.ShadowConnections.Enabled)
+        {
+            return;
+        }
+        
         if (!SkillUtil.TryGetSkillLevel(sessionId, SkillTypes.Shadowconnections, out var level))
         {
             return;
@@ -55,6 +60,11 @@ public class GeneratePlayerScavPatch : AbstractPatch
     [PatchPostfix]
     public static void Postfix(PmcData __result)
     {
+        if (!ConfigController.SkillsConfig.ShadowConnections.Enabled)
+        {
+            return;
+        }
+        
         if (!_generateAsCultist)
         {
             return;
