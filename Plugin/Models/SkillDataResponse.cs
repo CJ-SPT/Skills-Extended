@@ -221,6 +221,9 @@ public struct ShadowConnectionsData
     
     [JsonProperty("CULTIST_CIRCLE_RETURN_TIME_PER_LEVEL")] 
     public float CultistCircleReturnTimeReduction { get; set; }
+    
+    [JsonProperty("SCAV_GENERATE_AS_CULTIST_CHANCE_PER_LEVEL")]
+    public float ScavGenerateAsCultistChance { get; set; }
 }
 
 public struct BearRawPowerData

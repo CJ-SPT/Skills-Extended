@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.IO;
+using System.Reflection;
 using EFT;
 using EFT.HealthSystem;
 using EFT.InventoryLogic;
@@ -6,12 +7,15 @@ using EFT.Quests;
 using EFT.UI;
 using HarmonyLib;
 using SPT.Reflection.Patching;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace SkillsExtended.Skills.UI.Patches;
 
 internal class BuffIconShowPatch : ModulePatch
 {
+    private static Sprite _cultistChanceSprite;
+    
     protected override MethodBase GetTargetMethod()
     {
         return AccessTools.Method(typeof(BuffIcon), nameof(BuffIcon.Show));
@@ -25,6 +29,11 @@ internal class BuffIconShowPatch : ModulePatch
     {
         var staticIcons = EFTHardSettings.Instance.StaticIcons;
 
+        if (!_cultistChanceSprite)
+        {
+            LoadSprites();
+        }
+        
         switch (buff.Id)
         {
             case EBuffId.FirstAidHealingSpeed:
@@ -98,6 +107,10 @@ internal class BuffIconShowPatch : ModulePatch
                 ____icon.sprite = staticIcons.BuffIdSprites.GetValueOrDefault(EBuffId.CovertMovementSpeed);
                 break;
             
+            case EBuffId.ScavGenerateAsCultistChance:
+                ____icon.sprite = _cultistChanceSprite;
+                break;
+            
             case EBuffId.UsecNegotiationsPeacekeeperTraderCostDec:
             case EBuffId.UsecNegotiationsAllTraderCostDec:
             case EBuffId.BearRawPowerPraporTraderCostDec:
@@ -116,5 +129,15 @@ internal class BuffIconShowPatch : ModulePatch
         }
         
         __instance.UpdateBuff();
+    }
+
+    private static void LoadSprites()
+    {
+        var directory = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!, "Images");
+        
+        var cultistChanceSprite = File.ReadAllBytes(Path.Combine(directory, "CultistBuffIcon.png"));
+        var texture = new Texture2D(2, 2);
+        texture.LoadImage(cultistChanceSprite);
+        _cultistChanceSprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
     }
 }

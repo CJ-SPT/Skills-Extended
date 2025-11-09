@@ -291,7 +291,6 @@ public static class SkillsExtendedPatcher
             buffEnum,
             index++);
         
-        
         var decCultistCircleReturn = CreateNewEnum(
             ref assembly,
             "ShadowConnectionsCultistCircleReturnTimeDec",
@@ -299,9 +298,17 @@ public static class SkillsExtendedPatcher
             buffEnum,
             index++);
         
+        var scavGenerateAsCultistChance = CreateNewEnum(
+            ref assembly,
+            "ScavGenerateAsCultistChance",
+            "ScavGenerateAsCultistChance",
+            buffEnum,
+            index++);
+        
         buffEnum.Fields.Add(decScavCooldown);
         buffEnum.Fields.Add(decScavCooldownElite);
         buffEnum.Fields.Add(decCultistCircleReturn);
+        buffEnum.Fields.Add(scavGenerateAsCultistChance);
     }
 
     private static void BearRawPowerBuffs(AssemblyDefinition assembly, TypeDefinition buffEnum, ref int index)

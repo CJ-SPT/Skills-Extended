@@ -120,6 +120,11 @@ public class SkillManagerExt(SkillManager skillManager)
         BuffType = SkillManager.EBuffType.Elite
     };
     
+    public readonly SkillManager.SkillBuffClass ScavGenerateAsCultistChance = new()
+    {
+        Id = EBuffId.ScavGenerateAsCultistChance,
+    };
+    
     public readonly SkillManager.SkillBuffClass BearRawPowerPraporTraderCostDec = new()
     {
         Id = EBuffId.BearRawPowerPraporTraderCostDec
@@ -243,6 +248,7 @@ public class SkillManagerExt(SkillManager skillManager)
         [
             ScavCooldownTimeReductionBuff.PerLevel(SkillData.ShadowConnections.ScavCooldownTimeReduction.NormalizeToPercentage()),
             CultistCircleReturnTimeReductionBuff.PerLevel(SkillData.ShadowConnections.CultistCircleReturnTimeReduction.NormalizeToPercentage()),
+            ScavGenerateAsCultistChance.PerLevel(SkillData.ShadowConnections.ScavGenerateAsCultistChance.NormalizeToPercentage()),
             ScavCooldownTimeReductionEliteBuff
         ];
     }

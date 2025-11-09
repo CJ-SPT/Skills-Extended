@@ -147,6 +147,9 @@ public record ShadowConnectionsConfig : BaseSubConfig
     
     [JsonPropertyName("CULTIST_CIRCLE_RETURN_TIME_PER_LEVEL")]
     public required float CultistCircleReturnTimeDec { get; set; }
+    
+    [JsonPropertyName("SCAV_GENERATE_AS_CULTIST_CHANCE_PER_LEVEL")]
+    public required float ScavGenerateAsCultistChance { get; set; }
 }
 
 public record BearRawPowerConfig : BaseSubConfig
