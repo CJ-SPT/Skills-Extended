@@ -51,6 +51,7 @@
     "ShadowconnectionsLevelingUpDescription": "Shadow Connections is improved by killing cultists.",
     "ShadowConnectionsCultistCircleReturnTimeDec": "Hastens the return of cultist offerings by [{0:0.#%}]",
     "ShadowConnectionsScavCooldownTimeDec": "Reduces the cooldown of your scav by [{0:0.#%}]",
+    "ScavGenerateAsCultistChance": "Increases the chance that your scav will be generated as a cultist by [{0:0.#%}]",
     "ShadowConnectionsScavCooldownTimeElite": "Your scav has no cooldown",
   
     "BearRawPowerDescription": "Bear Raw Power reduces the cost of trading with Prapor, as well as increased XP reward from tasks.",

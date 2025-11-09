@@ -1,8 +1,8 @@
 ﻿using System.Linq;
 using EFT;
 using EFT.Interactive;
-using SkillsExtended.Helpers;
-using SkillsExtended.Skills.Core;
+using SkillsExtended.Exceptions;
+using SkillsExtended.Utils;
 
 namespace SkillsExtended.Skills.LockPicking.Actions;
 
@@ -39,7 +39,7 @@ public sealed class LockPickActionHandler
         }
 
         // Break the lock if more than 3 failed attempts
-        if (LockPickingHelpers.DoorAttempts[InteractiveObject.Id] < SkillsPlugin.SkillData.LockPicking.AttemptsBeforeBreak)
+        if (LockPickingHelpers.DoorAttempts[InteractiveObject.Id] < Plugin.SkillData.LockPicking.AttemptsBeforeBreak)
         {
             return;
         }
@@ -74,8 +74,11 @@ public sealed class LockPickActionHandler
         // lock pick has no uses left, destroy it
         if (pick.KeyComponent.NumberOfUsages >= pick.KeyComponent.Template.MaximumNumberOfUsage && pick.KeyComponent.Template.MaximumNumberOfUsage > 0)
         {
-            // TODO: Is ThrowItem() the correct method?
-            Owner.Player.InventoryController.ThrowItem(lockPick);
+            var result = InteractionsHandlerClass.Discard(pick, (TraderControllerClass)pick.Parent.GetOwner());
+            if (result.Failed)
+            {
+                throw new SkillsExtendedException("Failed to discard lockpick from inventory");
+            }   
         }
     }
 }

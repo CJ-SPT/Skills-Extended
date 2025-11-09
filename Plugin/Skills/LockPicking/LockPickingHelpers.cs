@@ -8,6 +8,7 @@ using System.Linq;
 using System.Reflection;
 using SkillsExtended.Helpers;
 using SkillsExtended.Models;
+using SkillsExtended.Utils;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
@@ -23,7 +24,7 @@ internal static class LockPickingHelpers
     
     public static GameObject LockPickingGame;
 
-    private static LockPickingData LockPickingData => SkillsPlugin.SkillData.LockPicking;
+    private static LockPickingData LockPickingData => Plugin.SkillData.LockPicking;
     
     private static readonly Dictionary<string, Dictionary<string, int>> LocationDoorIdLevels = new()
     {
@@ -91,7 +92,7 @@ internal static class LockPickingHelpers
     {
         if (!LocationDoorIdLevels.TryGetValue(locationId, out var levels))
         {
-            SkillsPlugin.Log.LogError($"Could not find location ID: {locationId}");
+            Plugin.Log.LogError($"Could not find location ID: {locationId}");
             return -1;
         }
         
@@ -127,7 +128,7 @@ internal static class LockPickingHelpers
     public static void ApplyLockPickActionXp(WorldInteractiveObject interactiveObject, GamePlayerOwner owner, bool isInspect = false, bool isFailure = false)
     {
         var doorLevel = GetLevelForDoor(owner.Player.Location, interactiveObject.Id);
-        var xpExists = SkillsPlugin.SkillData.LockPicking.XpTable.TryGetValue(doorLevel.ToString(), out var xp);
+        var xpExists = Plugin.SkillData.LockPicking.XpTable.TryGetValue(doorLevel.ToString(), out var xp);
         var player = Singleton<GameWorld>.Instance.MainPlayer;
 
         if (!xpExists || player.Skills.Lockpicking.IsEliteLevel)
@@ -136,11 +137,11 @@ internal static class LockPickingHelpers
         }
         
         xpToApply = isInspect
-            ? xp * SkillsPlugin.SkillData.LockPicking.InspectLockXpRatio
+            ? xp * Plugin.SkillData.LockPicking.InspectLockXpRatio
             : xp;
         
         xpToApply = isFailure
-            ? xpToApply * SkillsPlugin.SkillData.LockPicking.FailureLockXpRatio
+            ? xpToApply * Plugin.SkillData.LockPicking.FailureLockXpRatio
             : xpToApply;
         
         player.ExecuteSkill(CompleteLockPickAction);
@@ -162,7 +163,7 @@ internal static class LockPickingHelpers
         var doorLevel = GetLevelForDoor(owner.Player.Location, interactiveObject.Id);
 
         // Display inspection info
-        NotificationManagerClass.DisplayMessageNotification($"Key for door is {SkillsPlugin.Keys.KeyLocale[interactiveObject.KeyId]}");
+        NotificationManagerClass.DisplayMessageNotification($"Key for door is {Plugin.Keys.KeyLocale[interactiveObject.KeyId]}");
         NotificationManagerClass.DisplayMessageNotification($"Lock level {doorLevel}");
     }
 
@@ -240,7 +241,7 @@ internal static class LockPickingHelpers
         }
         
         var skillManager = GameUtils.GetSkillManager()?.SkillManagerExtended;
-        var sweetSpotRangeBase = SkillsPlugin.SkillData.LockPicking.SweetSpotRangeBase;
+        var sweetSpotRangeBase = Plugin.SkillData.LockPicking.SweetSpotRangeBase;
         
         foreach (var (doorId, level) in LocationDoorIdLevels[location])
         {
@@ -252,7 +253,7 @@ internal static class LockPickingHelpers
         }
 
 #if DEBUG
-        SkillsPlugin.Log.LogDebug($"Initialized `{LocationDoorIdLevels[location].Count}` doors on map `{location}`");
+        Plugin.Log.LogDebug($"Initialized `{LocationDoorIdLevels[location].Count}` doors on map `{location}`");
 #endif
     }
 }

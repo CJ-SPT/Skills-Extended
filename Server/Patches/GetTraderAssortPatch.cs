@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using HarmonyLib;
 using SkillsExtended.Core;
+using SkillsExtended.Extensions;
 using SkillsExtended.Utils;
 using SPTarkov.Reflection.Patching;
 using SPTarkov.Server.Core.DI;
@@ -15,7 +16,7 @@ namespace SkillsExtended.Patches;
 public class GetTraderAssortPatch : AbstractPatch
 {
     private static readonly ConfigController ConfigController = ServiceLocator.ServiceProvider.GetRequiredService<ConfigController>();
-    private static readonly SkillUtils SkillUtils = ServiceLocator.ServiceProvider.GetRequiredService<SkillUtils>();
+    private static readonly SkillUtil SkillUtil = ServiceLocator.ServiceProvider.GetRequiredService<SkillUtil>();
     private static readonly ProfileHelper ProfileHelper = ServiceLocator.ServiceProvider.GetRequiredService<ProfileHelper>();
     private static readonly PaymentHelper PaymentHelper = ServiceLocator.ServiceProvider.GetRequiredService<PaymentHelper>();
     
@@ -37,8 +38,8 @@ public class GetTraderAssortPatch : AbstractPatch
             return;
         }
         
-        SkillUtils.TryGetSkillLevel(sessionId, SkillTypes.UsecNegotiations, out var usecLevel);
-        SkillUtils.TryGetSkillLevel(sessionId, SkillTypes.BearRawpower, out var bearLevel);
+        SkillUtil.TryGetSkillLevel(sessionId, SkillTypes.UsecNegotiations, out var usecLevel);
+        SkillUtil.TryGetSkillLevel(sessionId, SkillTypes.BearRawpower, out var bearLevel);
         
         foreach (var assort in __result.BarterScheme)
         {
@@ -68,7 +69,7 @@ public class GetTraderAssortPatch : AbstractPatch
         {
             if (profile.Info?.Side == "Usec" || !usecConfig.FactionLocked)
             {
-                discount += usecConfig.PeacekeeperTradingCostDec * usecLevel;
+                discount += usecConfig.PeacekeeperTradingCostDec.NormalizeToPercentage() * usecLevel;
             }
         }
 
@@ -77,7 +78,7 @@ public class GetTraderAssortPatch : AbstractPatch
         {
             if (profile.Info?.Side == "Bear" || !usecConfig.FactionLocked)
             {
-                discount += bearConfig.PraporTradingCostDec * bearLevel;
+                discount += bearConfig.PraporTradingCostDec.NormalizeToPercentage() * bearLevel;
             }
         }
         
@@ -86,7 +87,7 @@ public class GetTraderAssortPatch : AbstractPatch
         {
             if (profile.Info?.Side == "Usec" || !usecConfig.FactionLocked)
             {
-                discount += usecConfig.AllTraderCostDecrease;
+                discount += usecConfig.AllTraderCostDecrease.NormalizeToPercentage();
             }
         }
 
@@ -95,14 +96,15 @@ public class GetTraderAssortPatch : AbstractPatch
         {
             if (profile.Info?.Side == "Bear" || !bearConfig.FactionLocked)
             {
-                discount += bearConfig.AllTraderCostDecrease;
+                discount += bearConfig.AllTraderCostDecrease.NormalizeToPercentage();
             }
         }
         
-        var normalizedDiscount = Math.Clamp(1 - discount, 0.0f, 1.0f);
+        var normalizedDiscount = Math.Clamp(1 - discount, 0.10f, 1.0f);
 
 #if DEBUG
         Console.WriteLine($"discount: {discount}%");
+        Console.WriteLine($"normalized discount: {normalizedDiscount}%");
         Console.WriteLine($"Original price: {barter.Count}");
 #endif
         

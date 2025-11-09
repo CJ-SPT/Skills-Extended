@@ -5,6 +5,7 @@ using EFT.InventoryLogic;
 using HarmonyLib;
 using SkillsExtended.Helpers;
 using SkillsExtended.Skills.Core;
+using SkillsExtended.Utils;
 using SPT.Reflection.Patching;
 using SPT.Reflection.Utils;
 using UnityEngine;
@@ -24,7 +25,7 @@ public class GetBarterPricePatch : ModulePatch
     [PatchPostfix]
     private static void Postfix(TraderAssortmentControllerClass __instance, ref TraderClass.GStruct300? __result, Item[] items)
     {
-        if (!SkillsPlugin.SkillData.SilentOps.Enabled || items.IsNullOrEmpty())
+        if (!Plugin.SkillData.SilentOps.Enabled || items.IsNullOrEmpty())
         {
             return;
         }
@@ -74,7 +75,7 @@ public class RequiredItemsCountPatch : ModulePatch
     [PatchPostfix]
     private static void Postfix(GClass2064 __instance, ref int __result)
     {
-        if (!SkillsPlugin.SkillData.SilentOps.Enabled || GetBarterPricePatch.Selecteditem is not SilencerItemClass)
+        if (!Plugin.SkillData.SilentOps.Enabled || GetBarterPricePatch.Selecteditem is not SilencerItemClass)
         {
             return;
         }

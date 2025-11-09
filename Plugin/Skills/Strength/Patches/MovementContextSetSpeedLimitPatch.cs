@@ -5,6 +5,7 @@ using EFT.Interactive;
 using HarmonyLib;
 using SkillsExtended.Helpers;
 using SkillsExtended.Skills.Core;
+using SkillsExtended.Utils;
 using SPT.Reflection.Patching;
 
 namespace SkillsExtended.Skills.Strength.Patches;
@@ -19,7 +20,7 @@ public class MovementContextSetSpeedLimitPatch : ModulePatch
 	[PatchPrefix]
 	public static bool Prefix(MovementContext __instance)
 	{
-		var skillData = SkillsPlugin.SkillData;
+		var skillData = Plugin.SkillData;
 		if (!skillData.Strength.Enabled)
 		{
 			return true;

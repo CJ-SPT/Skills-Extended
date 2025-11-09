@@ -7,6 +7,7 @@ using SPT.Reflection.Patching;
 
 namespace SkillsExtended.Skills.LockPicking.Patches;
 
+[IgnoreAutoPatch]
 public class KeyCardDoorActionPatch : ModulePatch
 {
     protected override MethodBase GetTargetMethod() =>
@@ -16,7 +17,7 @@ public class KeyCardDoorActionPatch : ModulePatch
     private static void Postfix(ref ActionsReturnClass __result, GamePlayerOwner owner, KeycardDoor door)
     {
         if (WorldInteractionUtils.IsBotInteraction(owner)
-            || !SkillsPlugin.SkillData.LockPicking.Enabled
+            || !Plugin.SkillData.LockPicking.Enabled
             || Singleton<GameWorld>.Instance.MainPlayer.Side == EPlayerSide.Savage)
         {
             return;

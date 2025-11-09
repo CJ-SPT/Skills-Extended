@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using EFT.HealthSystem;
 using SkillsExtended.Helpers;
+using SkillsExtended.Utils;
 using SPT.Reflection.Patching;
 using UnityEngine;
 
@@ -16,9 +17,9 @@ internal class StimulatorApplyBuffPatch : ModulePatch
     }
 
     [PatchPrefix]
-    public static bool Prefix(Buff buffSettings, float refValue, Vector2? limits, ref float __result)
+    public static bool Prefix(InjectorBuff buffSettings, float refValue, Vector2? limits, ref float __result)
     {
-        if (!SkillsPlugin.SkillData.FieldMedicine.Enabled || limits is null)
+        if (!Plugin.SkillData.FieldMedicine.Enabled || limits is null)
         {
             return true;
         }

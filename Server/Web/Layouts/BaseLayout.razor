@@ -19,9 +19,7 @@
     <MudLayout>
         <MudAppBar Color="Color.Dark"
                    Fixed="true"
-                   Contextual="true"
-                   Elevation="4"
-                   Bottom="true">
+                   Elevation="4">
 
             <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Style="width: 100%;">
                 <MudStack Row="true" AlignItems="AlignItems.Center" Style="width: 100%;">
@@ -34,21 +32,28 @@
                         Version: @ConfigController.SeModMetadata.Version.ToString() for SPT: @ConfigController.SeModMetadata.SptVersion.ToString()
                     </MudText>
                 </MudStack>
-                
+            
                 <MudButton Color="Color.Success"
                            Style="font-size: 12px;"
                            OnClick="SaveConfig"
                            Variant="Variant.Outlined">
                     Save Config
                 </MudButton>  
-                
+            
             </MudStack>
         </MudAppBar>
-
-        <MudDrawer Width="250px" Open="true" ClipMode="DrawerClipMode.Never" Elevation="5" Variant="@DrawerVariant.Mini" OpenMiniOnHover="true" Breakpoint="Breakpoint.None">
+        
+        <MudDrawer Width="250px" 
+                   Open="true" 
+                   ClipMode="DrawerClipMode.Always" 
+                   Elevation="5" 
+                   Variant="@DrawerVariant.Mini" 
+                   OpenMiniOnHover="true" 
+                   Breakpoint="Breakpoint.None">
             <NavMenu/>
         </MudDrawer>
-        <MudMainContent Class="pt-1">
+        
+        <MudMainContent>
             @Body
         </MudMainContent>
     </MudLayout>

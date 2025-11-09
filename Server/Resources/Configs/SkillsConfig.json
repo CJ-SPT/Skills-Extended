@@ -2,23 +2,23 @@
     "FirstAid": {        
         "ENABLED": true,
         "XP_PER_ACTION": 6.25,
-        "MEDKIT_USAGE_REDUCTION_PER_LEVEL": 0.005,
-        "MEDKIT_SPEED_BONUS_PER_LEVEL": 0.006
+        "MEDKIT_USAGE_REDUCTION_PER_LEVEL": 0.5,
+        "MEDKIT_SPEED_BONUS_PER_LEVEL": 0.6
     },
     "FieldMedicine": {        
         "ENABLED": true,
         "XP_PER_ACTION": 5.50,
-        "SKILL_BONUS_PER_LEVEL": 0.005,
-        "DURATION_BONUS_PER_LEVEL": 0.01,
-        "POSITIVE_EFFECT_BONUS_PER_LEVEL": 0.005
+        "SKILL_BONUS_PER_LEVEL": 0.5,
+        "DURATION_BONUS_PER_LEVEL": 1,
+        "POSITIVE_EFFECT_BONUS_PER_LEVEL": 0.5
     },
     "NatoWeapons": {
         "ENABLED": true,
         "XP_PER_ACTION": 0.1275,
         "SKILL_SHARE_ENABLED": true,
         "SKILL_SHARE_XP_RATIO": 0.10,
-        "ERGO_MOD_PER_LEVEL": 0.006,
-        "RECOIL_REDUCTION_MOD_PER_LEVEL": 0.004,
+        "ERGO_MOD_PER_LEVEL": 0.6,
+        "RECOIL_REDUCTION_MOD_PER_LEVEL": 0.4,
         "WEAPONS": [
             "__CARBINES__",
             "5f2a9575926fd9352339381f",
@@ -113,8 +113,8 @@
         "XP_PER_ACTION": 0.1275,
         "SKILL_SHARE_ENABLED": true,
         "SKILL_SHARE_XP_RATIO": 0.10,
-        "ERGO_MOD_PER_LEVEL": 0.004,
-        "RECOIL_REDUCTION_MOD_PER_LEVEL": 0.003,
+        "ERGO_MOD_PER_LEVEL": 0.4,
+        "RECOIL_REDUCTION_MOD_PER_LEVEL": 0.3,
         "WEAPONS": [
             "__CARBINES__",
             "644674a13d52156624001fbc",
@@ -208,9 +208,9 @@
     "LockPicking": {
         "ENABLED": true,
         "PICK_STRENGTH_BASE": 1.50,
-        "PICK_STRENGTH_PER_LEVEL": 0.025,
+        "PICK_STRENGTH_PER_LEVEL": 2.5,
         "SWEET_SPOT_RANGE_BASE": 3.75,
-        "SWEET_SPOT_RANGE_PER_LEVEL": 0.015,
+        "SWEET_SPOT_RANGE_PER_LEVEL": 1.5,
         "ATTEMPTS_BEFORE_BREAK": 3,
         "INSPECT_LOCK_XP_RATIO": 0.15,
         "FAILURE_LOCK_XP_RATIO": 0.25,
@@ -573,40 +573,41 @@
     "ProneMovement": {
         "ENABLED": true,
         "XP_PER_ACTION": 0.0025,
-        "MOVEMENT_SPEED_INCREASE_PER_LEVEL": 0.006,
-        "MOVEMENT_VOLUME_DECREASE_PER_LEVEL": 0.008
+        "MOVEMENT_SPEED_INCREASE_PER_LEVEL": 0.6,
+        "MOVEMENT_VOLUME_DECREASE_PER_LEVEL": 0.8
     },
     "SilentOps": {
       "ENABLED": true,
       "XP_PER_ACTION": 3.75,
-      "MELEE_SPEED_INCREASE_PER_LEVEL": 0.005,
-      "VOLUME_REDUCTION_PER_LEVEL": 0.01,
-      "SILENCER_PRICE_RED_PER_LEVEL": 0.005
+      "MELEE_SPEED_INCREASE_PER_LEVEL": 0.5,
+      "VOLUME_REDUCTION_PER_LEVEL": 1,
+      "SILENCER_PRICE_RED_PER_LEVEL": 0.5
     },
     "Strength": {
       "ENABLED": true,
-      "COLLIDER_SPEED_BUFF_PER_LEVEL": 0.01
+      "COLLIDER_SPEED_BUFF_PER_LEVEL": 1
     },
     "ShadowConnections": {
       "ENABLED": true,
       "XP_PER_ACTION": 2.25,
-      "SCAV_COOLDOWN_TIME_PER_LEVEL": 0.01,
-      "CULTIST_CIRCLE_RETURN_TIME_PER_LEVEL": 0.01
+      "SCAV_COOLDOWN_TIME_PER_LEVEL": 1,
+      "CULTIST_CIRCLE_RETURN_TIME_PER_LEVEL": 1,
+      "SCAV_GENERATE_AS_CULTIST_CHANCE_PER_LEVEL": 0.5
     },
     "BearRawPower": {
       "ENABLED": true,
       "XP_PER_ACTION": 2.25,
       "FACTION_LOCKED": true,
-      "PRAPOR_TRADING_COST_PER_LEVEL": 0.005,
-      "QUEST_EXP_REWARD_PER_LEVEL": 0.005,
-      "ALL_TRADER_COST_DECREASE": 0.07
+      "PRAPOR_TRADING_COST_PER_LEVEL": 0.5,
+      "QUEST_EXP_REWARD_PER_LEVEL": 0.5,
+      "ALL_TRADER_COST_DECREASE": 7
     },
     "UsecNegotiations": {
       "ENABLED": true,
       "XP_PER_ACTION": 2.25,
       "FACTION_LOCKED": true,
-      "PEACEKEEPER_TRADING_COST_PER_LEVEL": 0.005,
-      "QUEST_MONEY_REWARD_PER_LEVEL": 0.005,
-      "ALL_TRADER_COST_DECREASE": 0.07
+      "PEACEKEEPER_TRADING_COST_PER_LEVEL": 0.5,
+      "QUEST_MONEY_REWARD_PER_LEVEL": 0.5,
+      "ALL_TRADER_COST_DECREASE": 7
     }
 }

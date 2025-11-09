@@ -7,8 +7,8 @@ using SPTarkov.Server.Core.Models.Utils;
 namespace SkillsExtended.Utils;
 
 [Injectable]
-public class SkillUtils(
-    ISptLogger<SkillUtils> logger,
+public class SkillUtil(
+    ISptLogger<SkillUtil> logger,
     ProfileHelper profileHelper
     )
 {
@@ -33,7 +33,6 @@ public class SkillUtils(
         var skill = profile.Skills?.Common.FirstOrDefault(s => s.Id == skillType);
         if (skill is null)
         {
-            logger.Error($"[Skills Extended] Skill type `{skillType}` not found when trying to get the players skill level.");
             return false;
         }
         

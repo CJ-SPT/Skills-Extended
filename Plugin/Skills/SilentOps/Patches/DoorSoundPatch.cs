@@ -5,6 +5,7 @@ using EFT.Interactive;
 using HarmonyLib;
 using SkillsExtended.Helpers;
 using SkillsExtended.Skills.Core;
+using SkillsExtended.Utils;
 using SPT.Reflection.Patching;
 using UnityEngine;
 
@@ -22,7 +23,7 @@ public class DoorSoundPatch : ModulePatch
     [PatchPrefix]
     private static bool Prefix(WorldInteractiveObject __instance, EDoorState state)
     {
-        if (!SkillsPlugin.SkillData.SilentOps.Enabled) return true;
+        if (!Plugin.SkillData.SilentOps.Enabled) return true;
         
         if (__instance.OpenSound.Length != 0 && state == EDoorState.Open)
         {

@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using HarmonyLib;
 using SkillsExtended.Helpers;
+using SkillsExtended.Utils;
 using SPT.Reflection.Patching;
 using UnityEngine;
 
@@ -16,7 +17,7 @@ public class AbstractSkillClassSummaryLevelPatch : ModulePatch
     [PatchPrefix]
     public static bool Prefix(AbstractSkillClass __instance, ref int __result)
     {
-        if (!SkillsPlugin.SkillData.FieldMedicine.Enabled)
+        if (!Plugin.SkillData.FieldMedicine.Enabled)
         {
             return true;
         }
@@ -32,10 +33,7 @@ public class AbstractSkillClassSummaryLevelPatch : ModulePatch
         var level = __instance.Level;
         var buff = __instance.Buff;
         __result = Mathf.CeilToInt(Mathf.Min(buff > 0 ? newSkillCap : 51, level + buff));
-
-#if DEBUG
-        Logger.LogDebug($"New Skill Cap: {__result}");
-#endif
+        
         return false;
     }
 }

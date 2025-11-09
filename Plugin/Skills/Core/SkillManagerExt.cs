@@ -1,11 +1,13 @@
 ﻿using EFT;
+using SkillsExtended.Helpers;
 using SkillsExtended.Models;
+using SkillsExtended.Utils;
 
 namespace SkillsExtended.Skills.Core;
 
-public class SkillManagerExt
+public class SkillManagerExt(SkillManager skillManager)
 {
-    private static SkillDataResponse SkillData => SkillsPlugin.SkillData;
+    private static SkillDataResponse SkillData => Plugin.SkillData;
 
     #region BUFFS
 
@@ -14,7 +16,7 @@ public class SkillManagerExt
         Id = EBuffId.FirstAidHealingSpeed,
     };
 
-    public readonly SkillManager.SkillBuffClass FirstAidResourceCostBuff = new()
+    public readonly NegativeSkillBuffInt FirstAidResourceCostBuff = new()
     {
         Id = EBuffId.FirstAidResourceCost,
     };
@@ -118,6 +120,11 @@ public class SkillManagerExt
         BuffType = SkillManager.EBuffType.Elite
     };
     
+    public readonly SkillManager.SkillBuffClass ScavGenerateAsCultistChance = new()
+    {
+        Id = EBuffId.ScavGenerateAsCultistChance,
+    };
+    
     public readonly SkillManager.SkillBuffClass BearRawPowerPraporTraderCostDec = new()
     {
         Id = EBuffId.BearRawPowerPraporTraderCostDec
@@ -172,8 +179,8 @@ public class SkillManagerExt
     {
         return
         [
-            FirstAidItemSpeedBuff.PerLevel(SkillData.FirstAid.ItemSpeedBonus),
-            FirstAidResourceCostBuff.PerLevel(SkillData.FirstAid.MedkitUsageReduction),
+            FirstAidItemSpeedBuff.PerLevel(SkillData.FirstAid.ItemSpeedBonus.NormalizeToPercentage()),
+            FirstAidResourceCostBuff.PerLevel(SkillData.FirstAid.MedkitUsageReduction.NormalizeToPercentage()),
             FirstAidMovementSpeedBuffElite
         ];
     }
@@ -182,9 +189,9 @@ public class SkillManagerExt
     {
         return
         [
-            FieldMedicineSkillCap.PerLevel(SkillData.FieldMedicine.SkillBonus),
-            FieldMedicineDurationBonus.PerLevel(SkillData.FieldMedicine.DurationBonus),
-            FieldMedicineChanceBonus.PerLevel(SkillData.FieldMedicine.PositiveEffectChanceBonus)
+            FieldMedicineSkillCap.PerLevel(SkillData.FieldMedicine.SkillBonus.NormalizeToPercentage()),
+            FieldMedicineDurationBonus.PerLevel(SkillData.FieldMedicine.DurationBonus.NormalizeToPercentage()),
+            FieldMedicineChanceBonus.PerLevel(SkillData.FieldMedicine.PositiveEffectChanceBonus.NormalizeToPercentage()),
         ];
     }
 
@@ -192,8 +199,8 @@ public class SkillManagerExt
     {
         return
         [
-            UsecArSystemsErgoBuff.PerLevel(SkillData.NatoWeapons.ErgoMod),
-            UsecArSystemsRecoilBuff.PerLevel(SkillData.NatoWeapons.RecoilReduction)
+            UsecArSystemsErgoBuff.PerLevel(SkillData.NatoWeapons.ErgoMod.NormalizeToPercentage()),
+            UsecArSystemsRecoilBuff.PerLevel(SkillData.NatoWeapons.RecoilReduction.NormalizeToPercentage())
         ];
     }
 
@@ -201,8 +208,8 @@ public class SkillManagerExt
     {
         return
         [
-            BearAkSystemsErgoBuff.PerLevel(SkillData.EasternWeapons.ErgoMod),
-            BearAkSystemsRecoilBuff.PerLevel(SkillData.EasternWeapons.RecoilReduction)
+            BearAkSystemsErgoBuff.PerLevel(SkillData.EasternWeapons.ErgoMod.NormalizeToPercentage()),
+            BearAkSystemsRecoilBuff.PerLevel(SkillData.EasternWeapons.RecoilReduction.NormalizeToPercentage())
         ];
     }
 
@@ -210,19 +217,28 @@ public class SkillManagerExt
     {
         return
         [
-            LockPickingTimeBuff.PerLevel(SkillData.LockPicking.PickStrengthPerLevel),
-            LockPickingForgiveness.PerLevel(SkillData.LockPicking.SweetSpotRangePerLevel),
+            LockPickingTimeBuff.PerLevel(SkillData.LockPicking.PickStrengthPerLevel.NormalizeToPercentage()),
+            LockPickingForgiveness.PerLevel(SkillData.LockPicking.SweetSpotRangePerLevel.NormalizeToPercentage()),
             LockPickingUseBuffElite
         ];
     }
 
+    public SkillManager.SkillBuffAbstractClass[] ProneMovementBuffs()
+    {
+        return
+        [
+            skillManager.ProneMovementSpeed.PerLevel(SkillData.ProneMovement.MovementSpeedInc.NormalizeToPercentage()),
+            skillManager.ProneMovementVolume.PerLevel(SkillData.ProneMovement.MovementVolumeDec.NormalizeToPercentage())
+        ];
+    }
+    
     public SkillManager.SkillBuffAbstractClass[] SilentOpsBuffs()
     {
         return
         [
-            SilentOpsIncMeleeSpeedBuff.PerLevel(SkillData.SilentOps.MeleeSpeedInc),
-            SilentOpsReduceVolumeBuff.PerLevel(SkillData.SilentOps.VolumeReduction),
-            SilentOpsSilencerCostRedBuff.PerLevel(SkillData.SilentOps.SilencerPriceReduction)
+            SilentOpsIncMeleeSpeedBuff.PerLevel(SkillData.SilentOps.MeleeSpeedInc.NormalizeToPercentage()),
+            SilentOpsReduceVolumeBuff.PerLevel(SkillData.SilentOps.VolumeReduction.NormalizeToPercentage()),
+            SilentOpsSilencerCostRedBuff.PerLevel(SkillData.SilentOps.SilencerPriceReduction.NormalizeToPercentage())
         ];
     }
 
@@ -230,8 +246,9 @@ public class SkillManagerExt
     {
         return
         [
-            ScavCooldownTimeReductionBuff.PerLevel(SkillData.ShadowConnections.ScavCooldownTimeReduction),
-            CultistCircleReturnTimeReductionBuff.PerLevel(SkillData.ShadowConnections.CultistCircleReturnTimeReduction),
+            ScavCooldownTimeReductionBuff.PerLevel(SkillData.ShadowConnections.ScavCooldownTimeReduction.NormalizeToPercentage()),
+            CultistCircleReturnTimeReductionBuff.PerLevel(SkillData.ShadowConnections.CultistCircleReturnTimeReduction.NormalizeToPercentage()),
+            ScavGenerateAsCultistChance.PerLevel(SkillData.ShadowConnections.ScavGenerateAsCultistChance.NormalizeToPercentage()),
             ScavCooldownTimeReductionEliteBuff
         ];
     }
@@ -240,9 +257,9 @@ public class SkillManagerExt
     {
         return
         [
-            BearRawPowerPraporTraderCostDec.PerLevel(SkillData.BearRawPower.PraporTradingCostDec),
-            BearRawPowerQuestRewardExpInc.PerLevel(SkillData.BearRawPower.QuestExpRewardInc),
-            BearRawPowerAllTraderCostDec.Elite(SkillData.BearRawPower.AllTraderCostDecrease)
+            BearRawPowerPraporTraderCostDec.PerLevel(SkillData.BearRawPower.PraporTradingCostDec.NormalizeToPercentage()),
+            BearRawPowerQuestRewardExpInc.PerLevel(SkillData.BearRawPower.QuestExpRewardInc.NormalizeToPercentage()),
+            BearRawPowerAllTraderCostDec.Elite(SkillData.BearRawPower.AllTraderCostDecrease.NormalizeToPercentage())
         ];
     }
     
@@ -250,23 +267,23 @@ public class SkillManagerExt
     {
         return
         [
-            UsecNegotiationsPeacekeeperTraderCostDec.PerLevel(SkillData.UsecNegotiations.PeacekeeperTradingCostDec),
-            UsecNegotiationRewardMoneyInc.PerLevel(SkillData.UsecNegotiations.QuestMoneyRewardInc),
-            UsecNegotiationsAllTraderCostDec.Elite(SkillData.UsecNegotiations.AllTraderCostDecrease)
+            UsecNegotiationsPeacekeeperTraderCostDec.PerLevel(SkillData.UsecNegotiations.PeacekeeperTradingCostDec.NormalizeToPercentage()),
+            UsecNegotiationRewardMoneyInc.PerLevel(SkillData.UsecNegotiations.QuestMoneyRewardInc.NormalizeToPercentage()),
+            UsecNegotiationsAllTraderCostDec.Elite(SkillData.UsecNegotiations.AllTraderCostDecrease.NormalizeToPercentage())
         ];
     }
 
-    public void AdjustStimulatorBuff(Buff buff)
+    public void AdjustStimulatorBuff(InjectorBuff injectorBuff)
     {
-        buff.Duration *= 1f + FieldMedicineDurationBonus;
-        if (!buff.Chance.ApproxEquals(1f))
+        injectorBuff.Duration *= 1f + FieldMedicineDurationBonus;
+        if (!injectorBuff.Chance.ApproxEquals(1f))
         {
-            buff.Chance *= 1f + FieldMedicineChanceBonus;
+            injectorBuff.Chance *= 1f + FieldMedicineChanceBonus;
         }
 
 #if DEBUG
-        SkillsPlugin.Log.LogDebug($"Buff {buff.BuffName} duration adjusted to {buff.Duration}");
-        SkillsPlugin.Log.LogDebug($"Buff {buff.BuffName} chance adjusted to {buff.Chance}");
+        Plugin.Log.LogDebug($"Buff {injectorBuff.BuffName} duration adjusted to {injectorBuff.Duration}");
+        Plugin.Log.LogDebug($"Buff {injectorBuff.BuffName} chance adjusted to {injectorBuff.Chance}");
 #endif
     }
 }

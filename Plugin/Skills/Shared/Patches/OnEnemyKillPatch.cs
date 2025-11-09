@@ -28,7 +28,7 @@ public class OnEnemyKillPatch : ModulePatch
         LocationStatisticsCollectorAbstractClass statisticsCollector
         )
     {
-        if (!SkillsPlugin.SkillData.SilentOps.Enabled)
+        if (!Plugin.SkillData.SilentOps.Enabled)
         {
             return;
         }
@@ -42,7 +42,7 @@ public class OnEnemyKillPatch : ModulePatch
         }
         
         var skillManagerExt = player.Skills.SkillManagerExtended;
-        var xp = SkillsPlugin.SkillData.SilentOps.XpPerAction;
+        var xp = Plugin.SkillData.SilentOps.XpPerAction;
 
         if (player.Skills.SilentOps.IsEliteLevel)
         {
@@ -76,7 +76,7 @@ public class OnEnemyKillPatch : ModulePatch
         WildSpawnType role
         )
     {
-        if (!SkillsPlugin.SkillData.ShadowConnections.Enabled)
+        if (!Plugin.SkillData.ShadowConnections.Enabled)
         {
             return;
         }
@@ -85,7 +85,7 @@ public class OnEnemyKillPatch : ModulePatch
         {
             var player = statisticsCollector.Player_0;
             var skillManagerExt = player.Skills.SkillManagerExtended;
-            var xp = SkillsPlugin.SkillData.ShadowConnections.XpPerAction;
+            var xp = Plugin.SkillData.ShadowConnections.XpPerAction;
             player.ExecuteSkill(() => skillManagerExt.ShadowConnectionsKillAction.Complete(xp));
             
 #if DEBUG
@@ -99,7 +99,7 @@ public class OnEnemyKillPatch : ModulePatch
         WildSpawnType role
         )
     {
-        var skillData = SkillsPlugin.SkillData.UsecNegotiations;
+        var skillData = Plugin.SkillData.UsecNegotiations;
         if (!skillData.Enabled)
         {
             return;
@@ -128,7 +128,7 @@ public class OnEnemyKillPatch : ModulePatch
         WildSpawnType role
         )
     {
-        var skillData = SkillsPlugin.SkillData.BearRawPower;
+        var skillData = Plugin.SkillData.BearRawPower;
         if (!skillData.Enabled)
         {
             return;

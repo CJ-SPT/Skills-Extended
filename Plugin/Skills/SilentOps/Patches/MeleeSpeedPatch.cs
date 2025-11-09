@@ -3,6 +3,7 @@ using EFT;
 using HarmonyLib;
 using SkillsExtended.Helpers;
 using SkillsExtended.Skills.Core;
+using SkillsExtended.Utils;
 using SPT.Reflection.Patching;
 
 namespace SkillsExtended.Skills.SilentOps.Patches;
@@ -17,7 +18,7 @@ public class MeleeSpeedPatch : ModulePatch
     [PatchPrefix]
     private static void Prefix(ref float speed)
     {
-        if (!SkillsPlugin.SkillData.SilentOps.Enabled)
+        if (!Plugin.SkillData.SilentOps.Enabled)
         {
             return;
         }

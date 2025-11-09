@@ -110,7 +110,7 @@ public static class WorldInteractionUtils
     
     private static bool IsDoorValidForLockPicking(WorldInteractiveObject interactiveObject)
     {
-        if (interactiveObject.DoorState != EDoorState.Locked || !interactiveObject.Operatable || !SkillsPlugin.Keys.KeyLocale.ContainsKey(interactiveObject.KeyId))
+        if (interactiveObject.DoorState != EDoorState.Locked || !interactiveObject.Operatable || !Plugin.Keys.KeyLocale.ContainsKey(interactiveObject.KeyId))
         {
             return false;
         }
@@ -122,7 +122,7 @@ public static class WorldInteractionUtils
     {
         if (interactiveObject.KeyId is null || interactiveObject.KeyId == string.Empty
             || !interactiveObject.Operatable || interactiveObject.DoorState != EDoorState.Locked
-            || !SkillsPlugin.Keys.KeyLocale.ContainsKey(interactiveObject.KeyId))
+            || !Plugin.Keys.KeyLocale.ContainsKey(interactiveObject.KeyId))
         {
             return false;
         }
@@ -196,7 +196,7 @@ public static class WorldInteractionUtils
 
         public void TryInspectLock()
         {
-            if (SkillsPlugin.Keys.KeyLocale.ContainsKey(interactiveObject.KeyId))
+            if (Plugin.Keys.KeyLocale.ContainsKey(interactiveObject.KeyId))
             {
                 InspectLockActionHandler handler = new()
                 {
@@ -208,7 +208,7 @@ public static class WorldInteractionUtils
                 return;
             }
             
-            SkillsPlugin.Log.LogError($"Missing locale data for door {interactiveObject.Id} and key {interactiveObject.KeyId}");
+            Plugin.Log.LogError($"Missing locale data for door {interactiveObject.Id} and key {interactiveObject.KeyId}");
         }
     }
 }

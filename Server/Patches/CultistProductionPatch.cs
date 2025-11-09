@@ -42,7 +42,7 @@ public class StartSacrificePatch : AbstractPatch
 public class CultistProductionPatch : AbstractPatch
 {
     private static readonly ConfigController ConfigController = ServiceLocator.ServiceProvider.GetRequiredService<ConfigController>();
-    private static readonly SkillUtils SkillUtils = ServiceLocator.ServiceProvider.GetRequiredService<SkillUtils>();
+    private static readonly SkillUtil SkillUtil = ServiceLocator.ServiceProvider.GetRequiredService<SkillUtil>();
     
     protected override MethodBase? GetTargetMethod()
     {
@@ -57,7 +57,7 @@ public class CultistProductionPatch : AbstractPatch
             throw new InvalidOperationException("[Skills Extended] Pmc ProfileId is empty when starting a cultist circle sacrifice.");
         }
 
-        if (!SkillUtils.TryGetSkillLevel(StartSacrificePatch.PmcProfileId, SkillTypes.Shadowconnections, out var skillLevel))
+        if (!SkillUtil.TryGetSkillLevel(StartSacrificePatch.PmcProfileId, SkillTypes.Shadowconnections, out var skillLevel))
         {
             return;
         }

@@ -13,7 +13,7 @@ namespace SkillsExtended.Patches;
 public class QuestMoneyRewardPatch : AbstractPatch
 {
     private static readonly ConfigController ConfigController = ServiceLocator.ServiceProvider.GetRequiredService<ConfigController>();
-    private static readonly SkillUtils SkillUtils = ServiceLocator.ServiceProvider.GetRequiredService<SkillUtils>();
+    private static readonly SkillUtil SkillUtil = ServiceLocator.ServiceProvider.GetRequiredService<SkillUtil>();
     
     protected override MethodBase? GetTargetMethod()
     {
@@ -34,7 +34,7 @@ public class QuestMoneyRewardPatch : AbstractPatch
             return;
         }
 
-        if (!SkillUtils.TryGetSkillLevel(pmcData.Id!.Value, SkillTypes.UsecNegotiations, out var level))
+        if (!SkillUtil.TryGetSkillLevel(pmcData.Id!.Value, SkillTypes.UsecNegotiations, out var level))
         {
             return;
         }

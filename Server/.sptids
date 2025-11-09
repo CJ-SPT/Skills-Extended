@@ -1,0 +1,20 @@
+{
+  "6622c28aed7e3bc72e301e22": {
+    "en": {
+      "Name": "Lockpick set",
+      "ShortName": "Lockpick",
+      "Type": "ITEM",
+      "Weight": 0.5,
+      "Description": "Used for picking locks"
+    }
+  },
+  "662400eb756ca8948fe64fe8": {
+      "en": {
+        "Name": "Flipper Zero",
+        "ShortName": "PDA",
+        "Type": "ITEM",
+        "Weight": 0.5,
+        "Description": "Used for keycard hacking"
+     }
+   }
+}

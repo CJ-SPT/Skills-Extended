@@ -8,24 +8,24 @@ namespace SkillsExtended.Helpers;
 
 public static class CursorSettings
 {
-    private static readonly MethodInfo setCursorMethod;
-    private static readonly MethodInfo setCursorLockMethod;
+    private static readonly MethodInfo SetCursorMethod;
+    private static readonly MethodInfo SetCursorLockMethod;
     
     static CursorSettings()
     {
         var cursorType = PatchConstants.EftTypes.Single(x => x.GetMethod("SetCursor") != null);
         
-        setCursorMethod = cursorType.GetMethod("SetCursor");
-        setCursorLockMethod = cursorType.GetMethod("SetCursorLockMode");
+        SetCursorMethod = cursorType.GetMethod("SetCursor");
+        SetCursorLockMethod = cursorType.GetMethod("SetCursorLockMode");
     }
 
     public static void SetCursor(ECursorType type)
     {
-        setCursorMethod.Invoke(null, new object[] { type });
+        SetCursorMethod.Invoke(null, new object[] { type });
     }
     
     public static void SetCursorLockMode(bool visible, FullScreenMode fullscreenMode)
     {
-        setCursorLockMethod.Invoke(null, new object[] { visible, fullscreenMode });
+        SetCursorLockMethod.Invoke(null, new object[] { visible, fullscreenMode });
     }
 }

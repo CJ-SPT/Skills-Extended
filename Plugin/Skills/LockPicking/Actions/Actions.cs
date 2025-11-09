@@ -25,7 +25,7 @@ public static class LockPickActions
         // Check if the locks broken
         if (LockPickingHelpers.DoorAttempts.TryGetValue(interactiveObject.Id, out var val))
         {
-            var maxAttempts = SkillsPlugin.SkillData.LockPicking.AttemptsBeforeBreak;
+            var maxAttempts = Plugin.SkillData.LockPicking.AttemptsBeforeBreak;
             if (val > maxAttempts)
             {
                 owner.DisplayPreloaderUiNotification("You cannot pick a broken lock...");
@@ -40,7 +40,7 @@ public static class LockPickActions
         var type = currentState.GetType();
         
         // Only allow lockpicking if the player is stationary
-        if (currentState is IdleStateClass || RE.OldMovementIdleState.IsAssignableFrom(type))
+        if (currentState is IdleStateClass || ReflectionHelper.OldMovementIdleState.IsAssignableFrom(type))
         {
             var level = LockPickingHelpers.GetLevelForDoor(owner.Player.Location, interactiveObject.Id);
 
