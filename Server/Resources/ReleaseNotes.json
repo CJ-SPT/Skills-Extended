@@ -5,7 +5,8 @@
     "ReleaseDate": "November 1, 2025",
     "IsLatest": true,
     "Features": [
-      "Adds a skill level changer to the config web page -- You do not need to save any changes it is applied automatically"
+      "Adds a skill level changer to the config web page -- You do not need to save any changes it is applied automatically",
+      "Shadow connections now provides a chance for your scav to be generated as a cultist at a rate of 0.5% per level"
     ],
     "Improvements": [
       "All config value percentages are now real numbers. Meaning if you want 1.5% per level, the value is 1.5%, not 0.015",
