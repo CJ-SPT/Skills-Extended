@@ -1,5 +1,6 @@
 ﻿using SkillsExtended.Patches;
 using SPTarkov.DI.Annotations;
+using SPTarkov.Reflection.Patching;
 using SPTarkov.Server.Core.DI;
 
 namespace SkillsExtended.Core;
@@ -9,12 +10,12 @@ public class PatchRegister : IOnLoad
 {
     public Task OnLoad()
     {
-        new CultistProductionPatch().Enable();
-        new StartSacrificePatch().Enable();
-        new ScavCooldownTimerPatch().Enable();
-        new QuestMoneyRewardPatch().Enable();
-        new QuestExperienceRewardPatch().Enable();
-        new GetTraderAssortPatch().Enable();
+        var manager = new PatchManager
+        {
+            PatcherName = "SkillsExtended",
+            AutoPatch = true
+        };
+        manager.EnablePatches();
         
         return Task.CompletedTask;
     }

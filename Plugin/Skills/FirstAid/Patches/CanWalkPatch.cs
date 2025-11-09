@@ -1,8 +1,6 @@
 ﻿using System.Reflection;
 using EFT;
-using EFT.ObstacleCollision;
 using HarmonyLib;
-using SkillsExtended.Skills.Core;
 using SkillsExtended.Skills.LockPicking;
 using SPT.Reflection.Patching;
 

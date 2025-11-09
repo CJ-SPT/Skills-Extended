@@ -21,17 +21,21 @@ public static class SkillsExtendedPatcher
     
     public static void Patch(ref AssemblyDefinition assembly)
     {
+        
+#if !DEBUG
         if (!File.Exists(PluginPath))
         {
+
             var result = MessageBoxHelper.Show(
                 @"Could not find BepInEx\plugins\SkillsExtended\SkillsExtended.dll in the plugins folder. Mod is not installed correctly. Exiting.", 
                 "Skills Extended error.", 
                 MessageBoxHelper.MessageBoxType.OK);
-            
+
+
             Environment.Exit(1);
             return;
         }
-        
+#endif
         try
         {
             _skillManager = assembly.MainModule.GetType("EFT.SkillManager");
