@@ -15,7 +15,8 @@
     ],
     "BugFixes": [
       "Fixes a bug where the original stored value before modification for Light bleeds and Heavy bleeds was set to the fracture cost",
-      "Fixes a bug where a benign error message stating could not find skill X in profile would appear in the server"
+      "Fixes a bug where a benign error message stating could not find skill X in profile would appear in the server",
+      "Fixes a bug where the your scav would be ready as soon as you would leave raid"
     ]
   },
   {
