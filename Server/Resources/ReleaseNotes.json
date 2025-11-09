@@ -2,7 +2,7 @@
   {
     "Version": "2.1.1",
     "CodeName": "Rapport",
-    "ReleaseDate": "November 1, 2025",
+    "ReleaseDate": "November 9, 2025",
     "IsLatest": true,
     "Features": [
       "Adds a skill level changer to the config web page -- You do not need to save any changes it is applied automatically",
@@ -16,7 +16,8 @@
     "BugFixes": [
       "Fixes a bug where the original stored value before modification for Light bleeds and Heavy bleeds was set to the fracture cost",
       "Fixes a bug where a benign error message stating could not find skill X in profile would appear in the server",
-      "Fixes a bug where the your scav would be ready as soon as you would leave raid"
+      "Fixes a bug where the your scav would be ready as soon as you would leave raid",
+      "Fixes a bug where 0 use lock-picks could be picked up again and used below the threshold"
     ]
   },
   {
