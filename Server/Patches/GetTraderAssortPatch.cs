@@ -16,7 +16,7 @@ namespace SkillsExtended.Patches;
 public class GetTraderAssortPatch : AbstractPatch
 {
     private static readonly ConfigController ConfigController = ServiceLocator.ServiceProvider.GetRequiredService<ConfigController>();
-    private static readonly SkillUtils SkillUtils = ServiceLocator.ServiceProvider.GetRequiredService<SkillUtils>();
+    private static readonly SkillUtil SkillUtil = ServiceLocator.ServiceProvider.GetRequiredService<SkillUtil>();
     private static readonly ProfileHelper ProfileHelper = ServiceLocator.ServiceProvider.GetRequiredService<ProfileHelper>();
     private static readonly PaymentHelper PaymentHelper = ServiceLocator.ServiceProvider.GetRequiredService<PaymentHelper>();
     
@@ -38,8 +38,8 @@ public class GetTraderAssortPatch : AbstractPatch
             return;
         }
         
-        SkillUtils.TryGetSkillLevel(sessionId, SkillTypes.UsecNegotiations, out var usecLevel);
-        SkillUtils.TryGetSkillLevel(sessionId, SkillTypes.BearRawpower, out var bearLevel);
+        SkillUtil.TryGetSkillLevel(sessionId, SkillTypes.UsecNegotiations, out var usecLevel);
+        SkillUtil.TryGetSkillLevel(sessionId, SkillTypes.BearRawpower, out var bearLevel);
         
         foreach (var assort in __result.BarterScheme)
         {

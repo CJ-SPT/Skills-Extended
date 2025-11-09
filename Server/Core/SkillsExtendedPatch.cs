@@ -1,12 +1,12 @@
-﻿using SkillsExtended.Patches;
-using SPTarkov.DI.Annotations;
+﻿using SPTarkov.DI.Annotations;
 using SPTarkov.Reflection.Patching;
 using SPTarkov.Server.Core.DI;
+using SPTarkov.Server.Core.Models.Utils;
 
 namespace SkillsExtended.Core;
 
 [Injectable(TypePriority = OnLoadOrder.PreSptModLoader)]
-public class PatchRegister : IOnLoad
+public class SkillsExtendedPatch(ISptLogger<SkillsExtendedPatch> logger) : IOnLoad
 {
     public Task OnLoad()
     {

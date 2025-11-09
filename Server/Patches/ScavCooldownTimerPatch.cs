@@ -14,7 +14,7 @@ namespace SkillsExtended.Patches;
 public class ScavCooldownTimerPatch : AbstractPatch
 {
     private static readonly ConfigController ConfigController = ServiceLocator.ServiceProvider.GetRequiredService<ConfigController>();
-    private static readonly SkillUtils SkillUtils = ServiceLocator.ServiceProvider.GetRequiredService<SkillUtils>();
+    private static readonly SkillUtil SkillUtil = ServiceLocator.ServiceProvider.GetRequiredService<SkillUtil>();
     private static readonly TimeUtil TimeUtil = ServiceLocator.ServiceProvider.GetRequiredService<TimeUtil>();
     
     protected override MethodBase? GetTargetMethod()
@@ -25,7 +25,7 @@ public class ScavCooldownTimerPatch : AbstractPatch
     [PatchPostfix]
     public static void Postfix(PmcData scavData, PmcData pmcData)
     {
-        if (SkillUtils.IsEliteLevel(pmcData.Id!.Value, SkillTypes.Shadowconnections))
+        if (SkillUtil.IsEliteLevel(pmcData.Id!.Value, SkillTypes.Shadowconnections))
         {
 #if DEBUG
             Console.WriteLine("Elite Shadow Connections, no scav cooldown.");
@@ -35,7 +35,7 @@ public class ScavCooldownTimerPatch : AbstractPatch
             return;
         }
         
-        if (!SkillUtils.TryGetSkillLevel(pmcData.Id.Value, SkillTypes.Shadowconnections, out var skillLevel))
+        if (!SkillUtil.TryGetSkillLevel(pmcData.Id.Value, SkillTypes.Shadowconnections, out var skillLevel))
         {
             return;
         }

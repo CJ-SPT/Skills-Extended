@@ -14,7 +14,7 @@ namespace SkillsExtended.Patches;
 public class QuestExperienceRewardPatch : AbstractPatch
 {
     private static readonly ConfigController ConfigController = ServiceLocator.ServiceProvider.GetRequiredService<ConfigController>();
-    private static readonly SkillUtils SkillUtils = ServiceLocator.ServiceProvider.GetRequiredService<SkillUtils>();
+    private static readonly SkillUtil SkillUtil = ServiceLocator.ServiceProvider.GetRequiredService<SkillUtil>();
     private static readonly ProfileHelper ProfileHelper = ServiceLocator.ServiceProvider.GetRequiredService<ProfileHelper>();
     
     protected override MethodBase? GetTargetMethod()
@@ -63,7 +63,7 @@ public class QuestExperienceRewardPatch : AbstractPatch
         var config = ConfigController.SkillsConfig.BearRawPower;
         var sessionId = fullProfile.ProfileInfo?.ProfileId;
 
-        if (!SkillUtils.TryGetSkillLevel(sessionId!.Value, SkillTypes.BearRawpower, out var skillLevel))
+        if (!SkillUtil.TryGetSkillLevel(sessionId!.Value, SkillTypes.BearRawpower, out var skillLevel))
         {
             return;
         }

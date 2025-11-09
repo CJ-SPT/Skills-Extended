@@ -7,8 +7,8 @@ using SPTarkov.Server.Core.Models.Utils;
 namespace SkillsExtended.Utils;
 
 [Injectable]
-public class SkillUtils(
-    ISptLogger<SkillUtils> logger,
+public class SkillUtil(
+    ISptLogger<SkillUtil> logger,
     ProfileHelper profileHelper
     )
 {
