@@ -5,6 +5,7 @@ using EFT;
 using EFT.HealthSystem;
 using EFT.Interactive;
 using HarmonyLib;
+using JetBrains.Annotations;
 using SkillsExtended.Helpers;
 using SkillsExtended.Models;
 using SkillsExtended.Skills.Core;
@@ -24,7 +25,7 @@ internal class OnGameStartedPatch : ModulePatch
     
     private static WeaponSkillData NatoData => Plugin.SkillData.NatoWeapons;
     private static WeaponSkillData EasternData => Plugin.SkillData.EasternWeapons;
-    private static Player Player => GameUtils.GetPlayer();
+    [CanBeNull] private static Player Player;
     
     protected override MethodBase GetTargetMethod()
     {
@@ -40,13 +41,21 @@ internal class OnGameStartedPatch : ModulePatch
     [PatchPostfix]
     private static void Postfix(GameWorld __instance)
     {
+        // Required to not break the headless, we don't need any of this there.
+        if (!__instance.MainPlayer)
+        {
+            return;
+        }
+        
+        Player = __instance.MainPlayer;
+        
 #if DEBUG
-        Plugin.Log.LogDebug($"Player map id: {__instance.MainPlayer.Location}");
+        Plugin.Log.LogDebug($"Player map id: {Player.Location}");
 #endif
         
         LockPickingHelpers.InitializeLockpickingForLocation(__instance.LocationId);
         
-        __instance.MainPlayer.ActiveHealthController.EffectStartedEvent += ApplyMedicalXp;
+        Player.ActiveHealthController.EffectStartedEvent += ApplyMedicalXp;
         
         if (Plugin.SkillData.NatoWeapons.Enabled)
         {
@@ -67,11 +76,11 @@ internal class OnGameStartedPatch : ModulePatch
     
     private static void ApplyMedicalXp(IEffect effect)
     {
-        var skillMgrExt = Player.Skills.SkillManagerExtended;
+        var skillMgrExt = Player!.Skills.SkillManagerExtended;
         
         if (Plugin.SkillData.FieldMedicine.Enabled && _stimType.IsInstanceOfType(effect) || _painKillerType.IsInstanceOfType(effect))
         {
-            if (GameUtils.GetPlayer()!.Skills.FieldMedicine.IsEliteLevel)
+            if (Player!.Skills.FieldMedicine.IsEliteLevel)
             {
                 return;
             }
@@ -105,7 +114,7 @@ internal class OnGameStartedPatch : ModulePatch
 
     private static void ApplyNatoRifleXp(MasterSkillClass skillClass)
     {
-        if (GameUtils.GetSkillManager()!.UsecArsystems.IsEliteLevel)
+        if (Player!.Skills!.UsecArsystems.IsEliteLevel)
         {
             return;
         }
@@ -135,7 +144,7 @@ internal class OnGameStartedPatch : ModulePatch
 
     private static void ApplyEasternRifleXp(MasterSkillClass skillClass)
     {
-        if (GameUtils.GetSkillManager()!.BearAksystems.IsEliteLevel)
+        if (Player!.Skills!.BearAksystems.IsEliteLevel)
         {
             return;
         }
