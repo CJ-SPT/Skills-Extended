@@ -235,6 +235,7 @@
                 "Lootable_00063": 3
             },
             "Customs": {
+                "door_custom_Abandoned_Plant_00001": 2,
                 "door_custom_Tamozhnya_00000": 3,
                 "door_custom_TrailerPark_00000": 2,
                 "door_custom_TrailerPark_00001": 2,
@@ -542,6 +543,8 @@
                 "trunk_City_NW_01_courtyard_00000": 1,
                 "door_City_NE_02_TD_Klimova_Beluga_indoor_00007": 1,
                 "door_City_NE_02_TD_Klimova_Beluga_indoor_00008": 1,
+                "door_City_NW_01_Cardinal_indoor_00013": 2,
+                "door_City_NW_01_Cardinal_indoor_00014": 2,
                 "trunk_City_Roads_Primorskiy_00035": 1,
                 "trunk_City_Roads_Primorskiy_00036": 1,
                 "trunk_City_SE_01_DesignStuff_00000": 1,

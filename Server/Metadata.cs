@@ -13,8 +13,8 @@ public record SeModMetadata : AbstractModMetadata, IModWebMetadata
     public override string Name { get; init; } = "Skills Extended";
     public override string Author { get; init; } = "Cj";
     public override List<string>? Contributors { get; init; } = [];
-    public override Version Version { get; init; } = new("2.1.1");
-    public override Range SptVersion { get; init; } = new("~4.0");
+    public override Version Version { get; init; } = new("2.1.2");
+    public override Range SptVersion { get; init; } = new("~4.0.2");
     public override List<string>? Incompatibilities { get; init; }
     public override Dictionary<string, Range>? ModDependencies { get; init; }
     public override string? Url { get; init; } = "https://github.com/CJ-SPT/Skills-Extended";

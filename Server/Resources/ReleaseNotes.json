@@ -1,5 +1,17 @@
 [
   {
+    "Version": "2.1.2",
+    "CodeName": "Rapport",
+    "ReleaseDate": "December 9, 2025",
+    "IsLatest": true,
+    "Features": [],
+    "Improvements": [],
+    "BugFixes": [
+      "Fixes 2 missing door entries on streets",
+      "Fixes a missing door entry on customs"
+    ]
+  },
+  {
     "Version": "2.1.1",
     "CodeName": "Rapport",
     "ReleaseDate": "November 9, 2025",

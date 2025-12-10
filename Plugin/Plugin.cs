@@ -16,7 +16,7 @@ using UnityEngine;
 
 namespace SkillsExtended;
 
-[BepInPlugin("com.cj.SkillsExtended", "Skills Extended", SkillsExtendedInfo.Version)]
+[BepInPlugin("com.cj.SkillsExtended", "Skills Extended", SkillsExtendedInfo.VERSION)]
 
 // Because I need the idle state type from it for lockpicking
 [BepInDependency("com.boogle.oldtarkovmovement", BepInDependency.DependencyFlags.SoftDependency)]
@@ -110,13 +110,13 @@ public class Plugin : BaseUnityPlugin
         public static bool CheckEftVersion(ManualLogSource logger, ConfigFile config = null)
         {
             var currentVersion = FileVersionInfo.GetVersionInfo(BepInEx.Paths.ExecutablePath).FilePrivatePart;
-            if (currentVersion == SkillsExtendedInfo.TarkovVersion)
+            if (currentVersion == SkillsExtendedInfo.TARKOV_VERSION)
             {
                 return true;
             }
             
             var errorMessage =
-                $"ERROR: This version of Skills Extended was built for Tarkov {SkillsExtendedInfo.TarkovVersion}, but you are running {currentVersion}. Please download the correct plugin version.";
+                $"ERROR: This version of Skills Extended was built for Tarkov {SkillsExtendedInfo.TARKOV_VERSION}, but you are running {currentVersion}. Please download the correct plugin version.";
             logger.LogError(errorMessage);
             Chainloader.DependencyErrors.Add(errorMessage);
 
