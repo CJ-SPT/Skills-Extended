@@ -27,7 +27,7 @@
     "Version": "2.1.1",
     "CodeName": "Rapport",
     "ReleaseDate": "November 9, 2025",
-    "IsLatest": true,
+    "IsLatest": false,
     "Features": [
       "Adds a skill level changer to the config web page -- You do not need to save any changes it is applied automatically",
       "Shadow connections now provides a chance for your scav to be generated as a cultist at a rate of 0.5% per level"
