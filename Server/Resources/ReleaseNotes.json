@@ -4,6 +4,7 @@
     "CodeName": "Broader Horizons",
     "ReleaseDate": "December 11, 2025",
     "IsLatest": true,
+    "IsBeta": true,
     "Features": [
       "Automatic Fika detection -- This will allow for features to be disabled by me to ensure fika compatibility",
       "Automatic Fika detection -- Lockpicking will be automatically disabled if fika is present. Lock-picks will be left in-game as to not corrupt profiles",

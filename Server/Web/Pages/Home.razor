@@ -40,12 +40,17 @@
                                 <div class="d-flex align-center gap-2">
                                     <MudText Typo="Typo.h6">Version @release.Version</MudText>
                                     
+                                    @if (release.IsBeta)
+                                    {
+                                        <MudChip T="string" Size="Size.Small" Color="Color.Error">Beta</MudChip>
+                                    }
+                                    
                                     @if (!string.IsNullOrEmpty(release.CodeName))
                                     {
                                         <MudChip T="string" Size="Size.Small" Color="Color.Tertiary">Codename: @release.CodeName</MudChip>
                                     }
                                     
-                                    @if (release.IsLatest)
+                                    @if (release is { IsLatest: true, IsBeta: false })
                                     {
                                         <MudChip T="string" Size="Size.Small" Color="Color.Success">Latest</MudChip>
                                     }
@@ -151,6 +156,7 @@
             CodeName = r.CodeName,
             ReleaseDate = r.ReleaseDate,
             IsLatest = r.IsLatest,
+            IsBeta = r.IsBeta,
             Features = _selectedFilter == "feature" ? r.Features : [],
             Improvements = _selectedFilter == "improvement" ? r.Improvements : [],
             BugFixes = _selectedFilter == "bugfix" ? r.BugFixes : []
