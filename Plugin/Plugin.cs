@@ -60,7 +60,7 @@ public class Plugin : BaseUnityPlugin
         _patchManager.EnablePatches();
 
 #if DEBUG
-        Logger.LogWarning($"PRE RELEASE BUILD OF `{SkillsExtendedInfo.Version}` - NO SUPPORT");
+        Logger.LogWarning($"PRE RELEASE BUILD OF `{SkillsExtendedInfo.VERSION}` - NO SUPPORT");
         Logger.LogWarning("DEBUG BUILD FEATURES ENABLED");
         ConsoleCommands.RegisterCommands();
 #endif
