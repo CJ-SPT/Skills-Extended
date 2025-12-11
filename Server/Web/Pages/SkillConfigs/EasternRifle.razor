@@ -1,4 +1,5 @@
 ﻿@page "/skills-extended/eastern-weapons"
+@using SkillsExtended.Config.Skills
 @layout BaseLayout;
 
 @inject ConfigController ConfigController
@@ -119,7 +120,7 @@
 
 @code
 {
-    private WeaponConfig Config => ConfigController.SkillsConfig.EasternWeapons;
+    private WeaponSkillData Config => ConfigController.SkillsConfig.EasternWeapons;
 
     bool Enabled
     {

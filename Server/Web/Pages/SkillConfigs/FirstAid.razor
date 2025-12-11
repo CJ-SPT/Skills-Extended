@@ -1,4 +1,5 @@
 ﻿@page "/skills-extended/first-aid"
+@using SkillsExtended.Config.Skills
 @layout BaseLayout;
 
 @inject ConfigController ConfigController
@@ -51,7 +52,7 @@
 
 @code {
 
-    FirstAidConfig Data => ConfigController.SkillsConfig.FirstAid;
+    FirstAidData Data => ConfigController.SkillsConfig.FirstAid;
     
     bool Enabled
     {
@@ -73,7 +74,7 @@
     
     decimal SpeedBonus
     {
-        get => (decimal)Data.MedkitSpeedBonus;
-        set => Data.MedkitSpeedBonus = (float)value;
+        get => (decimal)Data.ItemSpeedBonus;
+        set => Data.ItemSpeedBonus = (float)value;
     }
 }

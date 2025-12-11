@@ -1,4 +1,5 @@
-﻿using SkillsExtended.Models;
+﻿using SkillsExtended.Config;
+using SkillsExtended.Helpers;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Models.Utils;
@@ -9,8 +10,7 @@ namespace SkillsExtended.Core;
 [Injectable(InjectionType.Singleton, null, OnLoadOrder.PreSptModLoader)]
 public class ConfigController(
     ISptLogger<ConfigController> logger,
-    FileUtil fileUtil,
-    JsonUtil jsonUtil
+    FileUtil fileUtil
     ) : IOnLoad
 {
     public SeModMetadata SeModMetadata { get; } = new();
@@ -26,7 +26,7 @@ public class ConfigController(
     {
         var path = Path.Combine(SeModMetadata.ResourcesDirectory, "Configs", "SkillsConfig.json");
         
-        var text = jsonUtil.Serialize(SkillsConfig, true);
+        var text = DataContractSerializer.Serialize(SkillsConfig);
         await fileUtil.WriteFileAsync(path, text!);
     }
     
@@ -35,6 +35,6 @@ public class ConfigController(
         var path = Path.Combine(SeModMetadata.ResourcesDirectory, "Configs", "SkillsConfig.json");
         
         var text = await fileUtil.ReadFileAsync(path);
-        SkillsConfig = jsonUtil.Deserialize<SkillsConfig>(text)!;
+        SkillsConfig = DataContractSerializer.Deserialize<SkillsConfig>(text)!;
     }
 }

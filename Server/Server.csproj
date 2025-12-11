@@ -16,6 +16,10 @@
       <PackageReference Include="SPTarkov.Server.Web" Version="4.0.2" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Common\Common.csproj" />
+    </ItemGroup>
+
     <PropertyGroup>
         <TarkovDir Condition=" '$(TarkovDir)' == '' ">$(SolutionDir)..\..\</TarkovDir>
         <SptModDir>$(TarkovDir)SPT\user\mods\</SptModDir>
@@ -24,6 +28,7 @@
     <Target Name="CopyToServer" AfterTargets="PostBuildEvent">
         <ItemGroup>
             <OutputDLL Include="$(ProjectDir)$(OutDir)$(TargetName).dll" />
+            <CommonDLL Include="$(ProjectDir)$(OutDir)SkillsExtendedCommon.dll" />
             <Resources Include="$(ProjectDir)Resources\**\*.*" />
             <WebAssets Include="$(ProjectDir)wwwroot\**\*.*" />
             <Bundles Include="$(ProjectDir)Bundles\**\*.*" />
@@ -32,10 +37,10 @@
         
         <!-- Copies the output dll -->
         <Copy 
-                SourceFiles="@(OutputDLL);" 
+                SourceFiles="@(OutputDLL);@(CommonDLL);" 
                 DestinationFolder="$(SptModDir)\SkillsExtended" />
         
-        <!-- Copies the output dll -->
+        <!-- Copies the resources -->
         <Copy
                 SourceFiles="@(Resources);"
                 DestinationFolder="$(SptModDir)\SkillsExtended\Resources\%(RecursiveDir)"

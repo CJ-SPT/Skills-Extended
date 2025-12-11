@@ -1,4 +1,5 @@
 ﻿@page "/skills-extended/prone-movement"
+@using SkillsExtended.Config.Skills
 @layout BaseLayout;
 
 @inject ConfigController ConfigController
@@ -51,7 +52,7 @@
 
 @code
 {
-    ProneMovementConfig Data => ConfigController.SkillsConfig.ProneMovement;
+    ProneMovementData Data => ConfigController.SkillsConfig.ProneMovement;
     
     bool Enabled
     {

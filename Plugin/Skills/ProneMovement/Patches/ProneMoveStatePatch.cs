@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using EFT;
 using HarmonyLib;
-using SkillsExtended.Models;
+using SkillsExtended.Config.Skills;
 using SPT.Reflection.Patching;
 using UnityEngine;
 

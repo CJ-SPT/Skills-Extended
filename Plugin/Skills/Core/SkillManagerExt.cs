@@ -1,13 +1,12 @@
 ﻿using EFT;
-using SkillsExtended.Helpers;
-using SkillsExtended.Models;
+using SkillsExtended.Config;
 using SkillsExtended.Utils;
 
 namespace SkillsExtended.Skills.Core;
 
 public class SkillManagerExt(SkillManager skillManager)
 {
-    private static SkillDataResponse SkillData => Plugin.SkillData;
+    private static SkillsConfig SkillData => Plugin.SkillData;
 
     #region BUFFS
 
@@ -246,7 +245,7 @@ public class SkillManagerExt(SkillManager skillManager)
     {
         return
         [
-            ScavCooldownTimeReductionBuff.PerLevel(SkillData.ShadowConnections.ScavCooldownTimeReduction.NormalizeToPercentage()),
+            ScavCooldownTimeReductionBuff.PerLevel(SkillData.ShadowConnections.ScavCooldownTimeDec.NormalizeToPercentage()),
             CultistCircleReturnTimeReductionBuff.PerLevel(SkillData.ShadowConnections.CultistCircleReturnTimeReduction.NormalizeToPercentage()),
             ScavGenerateAsCultistChance.PerLevel(SkillData.ShadowConnections.ScavGenerateAsCultistChance.NormalizeToPercentage()),
             ScavCooldownTimeReductionEliteBuff

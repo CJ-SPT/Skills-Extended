@@ -25,12 +25,12 @@ public class Plugin : BaseUnityPlugin
     /// <summary>
     ///     Key Information
     /// </summary>
-    public static KeysResponse Keys { get; private set; }
+    public static KeysData Keys { get; private set; }
 
     /// <summary>
     ///     Skills config
     /// </summary>
-    public static SkillDataResponse SkillData { get; private set; }
+    public static SkillsConfig SkillData { get; private set; }
 
     /// <summary>
     ///     Logger
@@ -68,8 +68,8 @@ public class Plugin : BaseUnityPlugin
 
     private void Start()
     {
-        Keys = Get<KeysResponse>("/skillsExtended/GetKeys");
-        SkillData = Get<SkillDataResponse>("/skillsExtended/GetSkillsConfig");
+        Keys = Get<KeysData>("/skillsExtended/GetKeys");
+        SkillData = Get<SkillsConfig>("/skillsExtended/GetSkillsConfig");
 
         LockPickingHelpers.LoadMiniGame();
     }
@@ -81,7 +81,7 @@ public class Plugin : BaseUnityPlugin
     /// <typeparam name="T">Type of response</typeparam>
     /// <returns>Response</returns>
     /// <exception cref="InvalidOperationException"></exception>
-    private static T Get<T>(string url)
+    private static T Get<T>(string url) where T : class
     {
         var req = RequestHandler.GetJson(url);
 
@@ -90,7 +90,7 @@ public class Plugin : BaseUnityPlugin
             throw new InvalidOperationException("The response from the server is null or empty.");
         }
 
-        return JsonConvert.DeserializeObject<T>(req);
+        return DataContractSerializer.Deserialize<T>(req);
     }
 
     private static void DetectSoftDependencies()

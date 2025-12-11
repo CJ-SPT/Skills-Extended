@@ -1,11 +1,14 @@
 [
   {
-    "Version": "2.1.2",
+    "Version": "2.2.0",
     "CodeName": "Rapport",
     "ReleaseDate": "December 9, 2025",
     "IsLatest": true,
     "Features": [],
-    "Improvements": [],
+    "Improvements": [
+      "New common dll for this mod to share between the client and server, this is distributed with the mod.",
+      "Internal code change: we now use data contracts to move data"
+    ],
     "BugFixes": [
       "Fixes 2 missing door entries on streets",
       "Fixes a missing door entry on customs",

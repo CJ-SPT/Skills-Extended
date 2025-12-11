@@ -66,7 +66,7 @@ public class CultistProductionPatch : AbstractPatch
         Console.WriteLine($"Cultist circle original time: `{__result.Time}` seconds");
 #endif
         
-        var timeBonusPerLevel = ConfigController.SkillsConfig.ShadowConnections.CultistCircleReturnTimeDec;
+        var timeBonusPerLevel = ConfigController.SkillsConfig.ShadowConnections.CultistCircleReturnTimeReduction;
         
         var buff = Math.Clamp(1f - timeBonusPerLevel * skillLevel, 0f, 1f);
 
