@@ -1,4 +1,7 @@
-﻿<MudNavMenu>
+﻿
+@inject ConfigController ConfigController
+
+<MudNavMenu>
 
     <MudNavLink Href="/skills-extended" Match="NavLinkMatch.All">
         <MudStack Row="true">
@@ -41,14 +44,17 @@
             <MudText>Eastern Weapon Proficiency</MudText>
         </MudStack>
     </MudNavLink>
-
-    <MudNavLink Href="/skills-extended/lock-picking" Match="NavLinkMatch.All">
-        <MudStack Row="true">
-            <MudImage Src="/SkillsExtendedServerMod/icons/Skill_Lockpicking.png" Width="32" Height="32"/>
-            <MudText>Lock Picking</MudText>
-        </MudStack>
-    </MudNavLink>
-
+    
+    @if (!ConfigController.IsFikaPresent)
+    {
+        <MudNavLink Href="/skills-extended/lock-picking" Match="NavLinkMatch.All">
+            <MudStack Row="true">
+                <MudImage Src="/SkillsExtendedServerMod/icons/Skill_Lockpicking.png" Width="32" Height="32"/>
+                <MudText>Lock Picking</MudText>
+            </MudStack>
+        </MudNavLink>
+    }
+    
     <MudNavLink Href="/skills-extended/prone-movement" Match="NavLinkMatch.All">
         <MudStack Row="true">
             <MudImage Src="/SkillsExtendedServerMod/icons/Skill_ProneMovement.png" Width="32" Height="32"/>

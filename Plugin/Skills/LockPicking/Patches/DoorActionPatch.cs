@@ -14,6 +14,11 @@ internal class DoorActionPatch : ModulePatch
     [PatchPostfix]
     private static void Postfix(ref ActionsReturnClass __result, GamePlayerOwner owner, WorldInteractiveObject worldInteractiveObject)
     {
+        if (SkillsExtendedInfo.IsFikaPresent)
+        {
+            return;
+        }
+        
         if (WorldInteractionUtils.IsBotInteraction(owner)
             || !Plugin.SkillData.LockPicking.Enabled
             || Singleton<GameWorld>.Instance.MainPlayer.Side == EPlayerSide.Savage)

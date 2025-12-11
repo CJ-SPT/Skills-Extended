@@ -23,9 +23,3 @@ public record SeModMetadata : AbstractModMetadata, IModWebMetadata
     
     public static readonly string ResourcesDirectory = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!, "Resources");
 }
-
-/// <summary>
-///     Dummy class used for logging injections inside of razor components.
-/// </summary>
-[Injectable]
-public class SkillsExtendedWebLogger;

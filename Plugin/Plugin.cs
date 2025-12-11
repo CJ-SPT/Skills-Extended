@@ -20,6 +20,8 @@ namespace SkillsExtended;
 
 // Because I need the idle state type from it for lockpicking
 [BepInDependency("com.boogle.oldtarkovmovement", BepInDependency.DependencyFlags.SoftDependency)]
+[BepInDependency("com.fika.core", BepInDependency.DependencyFlags.SoftDependency)]
+[BepInDependency("com.fika.headless", BepInDependency.DependencyFlags.SoftDependency)]
 public class Plugin : BaseUnityPlugin
 {
     /// <summary>
@@ -53,7 +55,7 @@ public class Plugin : BaseUnityPlugin
 
         Log = Logger;
         ConfigManager.RegisterConfig(Config);
-
+        
         _patchManager = new PatchManager(this, true);
         _patchManager.EnablePatches();
 

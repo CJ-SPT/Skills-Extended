@@ -1,18 +1,22 @@
 [
   {
     "Version": "2.2.0",
-    "CodeName": "Rapport",
-    "ReleaseDate": "December 9, 2025",
+    "CodeName": "Universal",
+    "ReleaseDate": "December 11, 2025",
     "IsLatest": true,
-    "Features": [],
+    "Features": [
+      "Automatic Fika detection -- This will allow for features to be disabled by me to ensure fika compatibility",
+      "Automatic Fika detection -- Lockpicking will be automatically disabled if fika is present. Lock-picks will be left in-game as to not corrupt profiles"
+    ],
     "Improvements": [
-      "New common dll for this mod to share between the client and server, this is distributed with the mod.",
-      "Internal code change: we now use data contracts to move data -- This requires a config wipe, sorry :("
+      "New common dll for this mod to share between the client and server, this is distributed with the mod. This is required so I can easily share common interfaces.",
+      "Internal code change: we now use data contracts to move data -- This requires a config wipe, sorry :(",
+      "Internal code change: Each Physical skill is now its own class so their functionality can be expanded in the future"
     ],
     "BugFixes": [
       "Fixes 2 missing door entries on streets",
       "Fixes a missing door entry on customs",
-      "Fixes \"Object Reference not set to an instance of an object\" on raid start on the fika headless -- This mod should now kind of work on fika, I guess? Door attempts and locks breaking will not be synced."
+      "Fixes \"Object Reference not set to an instance of an object\" on raid start on the fika headless"
     ]
   },
   {
