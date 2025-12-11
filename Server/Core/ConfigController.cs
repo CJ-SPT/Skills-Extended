@@ -30,7 +30,8 @@ public class ConfigController(
 
         if (IsFikaPresent)
         {
-            logger.Warning("[Skills Extended] Fika has been detected -- Disabling Lock-picking");
+            logger.Warning("[Skills Extended] Fika has been detected -- Compatibility is experimental. Use at your own risk.");
+            logger.Warning("[Skills Extended] Lockpicking has been disabled.");
         }
     }
 
