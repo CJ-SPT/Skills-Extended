@@ -599,8 +599,17 @@
         "BuffRestorationElite": 75
     },
     "Strength": {
-      "Enabled": true,
-      "ColliderSpeedBuff": 1
+      "Enabled": true, 
+      "AlwaysLevelStrength": false,
+      "BuffJumpHeightIncMax": 20,
+      "BuffLiftWeightIncMax": 30,
+      "BuffMeleePowerIncMax": 30,
+      "BuffSprintSpeedIncMax": 20,
+      "BuffThrowDistanceIncMax": 20,
+      "BuffAimFatigueMax": 20,
+      "BuffMeleeCritsPerLevel": 0,
+      "BuffMeleeCritsEliteBonus": 50,
+      "ColliderSpeedBuffMax": 75
     },
     "ShadowConnections": {
       "Enabled": true,

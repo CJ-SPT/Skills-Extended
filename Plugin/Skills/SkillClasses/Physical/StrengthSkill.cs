@@ -1,4 +1,6 @@
 ﻿using EFT;
+using SkillsExtended.Config.Skills;
+using SkillsExtended.Extensions;
 using UnityEngine;
 
 namespace SkillsExtended.Skills.SkillClasses.Physical;
@@ -6,6 +8,8 @@ namespace SkillsExtended.Skills.SkillClasses.Physical;
 public class StrengthSkill(SkillManager skillManager)
     : SkillClass(skillManager, ESkillId.Strength, ESkillClass.Physical, GetActions(skillManager), GetBuffs(skillManager))
 {
+    private static readonly StrengthData Data = Plugin.SkillData.Strength;
+    
     private static SkillManager.SkillActionClass[] GetActions(SkillManager skillManager)
     {
         var actions = new StrengthActions(skillManager);
@@ -22,14 +26,35 @@ public class StrengthSkill(SkillManager skillManager)
     private static SkillManager.SkillBuffAbstractClass[] GetBuffs(SkillManager skillManager)
     {
         return [
-            skillManager.StrengthBuffJumpHeightInc.Max(0.2f),
-            skillManager.StrengthBuffLiftWeightInc.Max(0.3f),
-            skillManager.StrengthBuffMeleePowerInc.Max(0.3f),
-            skillManager.StrengthBuffSprintSpeedInc.Max(0.2f),
-            skillManager.StrengthBuffThrowDistanceInc.Max(0.2f),
-            skillManager.StrengthBuffAimFatigue.Max(0.2f),
+            skillManager.StrengthBuffJumpHeightInc
+                .Max(Data.BuffJumpHeightIncMax.NormalizeToPercentage()),
+            
+            skillManager.StrengthBuffLiftWeightInc
+                .Max(Data.BuffLiftWeightIncMax.NormalizeToPercentage()),
+            
+            skillManager.StrengthBuffMeleePowerInc
+                .Max(Data.BuffMeleePowerIncMax.NormalizeToPercentage()),
+            
+            skillManager.StrengthBuffSprintSpeedInc
+                .Max(Data.BuffSprintSpeedIncMax.NormalizeToPercentage()),
+            
+            skillManager.StrengthBuffThrowDistanceInc
+                .Max(Data.BuffThrowDistanceIncMax.NormalizeToPercentage()),
+            
+            skillManager.StrengthBuffAimFatigue
+                .Max(Data.BuffAimFatigueMax.NormalizeToPercentage()),
+            
             skillManager.StrengthBuffElite,
-            skillManager.StrengthBuffMeleeCrits.PerLevel(0f).Elite(0.5f)
+            
+            skillManager.StrengthBuffMeleeCrits
+                .PerLevel(Data.BuffMeleeCritsPerLevel.NormalizeToPercentage())
+                .Elite(Data.BuffMeleeCritsEliteBonus.NormalizeToPercentage()),
+            
+            // Added by SE below this point
+            skillManager.SkillManagerExtended.StrengthBushSpeedIncBuff
+                .Max(Data.ColliderSpeedBuffMax.NormalizeToPercentage()),
+            
+            skillManager.SkillManagerExtended.StrengthBushSpeedIncBuffElite
         ];
     }
 
@@ -37,7 +62,7 @@ public class StrengthSkill(SkillManager skillManager)
     {
         public float SprintAction(MovementParams movement)
         {
-            if (movement.Overweight <= 0f)
+            if (movement.Overweight <= 0f && !Data.AlwaysLevelStrength)
             {
                 return 0f;
             }
@@ -51,7 +76,7 @@ public class StrengthSkill(SkillManager skillManager)
         
         public float MovementAction(MovementParams movement)
         {
-            if (movement.Overweight <= 0f)
+            if (movement.Overweight <= 0f && !Data.AlwaysLevelStrength)
             {
                 return 0f;
             }
@@ -65,7 +90,7 @@ public class StrengthSkill(SkillManager skillManager)
 
         public float PushUpAction(MovementParams movement)
         {
-            if (movement.Overweight <= 0f)
+            if (movement.Overweight <= 0f && !Data.AlwaysLevelStrength)
             {
                 return 0f;
             }
