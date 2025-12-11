@@ -1,5 +1,6 @@
 ﻿using SkillsExtended.Config;
 using SkillsExtended.Helpers;
+using SkillsExtended.Models;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Models.Spt.Mod;
@@ -15,8 +16,7 @@ public class ConfigController(
     IReadOnlyList<SptMod> loadedMods
     ) : IOnLoad
 {
-    public SeModMetadata SeModMetadata { get; } = new();
-
+    public ServerConfig ServerConfig { get; private set; } = null!;
     public SkillsConfig SkillsConfig { get; private set; } = null!;
     
     public bool IsFikaPresent { get; private set; }
@@ -24,6 +24,8 @@ public class ConfigController(
     public async Task OnLoad()
     {
         await LoadSkillsConfig();
+        await LoadServerConfig();
+        
         IsFikaPresent = loadedMods.Any(m => m.ModMetadata.ModGuid == "Fika");
 
         if (IsFikaPresent)
@@ -46,5 +48,21 @@ public class ConfigController(
         
         var text = await fileUtil.ReadFileAsync(path);
         SkillsConfig = DataContractSerializer.Deserialize<SkillsConfig>(text)!;
+    }
+    
+    public async Task SaveServerConfig()
+    {
+        var path = Path.Combine(SeModMetadata.ResourcesDirectory, "Configs", "ServerConfig.json");
+        
+        var text = DataContractSerializer.Serialize(ServerConfig);
+        await fileUtil.WriteFileAsync(path, text!);
+    }
+    
+    private async Task LoadServerConfig()
+    {
+        var path = Path.Combine(SeModMetadata.ResourcesDirectory, "Configs", "ServerConfig.json");
+        
+        var text = await fileUtil.ReadFileAsync(path);
+        ServerConfig = DataContractSerializer.Deserialize<ServerConfig>(text)!;
     }
 }

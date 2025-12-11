@@ -9,6 +9,8 @@ namespace SkillsExtended;
 
 public record SeModMetadata : AbstractModMetadata, IModWebMetadata
 {
+    public static SeModMetadata Instance { get; } = new();
+    
     public override string ModGuid { get; init; } = "com.cj.SkillsExtended";
     public override string Name { get; init; } = "Skills Extended";
     public override string Author { get; init; } = "Cj";

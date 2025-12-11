@@ -2,6 +2,7 @@
 
 @inject ISnackbar Snackbar
 @inject ConfigController ConfigController
+@inject UpdateChecker UpdateChecker
 
 <HeadContent>
     <link href="@Assets["_content/MudBlazor/MudBlazor.min.css"]" rel="stylesheet" />
@@ -26,11 +27,23 @@
                     <!-- Left side -->
                     <MudIconButton Icon="@Icons.Custom.Brands.GitHub"
                                    Color="Color.Inherit"
-                                   Href="@ConfigController.SeModMetadata.Url"/>
+                                   Href="@SeModMetadata.Instance.Url"/>
 
                     <MudText Style="font-size: 12px">
-                        Version: @ConfigController.SeModMetadata.Version.ToString() for SPT: @ConfigController.SeModMetadata.SptVersion.ToString()
+                        Version: @SeModMetadata.Instance.Version.ToString() for SPT: @SeModMetadata.Instance.SptVersion.ToString()
                     </MudText>
+                    
+                    @if (ConfigController.ServerConfig.CheckForUpdates && UpdateChecker.UpdateAvailable)
+                    {
+                        <MudText Style="font-size: 12px">
+                            Version: @UpdateChecker.ReleaseInformation!.Version Available
+                        </MudText>
+                    }
+                    
+                    <MudSwitch @bind-Value="@ConfigController.ServerConfig.CheckForUpdates" 
+                               Label="Check For Updates" 
+                               Color="Color.Info" 
+                    />
                 </MudStack>
             
                 <MudButton Color="Color.Success"
@@ -63,6 +76,8 @@
     private async Task SaveConfig()
     {
         await ConfigController.SaveSkillsConfig();
+        await ConfigController.SaveServerConfig();
+        
         Snackbar.Add("Config Saved.", Severity.Success);
     }
 }
