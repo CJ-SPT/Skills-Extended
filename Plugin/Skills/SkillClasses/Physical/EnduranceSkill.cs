@@ -1,10 +1,14 @@
 ﻿using EFT;
+using SkillsExtended.Config.Skills;
+using SkillsExtended.Extensions;
 
 namespace SkillsExtended.Skills.SkillClasses.Physical;
 
 public class EnduranceSkill(SkillManager skillManager)
     : SkillClass(skillManager, ESkillId.Endurance, ESkillClass.Physical, GetActions(skillManager), GetBuffs(skillManager))
 {
+    private static readonly EnduranceData Data = Plugin.SkillData.Endurance;
+    
     private static SkillManager.SkillActionClass[] GetActions(SkillManager skillManager)
     {
         var actions = new EnduranceActions(skillManager);
@@ -18,12 +22,27 @@ public class EnduranceSkill(SkillManager skillManager)
     private static SkillManager.SkillBuffAbstractClass[] GetBuffs(SkillManager skillManager)
     {
         return [
-            skillManager.EnduranceBuffEnduranceInc.Max(0.5f).Elite(0.7f),
-            skillManager.EnduranceHands.PerLevel(0f).Elite(0.5f),
-            skillManager.EnduranceBuffJumpCostRed.Max(0.3f),
-            skillManager.EnduranceBuffBreathTimeInc.Max(1f),
-            skillManager.EnduranceBuffRestoration.Max(0.5f).Elite(0.75f),
-            skillManager.EnduranceBreathElite.PerLevel(0f).Elite(1f)
+            skillManager.EnduranceBuffEnduranceInc
+                .Max(Data.BuffBreathTimeIncMax.NormalizeToPercentage())
+                .Elite(Data.BuffEnduranceIncElite.NormalizeToPercentage()),
+            
+            skillManager.EnduranceHands
+                .PerLevel(Data.HandsPerLevel.NormalizeToPercentage())
+                .Elite(Data.HandsElite.NormalizeToPercentage()),
+            
+            skillManager.EnduranceBuffJumpCostRed
+                .Max(Data.BuffJumpCostRedMax.NormalizeToPercentage()),
+            
+            skillManager.EnduranceBuffBreathTimeInc
+                .Max(Data.BuffBreathTimeIncMax.NormalizeToPercentage()),
+            
+            skillManager.EnduranceBuffRestoration
+                .Max(Data.BuffRestorationMax.NormalizeToPercentage())
+                .Elite(Data.BuffRestorationElite.NormalizeToPercentage()),
+            
+            skillManager.EnduranceBreathElite
+                .PerLevel(0f)
+                .Elite(1f)
         ];
     }
 
@@ -31,7 +50,7 @@ public class EnduranceSkill(SkillManager skillManager)
     {
         public float SprintAction(MovementParams movement)
         {
-            if (movement.Overweight <= 0f)
+            if (movement.Overweight <= 0f || Data.AlwaysLevelEndurance)
             {
                 return skillManager.Settings.Endurance.SprintAction * 
                        (1f + skillManager.Settings.Endurance.GainPerFatigueStack * movement.Fatigue);
@@ -42,7 +61,7 @@ public class EnduranceSkill(SkillManager skillManager)
         
         public float MovementAction(MovementParams movement)
         {
-            if (movement.Overweight <= 0f)
+            if (movement.Overweight <= 0f || Data.AlwaysLevelEndurance)
             {
                 return skillManager.Settings.Endurance.MovementAction * 
                        (1f + skillManager.Settings.Endurance.GainPerFatigueStack * movement.Fatigue);

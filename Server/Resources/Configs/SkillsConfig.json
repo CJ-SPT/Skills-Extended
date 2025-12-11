@@ -587,7 +587,16 @@
       "SilencerPriceReduction": 0.5
     },
     "Endurance": {
-        "Enabled": true
+        "Enabled": true,
+        "AlwaysLevelEndurance": false,
+        "BuffEnduranceIncMax": 50,
+        "BuffEnduranceIncElite": 70,
+        "HandsPerLevel": 0,
+        "HandsElite": 50,
+        "BuffJumpCostRedMax": 30,
+        "BuffBreathTimeIncMax": 100,
+        "BuffRestorationMax": 50,
+        "BuffRestorationElite": 75
     },
     "Strength": {
       "Enabled": true,

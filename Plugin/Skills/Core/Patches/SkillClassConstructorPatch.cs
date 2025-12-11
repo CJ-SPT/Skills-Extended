@@ -1,9 +1,7 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Reflection;
 using EFT;
-using SkillsExtended.Helpers;
-using SkillsExtended.Utils;
+using SkillsExtended.Extensions;
 using SPT.Reflection.Patching;
 
 namespace SkillsExtended.Skills.Core.Patches;

@@ -1,6 +1,6 @@
 ﻿using EFT;
 using SkillsExtended.Config;
-using SkillsExtended.Utils;
+using SkillsExtended.Extensions;
 
 namespace SkillsExtended.Skills.Core;
 

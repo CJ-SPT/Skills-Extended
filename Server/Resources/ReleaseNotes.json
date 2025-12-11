@@ -6,7 +6,9 @@
     "IsLatest": true,
     "Features": [
       "Automatic Fika detection -- This will allow for features to be disabled by me to ensure fika compatibility",
-      "Automatic Fika detection -- Lockpicking will be automatically disabled if fika is present. Lock-picks will be left in-game as to not corrupt profiles"
+      "Automatic Fika detection -- Lockpicking will be automatically disabled if fika is present. Lock-picks will be left in-game as to not corrupt profiles",
+      "New Config web pages for endurance and strength",
+      "New Always level endurance option"
     ],
     "Improvements": [
       "New common dll for this mod to share between the client and server, this is distributed with the mod. This is required so I can easily share common interfaces.",
