@@ -13,7 +13,6 @@
     ],
     "Improvements": [
       "New common dll for this mod to share between the client and server, this is distributed with the mod. This is required so I can easily share common interfaces.",
-      "Internal code change: we now use data contracts to move data -- This requires a config wipe, sorry :(",
       "Internal code change: Each Physical skill is now its own class so their functionality can be expanded in the future"
     ],
     "BugFixes": [
