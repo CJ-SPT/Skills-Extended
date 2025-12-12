@@ -21,6 +21,11 @@ internal class UpdateChecker(
 {
     public Task OnLoad()
     {
+        if (SeModMetadata.Instance.IsBetaVersion)
+        {
+            return Task.CompletedTask;
+        }
+        
         if (configController.ServerConfig.CheckForUpdates)
         {
             // Run in a new task so we don't hold the main thread at all, this isn't super critical
