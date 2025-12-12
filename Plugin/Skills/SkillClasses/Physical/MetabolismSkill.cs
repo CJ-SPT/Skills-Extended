@@ -1,4 +1,5 @@
 ﻿using EFT;
+using SkillsExtended.Extensions;
 
 namespace SkillsExtended.Skills.SkillClasses.Physical;
 
@@ -20,10 +21,16 @@ public class MetabolismSkill(SkillManager skillManager)
     
     private static SkillManager.SkillBuffAbstractClass[] GetBuffs(SkillManager skillManager)
     {
+        var data = Plugin.SkillData.Metabolism;
+        
         return [
             skillManager.MetabolismEliteBuffNoDyhydration,
-            skillManager.MetabolismRatioPlus.PerLevel(0.01f),
-            skillManager.MetabolismMiscDebuffTime.PerLevel(0.01f)
+            
+            skillManager.MetabolismRatioPlus
+                .PerLevel(data.RatioPlusPerLevel.NormalizeToPercentage()),
+            
+            skillManager.MetabolismMiscDebuffTime
+                .PerLevel(data.MiscDebuffTimePerLevel.NormalizeToPercentage())
         ];
     }
 

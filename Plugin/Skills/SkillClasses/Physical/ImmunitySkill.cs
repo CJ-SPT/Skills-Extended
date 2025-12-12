@@ -1,4 +1,5 @@
 ﻿using EFT;
+using SkillsExtended.Extensions;
 
 namespace SkillsExtended.Skills.SkillClasses.Physical;
 
@@ -9,7 +10,7 @@ public class ImmunitySkill(SkillManager skillManager)
     {
         return [
             skillManager.HealthNegativeEffect
-                .Where(IsIntoxication)
+                .Where(effect  => effect is IIntoxication)
                 .Factor(skillManager.Settings.Immunity.HealthNegativeEffect),
             
             skillManager.StimulatorNegativeBuff
@@ -19,17 +20,25 @@ public class ImmunitySkill(SkillManager skillManager)
     
     private static SkillManager.SkillBuffAbstractClass[] GetBuffs(SkillManager skillManager)
     {
+        var data = Plugin.SkillData.Immunity;
+        
         return [
-            skillManager.ImmunityMiscEffects.PerLevel(0.01f),
-            skillManager.ImmunityPoisonBuff.PerLevel(0.01f),
-            skillManager.ImmunityPainKiller.PerLevel(0.006f),
-            skillManager.ImmunityAvoidPoisonChance.Default(0f).Elite(0.9f),
-            skillManager.ImmunityAvoidMiscEffectsChance.Default(0f).Elite(0.9f)
+            skillManager.ImmunityMiscEffects
+                .PerLevel(data.MiscEffectsPerLevel.NormalizeToPercentage()),
+            
+            skillManager.ImmunityPoisonBuff
+                .PerLevel(data.PoisonBuffPerLevel.NormalizeToPercentage()),
+            
+            skillManager.ImmunityPainKiller
+                .PerLevel(data.PainKillerPerLevel.NormalizeToPercentage()),
+            
+            skillManager.ImmunityAvoidPoisonChance
+                .Default(0f)
+                .Elite(data.AvoidPoisonChanceElite.NormalizeToPercentage()),
+            
+            skillManager.ImmunityAvoidMiscEffectsChance
+                .Default(0f)
+                .Elite(data.AvoidMiscEffectsChanceElite.NormalizeToPercentage())
         ];
-    }
-
-    private static bool IsIntoxication(IEffect effect)
-    {
-        return effect is IIntoxication;
     }
 }

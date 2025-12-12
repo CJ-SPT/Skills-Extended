@@ -1,0 +1,64 @@
+﻿@page "/skills-extended/vitality"
+@using SkillsExtended.Config.Skills
+@layout BaseLayout;
+
+@inject ConfigController ConfigController
+
+<MudGrid Justify="Justify.Center" Style="min-height:100vh; display:flex; align-items:center;">
+    <MudItem xs="11" sm="8" md="6" lg="4">
+        <MudPaper Height="275px" Style="width:100%;">
+            <MudContainer MaxWidth="MaxWidth.Medium">
+                <MudGrid>
+                    <MudItem xs="6">
+                        <MudSwitch
+                            Class="d-flex align-center justify-center mud-width-full py-8"
+                            @bind-Value="Enabled" 
+                            Label="Enabled" 
+                            Color="Color.Success"/>
+                    </MudItem>
+                    
+                    <MudItem xs="6">
+                        <MudNumericField
+                            @bind-Value="BuffBleedChanceRedPerLevel"
+                            Label="Bleed Chance Reduction Per Level"
+                            Variant="Variant.Filled"
+                            Step="0.25F"
+                            Min="0" Max="100"/>
+                    </MudItem>
+                    
+                    <MudItem xs="6">
+                        <MudNumericField
+                            @bind-Value="BuffSurviobilityIncPerLevel"
+                            Label="Limb Loss Death Chance Reduction Per Level"
+                            Variant="Variant.Filled"
+                            Step="0.25F"
+                            Min="0" Max="100"/>
+                    </MudItem>
+                    
+                </MudGrid>
+            </MudContainer>
+        </MudPaper>
+    </MudItem>
+</MudGrid>
+
+@code {
+    VitalityData Data => ConfigController.SkillsConfig.Vitality;
+    
+    bool Enabled
+    {
+        get => Data.Enabled;
+        set => Data.Enabled = value;
+    }
+    
+    float BuffBleedChanceRedPerLevel
+    {
+        get => Data.BuffBleedChanceRedPerLevel;
+        set => Data.BuffBleedChanceRedPerLevel = value;
+    }
+    
+    float BuffSurviobilityIncPerLevel
+    {
+        get => Data.BuffSurviobilityIncPerLevel;
+        set => Data.BuffSurviobilityIncPerLevel = value;
+    }
+}

@@ -611,6 +611,35 @@
       "BuffMeleeCritsEliteBonus": 50,
       "ColliderSpeedBuffMax": 75
     },
+    "Vitality": {
+        "Enabled": true,
+        "BuffBleedChanceRedPerLevel": 1.2,
+        "BuffSurviobilityIncPerLevel": 0.4
+    },
+    "Health": {
+        "Enabled": true,
+        "BreakChanceRedPerLevel": 1.2,
+        "EnergyPerLevel": 0.6,
+        "HydrationPerLevel": 0.6
+    },
+    "Metabolism": {
+        "Enabled": true,
+        "RatioPlusPerLevel": 1,
+        "MiscDebuffTimePerLevel": 1
+    },
+    "StressResistance": {
+        "Enabled": true,
+        "StressPainPerLevel": 1,
+        "StressTremorPerLevel": 1.2
+    },
+    "Immunity": {
+        "Enabled": true,
+        "MiscEffectsPerLevel": 1,
+        "PoisonBuffPerLevel": 1,
+        "PainKillerPerLevel": 0.6,
+        "AvoidPoisonChanceElite": 90,
+        "AvoidMiscEffectsChanceElite": 90
+    },
     "ShadowConnections": {
       "Enabled": true,
       "XpPerAction": 2.25,

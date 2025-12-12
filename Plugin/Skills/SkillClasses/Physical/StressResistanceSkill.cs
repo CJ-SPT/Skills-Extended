@@ -1,4 +1,5 @@
 ﻿using EFT;
+using SkillsExtended.Extensions;
 
 namespace SkillsExtended.Skills.SkillClasses.Physical;
 
@@ -19,9 +20,15 @@ public class StressResistanceSkill(SkillManager skillManager)
     
     private static SkillManager.SkillBuffAbstractClass[] GetBuffs(SkillManager skillManager)
     {
+        var data = Plugin.SkillData.StressResistance;
+        
         return [
-            skillManager.StressPain.PerLevel(0.01f),
-            skillManager.StressTremor.PerLevel(0.012f),
+            skillManager.StressPain
+                .PerLevel(data.StressPainPerLevel.NormalizeToPercentage()),
+            
+            skillManager.StressTremor
+                .PerLevel(data.StressTremorPerLevel.NormalizeToPercentage()),
+            
             skillManager.StressBerserk
         ];
     }

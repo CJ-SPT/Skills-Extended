@@ -34,6 +34,21 @@ public class SkillsConfig
     public StrengthData Strength { get; set; }
     
     [DataMember]
+    public VitalityData Vitality { get; set; }
+    
+    [DataMember]
+    public HealthData Health { get; set; }
+    
+    [DataMember]
+    public MetabolismData Metabolism { get; set; }
+    
+    [DataMember]
+    public StressResistanceData StressResistance { get; set; }
+    
+    [DataMember]
+    public ImmunityData Immunity { get; set; }
+    
+    [DataMember]
     public ShadowConnectionsData ShadowConnections { get; set; }
     
     [DataMember]

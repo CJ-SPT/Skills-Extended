@@ -1,5 +1,6 @@
 ﻿using System;
 using EFT;
+using SkillsExtended.Extensions;
 
 namespace SkillsExtended.Skills.SkillClasses.Physical;
 
@@ -22,10 +23,18 @@ public class HealthSkill(SkillManager skillManager)
     
     private static SkillManager.SkillBuffAbstractClass[] GetBuffs(SkillManager skillManager)
     {
+        var data = Plugin.SkillData.Health;
+        
         return [
-            skillManager.HealthBreakChanceRed.PerLevel(0.012f),
-            skillManager.HealthEnergy.PerLevel(0.006f),
-            skillManager.HealthHydration.PerLevel(0.006f),
+            skillManager.HealthBreakChanceRed
+                .PerLevel(data.BreakChanceRedPerLevel.NormalizeToPercentage()),
+            
+            skillManager.HealthEnergy
+                .PerLevel(data.EnergyPerLevel.NormalizeToPercentage()),
+            
+            skillManager.HealthHydration
+                .PerLevel(data.HydrationPerLevel.NormalizeToPercentage()),
+            
             skillManager.HealthEliteAbsorbDamage
         ];
     }

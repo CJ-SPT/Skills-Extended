@@ -1,0 +1,64 @@
+﻿@page "/skills-extended/stress-resistance"
+@using SkillsExtended.Config.Skills
+@layout BaseLayout;
+
+@inject ConfigController ConfigController
+
+<MudGrid Justify="Justify.Center" Style="min-height:100vh; display:flex; align-items:center;">
+    <MudItem xs="11" sm="8" md="6" lg="4">
+        <MudPaper Height="275px" Style="width:100%;">
+            <MudContainer MaxWidth="MaxWidth.Medium">
+                <MudGrid>
+                    <MudItem xs="6">
+                        <MudSwitch
+                            Class="d-flex align-center justify-center mud-width-full py-8"
+                            @bind-Value="Enabled" 
+                            Label="Enabled" 
+                            Color="Color.Success"/>
+                    </MudItem>
+                    
+                    <MudItem xs="6">
+                        <MudNumericField
+                            @bind-Value="StressPainPerLevel"
+                            Label="Pain Shock Chance Reduction Per Level"
+                            Variant="Variant.Filled"
+                            Step="0.25F"
+                            Min="0" Max="100"/>
+                    </MudItem>
+                    
+                    <MudItem xs="6">
+                        <MudNumericField
+                            @bind-Value="StressTremorPerLevel"
+                            Label="Tremor Reduction Per Level"
+                            Variant="Variant.Filled"
+                            Step="0.25F"
+                            Min="0" Max="100"/>
+                    </MudItem>
+                    
+                </MudGrid>
+            </MudContainer>
+        </MudPaper>
+    </MudItem>
+</MudGrid>
+
+@code {
+    StressResistanceData Data => ConfigController.SkillsConfig.StressResistance;
+    
+    bool Enabled
+    {
+        get => Data.Enabled;
+        set => Data.Enabled = value;
+    }
+    
+    float StressPainPerLevel
+    {
+        get => Data.StressPainPerLevel;
+        set => Data.StressPainPerLevel = value;
+    }
+    
+    float StressTremorPerLevel
+    {
+        get => Data.StressTremorPerLevel;
+        set => Data.StressTremorPerLevel = value;
+    }
+}

@@ -1,4 +1,5 @@
 ﻿using EFT;
+using SkillsExtended.Extensions;
 
 namespace SkillsExtended.Skills.SkillClasses.Physical;
 
@@ -18,9 +19,15 @@ public class VitalitySkill(SkillManager skillManager)
     
     private static SkillManager.SkillBuffAbstractClass[] GetBuffs(SkillManager skillManager)
     {
+        var data = Plugin.SkillData.Vitality;
+        
         return [
-            skillManager.VitalityBuffBleedChanceRed.PerLevel(0.012f),
-            skillManager.VitalityBuffSurviobilityInc.PerLevel(0.004f),
+            skillManager.VitalityBuffBleedChanceRed
+                .PerLevel(data.BuffBleedChanceRedPerLevel.NormalizeToPercentage()),
+            
+            skillManager.VitalityBuffSurviobilityInc
+                .PerLevel(data.BuffSurviobilityIncPerLevel.NormalizeToPercentage()),
+            
             skillManager.VitalityBuffRegeneration,
             skillManager.VitalityBuffBleedStop
         ];
