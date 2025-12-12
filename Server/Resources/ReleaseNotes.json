@@ -1,15 +1,13 @@
 [
   {
     "Version": "2.2.0",
-    "CodeName": "Broader Horizons",
     "ReleaseDate": "December 11, 2025",
     "IsLatest": true,
-    "IsBeta": true,
     "Features": [
       "Automatic Fika detection -- This will allow for features to be disabled by me to ensure fika compatibility",
       "Automatic Fika detection -- Lockpicking will be automatically disabled if fika is present. Lock-picks will be left in-game as to not corrupt profiles",
       "Automatic Update Checker -- There will be a notification in the config page when an update is available",
-      "New Config web pages for endurance and strength",
+      "All skill buffs in the Physical category are now configurable",
       "New Always level endurance option",
       "New Always level strength option"
     ],
@@ -26,7 +24,6 @@
   },
   {
     "Version": "2.1.1",
-    "CodeName": "Rapport",
     "ReleaseDate": "November 9, 2025",
     "IsLatest": false,
     "Features": [
@@ -47,7 +44,6 @@
   },
   {
     "Version": "2.1.0",
-    "CodeName": "Rapport",
     "ReleaseDate": "October 30, 2025",
     "IsLatest": false,
     "Features": [
@@ -86,7 +82,6 @@
   },
   {
     "Version": "2.0.3",
-    "CodeName": "Resurrection",
     "ReleaseDate": "October 23, 2025",
     "IsLatest": false,
     "Features": [],
@@ -105,7 +100,6 @@
   },
   {
     "Version": "2.0.2",
-    "CodeName": "Resurrection",
     "ReleaseDate": "October 22, 2025",
     "IsLatest": false,
     "Features": [
@@ -121,7 +115,6 @@
   },
   {
     "Version": "2.0.1",
-    "CodeName": "Resurrection",
     "ReleaseDate": "October 20, 2025",
     "IsLatest": false,
     "Features": [
@@ -136,7 +129,6 @@
   },
   {
     "Version": "2.0.0",
-    "CodeName": "Resurrection",
     "ReleaseDate": "October 19, 2025",
     "IsLatest": false,
     "Features": [

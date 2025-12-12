@@ -11,12 +11,14 @@ public record SeModMetadata : AbstractModMetadata, IModWebMetadata
 {
     public static SeModMetadata Instance { get; } = new();
     
+    public bool IsBetaVersion { get; init; } = true;
+    public override Version Version { get; init; } = new("2.2.0");
+    public override Range SptVersion { get; init; } = new("~4.0.2");
+    
     public override string ModGuid { get; init; } = "com.cj.SkillsExtended";
     public override string Name { get; init; } = "Skills Extended";
     public override string Author { get; init; } = "Cj";
     public override List<string>? Contributors { get; init; } = [];
-    public override Version Version { get; init; } = new("2.2.0");
-    public override Range SptVersion { get; init; } = new("~4.0.2");
     public override List<string>? Incompatibilities { get; init; }
     public override Dictionary<string, Range>? ModDependencies { get; init; }
     public override string? Url { get; init; } = "https://github.com/CJ-SPT/Skills-Extended";

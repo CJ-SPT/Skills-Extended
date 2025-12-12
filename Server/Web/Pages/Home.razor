@@ -39,22 +39,17 @@
                             <div class="d-flex align-center justify-space-between" style="width: 100%">
                                 <div class="d-flex align-center gap-2">
                                     <MudText Typo="Typo.h6">Version @release.Version</MudText>
-                                    
-                                    @if (release.IsBeta)
+
+                                    @switch (release.IsLatest)
                                     {
-                                        <MudChip T="string" Size="Size.Small" Color="Color.Error">Beta</MudChip>
+                                        case true when SeModMetadata.Instance.IsBetaVersion:
+                                            <MudChip T="string" Size="Size.Small" Color="Color.Error">Beta</MudChip>
+                                            break;
+                                        case true when !SeModMetadata.Instance.IsBetaVersion:
+                                            <MudChip T="string" Size="Size.Small" Color="Color.Success">Latest</MudChip>
+                                            break;
                                     }
-                                    
-                                    @if (!string.IsNullOrEmpty(release.CodeName))
-                                    {
-                                        <MudChip T="string" Size="Size.Small" Color="Color.Tertiary">Codename: @release.CodeName</MudChip>
-                                    }
-                                    
-                                    @if (release is { IsLatest: true, IsBeta: false })
-                                    {
-                                        <MudChip T="string" Size="Size.Small" Color="Color.Success">Latest</MudChip>
-                                    }
-                                    
+
                                 </div>
                                 <MudText Typo="Typo.body2" Color="Color.Secondary">@release.ReleaseDate</MudText>
                             </div>
@@ -153,10 +148,8 @@
         return _releaseNotes?.Select(r => new ReleaseNote
         {
             Version = r.Version,
-            CodeName = r.CodeName,
             ReleaseDate = r.ReleaseDate,
             IsLatest = r.IsLatest,
-            IsBeta = r.IsBeta,
             Features = _selectedFilter == "feature" ? r.Features : [],
             Improvements = _selectedFilter == "improvement" ? r.Improvements : [],
             BugFixes = _selectedFilter == "bugfix" ? r.BugFixes : []
