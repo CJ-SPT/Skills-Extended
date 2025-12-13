@@ -8,6 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\FikaSync\FikaSync.csproj" />
       <ProjectReference Include="..\Plugin\Plugin.csproj" />
       <ProjectReference Include="..\Prepatcher\Prepatch.csproj" />
       <ProjectReference Include="..\Server\Server.csproj" />
@@ -31,6 +32,7 @@
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">
         <ItemGroup>
             <Plugin     Include="$(TarkovDir)BepInEx\plugins\SkillsExtended\**\*.*" />
+            <SyncPlugin Include="$(TarkovDir)BepInEx\plugins\SkillsExtended\SkillsExtendedFika.dll" />
             <PrePatch   Include="$(TarkovDir)BepInEx\patchers\SkillsExtended_PrePatch.dll" />
             <Server     Include="$(TarkovDir)SPT\user\mods\SkillsExtended\**\*.*"/>
         </ItemGroup>
@@ -61,6 +63,19 @@
                 SourceDirectory="$(SolutionDir)release\SkillsExtended\"
                 DestinationFile="$(SolutionDir)release\SkillsExtended-$(Version)-$(Configuration)-$(SourceRevisionId).zip"
         />
+
+        <!-- Copy the sync plugin -->
+        <Copy
+                SourceFiles="@(SyncPlugin)"
+                DestinationFolder="$(SolutionDir)release\SkillsExtendedFika\BepInEx\plugins\SkillsExtended\%(RecursiveDir)"
+        />
+
+        <!-- Zip into a release format -->
+        <ZipDirectory
+                SourceDirectory="$(SolutionDir)release\SkillsExtendedFika\"
+                DestinationFile="$(SolutionDir)release\SkillsExtendedFika-$(SourceRevisionId).zip"
+        />
+        
     </Target>
     
 </Project>
