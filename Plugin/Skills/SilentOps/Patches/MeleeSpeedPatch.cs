@@ -18,7 +18,7 @@ public class MeleeSpeedPatch : ModulePatch
     [PatchPrefix]
     private static void Prefix(ref float speed)
     {
-        if (!Plugin.SkillData.SilentOps.Enabled)
+        if (!SkillsExtendedPlugin.SkillData.SilentOps.Enabled)
         {
             return;
         }

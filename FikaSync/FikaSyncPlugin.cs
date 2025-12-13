@@ -15,8 +15,6 @@ namespace SkillsExtendedFika;
 [BepInDependency("com.fika.core")]
 public class FikaSyncPlugin : BaseUnityPlugin
 {
-    public static LockPickingFikaController? LockPickingController { get; set; }
-    
     internal new static ManualLogSource? Logger;
     private static PatchManager? _patchManager;
     
@@ -35,29 +33,16 @@ public class FikaSyncPlugin : BaseUnityPlugin
         switch (createdEvent.Manager)
         {
             case FikaServer server:
-                server.RegisterPacket<LockPickedPacket>(OnLockPickedPacketReceived);
-                server.RegisterPacket<LockBrokenPacket>(OnLockBrokenPacketReceived);
+                server.RegisterPacket<LockPickingSyncPacket>(OnLockPickingSyncPacketReceived);
                 break;
             case FikaClient client:
-                client.RegisterPacket<LockPickedPacket>(OnLockPickedPacketReceived);
-                client.RegisterPacket<LockBrokenPacket>(OnLockBrokenPacketReceived);
+                client.RegisterPacket<LockPickingSyncPacket>(OnLockPickingSyncPacketReceived);
                 break;
         }
     }
 
-    private static void OnLockPickedPacketReceived(LockPickedPacket packet)
+    private static void OnLockPickingSyncPacketReceived(LockPickingSyncPacket packet)
     {
-        if (packet.Unlocked)
-        {
-            LockPickingController?.UnlockDoor(packet.DoorId);
-        }
-    }
-
-    private static void OnLockBrokenPacketReceived(LockBrokenPacket packet)
-    {
-        if (packet.Broken)
-        {
-            LockPickingController?.BreakLock(packet.DoorId);
-        }
+        LockPickingFikaController.HandlePacket(packet);
     }
 }

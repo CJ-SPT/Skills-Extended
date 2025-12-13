@@ -20,7 +20,7 @@ internal class DoorActionPatch : ModulePatch
             return;
         }
         
-        if (!Plugin.SkillData.LockPicking.Enabled 
+        if (!SkillsExtendedPlugin.SkillData.LockPicking.Enabled 
             || WorldInteractionUtils.IsBotInteraction(owner)
             || owner.Player.Side == EPlayerSide.Savage)
         {

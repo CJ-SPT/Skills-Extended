@@ -21,7 +21,7 @@ public class MetabolismSkill(SkillManager skillManager)
     
     private static SkillManager.SkillBuffAbstractClass[] GetBuffs(SkillManager skillManager)
     {
-        var data = Plugin.SkillData.Metabolism;
+        var data = SkillsExtendedPlugin.SkillData.Metabolism;
         
         return [
             skillManager.MetabolismEliteBuffNoDyhydration,

@@ -23,7 +23,7 @@ public class HealthSkill(SkillManager skillManager)
     
     private static SkillManager.SkillBuffAbstractClass[] GetBuffs(SkillManager skillManager)
     {
-        var data = Plugin.SkillData.Health;
+        var data = SkillsExtendedPlugin.SkillData.Health;
         
         return [
             skillManager.HealthBreakChanceRed

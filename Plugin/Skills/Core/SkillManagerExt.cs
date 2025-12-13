@@ -6,7 +6,7 @@ namespace SkillsExtended.Skills.Core;
 
 public class SkillManagerExt(SkillManager skillManager)
 {
-    private static SkillsConfig SkillData => Plugin.SkillData;
+    private static SkillsConfig SkillData => SkillsExtendedPlugin.SkillData;
 
     #region BUFFS
 
@@ -281,8 +281,8 @@ public class SkillManagerExt(SkillManager skillManager)
         }
 
 #if DEBUG
-        Plugin.Log.LogDebug($"Buff {injectorBuff.BuffName} duration adjusted to {injectorBuff.Duration}");
-        Plugin.Log.LogDebug($"Buff {injectorBuff.BuffName} chance adjusted to {injectorBuff.Chance}");
+        SkillsExtendedPlugin.Log.LogDebug($"Buff {injectorBuff.BuffName} duration adjusted to {injectorBuff.Duration}");
+        SkillsExtendedPlugin.Log.LogDebug($"Buff {injectorBuff.BuffName} chance adjusted to {injectorBuff.Chance}");
 #endif
     }
 }

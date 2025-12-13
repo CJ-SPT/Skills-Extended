@@ -1,25 +1,76 @@
 ﻿using System.Collections.Generic;
-using EFT;
+using Comfort.Common;
 using EFT.Interactive;
+using Fika.Core.Main.Utils;
+using Fika.Core.Networking;
+using Fika.Core.Networking.LiteNetLib;
+using SkillsExtended.LockPicking;
+using SkillsExtended.Skills.LockPicking;
+using SkillsExtendedFika.Packets;
 
 namespace SkillsExtendedFika.Controllers;
 
-public class LockPickingFikaController
+internal static class LockPickingFikaController
 {
-    private GameWorld _gameWorld;
-    private List<WorldInteractiveObject> _doors = [];
+    private static readonly List<WorldInteractiveObject> Doors = [];
 
-    public LockPickingFikaController(GameWorld gameWorld)
+    static LockPickingFikaController()
     {
-        _gameWorld = gameWorld;
-        GetDoors();
+        LockPickingEvents.OnLockPicked += SendLockpickingPacket;
+    }
+    
+    public static void GetDoors()
+    {
+        Doors.Clear();
+        
+        foreach (var interactableObj in
+                 LocationScene.GetAllObjectsAndWhenISayAllIActuallyMeanIt<WorldInteractiveObject>())
+        {
+            if (interactableObj.KeyId is null or "")
+            {
+                continue;
+            }
+
+            Doors.Add(interactableObj);
+        }
     }
 
-    public void UnlockDoor(string doorId)
+    public static void HandlePacket(LockPickingSyncPacket packet)
     {
-        foreach (var door in _doors)
+        if (packet.Unlocked)
         {
-            if (door.Id != doorId)
+            UnlockDoor(packet);
+            return;
+        }
+        
+        if (packet.Broken)
+        {
+            BreakLock(packet);
+            return;
+        }
+        
+        LockPickingHelpers.DoorAttempts[packet.DoorId] = packet.Attempts;
+    }
+    
+    private static void SendLockpickingPacket(LockPickingEventData data)
+    {
+        var packet = new LockPickingSyncPacket(data);
+
+        if (FikaBackendUtils.IsServer)
+        {
+            Singleton<FikaServer>.Instance.SendData(ref  packet, DeliveryMethod.ReliableOrdered, true);
+        }
+        else
+        {
+            Singleton<FikaClient>.Instance.SendData(ref  packet, DeliveryMethod.ReliableOrdered, true);
+        }
+    }
+    
+    private static void UnlockDoor(LockPickingSyncPacket packet)
+    {
+        foreach (var door in Doors)
+        {
+            if (door.Id != packet.DoorId)
             {
                 continue;
             }
@@ -29,11 +80,11 @@ public class LockPickingFikaController
         }
     }
 
-    public void BreakLock(string doorId)
+    private static void BreakLock(LockPickingSyncPacket packet)
     {
-        foreach (var door in _doors)
+        foreach (var door in Doors)
         {
-            if (door.Id != doorId)
+            if (door.Id != packet.DoorId)
             {
                 continue;
             }
@@ -42,20 +93,6 @@ public class LockPickingFikaController
             door.Operatable = false;
             door.DoorStateChanged(EDoorState.None);
             break;
-        }
-    }
-
-    private void GetDoors()
-    {
-        foreach (var interactableObj in
-                 LocationScene.GetAllObjectsAndWhenISayAllIActuallyMeanIt<WorldInteractiveObject>())
-        {
-            if (interactableObj.KeyId is null or "")
-            {
-                continue;
-            }
-
-            _doors.Add(interactableObj);
         }
     }
 }

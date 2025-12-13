@@ -20,7 +20,7 @@ public class StressResistanceSkill(SkillManager skillManager)
     
     private static SkillManager.SkillBuffAbstractClass[] GetBuffs(SkillManager skillManager)
     {
-        var data = Plugin.SkillData.StressResistance;
+        var data = SkillsExtendedPlugin.SkillData.StressResistance;
         
         return [
             skillManager.StressPain

@@ -20,7 +20,7 @@ public class ImmunitySkill(SkillManager skillManager)
     
     private static SkillManager.SkillBuffAbstractClass[] GetBuffs(SkillManager skillManager)
     {
-        var data = Plugin.SkillData.Immunity;
+        var data = SkillsExtendedPlugin.SkillData.Immunity;
         
         return [
             skillManager.ImmunityMiscEffects

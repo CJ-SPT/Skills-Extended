@@ -22,7 +22,7 @@ namespace SkillsExtended;
 [BepInDependency("com.boogle.oldtarkovmovement", BepInDependency.DependencyFlags.SoftDependency)]
 [BepInDependency("com.fika.core", BepInDependency.DependencyFlags.SoftDependency)]
 [BepInDependency("com.fika.headless", BepInDependency.DependencyFlags.SoftDependency)]
-public class Plugin : BaseUnityPlugin
+public class SkillsExtendedPlugin : BaseUnityPlugin
 {
     /// <summary>
     ///     Key Information

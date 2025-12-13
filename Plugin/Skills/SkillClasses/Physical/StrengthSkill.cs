@@ -8,7 +8,7 @@ namespace SkillsExtended.Skills.SkillClasses.Physical;
 public class StrengthSkill(SkillManager skillManager)
     : SkillClass(skillManager, ESkillId.Strength, ESkillClass.Physical, GetActions(skillManager), GetBuffs(skillManager))
 {
-    private static readonly StrengthData Data = Plugin.SkillData.Strength;
+    private static readonly StrengthData Data = SkillsExtendedPlugin.SkillData.Strength;
     
     private static SkillManager.SkillActionClass[] GetActions(SkillManager skillManager)
     {

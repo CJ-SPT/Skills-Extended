@@ -6,25 +6,25 @@ public static class SkillUtils
 {
     public static bool IsBearRawPowerAvailable()
     {
-        var enabled = Plugin.SkillData.BearRawPower.Enabled;
+        var enabled = SkillsExtendedPlugin.SkillData.BearRawPower.Enabled;
         if (!enabled)
         {
             return false;
         }
         
-        var factionLocked = Plugin.SkillData.BearRawPower.FactionLocked;
+        var factionLocked = SkillsExtendedPlugin.SkillData.BearRawPower.FactionLocked;
         return GameUtils.GetPlayerSide() == EPlayerSide.Bear || !factionLocked;
     }
 
     public static bool IsUsecNegotiationsAvailable()
     {
-        var enabled = Plugin.SkillData.UsecNegotiations.Enabled;
+        var enabled = SkillsExtendedPlugin.SkillData.UsecNegotiations.Enabled;
         if (!enabled)
         {
             return false;
         }
         
-        var factionLocked = Plugin.SkillData.UsecNegotiations.FactionLocked;
+        var factionLocked = SkillsExtendedPlugin.SkillData.UsecNegotiations.FactionLocked;
         return GameUtils.GetPlayerSide() == EPlayerSide.Usec || !factionLocked;
     }
 }

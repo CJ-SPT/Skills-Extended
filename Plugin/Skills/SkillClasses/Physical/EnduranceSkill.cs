@@ -7,7 +7,7 @@ namespace SkillsExtended.Skills.SkillClasses.Physical;
 public class EnduranceSkill(SkillManager skillManager)
     : SkillClass(skillManager, ESkillId.Endurance, ESkillClass.Physical, GetActions(skillManager), GetBuffs(skillManager))
 {
-    private static readonly EnduranceData Data = Plugin.SkillData.Endurance;
+    private static readonly EnduranceData Data = SkillsExtendedPlugin.SkillData.Endurance;
     
     private static SkillManager.SkillActionClass[] GetActions(SkillManager skillManager)
     {

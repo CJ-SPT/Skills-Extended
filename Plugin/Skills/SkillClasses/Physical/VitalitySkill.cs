@@ -19,7 +19,7 @@ public class VitalitySkill(SkillManager skillManager)
     
     private static SkillManager.SkillBuffAbstractClass[] GetBuffs(SkillManager skillManager)
     {
-        var data = Plugin.SkillData.Vitality;
+        var data = SkillsExtendedPlugin.SkillData.Vitality;
         
         return [
             skillManager.VitalityBuffBleedChanceRed
