@@ -14,7 +14,10 @@ public sealed class LockPickActionHandler
     
     public void PickLockAction(bool unlocked)
     {
-        var data = new LockPickingEventData();
+        var data = new LockPickingEventData
+        {
+            DoorId = InteractiveObject.Id
+        };
         
         if (unlocked)
         {

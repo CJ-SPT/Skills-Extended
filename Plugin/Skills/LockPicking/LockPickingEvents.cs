@@ -9,6 +9,10 @@ public static class LockPickingEvents
 
     internal static void InvokeLockPickAction(LockPickingEventData data)
     {
+#if DEBUG
+        SkillsExtendedPlugin.Log.LogDebug("InvokeLockPickAction");
+#endif
+        
         OnLockPicked?.Invoke(data);
     }
 }

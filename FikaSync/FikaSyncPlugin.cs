@@ -11,7 +11,7 @@ using SPT.Reflection.Patching;
 namespace SkillsExtendedFika;
 
 [BepInPlugin("com.cj.SkillsExtendedFika", "Skills Extended Fika", SkillsExtendedInfo.VERSION)]
-[BepInDependency("com.cj.SkillsExtended")]
+[BepInDependency("com.cj.SkillsExtended", SkillsExtendedInfo.VERSION)]
 [BepInDependency("com.fika.core")]
 public class FikaSyncPlugin : BaseUnityPlugin
 {
@@ -43,6 +43,10 @@ public class FikaSyncPlugin : BaseUnityPlugin
 
     private static void OnLockPickingSyncPacketReceived(LockPickingSyncPacket packet)
     {
+#if DEBUG
+        Logger?.LogDebug("Received LockPickingSyncPacket");
+#endif
+        
         LockPickingFikaController.HandlePacket(packet);
     }
 }

@@ -21,6 +21,7 @@ public struct LockPickingSyncPacket : INetSerializable
     public void Serialize(NetDataWriter writer)
     {
         writer.Put(DoorId);
+        writer.Put(Attempts);
         writer.Put(Unlocked);
         writer.Put(Broken);
     }
@@ -28,6 +29,7 @@ public struct LockPickingSyncPacket : INetSerializable
     public void Deserialize(NetDataReader reader)
     {
         DoorId = reader.GetString();
+        Attempts = reader.GetInt();
         Unlocked = reader.GetBool();
         Broken = reader.GetBool();
     }
