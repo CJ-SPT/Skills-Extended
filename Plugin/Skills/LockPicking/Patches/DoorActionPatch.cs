@@ -19,6 +19,12 @@ internal class DoorActionPatch : ModulePatch
         {
             return;
         }
+
+        // Disable without the sync plugin
+        if (SkillsExtendedInfo.IsFikaPresent && !SkillsExtendedInfo.SyncPluginPresent)
+        {
+            return;
+        }
         
         if (!SkillsExtendedPlugin.SkillData.LockPicking.Enabled 
             || WorldInteractionUtils.IsBotInteraction(owner)
