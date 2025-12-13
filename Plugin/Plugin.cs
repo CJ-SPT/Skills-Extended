@@ -72,7 +72,7 @@ public class Plugin : BaseUnityPlugin
     {
         Keys = Get<KeysData>("/skillsExtended/GetKeys");
         SkillData = Get<SkillsConfig>("/skillsExtended/GetSkillsConfig");
-
+        
         LockPickingHelpers.LoadMiniGame();
     }
 
@@ -92,7 +92,7 @@ public class Plugin : BaseUnityPlugin
             throw new InvalidOperationException("The response from the server is null or empty.");
         }
 
-        return DataContractSerializer.Deserialize<T>(req);
+        return JsonConvert.DeserializeObject<T>(req);
     }
 
     private static void DetectSoftDependencies()

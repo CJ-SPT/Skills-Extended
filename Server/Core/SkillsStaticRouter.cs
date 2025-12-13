@@ -11,6 +11,7 @@ public class SkillsStaticRouter : StaticRouter
 {
     private static ISptLogger<SkillsStaticRouter>? _logger;
     private static ConfigController? _configController;
+    private static JsonUtil? _jsonUtil;
     private static DatabaseImporter? _databaseImporter;
     
     public SkillsStaticRouter(
@@ -22,6 +23,7 @@ public class SkillsStaticRouter : StaticRouter
     {
         _logger = logger;
         _configController = configController;
+        _jsonUtil =  jsonUtil;
         _databaseImporter = databaseImporter;
     }
     
@@ -41,11 +43,11 @@ public class SkillsStaticRouter : StaticRouter
 
     private static ValueTask<string> GetSerializedConfigResponse()
     {
-        return new ValueTask<string>(DataContractSerializer.Serialize(_configController!.SkillsConfig)!);
+        return new ValueTask<string>(_jsonUtil!.Serialize(_configController!.SkillsConfig)!);
     }
 
     private static ValueTask<string> GetSerializedKeysResponse()
     {
-        return new ValueTask<string>(DataContractSerializer.Serialize(_databaseImporter!.GetKeyLocales())!);
+        return new ValueTask<string>(_jsonUtil!.Serialize(_databaseImporter!.GetKeyLocales())!);
     }
 }

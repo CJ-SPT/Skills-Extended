@@ -13,6 +13,7 @@ namespace SkillsExtended.Core;
 public class ConfigController(
     ISptLogger<ConfigController> logger,
     FileUtil fileUtil,
+    JsonUtil jsonUtil,
     IReadOnlyList<SptMod> loadedMods
     ) : IOnLoad
 {
@@ -27,19 +28,13 @@ public class ConfigController(
         await LoadServerConfig();
         
         IsFikaPresent = loadedMods.Any(m => m.ModMetadata.ModGuid == "Fika");
-
-        if (IsFikaPresent)
-        {
-            logger.Warning("[Skills Extended] Fika has been detected -- Compatibility is experimental. Use at your own risk.");
-            logger.Warning("[Skills Extended] Lockpicking has been disabled.");
-        }
     }
 
     public async Task SaveSkillsConfig()
     {
         var path = Path.Combine(SeModMetadata.ResourcesDirectory, "Configs", "SkillsConfig.json");
         
-        var text = DataContractSerializer.Serialize(SkillsConfig);
+        var text = jsonUtil.Serialize(SkillsConfig, true);
         await fileUtil.WriteFileAsync(path, text!);
     }
     
@@ -48,14 +43,14 @@ public class ConfigController(
         var path = Path.Combine(SeModMetadata.ResourcesDirectory, "Configs", "SkillsConfig.json");
         
         var text = await fileUtil.ReadFileAsync(path);
-        SkillsConfig = DataContractSerializer.Deserialize<SkillsConfig>(text)!;
+        SkillsConfig = jsonUtil.Deserialize<SkillsConfig>(text)!;
     }
     
     public async Task SaveServerConfig()
     {
         var path = Path.Combine(SeModMetadata.ResourcesDirectory, "Configs", "ServerConfig.json");
         
-        var text = DataContractSerializer.Serialize(ServerConfig);
+        var text = jsonUtil.Serialize(ServerConfig, true);
         await fileUtil.WriteFileAsync(path, text!);
     }
     
@@ -64,6 +59,6 @@ public class ConfigController(
         var path = Path.Combine(SeModMetadata.ResourcesDirectory, "Configs", "ServerConfig.json");
         
         var text = await fileUtil.ReadFileAsync(path);
-        ServerConfig = DataContractSerializer.Deserialize<ServerConfig>(text)!;
+        ServerConfig = jsonUtil.Deserialize<ServerConfig>(text)!;
     }
 }
