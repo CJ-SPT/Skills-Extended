@@ -39,14 +39,13 @@ internal class OnGameStartedPatch : ModulePatch
     [PatchPostfix]
     private static void Postfix(GameWorld __instance)
     {
-        LockPickingHelpers.InitializeLockpickingForLocation(__instance.LocationId);
-        
         // Required to not break the headless, we don't need any of this there.
         if (!__instance.MainPlayer || SkillsExtendedInfo.IsFikaHeadless)
         {
             return;
         }
         
+        LockPickingHelpers.InitializeLockpickingForLocation(__instance.LocationId);
         Player = __instance.MainPlayer;
         
 #if DEBUG
