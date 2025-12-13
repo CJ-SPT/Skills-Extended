@@ -73,7 +73,7 @@
         <!-- Zip into a release format -->
         <ZipDirectory
                 SourceDirectory="$(SolutionDir)release\SkillsExtendedFika\"
-                DestinationFile="$(SolutionDir)release\SkillsExtendedFika-$(SourceRevisionId).zip"
+                DestinationFile="$(SolutionDir)release\SkillsExtendedFika-$(Configuration)-$(SourceRevisionId).zip"
         />
         
     </Target>
