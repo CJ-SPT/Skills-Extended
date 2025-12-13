@@ -88,6 +88,9 @@ public record ReleaseInformation
 {
     [JsonPropertyName("tag_name")]
     public required string Version { get; set; }
+    
+    [JsonPropertyName("prerelease")]
+    public required bool PreRelease { get; set; }
 
     [JsonPropertyName("html_url")]
     public required string DownloadUrl { get; init; }

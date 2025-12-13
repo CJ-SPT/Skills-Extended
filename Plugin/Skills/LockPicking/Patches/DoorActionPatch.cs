@@ -14,14 +14,15 @@ internal class DoorActionPatch : ModulePatch
     [PatchPostfix]
     private static void Postfix(ref ActionsReturnClass __result, GamePlayerOwner owner, WorldInteractiveObject worldInteractiveObject)
     {
-        if (SkillsExtendedInfo.IsFikaPresent)
+        // We're the headless, don't do anything
+        if (!Singleton<GameWorld>.Instance?.MainPlayer)
         {
             return;
         }
         
-        if (WorldInteractionUtils.IsBotInteraction(owner)
-            || !Plugin.SkillData.LockPicking.Enabled
-            || Singleton<GameWorld>.Instance.MainPlayer.Side == EPlayerSide.Savage)
+        if (!Plugin.SkillData.LockPicking.Enabled 
+            || WorldInteractionUtils.IsBotInteraction(owner)
+            || owner.Player.Side == EPlayerSide.Savage)
         {
             return;
         }

@@ -39,6 +39,8 @@ internal class OnGameStartedPatch : ModulePatch
     [PatchPostfix]
     private static void Postfix(GameWorld __instance)
     {
+        LockPickingHelpers.InitializeLockpickingForLocation(__instance.LocationId);
+        
         // Required to not break the headless, we don't need any of this there.
         if (!__instance.MainPlayer || SkillsExtendedInfo.IsFikaHeadless)
         {
@@ -50,12 +52,6 @@ internal class OnGameStartedPatch : ModulePatch
 #if DEBUG
         Plugin.Log.LogDebug($"Player map id: {Player.Location}");
 #endif
-
-        // Skip lock-picking on fika
-        if (!SkillsExtendedInfo.IsFikaPresent)
-        {
-            LockPickingHelpers.InitializeLockpickingForLocation(__instance.LocationId);
-        }
         
         Player.ActiveHealthController.EffectStartedEvent += ApplyMedicalXp;
         
