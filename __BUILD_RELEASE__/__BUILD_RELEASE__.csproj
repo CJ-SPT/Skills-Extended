@@ -45,6 +45,9 @@
                 SourceFiles="@(Plugin)"
                 DestinationFolder="$(SolutionDir)release\SkillsExtended\BepInEx\plugins\SkillsExtended\%(RecursiveDir)"
         />
+        
+        <!-- Delete the Fika sync plugin so it doesn't get bundled in the main release zip -->
+        <Delete Files="$(SolutionDir)release\SkillsExtended\BepInEx\plugins\SkillsExtended\SkillsExtendedFika.dll"/>
 
         <!-- Copy the prepatch -->
         <Copy
