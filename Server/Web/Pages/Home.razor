@@ -42,10 +42,10 @@
 
                                     @switch (release.IsLatest)
                                     {
-                                        case true when SeModMetadata.Instance.IsBetaVersion:
+                                        case true when SkillsExtendedInfo.IsBeta:
                                             <MudChip T="string" Size="Size.Small" Color="Color.Error">Beta</MudChip>
                                             break;
-                                        case true when !SeModMetadata.Instance.IsBetaVersion:
+                                        case true when !SkillsExtendedInfo.IsBeta:
                                             <MudChip T="string" Size="Size.Small" Color="Color.Success">Latest</MudChip>
                                             break;
                                     }

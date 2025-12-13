@@ -11,8 +11,8 @@ using SPT.Reflection.Patching;
 
 namespace SkillsExtendedFika;
 
-[BepInPlugin("com.cj.SkillsExtendedFika", "Skills Extended Fika", SkillsExtendedInfo.VERSION)]
-[BepInDependency("com.cj.SkillsExtended", SkillsExtendedInfo.VERSION)]
+[BepInPlugin("com.cj.SkillsExtendedFika", "Skills Extended Fika", SkillsExtendedInfo.SYNC_VERSION)]
+[BepInDependency("com.cj.SkillsExtended", SkillsExtendedInfo.MIN_MOD_VERSION_FOR_SYNC)]
 [BepInDependency("com.fika.core")]
 public class FikaSyncPlugin : BaseUnityPlugin
 {
@@ -30,6 +30,8 @@ public class FikaSyncPlugin : BaseUnityPlugin
         
         _patchManager = new PatchManager(this, true);
         _patchManager.EnablePatches();
+
+        SkillsExtendedInfo.SyncPluginPresent = true;
         
         FikaEventDispatcher.SubscribeEvent<FikaNetworkManagerCreatedEvent>(OnNetworkManagerCreated);
     }

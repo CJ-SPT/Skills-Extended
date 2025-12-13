@@ -59,6 +59,9 @@ public class SkillsExtendedPlugin : BaseUnityPlugin
         _patchManager = new PatchManager(this, true);
         _patchManager.EnablePatches();
 
+        SkillsExtendedInfo.IsFikaPresent = Chainloader.PluginInfos.Keys.Contains("com.fika.core");
+        SkillsExtendedInfo.IsFikaHeadless = Chainloader.PluginInfos.Keys.Contains("com.fika.headless");
+        
 #if DEBUG
         Logger.LogWarning($"PRE RELEASE BUILD OF `{SkillsExtendedInfo.VERSION}` - NO SUPPORT");
         Logger.LogWarning("DEBUG BUILD FEATURES ENABLED");

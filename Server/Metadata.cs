@@ -10,10 +10,8 @@ namespace SkillsExtended;
 public record SeModMetadata : AbstractModMetadata, IModWebMetadata
 {
     public static SeModMetadata Instance { get; } = new();
-    
-    public bool IsBetaVersion { get; init; } = true;
-    public override Version Version { get; init; } = new("2.2.0");
-    public override Range SptVersion { get; init; } = new("~4.0.2");
+    public override Version Version { get; init; } = new(SkillsExtendedInfo.VERSION);
+    public override Range SptVersion { get; init; } = new(SkillsExtendedInfo.SPT_VERSION);
     
     public override string ModGuid { get; init; } = "com.cj.SkillsExtended";
     public override string Name { get; init; } = "Skills Extended";

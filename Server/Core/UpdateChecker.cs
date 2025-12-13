@@ -21,7 +21,7 @@ internal class UpdateChecker(
 {
     public Task OnLoad()
     {
-        if (SeModMetadata.Instance.IsBetaVersion)
+        if (SkillsExtendedInfo.IsBeta)
         {
             return Task.CompletedTask;
         }
