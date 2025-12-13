@@ -25,7 +25,7 @@ public class GetBarterPricePatch : ModulePatch
     [PatchPostfix]
     private static void Postfix(TraderAssortmentControllerClass __instance, ref TraderClass.GStruct300? __result, Item[] items)
     {
-        if (!Plugin.SkillData.SilentOps.Enabled || items.IsNullOrEmpty())
+        if (!SkillsExtendedPlugin.SkillData.SilentOps.Enabled || items.IsNullOrEmpty())
         {
             return;
         }
@@ -75,7 +75,7 @@ public class RequiredItemsCountPatch : ModulePatch
     [PatchPostfix]
     private static void Postfix(GClass2064 __instance, ref int __result)
     {
-        if (!Plugin.SkillData.SilentOps.Enabled || GetBarterPricePatch.Selecteditem is not SilencerItemClass)
+        if (!SkillsExtendedPlugin.SkillData.SilentOps.Enabled || GetBarterPricePatch.Selecteditem is not SilencerItemClass)
         {
             return;
         }

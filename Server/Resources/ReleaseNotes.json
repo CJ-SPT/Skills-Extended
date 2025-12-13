@@ -1,9 +1,30 @@
 [
   {
-    "Version": "2.1.1",
-    "CodeName": "Rapport",
-    "ReleaseDate": "November 9, 2025",
+    "Version": "2.2.0",
+    "ReleaseDate": "December 11, 2025",
     "IsLatest": true,
+    "Features": [
+      "Automatic Fika detection -- This will allow for features to be disabled by me to ensure fika compatibility",
+      "Automatic Fika detection -- Lockpicking will be automatically disabled if fika is present. Lock-picks will be left in-game as to not corrupt profiles",
+      "Automatic Update Checker -- There will be a notification in the config page when an update is available",
+      "All skill buffs in the Physical category are now configurable",
+      "New Always level endurance option",
+      "New Always level strength option"
+    ],
+    "Improvements": [
+      "New common dll for this mod to share between the client and server, this is distributed with the mod. This is required so I can easily share common interfaces.",
+      "Internal code change: Each Physical skill is now its own class so their functionality can be expanded in the future"
+    ],
+    "BugFixes": [
+      "Fixes 2 missing door entries on streets",
+      "Fixes a missing door entry on customs",
+      "Fixes \"Object Reference not set to an instance of an object\" on raid start on the fika headless"
+    ]
+  },
+  {
+    "Version": "2.1.1",
+    "ReleaseDate": "November 9, 2025",
+    "IsLatest": false,
     "Features": [
       "Adds a skill level changer to the config web page -- You do not need to save any changes it is applied automatically",
       "Shadow connections now provides a chance for your scav to be generated as a cultist at a rate of 0.5% per level"
@@ -22,7 +43,6 @@
   },
   {
     "Version": "2.1.0",
-    "CodeName": "Rapport",
     "ReleaseDate": "October 30, 2025",
     "IsLatest": false,
     "Features": [
@@ -61,7 +81,6 @@
   },
   {
     "Version": "2.0.3",
-    "CodeName": "Resurrection",
     "ReleaseDate": "October 23, 2025",
     "IsLatest": false,
     "Features": [],
@@ -80,7 +99,6 @@
   },
   {
     "Version": "2.0.2",
-    "CodeName": "Resurrection",
     "ReleaseDate": "October 22, 2025",
     "IsLatest": false,
     "Features": [
@@ -96,7 +114,6 @@
   },
   {
     "Version": "2.0.1",
-    "CodeName": "Resurrection",
     "ReleaseDate": "October 20, 2025",
     "IsLatest": false,
     "Features": [
@@ -111,7 +128,6 @@
   },
   {
     "Version": "2.0.0",
-    "CodeName": "Resurrection",
     "ReleaseDate": "October 19, 2025",
     "IsLatest": false,
     "Features": [

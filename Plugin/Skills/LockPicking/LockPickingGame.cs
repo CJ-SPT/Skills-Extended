@@ -227,20 +227,20 @@ public class LockPickingGame : MonoBehaviour
         var doorLevel = LockPickingHelpers.GetLevelForDoor(owner.Player.Location, interactiveObject.Id);
         
         levelText.text = $"DOOR LEVEL: {doorLevel.ToString()}";
-        keyText.text = $"DOOR KEY: {Plugin.Keys.KeyLocale[interactiveObject.KeyId]}";
+        keyText.text = $"DOOR KEY: {SkillsExtendedPlugin.Keys.KeyLocale[interactiveObject.KeyId]}";
 
         _sweetSpotRange = sweetSpotRange;
         SetTimeLimit(doorLevel);
 
 #if DEBUG
-        Plugin.Log.LogDebug("========================================================");
-        Plugin.Log.LogDebug($"LEVEL:                          {doorLevel}");
-        Plugin.Log.LogDebug($"FORGIVENESS RANGE DEG:          {_sweetSpotRange}");
-        Plugin.Log.LogDebug($"ROTATE SPEED:                   {rotateSpeed}");
-        Plugin.Log.LogDebug($"TIME LIMIT:                     {_wiggleTimeLimit}");
-        Plugin.Log.LogDebug($"CYLINDER ROTATE DEG:            {rotateToWin}");
-        Plugin.Log.LogDebug($"CYLINDER POSITION WIN ANGLE:    {_lockPickSetAngle}");
-        Plugin.Log.LogDebug("========================================================");
+        SkillsExtendedPlugin.Log.LogDebug("========================================================");
+        SkillsExtendedPlugin.Log.LogDebug($"LEVEL:                          {doorLevel}");
+        SkillsExtendedPlugin.Log.LogDebug($"FORGIVENESS RANGE DEG:          {_sweetSpotRange}");
+        SkillsExtendedPlugin.Log.LogDebug($"ROTATE SPEED:                   {rotateSpeed}");
+        SkillsExtendedPlugin.Log.LogDebug($"TIME LIMIT:                     {_wiggleTimeLimit}");
+        SkillsExtendedPlugin.Log.LogDebug($"CYLINDER ROTATE DEG:            {rotateToWin}");
+        SkillsExtendedPlugin.Log.LogDebug($"CYLINDER POSITION WIN ANGLE:    {_lockPickSetAngle}");
+        SkillsExtendedPlugin.Log.LogDebug("========================================================");
 #endif
     }
     
@@ -258,14 +258,14 @@ public class LockPickingGame : MonoBehaviour
         SetSweetSpotRange(doorLevel);
         SetTimeLimit(doorLevel);
         
-        Plugin.Log.LogDebug("========================================================");
-        Plugin.Log.LogDebug($"LEVEL:                          {doorLevel}");
-        Plugin.Log.LogDebug($"FORGIVENESS RANGE DEG:          {_sweetSpotRange}");
-        Plugin.Log.LogDebug($"ROTATE SPEED:                   {rotateSpeed}");
-        Plugin.Log.LogDebug($"TIME LIMIT:                     {_wiggleTimeLimit}");
-        Plugin.Log.LogDebug($"CYLINDER ROTATE DEG:            {rotateToWin}");
-        Plugin.Log.LogDebug($"CYLINDER POSITION WIN ANGLE:    {_lockPickSetAngle}");
-        Plugin.Log.LogDebug("========================================================");
+        SkillsExtendedPlugin.Log.LogDebug("========================================================");
+        SkillsExtendedPlugin.Log.LogDebug($"LEVEL:                          {doorLevel}");
+        SkillsExtendedPlugin.Log.LogDebug($"FORGIVENESS RANGE DEG:          {_sweetSpotRange}");
+        SkillsExtendedPlugin.Log.LogDebug($"ROTATE SPEED:                   {rotateSpeed}");
+        SkillsExtendedPlugin.Log.LogDebug($"TIME LIMIT:                     {_wiggleTimeLimit}");
+        SkillsExtendedPlugin.Log.LogDebug($"CYLINDER ROTATE DEG:            {rotateToWin}");
+        SkillsExtendedPlugin.Log.LogDebug($"CYLINDER POSITION WIN ANGLE:    {_lockPickSetAngle}");
+        SkillsExtendedPlugin.Log.LogDebug("========================================================");
     }
 
     private bool ShouldClose()
@@ -342,7 +342,7 @@ public class LockPickingGame : MonoBehaviour
             if (_timeSpentWiggling > _wiggleTimeLimit)
             {
 #if DEBUG
-                Plugin.Log.LogDebug("Time limit reached");
+                SkillsExtendedPlugin.Log.LogDebug("Time limit reached");
 #endif
                 HandleWin(false);
             }
@@ -406,15 +406,15 @@ public class LockPickingGame : MonoBehaviour
         var doorMod = Mathf.Clamp(doorLevel / 35f, 0.05f, 1.5f);
 
 #if DEBUG
-        Plugin.Log.LogDebug($"SKILL: {skillMod}");
-        Plugin.Log.LogDebug($"DOOR: {doorMod}");
+        SkillsExtendedPlugin.Log.LogDebug($"SKILL: {skillMod}");
+        SkillsExtendedPlugin.Log.LogDebug($"DOOR: {doorMod}");
 #endif
         
-        var configVal = Plugin.SkillData.LockPicking.SweetSpotRangeBase;
+        var configVal = SkillsExtendedPlugin.SkillData.LockPicking.SweetSpotRangeBase;
         
         _sweetSpotRange = Mathf.Clamp((configVal - doorMod) * skillMod, 0f, 20f);
 #if DEBUG
-        Plugin.Log.LogDebug($"SWEET SPOT RANGE: {_sweetSpotRange}");
+        SkillsExtendedPlugin.Log.LogDebug($"SWEET SPOT RANGE: {_sweetSpotRange}");
 #endif
     }
     
@@ -423,7 +423,7 @@ public class LockPickingGame : MonoBehaviour
         var skillMod = 1 + SkillManager.SkillManagerExtended.LockPickingTimeBuff;
         var doorMod = Mathf.Clamp(doorLevel / 50f, 0.05f, 1f);
         
-        var configVal = Plugin.SkillData.LockPicking.PickStrengthBase;
+        var configVal = SkillsExtendedPlugin.SkillData.LockPicking.PickStrengthBase;
         
         var originalLimit = Mathf.Clamp((configVal - doorMod) * skillMod, 1f, 20f);
         

@@ -1,13 +1,12 @@
 ﻿using EFT;
-using SkillsExtended.Helpers;
-using SkillsExtended.Models;
-using SkillsExtended.Utils;
+using SkillsExtended.Config;
+using SkillsExtended.Extensions;
 
 namespace SkillsExtended.Skills.Core;
 
 public class SkillManagerExt(SkillManager skillManager)
 {
-    private static SkillDataResponse SkillData => Plugin.SkillData;
+    private static SkillsConfig SkillData => SkillsExtendedPlugin.SkillData;
 
     #region BUFFS
 
@@ -246,7 +245,7 @@ public class SkillManagerExt(SkillManager skillManager)
     {
         return
         [
-            ScavCooldownTimeReductionBuff.PerLevel(SkillData.ShadowConnections.ScavCooldownTimeReduction.NormalizeToPercentage()),
+            ScavCooldownTimeReductionBuff.PerLevel(SkillData.ShadowConnections.ScavCooldownTimeDec.NormalizeToPercentage()),
             CultistCircleReturnTimeReductionBuff.PerLevel(SkillData.ShadowConnections.CultistCircleReturnTimeReduction.NormalizeToPercentage()),
             ScavGenerateAsCultistChance.PerLevel(SkillData.ShadowConnections.ScavGenerateAsCultistChance.NormalizeToPercentage()),
             ScavCooldownTimeReductionEliteBuff
@@ -282,8 +281,8 @@ public class SkillManagerExt(SkillManager skillManager)
         }
 
 #if DEBUG
-        Plugin.Log.LogDebug($"Buff {injectorBuff.BuffName} duration adjusted to {injectorBuff.Duration}");
-        Plugin.Log.LogDebug($"Buff {injectorBuff.BuffName} chance adjusted to {injectorBuff.Chance}");
+        SkillsExtendedPlugin.Log.LogDebug($"Buff {injectorBuff.BuffName} duration adjusted to {injectorBuff.Duration}");
+        SkillsExtendedPlugin.Log.LogDebug($"Buff {injectorBuff.BuffName} chance adjusted to {injectorBuff.Chance}");
 #endif
     }
 }

@@ -39,17 +39,17 @@
                             <div class="d-flex align-center justify-space-between" style="width: 100%">
                                 <div class="d-flex align-center gap-2">
                                     <MudText Typo="Typo.h6">Version @release.Version</MudText>
-                                    
-                                    @if (!string.IsNullOrEmpty(release.CodeName))
+
+                                    @switch (release.IsLatest)
                                     {
-                                        <MudChip T="string" Size="Size.Small" Color="Color.Tertiary">Codename: @release.CodeName</MudChip>
+                                        case true when SkillsExtendedInfo.IsBeta:
+                                            <MudChip T="string" Size="Size.Small" Color="Color.Error">Beta</MudChip>
+                                            break;
+                                        case true when !SkillsExtendedInfo.IsBeta:
+                                            <MudChip T="string" Size="Size.Small" Color="Color.Success">Latest</MudChip>
+                                            break;
                                     }
-                                    
-                                    @if (release.IsLatest)
-                                    {
-                                        <MudChip T="string" Size="Size.Small" Color="Color.Success">Latest</MudChip>
-                                    }
-                                    
+
                                 </div>
                                 <MudText Typo="Typo.body2" Color="Color.Secondary">@release.ReleaseDate</MudText>
                             </div>
@@ -148,7 +148,6 @@
         return _releaseNotes?.Select(r => new ReleaseNote
         {
             Version = r.Version,
-            CodeName = r.CodeName,
             ReleaseDate = r.ReleaseDate,
             IsLatest = r.IsLatest,
             Features = _selectedFilter == "feature" ? r.Features : [],

@@ -1,0 +1,11 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.1</TargetFramework>
+        <Nullable>disable</Nullable>
+        <AssemblyName>SkillsExtendedCommon</AssemblyName>
+        <LangVersion>default</LangVersion>
+        <RootNamespace>SkillsExtended</RootNamespace>
+    </PropertyGroup>
+
+</Project>

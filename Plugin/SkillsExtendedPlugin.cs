@@ -16,21 +16,23 @@ using UnityEngine;
 
 namespace SkillsExtended;
 
-[BepInPlugin("com.cj.SkillsExtended", "Skills Extended", SkillsExtendedInfo.Version)]
+[BepInPlugin("com.cj.SkillsExtended", "Skills Extended", SkillsExtendedInfo.VERSION)]
 
 // Because I need the idle state type from it for lockpicking
 [BepInDependency("com.boogle.oldtarkovmovement", BepInDependency.DependencyFlags.SoftDependency)]
-public class Plugin : BaseUnityPlugin
+[BepInDependency("com.fika.core", BepInDependency.DependencyFlags.SoftDependency)]
+[BepInDependency("com.fika.headless", BepInDependency.DependencyFlags.SoftDependency)]
+public class SkillsExtendedPlugin : BaseUnityPlugin
 {
     /// <summary>
     ///     Key Information
     /// </summary>
-    public static KeysResponse Keys { get; private set; }
+    public static KeysData Keys { get; private set; }
 
     /// <summary>
     ///     Skills config
     /// </summary>
-    public static SkillDataResponse SkillData { get; private set; }
+    public static SkillsConfig SkillData { get; private set; }
 
     /// <summary>
     ///     Logger
@@ -53,12 +55,15 @@ public class Plugin : BaseUnityPlugin
 
         Log = Logger;
         ConfigManager.RegisterConfig(Config);
-
+        
         _patchManager = new PatchManager(this, true);
         _patchManager.EnablePatches();
 
+        SkillsExtendedInfo.IsFikaPresent = Chainloader.PluginInfos.Keys.Contains("com.fika.core");
+        SkillsExtendedInfo.IsFikaHeadless = Chainloader.PluginInfos.Keys.Contains("com.fika.headless");
+        
 #if DEBUG
-        Logger.LogWarning($"PRE RELEASE BUILD OF `{SkillsExtendedInfo.Version}` - NO SUPPORT");
+        Logger.LogWarning($"PRE RELEASE BUILD OF `{SkillsExtendedInfo.VERSION}` - NO SUPPORT");
         Logger.LogWarning("DEBUG BUILD FEATURES ENABLED");
         ConsoleCommands.RegisterCommands();
 #endif
@@ -68,9 +73,9 @@ public class Plugin : BaseUnityPlugin
 
     private void Start()
     {
-        Keys = Get<KeysResponse>("/skillsExtended/GetKeys");
-        SkillData = Get<SkillDataResponse>("/skillsExtended/GetSkillsConfig");
-
+        Keys = Get<KeysData>("/skillsExtended/GetKeys");
+        SkillData = Get<SkillsConfig>("/skillsExtended/GetSkillsConfig");
+        
         LockPickingHelpers.LoadMiniGame();
     }
 
@@ -81,7 +86,7 @@ public class Plugin : BaseUnityPlugin
     /// <typeparam name="T">Type of response</typeparam>
     /// <returns>Response</returns>
     /// <exception cref="InvalidOperationException"></exception>
-    private static T Get<T>(string url)
+    private static T Get<T>(string url) where T : class
     {
         var req = RequestHandler.GetJson(url);
 
@@ -110,13 +115,13 @@ public class Plugin : BaseUnityPlugin
         public static bool CheckEftVersion(ManualLogSource logger, ConfigFile config = null)
         {
             var currentVersion = FileVersionInfo.GetVersionInfo(BepInEx.Paths.ExecutablePath).FilePrivatePart;
-            if (currentVersion == SkillsExtendedInfo.TarkovVersion)
+            if (currentVersion == SkillsExtendedInfo.TARKOV_VERSION)
             {
                 return true;
             }
             
             var errorMessage =
-                $"ERROR: This version of Skills Extended was built for Tarkov {SkillsExtendedInfo.TarkovVersion}, but you are running {currentVersion}. Please download the correct plugin version.";
+                $"ERROR: This version of Skills Extended was built for Tarkov {SkillsExtendedInfo.TARKOV_VERSION}, but you are running {currentVersion}. Please download the correct plugin version.";
             logger.LogError(errorMessage);
             Chainloader.DependencyErrors.Add(errorMessage);
 

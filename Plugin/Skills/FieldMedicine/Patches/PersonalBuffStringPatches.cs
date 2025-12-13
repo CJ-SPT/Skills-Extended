@@ -16,7 +16,7 @@ internal class PersonalBuffFullStringPatch : ModulePatch
     [PatchPrefix]
     public static void Prefix(InjectorBuff __instance)
     {
-        if (!Plugin.SkillData.FieldMedicine.Enabled)
+        if (!SkillsExtendedPlugin.SkillData.FieldMedicine.Enabled)
         {
             return;
         }

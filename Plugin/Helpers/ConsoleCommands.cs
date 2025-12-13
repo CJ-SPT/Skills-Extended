@@ -42,7 +42,7 @@ internal static class ConsoleCommands
 
         foreach (var weapon in weapons)
         {
-            Plugin.Log.LogDebug($"Template ID: {weapon.TemplateId}, locale name: {weapon.LocalizedName()}");
+            SkillsExtendedPlugin.Log.LogDebug($"Template ID: {weapon.TemplateId}, locale name: {weapon.LocalizedName()}");
         }
     }
 

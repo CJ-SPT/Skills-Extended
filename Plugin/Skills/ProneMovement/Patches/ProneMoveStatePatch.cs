@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using EFT;
 using HarmonyLib;
-using SkillsExtended.Models;
+using SkillsExtended.Config.Skills;
 using SPT.Reflection.Patching;
 using UnityEngine;
 
@@ -10,7 +10,7 @@ namespace SkillsExtended.Skills.ProneMovement.Patches;
 public class ProneMoveStatePatch : ModulePatch
 {
     private static FieldInfo _playerField;
-    private static ProneMovementData ProneData => Plugin.SkillData.ProneMovement;
+    private static ProneMovementData ProneData => SkillsExtendedPlugin.SkillData.ProneMovement;
     
     protected override MethodBase GetTargetMethod()
     {
@@ -51,7 +51,7 @@ public class ProneMoveStatePatch : ModulePatch
 public class ProneMoveVolumePatch : ModulePatch
 {
     private static FieldInfo _playerField;
-    private static ProneMovementData proneData => Plugin.SkillData.ProneMovement;
+    private static ProneMovementData proneData => SkillsExtendedPlugin.SkillData.ProneMovement;
     
     protected override MethodBase GetTargetMethod()
     {

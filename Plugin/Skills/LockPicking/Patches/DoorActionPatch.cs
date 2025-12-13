@@ -14,9 +14,21 @@ internal class DoorActionPatch : ModulePatch
     [PatchPostfix]
     private static void Postfix(ref ActionsReturnClass __result, GamePlayerOwner owner, WorldInteractiveObject worldInteractiveObject)
     {
-        if (WorldInteractionUtils.IsBotInteraction(owner)
-            || !Plugin.SkillData.LockPicking.Enabled
-            || Singleton<GameWorld>.Instance.MainPlayer.Side == EPlayerSide.Savage)
+        // We're the headless, don't do anything
+        if (!Singleton<GameWorld>.Instance?.MainPlayer)
+        {
+            return;
+        }
+
+        // Disable without the sync plugin
+        if (SkillsExtendedInfo.IsFikaPresent && !SkillsExtendedInfo.SyncPluginPresent)
+        {
+            return;
+        }
+        
+        if (!SkillsExtendedPlugin.SkillData.LockPicking.Enabled 
+            || WorldInteractionUtils.IsBotInteraction(owner)
+            || owner.Player.Side == EPlayerSide.Savage)
         {
             return;
         }

@@ -1,25 +1,25 @@
 {
     "FirstAid": {        
-        "ENABLED": true,
-        "XP_PER_ACTION": 6.25,
-        "MEDKIT_USAGE_REDUCTION_PER_LEVEL": 0.5,
-        "MEDKIT_SPEED_BONUS_PER_LEVEL": 0.6
+        "Enabled": true,
+        "XpPerAction": 6.25,
+        "MedkitUsageReduction": 0.5,
+        "ItemSpeedBonus": 0.6
     },
     "FieldMedicine": {        
-        "ENABLED": true,
-        "XP_PER_ACTION": 5.50,
-        "SKILL_BONUS_PER_LEVEL": 0.5,
-        "DURATION_BONUS_PER_LEVEL": 1,
-        "POSITIVE_EFFECT_BONUS_PER_LEVEL": 0.5
+        "Enabled": true,
+        "XpPerAction": 5.50,
+        "SkillBonus": 0.5,
+        "DurationBonus": 1,
+        "PositiveEffectChanceBonus": 0.5
     },
     "NatoWeapons": {
-        "ENABLED": true,
-        "XP_PER_ACTION": 0.1275,
-        "SKILL_SHARE_ENABLED": true,
-        "SKILL_SHARE_XP_RATIO": 0.10,
-        "ERGO_MOD_PER_LEVEL": 0.6,
-        "RECOIL_REDUCTION_MOD_PER_LEVEL": 0.4,
-        "WEAPONS": [
+        "Enabled": true,
+        "XpPerAction": 0.1275,
+        "SkillShareEnabled": true,
+        "SkillShareXpRatio": 0.10,
+        "ErgoMod": 0.6,
+        "RecoilReduction": 0.4,
+        "Weapons": [
             "__CARBINES__",
             "5f2a9575926fd9352339381f",
             "628b5638ad252a16da6dd245",
@@ -109,13 +109,13 @@
         ]
     },
     "EasternWeapons": {
-        "ENABLED": true,
-        "XP_PER_ACTION": 0.1275,
-        "SKILL_SHARE_ENABLED": true,
-        "SKILL_SHARE_XP_RATIO": 0.10,
-        "ERGO_MOD_PER_LEVEL": 0.4,
-        "RECOIL_REDUCTION_MOD_PER_LEVEL": 0.3,
-        "WEAPONS": [
+        "Enabled": true,
+        "XpPerAction": 0.1275,
+        "SkillShareEnabled": true,
+        "SkillShareXpRatio": 0.10,
+        "ErgoMod": 0.4,
+        "RecoilReduction": 0.3,
+        "Weapons": [
             "__CARBINES__",
             "644674a13d52156624001fbc",
             "5c07c60e0db834002330051f",
@@ -206,22 +206,22 @@
         ]
     },
     "LockPicking": {
-        "ENABLED": true,
-        "PICK_STRENGTH_BASE": 1.50,
-        "PICK_STRENGTH_PER_LEVEL": 2.5,
-        "SWEET_SPOT_RANGE_BASE": 3.75,
-        "SWEET_SPOT_RANGE_PER_LEVEL": 1.5,
-        "ATTEMPTS_BEFORE_BREAK": 3,
-        "INSPECT_LOCK_XP_RATIO": 0.15,
-        "FAILURE_LOCK_XP_RATIO": 0.25,
-        "XP_TABLE": {
+        "Enabled": true,
+        "PickStrengthBase": 1.50,
+        "PickStrengthPerLevel": 2.5,
+        "SweetSpotRangeBase": 3.75,
+        "SweetSpotRangePerLevel": 1.5,
+        "AttemptsBeforeBreak": 3,
+        "InspectLockXpRatio": 0.15,
+        "FailureLockXpRatio": 0.25,
+        "XpTable": {
             "1": 1.25,
             "2": 2.00,
             "3": 2.55,
             "4": 3.10,
             "5": 3.50
         },
-        "DOOR_PICK_LEVELS": {
+        "DoorPickLevels": {
             "Factory": {
                 "door_Factory_Rework_Areas_00006": 2,
                 "door_Factory_Rework_Basement_00006": 2,
@@ -235,6 +235,7 @@
                 "Lootable_00063": 3
             },
             "Customs": {
+                "door_custom_Abandoned_Plant_00001": 2,
                 "door_custom_Tamozhnya_00000": 3,
                 "door_custom_TrailerPark_00000": 2,
                 "door_custom_TrailerPark_00001": 2,
@@ -542,6 +543,8 @@
                 "trunk_City_NW_01_courtyard_00000": 1,
                 "door_City_NE_02_TD_Klimova_Beluga_indoor_00007": 1,
                 "door_City_NE_02_TD_Klimova_Beluga_indoor_00008": 1,
+                "door_City_NW_01_Cardinal_indoor_00013": 2,
+                "door_City_NW_01_Cardinal_indoor_00014": 2,
                 "trunk_City_Roads_Primorskiy_00035": 1,
                 "trunk_City_Roads_Primorskiy_00036": 1,
                 "trunk_City_SE_01_DesignStuff_00000": 1,
@@ -571,43 +574,93 @@
         }
     },
     "ProneMovement": {
-        "ENABLED": true,
-        "XP_PER_ACTION": 0.0025,
-        "MOVEMENT_SPEED_INCREASE_PER_LEVEL": 0.6,
-        "MOVEMENT_VOLUME_DECREASE_PER_LEVEL": 0.8
+        "Enabled": true,
+        "XpPerAction": 0.0025,
+        "MovementSpeedInc": 0.6,
+        "MovementVolumeDec": 0.8
     },
     "SilentOps": {
-      "ENABLED": true,
-      "XP_PER_ACTION": 3.75,
-      "MELEE_SPEED_INCREASE_PER_LEVEL": 0.5,
-      "VOLUME_REDUCTION_PER_LEVEL": 1,
-      "SILENCER_PRICE_RED_PER_LEVEL": 0.5
+      "Enabled": true,
+      "XpPerAction": 3.75,
+      "MeleeSpeedInc": 0.5,
+      "VolumeReduction": 1,
+      "SilencerPriceReduction": 0.5
+    },
+    "Endurance": {
+        "Enabled": true,
+        "AlwaysLevelEndurance": false,
+        "BuffEnduranceIncMax": 50,
+        "BuffEnduranceIncElite": 70,
+        "HandsPerLevel": 0,
+        "HandsElite": 50,
+        "BuffJumpCostRedMax": 30,
+        "BuffBreathTimeIncMax": 100,
+        "BuffRestorationMax": 50,
+        "BuffRestorationElite": 75
     },
     "Strength": {
-      "ENABLED": true,
-      "COLLIDER_SPEED_BUFF_PER_LEVEL": 1
+      "Enabled": true, 
+      "AlwaysLevelStrength": false,
+      "BuffJumpHeightIncMax": 20,
+      "BuffLiftWeightIncMax": 30,
+      "BuffMeleePowerIncMax": 30,
+      "BuffSprintSpeedIncMax": 20,
+      "BuffThrowDistanceIncMax": 20,
+      "BuffAimFatigueMax": 20,
+      "BuffMeleeCritsPerLevel": 0,
+      "BuffMeleeCritsEliteBonus": 50,
+      "ColliderSpeedBuffMax": 75
+    },
+    "Vitality": {
+        "Enabled": true,
+        "BuffBleedChanceRedPerLevel": 1.2,
+        "BuffSurviobilityIncPerLevel": 0.4
+    },
+    "Health": {
+        "Enabled": true,
+        "BreakChanceRedPerLevel": 1.2,
+        "EnergyPerLevel": 0.6,
+        "HydrationPerLevel": 0.6
+    },
+    "Metabolism": {
+        "Enabled": true,
+        "RatioPlusPerLevel": 1,
+        "MiscDebuffTimePerLevel": 1
+    },
+    "StressResistance": {
+        "Enabled": true,
+        "StressPainPerLevel": 1,
+        "StressTremorPerLevel": 1.2
+    },
+    "Immunity": {
+        "Enabled": true,
+        "MiscEffectsPerLevel": 1,
+        "PoisonBuffPerLevel": 1,
+        "PainKillerPerLevel": 0.6,
+        "AvoidPoisonChanceElite": 90,
+        "AvoidMiscEffectsChanceElite": 90
     },
     "ShadowConnections": {
-      "ENABLED": true,
-      "XP_PER_ACTION": 2.25,
-      "SCAV_COOLDOWN_TIME_PER_LEVEL": 1,
-      "CULTIST_CIRCLE_RETURN_TIME_PER_LEVEL": 1,
-      "SCAV_GENERATE_AS_CULTIST_CHANCE_PER_LEVEL": 0.5
+      "Enabled": true,
+      "XpPerAction": 2.25,
+      "ScavCooldownTimeDec": 1,
+      "CultistCircleReturnTimeReduction": 1,
+      "ScavGenerateAsCultistChance": 0.5
     },
     "BearRawPower": {
-      "ENABLED": true,
-      "XP_PER_ACTION": 2.25,
-      "FACTION_LOCKED": true,
-      "PRAPOR_TRADING_COST_PER_LEVEL": 0.5,
-      "QUEST_EXP_REWARD_PER_LEVEL": 0.5,
-      "ALL_TRADER_COST_DECREASE": 7
+      "Enabled": true,
+      "XpPerAction": 2.25,
+      "FactionLocked": true,
+      "PraporTradingCostDec": 0.5,
+      "QuestExpRewardInc": 0.5,
+      "AllTraderCostDecrease": 7
     },
     "UsecNegotiations": {
-      "ENABLED": true,
-      "XP_PER_ACTION": 2.25,
-      "FACTION_LOCKED": true,
-      "PEACEKEEPER_TRADING_COST_PER_LEVEL": 0.5,
-      "QUEST_MONEY_REWARD_PER_LEVEL": 0.5,
-      "ALL_TRADER_COST_DECREASE": 7
+      "Enabled": true,
+      "XpPerAction": 2.25,
+      "FactionLocked": true,
+      "PeacekeeperTradingCostDec": 0.5,
+      "QuestMoneyRewardInc": 0.5,
+      "AllTraderCostDecrease": 7
     }
 }

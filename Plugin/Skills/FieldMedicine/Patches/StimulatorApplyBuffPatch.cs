@@ -19,7 +19,7 @@ internal class StimulatorApplyBuffPatch : ModulePatch
     [PatchPrefix]
     public static bool Prefix(InjectorBuff buffSettings, float refValue, Vector2? limits, ref float __result)
     {
-        if (!Plugin.SkillData.FieldMedicine.Enabled || limits is null)
+        if (!SkillsExtendedPlugin.SkillData.FieldMedicine.Enabled || limits is null)
         {
             return true;
         }

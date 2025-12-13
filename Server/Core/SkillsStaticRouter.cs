@@ -1,6 +1,4 @@
-﻿using SkillsExtended.Models;
-using SkillsExtended.Utils;
-using SPTarkov.DI.Annotations;
+﻿using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Utils;
@@ -24,7 +22,7 @@ public class SkillsStaticRouter : StaticRouter
     {
         _logger = logger;
         _configController = configController;
-        _jsonUtil = jsonUtil;
+        _jsonUtil =  jsonUtil;
         _databaseImporter = databaseImporter;
     }
     

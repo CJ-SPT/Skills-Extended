@@ -9,12 +9,14 @@ namespace SkillsExtended;
 
 public record SeModMetadata : AbstractModMetadata, IModWebMetadata
 {
+    public static SeModMetadata Instance { get; } = new();
+    public override Version Version { get; init; } = new(SkillsExtendedInfo.VERSION);
+    public override Range SptVersion { get; init; } = new(SkillsExtendedInfo.SPT_VERSION);
+    
     public override string ModGuid { get; init; } = "com.cj.SkillsExtended";
     public override string Name { get; init; } = "Skills Extended";
     public override string Author { get; init; } = "Cj";
     public override List<string>? Contributors { get; init; } = [];
-    public override Version Version { get; init; } = new("2.1.1");
-    public override Range SptVersion { get; init; } = new("~4.0");
     public override List<string>? Incompatibilities { get; init; }
     public override Dictionary<string, Range>? ModDependencies { get; init; }
     public override string? Url { get; init; } = "https://github.com/CJ-SPT/Skills-Extended";
@@ -23,9 +25,3 @@ public record SeModMetadata : AbstractModMetadata, IModWebMetadata
     
     public static readonly string ResourcesDirectory = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!, "Resources");
 }
-
-/// <summary>
-///     Dummy class used for logging injections inside of razor components.
-/// </summary>
-[Injectable]
-public class SkillsExtendedWebLogger;

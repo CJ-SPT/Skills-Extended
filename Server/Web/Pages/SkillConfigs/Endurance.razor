@@ -1,0 +1,168 @@
+﻿@page "/skills-extended/endurance"
+@using SkillsExtended.Config.Skills
+@layout BaseLayout;
+
+@inject ConfigController ConfigController
+
+<MudGrid Justify="Justify.Center" Style="min-height:100vh; display:flex; align-items:center;">
+    <MudItem xs="11" sm="8" md="6" lg="4">
+        <MudPaper Height="525px" Style="width:100%;">
+            <MudContainer MaxWidth="MaxWidth.Medium">
+                <MudGrid>
+                    <MudItem xs="6">
+                        <MudSwitch
+                            Class="d-flex align-center justify-center mud-width-full py-8"
+                            @bind-Value="Enabled" 
+                            Label="Enabled" 
+                            Color="Color.Success"/>
+                    </MudItem>
+                    
+                    <MudItem xs="6">
+                        <MudSwitch
+                            Class="d-flex align-center justify-center mud-width-full py-8"
+                            @bind-Value="AlwaysLevelEndurance" 
+                            Label="Always Level Endurance" 
+                            Color="Color.Success"/>
+                    </MudItem>
+
+                    <MudItem xs="6">
+                        <MudNumericField
+                            @bind-Value="EnduranceBuffEnduranceIncMax"
+                            Label="Stamina Increase Max"
+                            Variant="Variant.Filled"
+                            Step="1.00F"
+                            Min="0" Max="100"/>
+                    </MudItem>
+                    
+                    <MudItem xs="6">
+                        <MudNumericField
+                            @bind-Value="EnduranceBuffEnduranceIncElite"
+                            Label="Stamina Increase Elite Max"
+                            Variant="Variant.Filled"
+                            Step="1.00F"
+                            Min="0" Max="100"/>
+                    </MudItem>
+                    
+                    <MudItem xs="6">
+                        <MudNumericField
+                            @bind-Value="EnduranceHandsPerLevel"
+                            Label="Hand Stamina Max"
+                            Variant="Variant.Filled"
+                            Step="1.00F"
+                            Min="0" Max="100"/>
+                    </MudItem>
+                    
+                    <MudItem xs="6">
+                        <MudNumericField
+                            @bind-Value="EnduranceHandsMax"
+                            Label="Hand Stamina Elite Max"
+                            Variant="Variant.Filled"
+                            Step="1.00F"
+                            Min="0" Max="100"/>
+                    </MudItem>
+                    
+                    <MudItem xs="6">
+                        <MudNumericField
+                            @bind-Value="EnduranceBuffJumpCostRed"
+                            Label="Jump Cost Reduction Max"
+                            Variant="Variant.Filled"
+                            Step="1.00F"
+                            Min="0" Max="100"/>
+                    </MudItem>
+                    
+                    <MudItem xs="6">
+                        <MudNumericField
+                            @bind-Value="EnduranceBuffBreathTimeInc"
+                            Label="Breath Holding Time Increase Max"
+                            Variant="Variant.Filled"
+                            Step="1.00F"
+                            Min="0" Max="100"/>
+                    </MudItem>
+                    
+                    <MudItem xs="6">
+                        <MudNumericField
+                            @bind-Value="EnduranceBuffRestorationMax"
+                            Label="Breath Recovery Time Increase Max"
+                            Variant="Variant.Filled"
+                            Step="1.00F"
+                            Min="0" Max="100"/>
+                    </MudItem>
+                    
+                    <MudItem xs="6">
+                        <MudNumericField
+                            @bind-Value="EnduranceBuffRestorationElite"
+                            Label="Breath Recovery Time Increase Elite Max"
+                            Variant="Variant.Filled"
+                            Step="1.00F"
+                            Min="0" Max="100"/>
+                    </MudItem>
+                    
+                </MudGrid>
+            </MudContainer>
+        </MudPaper>
+    </MudItem>
+</MudGrid>
+
+@code {
+    EnduranceData Data => ConfigController.SkillsConfig.Endurance;
+    
+    bool Enabled
+    {
+        get => Data.Enabled;
+        set => Data.Enabled = value;
+    }
+    
+    bool AlwaysLevelEndurance
+    {
+        get => Data.AlwaysLevelEndurance;
+        set => Data.AlwaysLevelEndurance = value;
+    }
+
+    float EnduranceBuffEnduranceIncMax
+    {
+        get => Data.BuffEnduranceIncMax;
+        set => Data.BuffEnduranceIncMax = value;
+    }
+    
+    float EnduranceBuffEnduranceIncElite
+    {
+        get => Data.BuffEnduranceIncElite;
+        set => Data.BuffEnduranceIncElite = value;
+    }
+    
+    float EnduranceHandsPerLevel
+    {
+        get => Data.HandsPerLevel;
+        set => Data.HandsPerLevel = value;
+    }
+    
+    float EnduranceHandsMax
+    {
+        get => Data.HandsElite;
+        set => Data.HandsElite = value;
+    }
+    
+    float EnduranceBuffJumpCostRed
+    {
+        get => Data.BuffJumpCostRedMax;
+        set => Data.BuffJumpCostRedMax = value;
+    }
+    
+    float EnduranceBuffBreathTimeInc
+    {
+        get => Data.BuffBreathTimeIncMax;
+        set => Data.BuffBreathTimeIncMax = value;
+    }
+    
+    float EnduranceBuffRestorationMax
+    {
+        get => Data.BuffRestorationMax;
+        set => Data.BuffRestorationMax = value;
+    }
+    
+    float EnduranceBuffRestorationElite
+    {
+        get => Data.BuffRestorationElite;
+        set => Data.BuffRestorationElite = value;
+    }
+}

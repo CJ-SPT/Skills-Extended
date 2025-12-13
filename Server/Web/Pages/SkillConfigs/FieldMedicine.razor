@@ -1,4 +1,5 @@
 ﻿@page "/skills-extended/field-medicine"
+@using SkillsExtended.Config.Skills
 @layout BaseLayout;
 
 @inject ConfigController ConfigController
@@ -59,7 +60,7 @@
 </MudGrid>
 
 @code {
-    FieldMedicineConfig Data => ConfigController.SkillsConfig.FieldMedicine;
+    FieldMedicineData Data => ConfigController.SkillsConfig.FieldMedicine;
     
     bool Enabled
     {
@@ -87,7 +88,7 @@
     
     decimal PositiveEffectBonus
     {
-        get => (decimal)Data.PositiveEffectBonus;
-        set => Data.PositiveEffectBonus = (float)value;
+        get => (decimal)Data.PositiveEffectChanceBonus;
+        set => Data.PositiveEffectChanceBonus = (float)value;
     }
 }

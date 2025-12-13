@@ -1,9 +1,7 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Reflection;
 using EFT;
-using SkillsExtended.Helpers;
-using SkillsExtended.Utils;
+using SkillsExtended.Extensions;
 using SPT.Reflection.Patching;
 
 namespace SkillsExtended.Skills.Core.Patches;
@@ -30,7 +28,6 @@ internal class SkillClassCtorPatch : ModulePatch
         // This is where we set all of our buffs and actions,
         // done as a constructor patch, so they always exist when we need them
         InitializeNewSkills(skillManager, id, ref buffs, ref actions);
-        ModifyExistingSkills(skillManager, id, ref buffs, ref actions);
     }
 
     private static void InitializeNewSkills(
@@ -114,29 +111,5 @@ internal class SkillClassCtorPatch : ModulePatch
                 ];
                 break;
         }
-    }
-
-    private static void ModifyExistingSkills(
-        SkillManager skillManager, 
-        ESkillId id, 
-        ref SkillManager.SkillBuffAbstractClass[] buffs, 
-        ref SkillManager.SkillActionClass[] actions)
-    {
-        var buffList = buffs.ToList();
-        var actionList = actions.ToList();
-
-        var skillData = Plugin.SkillData;
-        var skillMgrExt = skillManager.SkillManagerExtended;
-
-        switch (id)
-        {
-            case ESkillId.Strength:
-                buffList.Add(skillMgrExt.StrengthBushSpeedIncBuff.PerLevel(skillData.Strength.ColliderSpeedBuff.NormalizeToPercentage()));
-                buffList.Add(skillMgrExt.StrengthBushSpeedIncBuffElite);
-                break;
-        }
-        
-        buffs = buffList.ToArray();
-        actions = actionList.ToArray();
     }
 }

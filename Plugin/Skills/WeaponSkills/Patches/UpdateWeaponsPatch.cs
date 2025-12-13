@@ -34,14 +34,14 @@ internal class UpdateWeaponsPatch : ModulePatch
     [PatchPrefix]
     public static void Prefix(EEftScreenType eftScreenType)
     {
-        if (Plugin.SkillData.NatoWeapons.Enabled)
+        if (SkillsExtendedPlugin.SkillData.NatoWeapons.Enabled)
         {
             UsecWeaponInstanceIds.Clear();
             
             StaticManager.BeginCoroutine(UpdateUsecWeapons());
         }
 
-        if (Plugin.SkillData.EasternWeapons.Enabled)
+        if (SkillsExtendedPlugin.SkillData.EasternWeapons.Enabled)
         {
             EasternWeaponInstanceIds.Clear();
             
@@ -56,7 +56,7 @@ internal class UpdateWeaponsPatch : ModulePatch
             yield break; 
         }
         
-        var natoWeapons = Plugin.SkillData.NatoWeapons;
+        var natoWeapons = SkillsExtendedPlugin.SkillData.NatoWeapons;
 
         var side = GameUtils.IsScav() ? EPlayerSide.Savage : EPlayerSide.Usec;
         
@@ -78,7 +78,7 @@ internal class UpdateWeaponsPatch : ModulePatch
                 };
 
 #if DEBUG
-                Plugin.Log.LogDebug($"original {weapon.LocalizedName()} ergo: {weapon.Template.Ergonomics}, up {weapon.Template.RecoilForceUp}, back {weapon.Template.RecoilForceBack}");
+                SkillsExtendedPlugin.Log.LogDebug($"original {weapon.LocalizedName()} ergo: {weapon.Template.Ergonomics}, up {weapon.Template.RecoilForceUp}, back {weapon.Template.RecoilForceBack}");
 #endif
                 UsecOriginalWeaponValues.Add(item.TemplateId, origVals);
             }
@@ -101,7 +101,7 @@ internal class UpdateWeaponsPatch : ModulePatch
             weapon.Template.RecoilForceBack = UsecOriginalWeaponValues[item.TemplateId].weaponBack * (1 - skillMgrExt.UsecArSystemsRecoilBuff);
 
 #if DEBUG
-            Plugin.Log.LogDebug($"New {weapon.LocalizedName()} ergo: {weapon.Template.Ergonomics}, up {weapon.Template.RecoilForceUp}, back {weapon.Template.RecoilForceBack}");
+            SkillsExtendedPlugin.Log.LogDebug($"New {weapon.LocalizedName()} ergo: {weapon.Template.Ergonomics}, up {weapon.Template.RecoilForceUp}, back {weapon.Template.RecoilForceBack}");
 #endif
             
             UsecWeaponInstanceIds.Add(item.Id, GameUtils.GetSkillManager()!.UsecArsystems.Level);
@@ -117,7 +117,7 @@ internal class UpdateWeaponsPatch : ModulePatch
             yield break;
         }
 
-        var easternWeapons = Plugin.SkillData.EasternWeapons;
+        var easternWeapons = SkillsExtendedPlugin.SkillData.EasternWeapons;
 
         var side = GameUtils.IsScav() ? EPlayerSide.Savage : EPlayerSide.Usec;
         
@@ -142,7 +142,7 @@ internal class UpdateWeaponsPatch : ModulePatch
                 };
 
 #if DEBUG
-                Plugin.Log.LogDebug(
+                SkillsExtendedPlugin.Log.LogDebug(
                     $"original {weapon.LocalizedName()} ergo: {weapon.Template.Ergonomics}, up {weapon.Template.RecoilForceUp}, back {weapon.Template.RecoilForceBack}");
 #endif
                 
@@ -167,7 +167,7 @@ internal class UpdateWeaponsPatch : ModulePatch
             weapon.Template.RecoilForceBack = EasternOriginalWeaponValues[item.TemplateId].weaponBack * (1 - skillMgrExt.BearAkSystemsRecoilBuff);
 
 #if DEBUG
-            Plugin.Log.LogDebug(
+            SkillsExtendedPlugin.Log.LogDebug(
                 $"New {weapon.LocalizedName()} ergo: {weapon.Template.Ergonomics}, up {weapon.Template.RecoilForceUp}, back {weapon.Template.RecoilForceBack}");
 #endif
             

@@ -1,0 +1,109 @@
+﻿@page "/skills-extended/immunity"
+@using SkillsExtended.Config.Skills
+@layout BaseLayout;
+
+@inject ConfigController ConfigController
+
+<MudGrid Justify="Justify.Center" Style="min-height:100vh; display:flex; align-items:center;">
+    <MudItem xs="11" sm="8" md="6" lg="4">
+        <MudPaper Height="325px" Style="width:100%;">
+            <MudContainer MaxWidth="MaxWidth.Medium">
+                <MudGrid>
+                    <MudItem xs="6">
+                        <MudSwitch
+                            Class="d-flex align-center justify-center mud-width-full py-8"
+                            @bind-Value="Enabled" 
+                            Label="Enabled" 
+                            Color="Color.Success"/>
+                    </MudItem>
+                    
+                    <MudItem xs="6">
+                        <MudNumericField
+                            @bind-Value="MiscEffectsPerLevel"
+                            Label="Negative Food Effect Reduction Per Level"
+                            Variant="Variant.Filled"
+                            Step="0.25F"
+                            Min="0" Max="100"/>
+                    </MudItem>
+                    
+                    <MudItem xs="6">
+                        <MudNumericField
+                            @bind-Value="PoisonBuffPerLevel"
+                            Label="Poison Effect Reduction Per Level"
+                            Variant="Variant.Filled"
+                            Step="0.25F"
+                            Min="0" Max="100"/>
+                    </MudItem>
+                    
+                    <MudItem xs="6">
+                        <MudNumericField
+                            @bind-Value="PainKillerPerLevel"
+                            Label="Painkiller Action Time Increase Per Level"
+                            Variant="Variant.Filled"
+                            Step="0.25F"
+                            Min="0" Max="100"/>
+                    </MudItem>
+                    
+                    <MudItem xs="6">
+                        <MudNumericField
+                            @bind-Value="AvoidPoisonChanceElite"
+                            Label="Immune To Poison Chance Elite"
+                            Variant="Variant.Filled"
+                            Step="1.00F"
+                            Min="0" Max="100"/>
+                    </MudItem>
+                    
+                    <MudItem xs="6">
+                        <MudNumericField
+                            @bind-Value="AvoidMiscEffectsChanceElite"
+                            Label="Immune To Negative Effects Elite"
+                            Variant="Variant.Filled"
+                            Step="1.00F"
+                            Min="0" Max="100"/>
+                    </MudItem>
+                    
+                </MudGrid>
+            </MudContainer>
+        </MudPaper>
+    </MudItem>
+</MudGrid>
+
+@code {
+    ImmunityData Data => ConfigController.SkillsConfig.Immunity;
+    
+    bool Enabled
+    {
+        get => Data.Enabled;
+        set => Data.Enabled = value;
+    }
+    
+    float MiscEffectsPerLevel
+    {
+        get => Data.MiscEffectsPerLevel;
+        set => Data.MiscEffectsPerLevel = value;
+    }
+    
+    float PoisonBuffPerLevel
+    {
+        get => Data.PoisonBuffPerLevel;
+        set => Data.PoisonBuffPerLevel = value;
+    }
+    
+    float PainKillerPerLevel
+    {
+        get => Data.PainKillerPerLevel;
+        set => Data.PainKillerPerLevel = value;
+    }
+    
+    float AvoidPoisonChanceElite
+    {
+        get => Data.AvoidPoisonChanceElite;
+        set => Data.AvoidPoisonChanceElite = value;
+    }
+    
+    float AvoidMiscEffectsChanceElite
+    {
+        get => Data.AvoidMiscEffectsChanceElite;
+        set => Data.AvoidMiscEffectsChanceElite = value;
+    }
+}

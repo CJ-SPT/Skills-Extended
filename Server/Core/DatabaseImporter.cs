@@ -1,4 +1,5 @@
-﻿using SkillsExtended.Models;
+﻿using SkillsExtended.Config;
+using SkillsExtended.Models;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Helpers;
@@ -33,14 +34,15 @@ public class DatabaseImporter(
         await LoadAchievements();
     }
     
-    public KeysResponse GetKeyLocales()
+    public KeysData GetKeyLocales()
     {
         var items = databaseService.GetItems().Values;
         var locales = localeService.GetLocaleDb();
 
-        var keysResponse = new KeysResponse()
+        var keysResponse = new KeysData
         {
-            KeyLocale = []
+            KeyLocale = [],
+            ValueLocales = []
         };
         
         var keys = items.Where(

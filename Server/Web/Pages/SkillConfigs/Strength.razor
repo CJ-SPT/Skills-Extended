@@ -1,0 +1,183 @@
+﻿@page "/skills-extended/strength"
+@using SkillsExtended.Config.Skills
+@layout BaseLayout;
+
+@inject ConfigController ConfigController
+
+<MudGrid Justify="Justify.Center" Style="min-height:100vh; display:flex; align-items:center;">
+    <MudItem xs="11" sm="8" md="6" lg="4">
+        <MudPaper Height="575px" Style="width:100%;">
+            <MudContainer MaxWidth="MaxWidth.Medium">
+                <MudGrid>
+                    <MudItem xs="6">
+                        <MudSwitch
+                            Class="d-flex align-center justify-center mud-width-full py-8"
+                            @bind-Value="Enabled" 
+                            Label="Enabled" 
+                            Color="Color.Success"/>
+                    </MudItem>
+                    
+                    <MudItem xs="6">
+                        <MudSwitch
+                            Class="d-flex align-center justify-center mud-width-full py-8"
+                            @bind-Value="AlwaysLevelStrength" 
+                            Label="Always Level Strength" 
+                            Color="Color.Success"/>
+                    </MudItem>
+
+                    <MudItem xs="6">
+                        <MudNumericField
+                            @bind-Value="BuffJumpHeightIncMax"
+                            Label="Jump Height Increase Max"
+                            Variant="Variant.Filled"
+                            Step="1.00F"
+                            Min="0" Max="100"/>
+                    </MudItem>
+                    
+                    <MudItem xs="6">
+                        <MudNumericField
+                            @bind-Value="BuffLiftWeightIncMax"
+                            Label="Weight Increase Max"
+                            Variant="Variant.Filled"
+                            Step="1.00F"
+                            Min="0" Max="100"/>
+                    </MudItem>
+                    
+                    <MudItem xs="6">
+                        <MudNumericField
+                            @bind-Value="BuffMeleePowerIncMax"
+                            Label="Melee Power Max"
+                            Variant="Variant.Filled"
+                            Step="1.00F"
+                            Min="0" Max="100"/>
+                    </MudItem>
+                    
+                    <MudItem xs="6">
+                        <MudNumericField
+                            @bind-Value="BuffSprintSpeedIncMax"
+                            Label="Sprint Speed Max"
+                            Variant="Variant.Filled"
+                            Step="1.00F"
+                            Min="0" Max="100"/>
+                    </MudItem>
+                    
+                    <MudItem xs="6">
+                        <MudNumericField
+                            @bind-Value="BuffThrowDistanceIncMax"
+                            Label="Throw Distance Max"
+                            Variant="Variant.Filled"
+                            Step="1.00F"
+                            Min="0" Max="100"/>
+                    </MudItem>
+                    
+                    <MudItem xs="6">
+                        <MudNumericField
+                            @bind-Value="BuffAimFatigueMax"
+                            Label="Arm Fatigue Max"
+                            Variant="Variant.Filled"
+                            Step="1.00F"
+                            Min="0" Max="100"/>
+                    </MudItem>
+                    
+                    <MudItem xs="6">
+                        <MudNumericField
+                            @bind-Value="BuffMeleeCritsPerLevel"
+                            Label="Melee Crits Per Level"
+                            Variant="Variant.Filled"
+                            Step="1.00F"
+                            Min="0" Max="100"/>
+                    </MudItem>
+                    
+                    <MudItem xs="6">
+                        <MudNumericField
+                            @bind-Value="BuffMeleeCritsEliteBonus"
+                            Label="Melee Crits Elite Max"
+                            Variant="Variant.Filled"
+                            Step="1.00F"
+                            Min="0" Max="100"/>
+                    </MudItem>
+                    
+                    <MudItem xs="6">
+                        <MudNumericField
+                            @bind-Value="ColliderSpeedBuffMax"
+                            Label="Collider Speed Max"
+                            Variant="Variant.Filled"
+                            Step="1.00F"
+                            Min="0" Max="100"/>
+                    </MudItem>
+                    
+                </MudGrid>
+            </MudContainer>
+        </MudPaper>
+    </MudItem>
+</MudGrid>
+
+@code {
+    StrengthData Data => ConfigController.SkillsConfig.Strength;
+    
+    bool Enabled
+    {
+        get => Data.Enabled;
+        set => Data.Enabled = value;
+    }
+    
+    bool AlwaysLevelStrength
+    {
+        get => Data.AlwaysLevelStrength;
+        set => Data.AlwaysLevelStrength = value;
+    }
+
+    float BuffJumpHeightIncMax
+    {
+        get => Data.BuffJumpHeightIncMax;
+        set => Data.BuffJumpHeightIncMax = value;
+    }
+    
+    float BuffLiftWeightIncMax
+    {
+        get => Data.BuffLiftWeightIncMax;
+        set => Data.BuffLiftWeightIncMax = value;
+    }
+    
+    float BuffMeleePowerIncMax
+    {
+        get => Data.BuffMeleePowerIncMax;
+        set => Data.BuffMeleePowerIncMax = value;
+    }
+    
+    float BuffSprintSpeedIncMax
+    {
+        get => Data.BuffSprintSpeedIncMax;
+        set => Data.BuffSprintSpeedIncMax = value;
+    }
+    
+    float BuffThrowDistanceIncMax
+    {
+        get => Data.BuffThrowDistanceIncMax;
+        set => Data.BuffThrowDistanceIncMax = value;
+    }
+    
+    float BuffAimFatigueMax
+    {
+        get => Data.BuffAimFatigueMax;
+        set => Data.BuffAimFatigueMax = value;
+    }
+    
+    float BuffMeleeCritsPerLevel
+    {
+        get => Data.BuffMeleeCritsPerLevel;
+        set => Data.BuffMeleeCritsPerLevel = value;
+    }
+    
+    float BuffMeleeCritsEliteBonus
+    {
+        get => Data.BuffMeleeCritsEliteBonus;
+        set => Data.BuffMeleeCritsEliteBonus = value;
+    }
+    
+    float ColliderSpeedBuffMax
+    {
+        get => Data.ColliderSpeedBuffMax;
+        set => Data.ColliderSpeedBuffMax = value;
+    }
+}

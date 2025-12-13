@@ -28,7 +28,7 @@ internal class CanWalkPatch : ModulePatch
         }
         
         var skillMgrExt = ____player.Skills.SkillManagerExtended;
-        var skillData = Plugin.SkillData.FirstAid;
+        var skillData = SkillsExtendedPlugin.SkillData.FirstAid;
 
         if (!skillData.Enabled) return;
         if (!skillMgrExt.FirstAidMovementSpeedBuffElite) return;
