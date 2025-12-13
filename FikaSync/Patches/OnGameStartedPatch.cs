@@ -16,6 +16,6 @@ public class OnGameStartedPatch : ModulePatch
     [PatchPostfix]
     public static void PatchPostfix(GameWorld __instance)
     {
-        FikaSyncPlugin.LockPickingController = new LockPickingController(__instance);
+        FikaSyncPlugin.LockPickingController = new LockPickingFikaController(__instance);
     }
 }

@@ -10,21 +10,23 @@ using SPT.Reflection.Patching;
 
 namespace SkillsExtendedFika.Patches;
 
-public class LockPickActionPatch : ModulePatch
+public class LockPickBreakLockPatch : ModulePatch
 {
     protected override MethodBase GetTargetMethod()
     {
-        return AccessTools.Method(typeof(LockPickActionHandler), "BreakLock");
+        return AccessTools.Method(typeof(LockPickActionHandler), nameof(LockPickActionHandler.PickLockAction));
     }
 
     [PatchPostfix]
-    public static void Postfix(LockPickActionHandler __instance)
+    public static void Postfix(LockPickActionHandler __instance, bool unlocked)
     {
-        var packet = new LockBrokenPacket
+        var packet = new LockPickedPacket
         {
             DoorId = __instance.InteractiveObject.Id,
-            Broken = true
+            Unlocked = unlocked
         };
+
+        FikaSyncPlugin.Logger?.LogError("Sending door unlocked packet");
         
         if (FikaBackendUtils.IsServer)
         {

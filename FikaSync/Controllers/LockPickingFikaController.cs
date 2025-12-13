@@ -4,12 +4,12 @@ using EFT.Interactive;
 
 namespace SkillsExtendedFika.Controllers;
 
-public class LockPickingController
+public class LockPickingFikaController
 {
     private GameWorld _gameWorld;
     private List<WorldInteractiveObject> _doors = [];
 
-    public LockPickingController(GameWorld gameWorld)
+    public LockPickingFikaController(GameWorld gameWorld)
     {
         _gameWorld = gameWorld;
         GetDoors();
@@ -25,6 +25,22 @@ public class LockPickingController
             }
 
             door.Unlock();
+            break;
+        }
+    }
+
+    public void BreakLock(string doorId)
+    {
+        foreach (var door in _doors)
+        {
+            if (door.Id != doorId)
+            {
+                continue;
+            }
+            
+            door.KeyId = string.Empty;
+            door.Operatable = false;
+            door.DoorStateChanged(EDoorState.None);
             break;
         }
     }

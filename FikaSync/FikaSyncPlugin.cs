@@ -15,7 +15,7 @@ namespace SkillsExtendedFika;
 [BepInDependency("com.fika.core")]
 public class FikaSyncPlugin : BaseUnityPlugin
 {
-    public static LockPickingController? LockPickingController { get; set; }
+    public static LockPickingFikaController? LockPickingController { get; set; }
     
     internal new static ManualLogSource? Logger;
     private static PatchManager? _patchManager;
@@ -30,25 +30,34 @@ public class FikaSyncPlugin : BaseUnityPlugin
         FikaEventDispatcher.SubscribeEvent<FikaNetworkManagerCreatedEvent>(OnNetworkManagerCreated);
     }
     
-    private void OnNetworkManagerCreated(FikaNetworkManagerCreatedEvent createdEvent)
+    private static void OnNetworkManagerCreated(FikaNetworkManagerCreatedEvent createdEvent)
     {
         switch (createdEvent.Manager)
         {
             case FikaServer server:
-                server.RegisterPacket<DoorPickedPacket>(OnDoorPickedPacketReceived);
+                server.RegisterPacket<LockPickedPacket>(OnLockPickedPacketReceived);
+                server.RegisterPacket<LockBrokenPacket>(OnLockBrokenPacketReceived);
                 break;
             case FikaClient client:
-                client.RegisterPacket<DoorPickedPacket>(OnDoorPickedPacketReceived);
+                client.RegisterPacket<LockPickedPacket>(OnLockPickedPacketReceived);
+                client.RegisterPacket<LockBrokenPacket>(OnLockBrokenPacketReceived);
                 break;
         }
     }
 
-    private static void OnDoorPickedPacketReceived(DoorPickedPacket packet)
+    private static void OnLockPickedPacketReceived(LockPickedPacket packet)
     {
         if (packet.Unlocked)
         {
-            Logger?.LogError($"Unlocking door: {packet.DoorId}");
             LockPickingController?.UnlockDoor(packet.DoorId);
+        }
+    }
+
+    private static void OnLockBrokenPacketReceived(LockBrokenPacket packet)
+    {
+        if (packet.Broken)
+        {
+            LockPickingController?.BreakLock(packet.DoorId);
         }
     }
 }

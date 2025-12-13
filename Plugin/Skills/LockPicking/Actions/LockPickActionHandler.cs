@@ -44,6 +44,11 @@ public sealed class LockPickActionHandler
             return;
         }
         
+        BreakLock();
+    }
+
+    private void BreakLock()
+    {
         Owner.DisplayPreloaderUiNotification("You broke the lock...");
         InteractiveObject.KeyId = string.Empty;
         InteractiveObject.Operatable = false;
