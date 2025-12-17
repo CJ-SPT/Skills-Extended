@@ -23,7 +23,11 @@ public class DoorSoundPatch : ModulePatch
     [PatchPrefix]
     private static bool Prefix(WorldInteractiveObject __instance, EDoorState state)
     {
-        if (!SkillsExtendedPlugin.SkillData.SilentOps.Enabled) return true;
+        // Door sounds don't exist on the headless
+        if (!SkillsExtendedPlugin.SkillData.SilentOps.Enabled || SkillsExtendedInfo.IsFikaHeadless)
+        {
+            return true;
+        }
         
         if (__instance.OpenSound.Length != 0 && state == EDoorState.Open)
         {
