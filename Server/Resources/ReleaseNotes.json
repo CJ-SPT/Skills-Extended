@@ -1,8 +1,19 @@
 [
   {
+    "Version": "2.2.1",
+    "ReleaseDate": "December 17, 2025",
+    "IsLatest": true,
+    "Features": [],
+    "Improvements": [],
+    "BugFixes": [
+      "Fixes incompatibility with medical attention (Infinite hideout loading)",
+      "Fixes bots being stuck on doors when hosting a raid using the Fika headless"
+    ]
+  },
+  {
     "Version": "2.2.0",
     "ReleaseDate": "December 11, 2025",
-    "IsLatest": true,
+    "IsLatest": false,
     "Features": [
       "Automatic Fika detection -- This will allow for features to be disabled by me to ensure fika compatibility",
       "Automatic Fika detection -- Lockpicking will be automatically disabled if fika is present. Lock-picks will be left in-game as to not corrupt profiles",
