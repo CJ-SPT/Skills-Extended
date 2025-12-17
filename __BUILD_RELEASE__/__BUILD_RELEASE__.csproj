@@ -4,7 +4,7 @@
         <TargetFramework>net9.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <Version>2.2.0</Version>
+        <Version>2.2.1</Version>
     </PropertyGroup>
 
     <ItemGroup>
@@ -45,6 +45,9 @@
                 SourceFiles="@(Plugin)"
                 DestinationFolder="$(SolutionDir)release\SkillsExtended\BepInEx\plugins\SkillsExtended\%(RecursiveDir)"
         />
+        
+        <!-- Delete the Fika sync plugin so it doesn't get bundled in the main release zip -->
+        <Delete Files="$(SolutionDir)release\SkillsExtended\BepInEx\plugins\SkillsExtended\SkillsExtendedFika.dll"/>
 
         <!-- Copy the prepatch -->
         <Copy

@@ -61,8 +61,8 @@ public class HealthEffectComponentPatch : ModulePatch
         {
             return;
         }
-            
-        InstanceIdsChangedAtLevel.Add(item.TemplateId, skillManager.FirstAid.Level);
+
+        InstanceIdsChangedAtLevel[item.TemplateId] = skillManager.FirstAid.Level;
             
 #if DEBUG
         Logger.LogDebug($"Updated Template: {meds.TemplateId.LocalizedName()} \n");
