@@ -58,11 +58,11 @@ internal static class LockPickingFikaController
 
         if (FikaBackendUtils.IsServer)
         {
-            Singleton<FikaServer>.Instance.SendData(ref  packet, DeliveryMethod.ReliableOrdered, true);
+            Singleton<FikaServer>.Instance.SendData(ref packet, DeliveryMethod.ReliableOrdered, true);
         }
         else
         {
-            Singleton<FikaClient>.Instance.SendData(ref  packet, DeliveryMethod.ReliableOrdered, true);
+            Singleton<FikaClient>.Instance.SendData(ref packet, DeliveryMethod.ReliableOrdered, true);
         }
     }
     
