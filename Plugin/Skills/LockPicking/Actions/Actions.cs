@@ -3,6 +3,7 @@ using System.Linq;
 using EFT;
 using EFT.Interactive;
 using SkillsExtended.Helpers;
+using SkillsExtended.Skills.LockPicking.Alternative;
 
 namespace SkillsExtended.Skills.LockPicking.Actions;
 
@@ -10,7 +11,7 @@ public static class LockPickActions
 {
     public static void PickLock(WorldInteractiveObject interactiveObject, GamePlayerOwner owner)
     {
-        if (LockPickingHelpers.LockPickingGame.activeSelf)
+        if (LockPickingHelpers.LockPickingGame.activeSelf || AlternativeLockpick.IsInProgress)
         {
             return;
         }
@@ -52,18 +53,24 @@ public static class LockPickActions
                 return;
             }
 
+            LockPickActionHandler handler = new()
+            {
+                Owner = owner,
+                InteractiveObject = interactiveObject,
+            };
+            
+            if (SkillsExtendedPlugin.SkillData.LockPicking.UseAlternativeLockpicking)
+            {
+                AlternativeLockpick.StartPick(owner, interactiveObject, handler, level);
+                return;
+            }
+            
             if (!LockPickingHelpers.DoorSweetSpotRanges.TryGetValue(interactiveObject.Id, out var range))
             {
                 var error = $"ERROR: Door {interactiveObject.Id} on map {owner.Player.Location} sweet spot range not initialized, screenshot and report this error to the developer.";
                 ShowErrorNotification(error);
                 return;
             }
-            
-            LockPickActionHandler handler = new()
-            {
-                Owner = owner,
-                InteractiveObject = interactiveObject,
-            };
             
             LockPickingHelpers.LockPickingGame.SetActive(true);
             

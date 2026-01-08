@@ -5,6 +5,9 @@ namespace SkillsExtended.Config.Skills;
 public class LockPickingData
 {
     public bool Enabled { get; set; }
+    public bool UseAlternativeLockpicking { get; set; }
+    public float BaseLockpickDurationSeconds { get; set; }
+    public float BaseFailureChance { get; set; }
     public float PickStrengthBase { get; set; }
     public float PickStrengthPerLevel { get; set; }
     public float SweetSpotRangeBase { get; set; }

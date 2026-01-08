@@ -207,6 +207,9 @@
     },
     "LockPicking": {
         "Enabled": true,
+        "UseAlternativeLockpicking": false,
+        "BaseLockpickDurationSeconds": 5,
+        "BaseFailureChance": 0.25,
         "PickStrengthBase": 1.50,
         "PickStrengthPerLevel": 2.5,
         "SweetSpotRangeBase": 3.75,

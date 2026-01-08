@@ -6,7 +6,7 @@
 
 <MudGrid Justify="Justify.Center" Style="min-height:100vh; display:flex; align-items:center;">
     <MudItem xs="11" sm="8" md="6" lg="4">
-        <MudPaper Height="400px" Style="width:100%;">
+        <MudPaper Class="pa-6" Style="width:100%;">
             <MudContainer MaxWidth="MaxWidth.Medium">
                 <MudGrid>
                     <MudItem xs="6">
@@ -16,42 +16,73 @@
                             Label="Enabled"
                             Color="Color.Success"/>
                     </MudItem>
-
+                    
                     <MudItem xs="6">
-                        <MudNumericField
-                            @bind-Value="PickStrength"
-                            Label="Base Pick Strength"
-                            Variant="Variant.Filled"
-                            Step=".05M"
-                            Min="0" Max="25"/>
+                        <MudSwitch
+                            Class="d-flex align-center justify-center mud-width-full py-8"
+                            @bind-Value="MinigameLockpicking"
+                            Label="Minigame"
+                            Color="Color.Success" />
                     </MudItem>
 
-                    <MudItem xs="6">
-                        <MudNumericField
-                            @bind-Value="PerStrengthBonusPerLevel"
-                            Label="Pick Strength Bonus Per Level"
-                            Variant="Variant.Filled"
-                            Step=".05M"
-                            Min="0" Max="1"/>
-                    </MudItem>
+                    @if (MinigameLockpicking)
+                    {
+                        <MudItem xs="6">
+                            <MudNumericField
+                                @bind-Value="PickStrength"
+                                Label="Base Pick Strength"
+                                Variant="Variant.Filled"
+                                Step=".05M"
+                                Min="0" Max="25"/>
+                        </MudItem>
 
-                    <MudItem xs="6">
-                        <MudNumericField
-                            @bind-Value="SweetSpotRange"
-                            Label="Base Sweet Spot Range"
-                            Variant="Variant.Filled"
-                            Step=".05M"
-                            Min="0" Max="1"/>
-                    </MudItem>
+                        <MudItem xs="6">
+                            <MudNumericField
+                                @bind-Value="PerStrengthBonusPerLevel"
+                                Label="Pick Strength Bonus Per Level"
+                                Variant="Variant.Filled"
+                                Step=".05M"
+                                Min="0" Max="1"/>
+                        </MudItem>
 
-                    <MudItem xs="6">
-                        <MudNumericField
-                            @bind-Value="SweetSpotRangePerLevel"
-                            Label="Sweet Spot Range Per Level"
-                            Variant="Variant.Filled"
-                            Step=".05M"
-                            Min="0" Max="1"/>
-                    </MudItem>
+                        <MudItem xs="6">
+                            <MudNumericField
+                                @bind-Value="SweetSpotRange"
+                                Label="Base Sweet Spot Range"
+                                Variant="Variant.Filled"
+                                Step=".05M"
+                                Min="0" Max="1"/>
+                        </MudItem>
+
+                        <MudItem xs="6">
+                            <MudNumericField
+                                @bind-Value="SweetSpotRangePerLevel"
+                                Label="Sweet Spot Range Per Level"
+                                Variant="Variant.Filled"
+                                Step=".05M"
+                                Min="0" Max="1"/>
+                        </MudItem>
+                    }
+                    else
+                    {
+                        <MudItem xs="6">
+                            <MudNumericField
+                                @bind-Value="BaseLockpickDurationSeconds"
+                                Label="Base lockpicking time (sec)"
+                                Variant="Variant.Filled"
+                                Step=".1M"
+                                Min="0.1M" Max="60" />
+                        </MudItem>
+
+                        <MudItem xs="6">
+                            <MudNumericField
+                                @bind-Value="BaseFailureChance"
+                                Label="Base failure chance"
+                                Variant="Variant.Filled"
+                                Step=".01M"
+                                Min="0" Max="1" />
+                        </MudItem>
+                    }
                     
                     <MudItem xs="6">
                         <MudNumericField
@@ -93,6 +124,24 @@
     {
         get => Data.Enabled;
         set => Data.Enabled = value;
+    }
+    
+    bool MinigameLockpicking
+    {
+        get => !Data.UseAlternativeLockpicking;
+        set => Data.UseAlternativeLockpicking = !value;
+    }
+    
+    decimal BaseLockpickDurationSeconds
+    {
+        get => (decimal)Data.BaseLockpickDurationSeconds;
+        set => Data.BaseLockpickDurationSeconds = (float)value;
+    }
+
+    decimal BaseFailureChance
+    {
+        get => (decimal)Data.BaseFailureChance;
+        set => Data.BaseFailureChance = (float)value;
     }
     
     decimal PickStrength
