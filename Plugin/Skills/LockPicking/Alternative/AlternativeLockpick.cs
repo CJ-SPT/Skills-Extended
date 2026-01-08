@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using EFT;
 using EFT.Interactive;
 using SkillsExtended.Skills.LockPicking.Actions;
@@ -12,6 +13,8 @@ public sealed class AlternativeLockpick: MonoBehaviour
 {
     private static AlternativeLockpick _instance;
 
+    private static readonly Dictionary<string, float> _doorLockoutUntil = new();
+    
     private AudioSource _lockpickingSfx;
     private AudioSource _failureSfx;
     
@@ -62,10 +65,10 @@ public sealed class AlternativeLockpick: MonoBehaviour
             return;
         }
 
-        _instance.StartCoroutine(_instance.PickRoutine(owner, handler, doorLevel));
+        _instance.StartCoroutine(_instance.PickRoutine(owner, handler, door.Id, doorLevel));
     }
 
-    private IEnumerator PickRoutine(GamePlayerOwner owner, LockPickActionHandler handler, int doorLevel)
+    private IEnumerator PickRoutine(GamePlayerOwner owner, LockPickActionHandler handler, string doorId, int doorLevel)
     {
         _inProgress = true;
 
@@ -126,6 +129,11 @@ public sealed class AlternativeLockpick: MonoBehaviour
                 bool success = Random.value >= failChance;
                 result = success;
                 handler.PickLockAction(success);
+                
+                if (success)
+                {
+                    SetDoorLockout(doorId, 1f);
+                }
             }
         }
         finally
@@ -205,5 +213,22 @@ public sealed class AlternativeLockpick: MonoBehaviour
         return Input.GetMouseButtonDown(0) 
                || Input.GetMouseButtonDown(1) 
                || Input.GetKey(KeyCode.Escape); 
+    }
+    
+    public static bool IsDoorLockedOut(string doorId)
+    {
+        if (string.IsNullOrEmpty(doorId)) return false;
+        if (!_doorLockoutUntil.TryGetValue(doorId, out var until)) return false;
+
+        if (Time.unscaledTime < until) return true;
+
+        _doorLockoutUntil.Remove(doorId);
+        return false;
+    }
+
+    private static void SetDoorLockout(string doorId, float seconds)
+    {
+        if (string.IsNullOrEmpty(doorId)) return;
+        _doorLockoutUntil[doorId] = Time.unscaledTime + seconds;
     }
 }

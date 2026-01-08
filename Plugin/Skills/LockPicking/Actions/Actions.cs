@@ -61,6 +61,11 @@ public static class LockPickActions
             
             if (SkillsExtendedPlugin.SkillData.LockPicking.UseAlternativeLockpicking)
             {
+                if (AlternativeLockpick.IsDoorLockedOut(interactiveObject.Id))
+                {
+                    return;
+                }
+                
                 AlternativeLockpick.StartPick(owner, interactiveObject, handler, level);
                 return;
             }
