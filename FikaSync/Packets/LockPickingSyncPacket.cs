@@ -20,7 +20,7 @@ public struct LockPickingSyncPacket : INetSerializable
     
     public void Serialize(NetDataWriter writer)
     {
-        writer.Put(DoorId);
+        writer.Put(DoorId,128);
         writer.Put(Attempts);
         writer.Put(Unlocked);
         writer.Put(Broken);
