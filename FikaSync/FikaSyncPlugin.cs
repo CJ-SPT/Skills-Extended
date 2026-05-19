@@ -13,7 +13,7 @@ namespace SkillsExtendedFika;
 
 [BepInPlugin("com.cj.SkillsExtendedFika", "Skills Extended Fika", SkillsExtendedInfo.SYNC_VERSION)]
 [BepInDependency("com.cj.SkillsExtended", SkillsExtendedInfo.MIN_MOD_VERSION_FOR_SYNC)]
-[BepInDependency("com.fika.core")]
+[BepInDependency("com.fika.core", SkillsExtendedInfo.MIN_FIKA_VERSION)]
 public class FikaSyncPlugin : BaseUnityPlugin
 {
     internal new static ManualLogSource? Logger;
