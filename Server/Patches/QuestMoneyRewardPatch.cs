@@ -40,7 +40,7 @@ public class QuestMoneyRewardPatch : AbstractPatch
         }
 
         // Convert reward percentage into whole number before application
-        var bonus = config.QuestMoneyRewardInc * 100 * level;
+        var bonus = config.QuestMoneyRewardInc  * level;
         
 #if DEBUG
         Console.WriteLine($"[Skills Extended] Base cash reward bonus `{__result}`");        
