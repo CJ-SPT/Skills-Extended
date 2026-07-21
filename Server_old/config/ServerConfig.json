@@ -1,9 +1,0 @@
-{
-    "EnableProgression": true,
-    "ProgressionDebug": {
-        "Enabled": false,
-        "TestGeneration": false,
-        "GenerationLevel": 9,
-        "NumberOfRuns": 2500
-    }
-}
