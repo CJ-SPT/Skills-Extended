@@ -15,7 +15,7 @@ using UnityEngine;
 
 namespace SkillsExtended;
 
-[BepInPlugin("com.cj.SkillsExtended", "Skills Extended", SkillsExtendedInfo.VERSION)]
+[BepInPlugin(SkillsExtendedInfo.MOD_GUID, "Skills Extended", SkillsExtendedInfo.VERSION)]
 // Because I need the idle state type from it for lockpicking
 [BepInDependency("com.boogle.oldtarkovmovement", BepInDependency.DependencyFlags.SoftDependency)]
 [BepInDependency("com.fika.core", BepInDependency.DependencyFlags.SoftDependency)]
@@ -73,8 +73,8 @@ public class SkillsExtendedPlugin : BaseUnityPlugin
 
     private void Start()
     {
-        Keys = Get<KeysData>("/skillsExtended/GetKeys");
-        SkillData = Get<SkillsConfig>("/skillsExtended/GetSkillsConfig");
+        Keys = Get<KeysData>("/skills-extended/get-keys");
+        SkillData = Get<SkillsConfig>("/skills-extended/get-skills-config");
 
         LockPickingHelpers.LoadMiniGame();
     }

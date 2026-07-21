@@ -5,6 +5,7 @@
     <LangVersion>latest</LangVersion>
     <Configurations>Debug;Release;BETA</Configurations>
     <RootNamespace>SkillsExtended</RootNamespace>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
@@ -24,6 +25,9 @@
     </Reference>
     <Reference Include="Mono.Cecil">
       <HintPath>..\..\..\..\Bepinex\Core\Mono.Cecil.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\..\..\..\EscapeFromTarkov_Data\Managed\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine">
       <HintPath>..\..\..\..\EscapeFromTarkov_data\managed\unityEngine.dll</HintPath>

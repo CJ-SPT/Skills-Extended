@@ -18,15 +18,25 @@ public class ConfigController(
 {
     public ServerConfig ServerConfig { get; private set; } = null!;
     public SkillsConfig SkillsConfig { get; private set; } = null!;
+    public IReadOnlyList<EnumEntryDefinition> EnumEntries { get; private set; } = [];
 
     public bool IsFikaPresent { get; private set; }
 
     public async Task OnLoadAsync(CancellationToken cancellationToken)
     {
+        await LoadEnumEntries();
         await LoadSkillsConfig();
         await LoadServerConfig();
 
         IsFikaPresent = loadedMods.Any(m => m.ModMetadata.ModGuid == "Fika");
+    }
+
+    private async Task LoadEnumEntries()
+    {
+        var path = Path.Combine(ModMetadata.ResourcesDirectory, "Configs", "EnumEntries.json");
+
+        var text = await fileUtil.ReadFileAsync(path);
+        EnumEntries = jsonUtil.Deserialize<List<EnumEntryDefinition>>(text)!;
     }
 
     public async Task SaveSkillsConfig()

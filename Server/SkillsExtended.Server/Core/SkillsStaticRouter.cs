@@ -32,11 +32,15 @@ public class SkillsStaticRouter : StaticRouter
         return
         [
             new RouteAction(
-                "/skillsExtended/GetSkillsConfig",
+                "/skills-extended/early-init",
+                async (_, _, _, _, _) => await GetSerializedEnumEntriesResponse()
+            ),
+            new RouteAction(
+                "/skills-extended/get-skills-config",
                 async (_, _, _, _, _) => await GetSerializedConfigResponse()
             ),
             new RouteAction(
-                "/skillsExtended/GetKeys",
+                "/skills-extended/get-keys",
                 async (_, _, _, _, _) => await GetSerializedKeysResponse()
             ),
         ];
@@ -50,5 +54,10 @@ public class SkillsStaticRouter : StaticRouter
     private static ValueTask<string> GetSerializedKeysResponse()
     {
         return new ValueTask<string>(_jsonUtil!.Serialize(_databaseImporter!.GetKeyLocales())!);
+    }
+
+    private static ValueTask<string> GetSerializedEnumEntriesResponse()
+    {
+        return new ValueTask<string>(_jsonUtil!.Serialize(_configController!.EnumEntries)!);
     }
 }

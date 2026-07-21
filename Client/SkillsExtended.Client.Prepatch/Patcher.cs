@@ -4,8 +4,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using JetBrains.Annotations;
 using Mono.Cecil;
+using Newtonsoft.Json;
 using FieldAttributes = Mono.Cecil.FieldAttributes;
 using Logger = BepInEx.Logging.Logger;
 
@@ -13,12 +13,15 @@ namespace SkillsExtended;
 
 public static class SkillsExtendedPatcher
 {
-    public static IEnumerable<string> TargetDLLs { get; } = ["Assembly-CSharp.dll"];
-    private static TypeDefinition _skillManager;
+    private const string EnumEntriesRoute = "/skills-extended/early-init";
 
-    private static readonly string PatcherPath = Path.GetDirectoryName(
-        Assembly.GetExecutingAssembly().Location
-    );
+    public static IEnumerable<string> TargetDLLs { get; } = ["Assembly-CSharp.dll"];
+    private static TypeDefinition? _skillManager;
+
+    private static readonly string PatcherPath =
+        Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)
+        ?? throw new FileNotFoundException("Could not find patcher path");
+
     private static readonly string PluginPath = Path.Combine(
         PatcherPath,
         "..",
@@ -46,10 +49,13 @@ public static class SkillsExtendedPatcher
         {
             _skillManager = assembly.MainModule.GetType("EFT.SkillManager");
 
-            PatchNewBuffs(ref assembly);
+            var enumEntries = GetEnumEntries();
+            PatchEnums(ref assembly, enumEntries);
             PatchSkillManager(ref assembly);
 
-            Logger.CreateLogSource("Skills Extended PrePatch").LogInfo("Patching Complete!");
+            Logger
+                .CreateLogSource("Skills Extended PrePatch")
+                .LogInfo($"Patching Complete! Added {enumEntries.Count} enum entries.");
         }
         catch (Exception ex)
         {
@@ -68,10 +74,10 @@ public static class SkillsExtendedPatcher
 
     private static FieldDefinition CreateNewEnum(
         ref AssemblyDefinition assembly,
-        [CanBeNull] string AttributeName,
-        string EnumName,
-        TypeDefinition EnumClass,
-        int CustomConstant
+        string? attributeName,
+        string enumName,
+        TypeDefinition enumClass,
+        int customConstant
     )
     {
         var enumAttributeClass = assembly.MainModule.GetType("EFT.JsonEnumNameAttribute");
@@ -80,25 +86,25 @@ public static class SkillsExtendedPatcher
 
         var attribute = new CustomAttribute(attributeConstructor);
 
-        if (AttributeName is not null)
+        if (attributeName is not null)
         {
             var valueArgument = new CustomAttributeArgument(
                 assembly.MainModule.TypeSystem.String,
-                AttributeName
+                attributeName
             );
             attribute.ConstructorArguments.Add(valueArgument);
         }
 
         var newEnum = new FieldDefinition(
-            EnumName,
+            enumName,
             FieldAttributes.Public
                 | FieldAttributes.Static
                 | FieldAttributes.Literal
                 | FieldAttributes.HasDefault,
-            EnumClass
+            enumClass
         )
         {
-            Constant = CustomConstant,
+            Constant = customConstant,
         };
 
         newEnum.CustomAttributes.Add(attribute);
@@ -106,357 +112,115 @@ public static class SkillsExtendedPatcher
         return newEnum;
     }
 
-    private static void PatchNewBuffs(ref AssemblyDefinition assembly)
+    private static List<EnumEntryDefinition> GetEnumEntries()
     {
-        // New Buffs Enums
-        var buffEnums = assembly.MainModule.GetType("EFT.EBuffId");
-        var index = 1000;
+        var backendUrl = GetBackendUrl();
+        var requestUri = new Uri(
+            new Uri(backendUrl.TrimEnd('/') + "/"),
+            EnumEntriesRoute.TrimStart('/')
+        );
 
-        // New skills
-        FirstAidBuffs(assembly, buffEnums, ref index);
-        FieldMedicineBuffs(assembly, buffEnums, ref index);
-        WesternRifleBuffs(assembly, buffEnums, ref index);
-        EasternRifleBuffs(assembly, buffEnums, ref index);
-        LockPickingBuffs(assembly, buffEnums, ref index);
-        SilentOpsBuffs(assembly, buffEnums, ref index);
-        ShadowConnectionsBuffs(assembly, buffEnums, ref index);
-        BearRawPowerBuffs(assembly, buffEnums, ref index);
-        UsecNegotiationsBuffs(assembly, buffEnums, ref index);
+        var response = WinHttpClient.GetString(requestUri);
+        if (string.IsNullOrWhiteSpace(response))
+        {
+            throw new InvalidOperationException(
+                $"The server returned an empty response from {EnumEntriesRoute}."
+            );
+        }
 
-        // Existing skills
-        StrengthBuffs(assembly, buffEnums, ref index);
+        var entries = JsonConvert.DeserializeObject<List<EnumEntryDefinition>>(response);
+        if (entries is null || entries.Count == 0)
+        {
+            throw new InvalidOperationException(
+                $"The server returned no enum entries from {EnumEntriesRoute}."
+            );
+        }
+
+        return entries;
     }
 
-    private static void FirstAidBuffs(
-        AssemblyDefinition assembly,
-        TypeDefinition buffEnum,
-        ref int index
-    )
+    private static string GetBackendUrl()
     {
-        var firstAidHealingSpeedEnum = CreateNewEnum(
-            ref assembly,
-            "FirstAidHealingSpeed",
-            "FirstAidHealingSpeed",
-            buffEnum,
-            index++
-        );
+        const string configPrefix = "-config=";
+        var configArgument = Environment
+            .GetCommandLineArgs()
+            .FirstOrDefault(argument =>
+                argument.StartsWith(configPrefix, StringComparison.OrdinalIgnoreCase)
+            );
 
-        var firstAidHealingCostEnum = CreateNewEnum(
-            ref assembly,
-            "FirstAidResourceCost",
-            "FirstAidResourceCost",
-            buffEnum,
-            index++
-        );
+        if (configArgument is null)
+        {
+            throw new InvalidOperationException(
+                "Could not find SPT's -config launch argument containing the backend URL."
+            );
+        }
 
-        var firstAidMovementSpeedElite = CreateNewEnum(
-            ref assembly,
-            "FirstAidMovementSpeedElite",
-            "FirstAidMovementSpeedElite",
-            buffEnum,
-            index++
+        var launcherConfig = JsonConvert.DeserializeObject<LauncherConfig>(
+            configArgument.Substring(configPrefix.Length)
         );
+        if (string.IsNullOrWhiteSpace(launcherConfig?.BackendUrl))
+        {
+            throw new InvalidOperationException(
+                "SPT's -config launch argument did not contain a backend URL."
+            );
+        }
 
-        buffEnum.Fields.Add(firstAidHealingSpeedEnum);
-        buffEnum.Fields.Add(firstAidHealingCostEnum);
-        buffEnum.Fields.Add(firstAidMovementSpeedElite);
+        return launcherConfig.BackendUrl;
     }
 
-    private static void FieldMedicineBuffs(
-        AssemblyDefinition assembly,
-        TypeDefinition buffEnum,
-        ref int index
+    private static void PatchEnums(
+        ref AssemblyDefinition assembly,
+        IReadOnlyCollection<EnumEntryDefinition> entries
     )
     {
-        var fieldMedicineSkillCap = CreateNewEnum(
-            ref assembly,
-            "FieldMedicineSkillCap",
-            "FieldMedicineSkillCap",
-            buffEnum,
-            index++
-        );
+        foreach (var enumGroup in entries.GroupBy(entry => entry.EnumType))
+        {
+            var enumType = assembly.MainModule.GetType(enumGroup.Key);
+            if (enumType is null || !enumType.IsEnum)
+            {
+                throw new InvalidOperationException(
+                    $"Could not find enum type '{enumGroup.Key}' in Assembly-CSharp.dll."
+                );
+            }
 
-        var fieldMedicineDurationBonus = CreateNewEnum(
-            ref assembly,
-            "FieldMedicineDurationBonus",
-            "FieldMedicineDurationBonus",
-            buffEnum,
-            index++
-        );
+            foreach (var entry in enumGroup)
+            {
+                if (string.IsNullOrWhiteSpace(entry.Name))
+                {
+                    throw new InvalidOperationException(
+                        $"The server returned an enum entry with no name for '{enumGroup.Key}'."
+                    );
+                }
 
-        var fieldMedicineChanceBonus = CreateNewEnum(
-            ref assembly,
-            "FieldMedicineChanceBonus",
-            "FieldMedicineChanceBonus",
-            buffEnum,
-            index++
-        );
+                if (enumType.Fields.Any(field => field.Name == entry.Name))
+                {
+                    throw new InvalidOperationException(
+                        $"Enum '{enumGroup.Key}' already contains an entry named '{entry.Name}'."
+                    );
+                }
 
-        buffEnum.Fields.Add(fieldMedicineSkillCap);
-        buffEnum.Fields.Add(fieldMedicineDurationBonus);
-        buffEnum.Fields.Add(fieldMedicineChanceBonus);
-    }
+                if (
+                    enumType.Fields.Any(field =>
+                        field.HasConstant && Convert.ToInt64(field.Constant) == entry.Value
+                    )
+                )
+                {
+                    throw new InvalidOperationException(
+                        $"Enum '{enumGroup.Key}' already contains the value {entry.Value}."
+                    );
+                }
 
-    private static void WesternRifleBuffs(
-        AssemblyDefinition assembly,
-        TypeDefinition buffEnum,
-        ref int index
-    )
-    {
-        var usecArSystemsRecoilEnum = CreateNewEnum(
-            ref assembly,
-            "UsecArSystemsRecoil",
-            "UsecArSystemsRecoil",
-            buffEnum,
-            index++
-        );
-
-        var usecArSystemsErgoEnum = CreateNewEnum(
-            ref assembly,
-            "UsecArSystemsErgo",
-            "UsecArSystemsErgo",
-            buffEnum,
-            index++
-        );
-
-        buffEnum.Fields.Add(usecArSystemsRecoilEnum);
-        buffEnum.Fields.Add(usecArSystemsErgoEnum);
-    }
-
-    private static void EasternRifleBuffs(
-        AssemblyDefinition assembly,
-        TypeDefinition buffEnum,
-        ref int index
-    )
-    {
-        var bearAkSystemsRecoilEnum = CreateNewEnum(
-            ref assembly,
-            "BearAkSystemsRecoil",
-            "BearAkSystemsRecoil",
-            buffEnum,
-            index++
-        );
-
-        var bearAkSystemsErgoEnum = CreateNewEnum(
-            ref assembly,
-            "BearAkSystemsErgo",
-            "BearAkSystemsErgo",
-            buffEnum,
-            index++
-        );
-
-        buffEnum.Fields.Add(bearAkSystemsRecoilEnum);
-        buffEnum.Fields.Add(bearAkSystemsErgoEnum);
-    }
-
-    private static void LockPickingBuffs(
-        AssemblyDefinition assembly,
-        TypeDefinition buffEnum,
-        ref int index
-    )
-    {
-        var lockpickingTimeIncrease = CreateNewEnum(
-            ref assembly,
-            "LockpickingTimeIncrease",
-            "LockpickingTimeIncrease",
-            buffEnum,
-            index++
-        );
-
-        var lockpickingForgivenessAngle = CreateNewEnum(
-            ref assembly,
-            "LockpickingForgivenessAngle",
-            "LockpickingForgivenessAngle",
-            buffEnum,
-            index++
-        );
-
-        var lockpickingUseElite = CreateNewEnum(
-            ref assembly,
-            "LockpickingUseElite",
-            "LockpickingUseElite",
-            buffEnum,
-            index++
-        );
-
-        buffEnum.Fields.Add(lockpickingTimeIncrease);
-        buffEnum.Fields.Add(lockpickingForgivenessAngle);
-        buffEnum.Fields.Add(lockpickingUseElite);
-    }
-
-    private static void SilentOpsBuffs(
-        AssemblyDefinition assembly,
-        TypeDefinition buffEnum,
-        ref int index
-    )
-    {
-        var silentOpsIncMeleeSpeed = CreateNewEnum(
-            ref assembly,
-            "SilentOpsIncMeleeSpeed",
-            "SilentOpsIncMeleeSpeed",
-            buffEnum,
-            index++
-        );
-
-        var silentOpsRedVolume = CreateNewEnum(
-            ref assembly,
-            "SilentOpsRedVolume",
-            "SilentOpsRedVolume",
-            buffEnum,
-            index++
-        );
-
-        var silentOpsSilencerCostRed = CreateNewEnum(
-            ref assembly,
-            "SilentOpsSilencerCostRed",
-            "SilentOpsSilencerCostRed",
-            buffEnum,
-            index++
-        );
-
-        buffEnum.Fields.Add(silentOpsIncMeleeSpeed);
-        buffEnum.Fields.Add(silentOpsRedVolume);
-        buffEnum.Fields.Add(silentOpsSilencerCostRed);
-    }
-
-    private static void StrengthBuffs(
-        AssemblyDefinition assembly,
-        TypeDefinition buffEnum,
-        ref int index
-    )
-    {
-        var incBushSpeed = CreateNewEnum(
-            ref assembly,
-            "StrengthColliderSpeedBuff",
-            "StrengthColliderSpeedBuff",
-            buffEnum,
-            index++
-        );
-
-        var incBushSpeedElite = CreateNewEnum(
-            ref assembly,
-            "StrengthColliderSpeedBuffElite",
-            "StrengthColliderSpeedBuffElite",
-            buffEnum,
-            index++
-        );
-
-        buffEnum.Fields.Add(incBushSpeed);
-        buffEnum.Fields.Add(incBushSpeedElite);
-    }
-
-    private static void ShadowConnectionsBuffs(
-        AssemblyDefinition assembly,
-        TypeDefinition buffEnum,
-        ref int index
-    )
-    {
-        var decScavCooldown = CreateNewEnum(
-            ref assembly,
-            "ShadowConnectionsScavCooldownTimeDec",
-            "ShadowConnectionsScavCooldownTimeDec",
-            buffEnum,
-            index++
-        );
-
-        var decScavCooldownElite = CreateNewEnum(
-            ref assembly,
-            "ShadowConnectionsScavCooldownTimeElite",
-            "ShadowConnectionsScavCooldownTimeElite",
-            buffEnum,
-            index++
-        );
-
-        var decCultistCircleReturn = CreateNewEnum(
-            ref assembly,
-            "ShadowConnectionsCultistCircleReturnTimeDec",
-            "ShadowConnectionsCultistCircleReturnTimeDec",
-            buffEnum,
-            index++
-        );
-
-        var scavGenerateAsCultistChance = CreateNewEnum(
-            ref assembly,
-            "ScavGenerateAsCultistChance",
-            "ScavGenerateAsCultistChance",
-            buffEnum,
-            index++
-        );
-
-        buffEnum.Fields.Add(decScavCooldown);
-        buffEnum.Fields.Add(decScavCooldownElite);
-        buffEnum.Fields.Add(decCultistCircleReturn);
-        buffEnum.Fields.Add(scavGenerateAsCultistChance);
-    }
-
-    private static void BearRawPowerBuffs(
-        AssemblyDefinition assembly,
-        TypeDefinition buffEnum,
-        ref int index
-    )
-    {
-        var praporTraderCostDec = CreateNewEnum(
-            ref assembly,
-            "BearRawPowerPraporTraderCostDec",
-            "BearRawPowerPraporTraderCostDec",
-            buffEnum,
-            index++
-        );
-
-        var questRewardExpInc = CreateNewEnum(
-            ref assembly,
-            "BearRawPowerQuestRewardExpInc",
-            "BearRawPowerQuestRewardExpInc",
-            buffEnum,
-            index++
-        );
-
-        var bearRawPowerAllTraderCostDec = CreateNewEnum(
-            ref assembly,
-            "BearRawPowerAllTraderCostDec",
-            "BearRawPowerAllTraderCostDec",
-            buffEnum,
-            index++
-        );
-
-        buffEnum.Fields.Add(praporTraderCostDec);
-        buffEnum.Fields.Add(questRewardExpInc);
-        buffEnum.Fields.Add(bearRawPowerAllTraderCostDec);
-    }
-
-    private static void UsecNegotiationsBuffs(
-        AssemblyDefinition assembly,
-        TypeDefinition buffEnum,
-        ref int index
-    )
-    {
-        var peacekeeperTraderCostDec = CreateNewEnum(
-            ref assembly,
-            "UsecNegotiationsPeacekeeperTraderCostDec",
-            "UsecNegotiationsPeacekeeperTraderCostDec",
-            buffEnum,
-            index++
-        );
-
-        var questRewardMoneyInc = CreateNewEnum(
-            ref assembly,
-            "UsecNegotiationRewardMoneyInc",
-            "UsecNegotiationRewardMoneyInc",
-            buffEnum,
-            index++
-        );
-
-        var usecNegotiationsAllTraderCostDec = CreateNewEnum(
-            ref assembly,
-            "UsecNegotiationsAllTraderCostDec",
-            "UsecNegotiationsAllTraderCostDec",
-            buffEnum,
-            index++
-        );
-
-        buffEnum.Fields.Add(peacekeeperTraderCostDec);
-        buffEnum.Fields.Add(questRewardMoneyInc);
-        buffEnum.Fields.Add(usecNegotiationsAllTraderCostDec);
+                enumType.Fields.Add(
+                    CreateNewEnum(
+                        ref assembly,
+                        entry.AttributeName,
+                        entry.Name,
+                        enumType,
+                        entry.Value
+                    )
+                );
+            }
+        }
     }
 
     private static void PatchSkillManager(ref AssemblyDefinition assembly)
@@ -475,6 +239,19 @@ public static class SkillsExtendedPatcher
             skillManagerExtendedTypeRef
         );
 
-        _skillManager.Fields.Add(skillManagerExtField);
+        _skillManager!.Fields.Add(skillManagerExtField);
     }
+}
+
+internal sealed class EnumEntryDefinition
+{
+    public string EnumType { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
+    public string? AttributeName { get; set; }
+    public int Value { get; set; }
+}
+
+internal sealed class LauncherConfig
+{
+    public string BackendUrl { get; set; } = string.Empty;
 }
