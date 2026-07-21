@@ -29,7 +29,7 @@ public record ModMetadata : IModMetadata, IModBlazorMetadata
         "Resources"
     );
 
-    public string? WWWRootUrl { get; init; }
+    public string? WWWRootUrl { get; init; } = "skills-extended";
     public string? HomePage { get; init; } = "/skills-extended";
     public string? HomePageDescription { get; init; } = "Web interface for skills extended";
 }
