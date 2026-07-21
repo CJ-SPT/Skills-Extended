@@ -1,0 +1,103 @@
+﻿using Comfort.Common;
+using EFT;
+using JetBrains.Annotations;
+using SkillsExtended.Exceptions;
+using SPT.Reflection.Utils;
+
+namespace SkillsExtended.Utils;
+
+public static class GameUtils
+{
+    /// <summary>
+    /// We are in raid, but not the hideout
+    /// </summary>
+    /// <returns></returns>
+    public static bool IsInRaid()
+    {
+        return Singleton<GameWorld>.Instantiated
+            && Singleton<GameWorld>.Instance is not HideoutGameWorld;
+    }
+
+    public static bool IsScav()
+    {
+        return IsInRaid() && GetPlayer()?.Side == EPlayerSide.Savage;
+    }
+
+    /// <summary>
+    /// We are in hideout, but not in raid
+    /// </summary>
+    /// <returns></returns>
+    public static bool IsInHideout()
+    {
+        return Singleton<GameWorld>.Instantiated
+            && Singleton<GameWorld>.Instance is HideoutGameWorld;
+    }
+
+    [CanBeNull]
+    public static GameWorld GetGameWorld(bool throwIfNull = false)
+    {
+        if (!IsInRaid())
+        {
+            throw new SkillsExtendedException("Trying to access the GameWorld when not in raid");
+        }
+
+        return Singleton<GameWorld>.Instance;
+    }
+
+    [CanBeNull]
+    public static IEftSession GetSession(bool throwIfNull = false)
+    {
+        var session = ClientAppUtils.GetClientApp().Session;
+
+        if (throwIfNull && session is null)
+        {
+            throw new SkillsExtendedException("Trying to access the Session when it's null");
+        }
+
+        return session;
+    }
+
+    [CanBeNull]
+    public static Profile GetProfile(EPlayerSide playerSide, bool throwIfNull = false)
+    {
+        var profile = playerSide switch
+        {
+            EPlayerSide.Bear or EPlayerSide.Usec => GetSession()?.Profile,
+            EPlayerSide.Savage => GetSession()?.ProfileOfPet,
+            _ => null,
+        };
+
+        if (throwIfNull && profile is null)
+        {
+            throw new SkillsExtendedException("Trying to access the Profile when it's null");
+        }
+
+        return profile;
+    }
+
+    [CanBeNull]
+    public static SkillManager GetSkillManager()
+    {
+        return IsInRaid() ? GetPlayer()?.Skills : GetProfile(EPlayerSide.Usec)?.Skills;
+    }
+
+    [CanBeNull]
+    public static Player GetPlayer(bool throwIfNull = false)
+    {
+        var player = GetGameWorld()?.MainPlayer;
+
+        if (throwIfNull && !player)
+        {
+            throw new SkillsExtendedException("Trying to access the Player when it is null");
+        }
+
+        return player;
+    }
+
+    public static EPlayerSide GetPlayerSide()
+    {
+        var profile = GetSession()?.Profile;
+
+        return profile?.Side ?? EPlayerSide.Savage;
+    }
+}

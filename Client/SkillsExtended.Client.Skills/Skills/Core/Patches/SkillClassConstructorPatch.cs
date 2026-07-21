@@ -1,0 +1,105 @@
+﻿using System.Reflection;
+using EFT;
+using SPT.Reflection.Patching;
+
+namespace SkillsExtended.Skills.Core.Patches;
+
+internal class SkillClassCtorPatch : ModulePatch
+{
+    protected override MethodBase GetTargetMethod() =>
+        typeof(Skill).GetConstructor(
+            BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic,
+            null,
+            [
+                typeof(SkillManager),
+                typeof(ESkillId),
+                typeof(ESkillClass),
+                typeof(SkillManager.SkillAction[]),
+                typeof(SkillManager.Buff[]),
+            ],
+            null
+        );
+
+    /// <summary>
+    /// We are using values that have been added by the pre-patcher here.
+    /// </summary>
+    [PatchPrefix]
+    public static void Prefix(
+        SkillManager skillManager,
+        ESkillId id,
+        ref SkillManager.Buff[] buffs,
+        ref SkillManager.SkillAction[] actions
+    )
+    {
+        // This is where we set all of our buffs and actions,
+        // done as a constructor patch, so they always exist when we need them
+        InitializeNewSkills(skillManager, id, ref buffs, ref actions);
+    }
+
+    private static void InitializeNewSkills(
+        SkillManager skillManager,
+        ESkillId id,
+        ref SkillManager.Buff[] buffs,
+        ref SkillManager.SkillAction[] actions
+    )
+    {
+        var skillMgrExt = skillManager.SkillsExtendedManager;
+
+        switch (id)
+        {
+            case ESkillId.FirstAid:
+                buffs = skillMgrExt.FirstAidBuffs();
+                actions = [skillMgrExt.FirstAidAction.Factor(0.35f)];
+                break;
+
+            case ESkillId.FieldMedicine:
+                buffs = skillMgrExt.FieldMedicineBuffs();
+                actions = [skillMgrExt.FieldMedicineAction.Factor(0.35f)];
+                break;
+
+            case ESkillId.UsecArsystems:
+                buffs = skillMgrExt.UsecArBuffs();
+                actions = [skillMgrExt.UsecRifleAction.Factor(0.5f)];
+                break;
+
+            case ESkillId.BearAksystems:
+                buffs = skillMgrExt.BearAkBuffs();
+                actions = [skillMgrExt.BearRifleAction.Factor(0.5f)];
+                break;
+
+            case ESkillId.Lockpicking:
+                buffs = skillMgrExt.LockPickingBuffs();
+                actions = [skillMgrExt.LockPickAction.Factor(0.25f)];
+                break;
+
+            case ESkillId.ProneMovement:
+                buffs = skillMgrExt.ProneMovementBuffs();
+                actions = [skillManager.ProneAction.Factor(0.25f)];
+                break;
+
+            case ESkillId.SilentOps:
+                buffs = skillMgrExt.SilentOpsBuffs();
+                actions =
+                [
+                    skillMgrExt.SilentOpsMeleeAction.Factor(0.75f),
+                    skillMgrExt.SilentOpsGunAction.Factor(0.50f),
+                ];
+                break;
+
+            case ESkillId.Shadowconnections:
+                buffs = skillMgrExt.ShadowConnectionsBuffs();
+                actions = [skillMgrExt.ShadowConnectionsKillAction.Factor(1.0f)];
+                break;
+
+            case ESkillId.BearRawpower:
+                buffs = skillMgrExt.BearRawPowerBuffs();
+                actions = [skillMgrExt.BearRawPowerKillAction.Factor(1.0f)];
+                break;
+
+            case ESkillId.UsecNegotiations:
+                buffs = skillMgrExt.UsecNegotiationsBuffs();
+                actions = [skillMgrExt.UsecNegotiationsKillAction.Factor(1.0f)];
+                break;
+        }
+    }
+}

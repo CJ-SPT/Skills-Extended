@@ -1,0 +1,184 @@
+﻿using System.IO;
+using System.Reflection;
+using EFT;
+using EFT.HealthSystem;
+using EFT.InventoryLogic;
+using EFT.Quests;
+using EFT.UI;
+using HarmonyLib;
+using SPT.Reflection.Patching;
+using UnityEngine;
+using UnityEngine.UI;
+
+namespace SkillsExtended.Skills.UI.Patches;
+
+internal class BuffIconShowPatch : ModulePatch
+{
+    private static Sprite _cultistChanceSprite;
+
+    protected override MethodBase GetTargetMethod()
+    {
+        return AccessTools.Method(typeof(BuffIcon), nameof(BuffIcon.Show));
+    }
+
+    [PatchPostfix]
+    public static void Postfix(BuffIcon __instance, SkillManager.Buff buff, Image ____icon)
+    {
+        var staticIcons = EFTHardSettings.Instance.StaticIcons;
+
+        if (!_cultistChanceSprite)
+        {
+            LoadSprites();
+        }
+
+        switch (buff.Id)
+        {
+            case EBuffId.FirstAidHealingSpeed:
+                ____icon.sprite = staticIcons.HealEffectSprites.GetValueOrDefault(
+                    EHealthFactorType.Energy
+                );
+                break;
+
+            case EBuffId.FirstAidResourceCost:
+                ____icon.sprite = staticIcons.HealEffectSprites.GetValueOrDefault(
+                    EHealthFactorType.Health
+                );
+                break;
+
+            case EBuffId.FirstAidMovementSpeedElite:
+                ____icon.sprite = staticIcons.BuffIdSprites.GetValueOrDefault(
+                    EBuffId.StressBerserk
+                );
+                break;
+
+            case EBuffId.FieldMedicineSkillCap:
+                ____icon.sprite = staticIcons.StimulatorBuffSprites.GetValueOrDefault(
+                    EStimulatorBuffType.SkillRate
+                );
+                break;
+
+            case EBuffId.FieldMedicineDurationBonus:
+                ____icon.sprite = staticIcons.StimulatorBuffSprites.GetValueOrDefault(
+                    EStimulatorBuffType.StaminaRate
+                );
+                break;
+
+            case EBuffId.FieldMedicineChanceBonus:
+                ____icon.sprite = staticIcons.ItemAttributeSprites.GetValueOrDefault(
+                    EItemAttributeId.MoneySum
+                );
+                break;
+
+            case EBuffId.UsecArSystemsErgo:
+            case EBuffId.BearAkSystemsErgo:
+                ____icon.sprite = staticIcons.BuffIdSprites.GetValueOrDefault(
+                    EBuffId.WeaponErgonomicsBuff
+                );
+                break;
+
+            case EBuffId.UsecArSystemsRecoil:
+            case EBuffId.BearAkSystemsRecoil:
+                ____icon.sprite = staticIcons.BuffIdSprites.GetValueOrDefault(
+                    EBuffId.WeaponRecoilBuff
+                );
+                break;
+
+            case EBuffId.LockpickingTimeIncrease:
+                ____icon.sprite = staticIcons.BuffIdSprites.GetValueOrDefault(
+                    EBuffId.CraftingContinueTimeReduce
+                );
+                break;
+
+            case EBuffId.LockpickingForgivenessAngle:
+                ____icon.sprite = staticIcons.BuffIdSprites.GetValueOrDefault(
+                    EBuffId.HideoutExtraSlots
+                );
+                break;
+
+            case EBuffId.LockpickingUseElite:
+                ____icon.sprite = staticIcons.ItemAttributeSprites.GetValueOrDefault(
+                    EItemAttributeId.KeyUses
+                );
+                break;
+
+            case EBuffId.SilentOpsIncMeleeSpeed:
+                ____icon.sprite = staticIcons.DamageEffectSprites.GetValueOrDefault(
+                    EDamageEffectType.Contusion
+                );
+                break;
+
+            case EBuffId.SilentOpsRedVolume:
+                ____icon.sprite = staticIcons.BuffIdSprites.GetValueOrDefault(
+                    EBuffId.CovertMovementSoundVolume
+                );
+                break;
+
+            case EBuffId.SilentOpsSilencerCostRed:
+                ____icon.sprite = staticIcons.ItemAttributeSprites.GetValueOrDefault(
+                    EItemAttributeId.Loudness
+                );
+                break;
+
+            case EBuffId.StrengthColliderSpeedBuff:
+                ____icon.sprite = staticIcons.BuffIdSprites.GetValueOrDefault(
+                    EBuffId.StrengthBuffSprintSpeedInc
+                );
+                break;
+
+            case EBuffId.ShadowConnectionsScavCooldownTimeDec:
+            case EBuffId.ShadowConnectionsScavCooldownTimeElite:
+                ____icon.sprite = staticIcons.BuffIdSprites.GetValueOrDefault(
+                    EBuffId.CharismaFenceRepPenaltyReduction
+                );
+                break;
+
+            case EBuffId.ShadowConnectionsCultistCircleReturnTimeDec:
+                ____icon.sprite = staticIcons.BuffIdSprites.GetValueOrDefault(
+                    EBuffId.CovertMovementSpeed
+                );
+                break;
+
+            case EBuffId.ScavGenerateAsCultistChance:
+                ____icon.sprite = _cultistChanceSprite;
+                break;
+
+            case EBuffId.UsecNegotiationsPeacekeeperTraderCostDec:
+            case EBuffId.UsecNegotiationsAllTraderCostDec:
+            case EBuffId.BearRawPowerPraporTraderCostDec:
+            case EBuffId.BearRawPowerAllTraderCostDec:
+                ____icon.sprite = staticIcons.BarterSign;
+                break;
+
+            case EBuffId.UsecNegotiationRewardMoneyInc:
+                ____icon.sprite = staticIcons.CurrencyTypeSmallSprites.GetValueOrDefault(
+                    ECurrencyType.RUB
+                );
+                break;
+
+            case EBuffId.BearRawPowerQuestRewardExpInc:
+                ____icon.sprite = staticIcons.QuestIconTypeSprites.GetValueOrDefault(
+                    EQuestIconType.Levelling
+                );
+                break;
+        }
+
+        __instance.UpdateBuff();
+    }
+
+    private static void LoadSprites()
+    {
+        var directory = Path.Combine(
+            Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!,
+            "Images"
+        );
+
+        var cultistChanceSprite = File.ReadAllBytes(Path.Combine(directory, "CultistBuffIcon.png"));
+        var texture = new Texture2D(2, 2);
+        texture.LoadImage(cultistChanceSprite);
+        _cultistChanceSprite = Sprite.Create(
+            texture,
+            new Rect(0, 0, texture.width, texture.height),
+            new Vector2(0.5f, 0.5f)
+        );
+    }
+}
