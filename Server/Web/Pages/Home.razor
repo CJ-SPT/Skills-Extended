@@ -42,10 +42,7 @@
 
                                     @switch (release.IsLatest)
                                     {
-                                        case true when SkillsExtendedInfo.IsBeta:
-                                            <MudChip T="string" Size="Size.Small" Color="Color.Error">Beta</MudChip>
-                                            break;
-                                        case true when !SkillsExtendedInfo.IsBeta:
+                                        case true:
                                             <MudChip T="string" Size="Size.Small" Color="Color.Success">Latest</MudChip>
                                             break;
                                     }
@@ -128,7 +125,7 @@
     
     private async Task LoadReleaseNotes()
     {
-        var path = Path.Combine(SeModMetadata.ResourcesDirectory, "ReleaseNotes.json");
+        var path = Path.Combine(ModMetadata.ResourcesDirectory, "ReleaseNotes.json");
         var text = await FileUtil.ReadFileAsync(path);
         _releaseNotes = JsonUtil.Deserialize<List<ReleaseNote>>(text)!;
     }

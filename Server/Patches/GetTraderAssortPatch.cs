@@ -3,9 +3,11 @@ using HarmonyLib;
 using SkillsExtended.Core;
 using SkillsExtended.Extensions;
 using SkillsExtended.Utils;
+using SPTarkov.DI.Annotations;
 using SPTarkov.Reflection.Patching;
-using SPTarkov.Server.Core.DI;
-using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Helpers.Commerce;
+using SPTarkov.Server.Core.Helpers.Profile;
+using SPTarkov.Server.Core.Helpers.Traders;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
@@ -13,37 +15,48 @@ using SPTarkov.Server.Core.Models.Enums;
 
 namespace SkillsExtended.Patches;
 
-public class GetTraderAssortPatch : AbstractPatch
+[Injectable]
+public class GetTraderAssortPatch(
+    ConfigController configController,
+    SkillUtil skillUtil,
+    ProfileHelper profileHelper,
+    PaymentHelper paymentHelper
+) : AbstractPatch
 {
-    private static readonly ConfigController ConfigController = ServiceLocator.ServiceProvider.GetRequiredService<ConfigController>();
-    private static readonly SkillUtil SkillUtil = ServiceLocator.ServiceProvider.GetRequiredService<SkillUtil>();
-    private static readonly ProfileHelper ProfileHelper = ServiceLocator.ServiceProvider.GetRequiredService<ProfileHelper>();
-    private static readonly PaymentHelper PaymentHelper = ServiceLocator.ServiceProvider.GetRequiredService<PaymentHelper>();
-    
+    private static ConfigController _configController = null!;
+    private static SkillUtil _skillUtil = null!;
+    private static ProfileHelper _profileHelper = null!;
+    private static PaymentHelper _paymentHelper = null!;
+
     protected override MethodBase? GetTargetMethod()
     {
+        _configController = configController;
+        _skillUtil = skillUtil;
+        _profileHelper = profileHelper;
+        _paymentHelper = paymentHelper;
+
         return AccessTools.Method(typeof(TraderAssortHelper), nameof(TraderAssortHelper.GetAssort));
     }
 
     [PatchPostfix]
-    public static void Postfix(
-        MongoId sessionId, 
-        MongoId traderId, 
-        TraderAssort __result
-        )
+    public static void Postfix(MongoId sessionId, MongoId traderId, TraderAssort __result)
     {
-        var profile = ProfileHelper.GetPmcProfile(sessionId);
+        var profile = _profileHelper.GetPmcProfile(sessionId);
         if (profile is null)
         {
             return;
         }
-        
-        SkillUtil.TryGetSkillLevel(sessionId, SkillTypes.UsecNegotiations, out var usecLevel);
-        SkillUtil.TryGetSkillLevel(sessionId, SkillTypes.BearRawpower, out var bearLevel);
-        
+
+        _skillUtil.TryGetSkillLevel(sessionId, SkillTypes.UsecNegotiations, out var usecLevel);
+        _skillUtil.TryGetSkillLevel(sessionId, SkillTypes.BearRawpower, out var bearLevel);
+
         foreach (var assort in __result.BarterScheme)
         {
-            foreach (var barter in assort.Value.SelectMany(scheme => scheme.Where(b => PaymentHelper.IsMoneyTpl(b.Template))))
+            foreach (
+                var barter in assort.Value.SelectMany(scheme =>
+                    scheme.Where(b => _paymentHelper.IsMoneyTpl(b.Template))
+                )
+            )
             {
                 ModifyMoneyPrice(traderId, barter, profile, usecLevel, bearLevel);
             }
@@ -51,25 +64,26 @@ public class GetTraderAssortPatch : AbstractPatch
     }
 
     private static void ModifyMoneyPrice(
-        MongoId traderId, 
-        BarterScheme barter, 
+        MongoId traderId,
+        BarterScheme barter,
         PmcData profile,
         int usecLevel,
         int bearLevel
-        )
+    )
     {
-        var usecConfig = ConfigController.SkillsConfig.UsecNegotiations;
-        var bearConfig = ConfigController.SkillsConfig.BearRawPower;
-        
+        var usecConfig = _configController.SkillsConfig.UsecNegotiations;
+        var bearConfig = _configController.SkillsConfig.BearRawPower;
+
         // Keep track of an additive running discount for all skills
         var discount = 0.0f;
-        
+
         // Peacekeeper discount only
         if (traderId == Traders.PEACEKEEPER)
         {
             if (profile.Info?.Side == "Usec" || !usecConfig.FactionLocked)
             {
-                discount += usecConfig.PeacekeeperTradingCostDec.NormalizeToPercentage() * usecLevel;
+                discount +=
+                    usecConfig.PeacekeeperTradingCostDec.NormalizeToPercentage() * usecLevel;
             }
         }
 
@@ -81,7 +95,7 @@ public class GetTraderAssortPatch : AbstractPatch
                 discount += bearConfig.PraporTradingCostDec.NormalizeToPercentage() * bearLevel;
             }
         }
-        
+
         // Usec Negotiations elite discount
         if (usecConfig.Enabled && usecLevel == 51)
         {
@@ -99,7 +113,7 @@ public class GetTraderAssortPatch : AbstractPatch
                 discount += bearConfig.AllTraderCostDecrease.NormalizeToPercentage();
             }
         }
-        
+
         var normalizedDiscount = Math.Clamp(1 - discount, 0.10f, 1.0f);
 
 #if DEBUG
@@ -107,9 +121,8 @@ public class GetTraderAssortPatch : AbstractPatch
         Console.WriteLine($"normalized discount: {normalizedDiscount}%");
         Console.WriteLine($"Original price: {barter.Count}");
 #endif
-        
         barter.Count *= normalizedDiscount;
-        
+
 #if DEBUG
         Console.WriteLine($"Modified price: {barter.Count}");
 #endif

@@ -1,7 +1,6 @@
 ﻿using EFT;
 using EFT.Interactive;
 using HarmonyLib;
-using SkillsExtended.Helpers;
 
 namespace SkillsExtended.Skills.LockPicking.Actions;
 
@@ -9,15 +8,18 @@ public class HackingActionHandler
 {
     public GamePlayerOwner Owner;
     public WorldInteractiveObject InteractiveObject;
+
     public void HackTerminalAction(bool unlocked)
     {
         if (unlocked)
         {
             LockPickingHelpers.ApplyLockPickActionXp(InteractiveObject, Owner);
-            AccessTools.Method(typeof(WorldInteractiveObject), "Unlock").Invoke(InteractiveObject, null);
+            AccessTools
+                .Method(typeof(WorldInteractiveObject), "Unlock")
+                .Invoke(InteractiveObject, null);
             return;
         }
-        
+
         Owner.DisplayPreloaderUiNotification("You failed to hack the terminal...");
 
         // Add to the counter
@@ -31,7 +33,10 @@ public class HackingActionHandler
         }
 
         // Break the lock if more than 3 failed attempts
-        if (LockPickingHelpers.DoorAttempts[InteractiveObject.Id] > SkillsExtendedPlugin.SkillData.LockPicking.AttemptsBeforeBreak)
+        if (
+            LockPickingHelpers.DoorAttempts[InteractiveObject.Id]
+            > SkillsExtendedPlugin.SkillData.LockPicking.AttemptsBeforeBreak
+        )
         {
             Owner.DisplayPreloaderUiNotification("You triggered security protocols..");
             InteractiveObject.KeyId = string.Empty;

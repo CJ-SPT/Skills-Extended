@@ -1,8 +1,6 @@
 ﻿using System.Reflection;
-using Comfort.Common;
 using EFT;
 using EFT.Interactive;
-using SkillsExtended.Helpers;
 using SPT.Reflection.Patching;
 
 namespace SkillsExtended.Skills.LockPicking.Patches;
@@ -14,7 +12,11 @@ public class KeyCardDoorActionPatch : ModulePatch
         typeof(GetActionsClass).GetMethod("smethod_9", BindingFlags.Public | BindingFlags.Static);
 
     [PatchPostfix]
-    private static void Postfix(ref ActionsReturnClass __result, GamePlayerOwner owner, KeycardDoor door)
+    private static void Postfix(
+        ref ActionsReturnClass __result,
+        GamePlayerOwner owner,
+        KeycardDoor door
+    )
     {
         /*
         if (WorldInteractionUtils.IsBotInteraction(owner)

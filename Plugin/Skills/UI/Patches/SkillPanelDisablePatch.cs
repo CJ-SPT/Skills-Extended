@@ -2,7 +2,6 @@
 using EFT;
 using EFT.UI;
 using HarmonyLib;
-using SkillsExtended.Helpers;
 using SkillsExtended.Utils;
 using SPT.Reflection.Patching;
 
@@ -10,7 +9,8 @@ namespace SkillsExtended.Skills.UI.Patches;
 
 internal class SkillPanelDisablePatch : ModulePatch
 {
-    protected override MethodBase GetTargetMethod() => AccessTools.Method(typeof(SkillPanel), nameof(SkillPanel.Show));
+    protected override MethodBase GetTargetMethod() =>
+        AccessTools.Method(typeof(SkillPanel), nameof(SkillPanel.Show));
 
     [PatchPrefix]
     public static bool Prefix(SkillClass skill)
@@ -19,7 +19,7 @@ internal class SkillPanelDisablePatch : ModulePatch
         {
             ESkillId.UsecNegotiations => SkillUtils.IsUsecNegotiationsAvailable(),
             ESkillId.BearRawpower => SkillUtils.IsBearRawPowerAvailable(),
-            _ => !skill.Locked
+            _ => !skill.Locked,
         };
     }
 }

@@ -1,18 +1,14 @@
-﻿using SPTarkov.DI.Annotations;
-using SPTarkov.Server.Core.Helpers;
+﻿using SPTarkov.Common.Models.Logging;
+using SPTarkov.DI.Annotations;
+using SPTarkov.Server.Core.Helpers.Profile;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Enums;
-using SPTarkov.Server.Core.Models.Utils;
 
 namespace SkillsExtended.Utils;
 
 [Injectable]
-public class SkillUtil(
-    ISptLogger<SkillUtil> logger,
-    ProfileHelper profileHelper
-    )
+public class SkillUtil(ISptLogger<SkillUtil> logger, ProfileHelper profileHelper)
 {
-    
     /// <summary>
     ///     Get the skill level for the provided profile and skill
     /// </summary>
@@ -22,20 +18,22 @@ public class SkillUtil(
     public bool TryGetSkillLevel(MongoId profileId, SkillTypes skillType, out int skillLevel)
     {
         skillLevel = 0;
-        
+
         var profile = profileHelper.GetPmcProfile(profileId);
         if (profile is null)
         {
-            logger.Error($"[Skills Extended] Profile `{profileId.ToString()}` not found when trying to get the players skill level.");
+            logger.Error(
+                $"[Skills Extended] Profile `{profileId.ToString()}` not found when trying to get the players skill level."
+            );
             return false;
         }
-        
+
         var skill = profile.Skills?.Common.FirstOrDefault(s => s.Id == skillType);
         if (skill is null)
         {
             return false;
         }
-        
+
         skillLevel = (int)Math.Clamp(skill.Progress / 100f, 0, 5100);
         return true;
     }
@@ -52,7 +50,7 @@ public class SkillUtil(
         {
             return skillLevel == 51;
         }
-        
+
         return false;
     }
 }

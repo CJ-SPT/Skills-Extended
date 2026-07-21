@@ -1,23 +1,21 @@
-﻿using BepInEx;
-using BepInEx.Bootstrap;
-using BepInEx.Logging;
-using Newtonsoft.Json;
-using SkillsExtended.Helpers;
-using SkillsExtended.Models;
-using SPT.Common.Http;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Linq;
+using BepInEx;
+using BepInEx.Bootstrap;
 using BepInEx.Configuration;
+using BepInEx.Logging;
+using Newtonsoft.Json;
 using SkillsExtended.Config;
+using SkillsExtended.Helpers;
 using SkillsExtended.Skills.LockPicking;
+using SPT.Common.Http;
 using SPT.Reflection.Patching;
 using UnityEngine;
 
 namespace SkillsExtended;
 
 [BepInPlugin("com.cj.SkillsExtended", "Skills Extended", SkillsExtendedInfo.VERSION)]
-
 // Because I need the idle state type from it for lockpicking
 [BepInDependency("com.boogle.oldtarkovmovement", BepInDependency.DependencyFlags.SoftDependency)]
 [BepInDependency("com.fika.core", BepInDependency.DependencyFlags.SoftDependency)]
@@ -55,13 +53,15 @@ public class SkillsExtendedPlugin : BaseUnityPlugin
 
         Log = Logger;
         ConfigManager.RegisterConfig(Config);
-        
+
         _patchManager = new PatchManager(this, true);
         _patchManager.EnablePatches();
 
         SkillsExtendedInfo.IsFikaPresent = Chainloader.PluginInfos.Keys.Contains("com.fika.core");
-        SkillsExtendedInfo.IsFikaHeadless = Chainloader.PluginInfos.Keys.Contains("com.fika.headless");
-        
+        SkillsExtendedInfo.IsFikaHeadless = Chainloader.PluginInfos.Keys.Contains(
+            "com.fika.headless"
+        );
+
 #if DEBUG
         Logger.LogWarning($"PRE RELEASE BUILD OF `{SkillsExtendedInfo.VERSION}` - NO SUPPORT");
         Logger.LogWarning("DEBUG BUILD FEATURES ENABLED");
@@ -75,7 +75,7 @@ public class SkillsExtendedPlugin : BaseUnityPlugin
     {
         Keys = Get<KeysData>("/skillsExtended/GetKeys");
         SkillData = Get<SkillsConfig>("/skillsExtended/GetSkillsConfig");
-        
+
         LockPickingHelpers.LoadMiniGame();
     }
 
@@ -86,7 +86,8 @@ public class SkillsExtendedPlugin : BaseUnityPlugin
     /// <typeparam name="T">Type of response</typeparam>
     /// <returns>Response</returns>
     /// <exception cref="InvalidOperationException"></exception>
-    private static T Get<T>(string url) where T : class
+    private static T Get<T>(string url)
+        where T : class
     {
         var req = RequestHandler.GetJson(url);
 
@@ -114,12 +115,14 @@ public class SkillsExtendedPlugin : BaseUnityPlugin
     {
         public static bool CheckEftVersion(ManualLogSource logger, ConfigFile config = null)
         {
-            var currentVersion = FileVersionInfo.GetVersionInfo(BepInEx.Paths.ExecutablePath).FilePrivatePart;
+            var currentVersion = FileVersionInfo
+                .GetVersionInfo(BepInEx.Paths.ExecutablePath)
+                .FilePrivatePart;
             if (currentVersion == SkillsExtendedInfo.TARKOV_VERSION)
             {
                 return true;
             }
-            
+
             var errorMessage =
                 $"ERROR: This version of Skills Extended was built for Tarkov {SkillsExtendedInfo.TARKOV_VERSION}, but you are running {currentVersion}. Please download the correct plugin version.";
             logger.LogError(errorMessage);
@@ -127,42 +130,46 @@ public class SkillsExtendedPlugin : BaseUnityPlugin
 
             // TypeofThis results in a bogus config entry in the BepInEx config file for the plugin, but it shouldn't hurt anything
             // We leave the "section" parameter empty so there's no section header drawn
-            config?.Bind("", "TarkovVersion", "", new ConfigDescription(
-                errorMessage, null, new ConfigurationManagerAttributes
-                {
-                    CustomDrawer = ErrorLabelDrawer,
-                    ReadOnly = true,
-                    HideDefaultButton = true,
-                    HideSettingName = true,
-                    Category = null
-                }
-            ));
+            config?.Bind(
+                "",
+                "TarkovVersion",
+                "",
+                new ConfigDescription(
+                    errorMessage,
+                    null,
+                    new ConfigurationManagerAttributes
+                    {
+                        CustomDrawer = ErrorLabelDrawer,
+                        ReadOnly = true,
+                        HideDefaultButton = true,
+                        HideSettingName = true,
+                        Category = null,
+                    }
+                )
+            );
 
             return false;
         }
 
         private static void ErrorLabelDrawer(ConfigEntryBase entry)
         {
-            var styleNormal = new GUIStyle(GUI.skin.label)
-            {
-                wordWrap = true,
-                stretchWidth = true
-            };
+            var styleNormal = new GUIStyle(GUI.skin.label) { wordWrap = true, stretchWidth = true };
 
             var styleError = new GUIStyle(GUI.skin.label)
             {
                 stretchWidth = true,
                 alignment = TextAnchor.MiddleCenter,
-                normal =
-                {
-                    textColor = Color.red
-                },
-                fontStyle = FontStyle.Bold
+                normal = { textColor = Color.red },
+                fontStyle = FontStyle.Bold,
             };
 
             // General notice that we're the wrong version
             GUILayout.BeginVertical();
-            GUILayout.Label(entry.Description.Description, styleNormal, GUILayout.ExpandWidth(true));
+            GUILayout.Label(
+                entry.Description.Description,
+                styleNormal,
+                GUILayout.ExpandWidth(true)
+            );
 
             // Centered red disabled text
             GUILayout.Label("Plugin has been disabled!", styleError, GUILayout.ExpandWidth(true));

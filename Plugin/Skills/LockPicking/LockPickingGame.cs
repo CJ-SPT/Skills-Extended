@@ -1,16 +1,15 @@
 ﻿using System;
 using Comfort.Common;
 using EFT;
-using EFT.UI;
 using EFT.Interactive;
+using EFT.UI;
 using JetBrains.Annotations;
 using SkillsExtended.Config;
 using SkillsExtended.Helpers;
-using SkillsExtended.Skills.Core;
 using SkillsExtended.Utils;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 namespace SkillsExtended.Skills.LockPicking;
@@ -28,7 +27,7 @@ public class LockPickingGame : MonoBehaviour
     public RectTransform lockpick;
 
     private static SkillManager SkillManager => GameUtils.GetSkillManager();
-    
+
     /// <summary>
     /// How accurately close we need to be to the sweet spot.
     /// If set to 1, we need to be exactly at the sweet spot position,
@@ -50,7 +49,7 @@ public class LockPickingGame : MonoBehaviour
     /// How much we need to rotate the cylinder in order to win
     /// </summary>
     public float rotateToWin = 95;
-    
+
     /// <summary>
     /// The sound that plays when we rotate the cylinder
     /// </summary>
@@ -65,7 +64,7 @@ public class LockPickingGame : MonoBehaviour
     /// The sound that plays when the sequence resets
     /// </summary>
     public AudioClip resetSound;
-    
+
     /// <summary>
     /// The sound that plays when we win the lock game
     /// </summary>
@@ -77,15 +76,16 @@ public class LockPickingGame : MonoBehaviour
 
     public Image pickStrengthRemainingLower;
     public Image pickStrengthRemainingUpper;
-    
+
     public AudioSource audioSource;
 
     public Animator animator;
     private static Player Player => Singleton<GameWorld>.Instance?.MainPlayer;
-    
+
     // Callback action
-    [CanBeNull] private Action<bool> _onUnlocked;
-    
+    [CanBeNull]
+    private Action<bool> _onUnlocked;
+
     // Is the cylinder rotating
     private static bool _isRotating;
 
@@ -97,13 +97,13 @@ public class LockPickingGame : MonoBehaviour
 
     // The sweet spot angle that we must reach with the lock pick
     private static float _lockPickSetAngle = 0;
-    
+
     // Time fields to measure when a pick should break
     private static float _wiggleTimeLimit = 1f;
     private static float _timeSpentWiggling = 0;
 
     private static bool _disabled = true;
-    
+
     #endregion
 
 #if DEBUG
@@ -112,7 +112,7 @@ public class LockPickingGame : MonoBehaviour
     public float indicatorRadius = 150f; // Distance from center
     public Color sweetSpotColor = new Color(0, 1, 0, 0.5f); // Semi-transparent green
 #endif
-    
+
     public void OnEnable()
     {
         _disabled = false;
@@ -121,7 +121,7 @@ public class LockPickingGame : MonoBehaviour
         {
             return;
         }
-        
+
         Player.MovementContext.ToggleBlockInputPlayerRotation(true);
         Player.CurrentManagedState.ChangePose(-1f);
     }
@@ -129,25 +129,25 @@ public class LockPickingGame : MonoBehaviour
     public void OnDisable()
     {
         _disabled = true;
-        
+
         if (Player is null || !Player.IsYourPlayer)
         {
             return;
         }
-        
+
         Player.MovementContext.ToggleBlockInputPlayerRotation(false);
         Player.CurrentManagedState.ChangePose(1f);
-        
+
         CursorSettings.SetCursor(ECursorType.Invisible);
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-            
+
         if (GamePlayerOwner.MyPlayer is not null)
         {
             GamePlayerOwner.IgnoreInputWithKeepResetLook = false;
             GamePlayerOwner.IgnoreInputInNPCDialog = false;
         }
-        
+
         Singleton<GUISounds>.Instance.PlayUISound(EUISoundType.MenuDropdown);
     }
 
@@ -167,11 +167,12 @@ public class LockPickingGame : MonoBehaviour
         SetupSweetSpotIndicator();
 #endif
     }
-    
+
     public void Update()
     {
-        if (_isUnlocked || _disabled) return;
-        
+        if (_isUnlocked || _disabled)
+            return;
+
         if (ShouldClose())
         {
             HandleWin(false);
@@ -179,9 +180,9 @@ public class LockPickingGame : MonoBehaviour
         }
 
         //AdjustPickStrengthImage();
-        
+
         MoveLockPick();
-        
+
         CursorSettings.SetCursor(ECursorType.Idle);
         Cursor.lockState = CursorLockMode.None;
 
@@ -190,9 +191,9 @@ public class LockPickingGame : MonoBehaviour
             GamePlayerOwner.IgnoreInputWithKeepResetLook = true;
             GamePlayerOwner.IgnoreInputInNPCDialog = true;
         }
-        
+
         _isRotating = Input.GetKey(_rotateButton);
-        
+
         if (_isRotating)
         {
             // Rotate the cylinder object in the direction we chose
@@ -206,26 +207,33 @@ public class LockPickingGame : MonoBehaviour
 #if DEBUG
         UpdateSweetSpotPosition();
 #endif
-        
         ResetCylinder();
     }
 
     /// <summary>
     /// Activates the lock and starts the lock game
     /// </summary>
-    public void Activate(GamePlayerOwner owner, WorldInteractiveObject interactiveObject, Action<bool> action, float sweetSpotRange)
+    public void Activate(
+        GamePlayerOwner owner,
+        WorldInteractiveObject interactiveObject,
+        Action<bool> action,
+        float sweetSpotRange
+    )
     {
         _lockPickSetAngle = Random.Range(0, 180);
         _isUnlocked = false;
         _timeSpentWiggling = 0f;
-        
+
         pickStrengthRemainingLower.enabled = false;
         pickStrengthRemainingUpper.enabled = false;
-        
+
         _onUnlocked = action;
-        
-        var doorLevel = LockPickingHelpers.GetLevelForDoor(owner.Player.Location, interactiveObject.Id);
-        
+
+        var doorLevel = LockPickingHelpers.GetLevelForDoor(
+            owner.Player.Location,
+            interactiveObject.Id
+        );
+
         levelText.text = $"DOOR LEVEL: {doorLevel.ToString()}";
         keyText.text = $"DOOR KEY: {SkillsExtendedPlugin.Keys.KeyLocale[interactiveObject.KeyId]}";
 
@@ -233,68 +241,79 @@ public class LockPickingGame : MonoBehaviour
         SetTimeLimit(doorLevel);
 
 #if DEBUG
-        SkillsExtendedPlugin.Log.LogDebug("========================================================");
+        SkillsExtendedPlugin.Log.LogDebug(
+            "========================================================"
+        );
         SkillsExtendedPlugin.Log.LogDebug($"LEVEL:                          {doorLevel}");
         SkillsExtendedPlugin.Log.LogDebug($"FORGIVENESS RANGE DEG:          {_sweetSpotRange}");
         SkillsExtendedPlugin.Log.LogDebug($"ROTATE SPEED:                   {rotateSpeed}");
         SkillsExtendedPlugin.Log.LogDebug($"TIME LIMIT:                     {_wiggleTimeLimit}");
         SkillsExtendedPlugin.Log.LogDebug($"CYLINDER ROTATE DEG:            {rotateToWin}");
         SkillsExtendedPlugin.Log.LogDebug($"CYLINDER POSITION WIN ANGLE:    {_lockPickSetAngle}");
-        SkillsExtendedPlugin.Log.LogDebug("========================================================");
+        SkillsExtendedPlugin.Log.LogDebug(
+            "========================================================"
+        );
 #endif
     }
-    
+
     public void ActivatePractice(int doorLevel)
     {
         _lockPickSetAngle = Random.Range(0, 180);
         _isUnlocked = false;
         _timeSpentWiggling = 0f;
-        
+
         pickStrengthRemainingLower.enabled = false;
         pickStrengthRemainingUpper.enabled = false;
-        
+
         levelText.text = $"DOOR LEVEL: {doorLevel.ToString()}";
-        
+
         SetSweetSpotRange(doorLevel);
         SetTimeLimit(doorLevel);
-        
-        SkillsExtendedPlugin.Log.LogDebug("========================================================");
+
+        SkillsExtendedPlugin.Log.LogDebug(
+            "========================================================"
+        );
         SkillsExtendedPlugin.Log.LogDebug($"LEVEL:                          {doorLevel}");
         SkillsExtendedPlugin.Log.LogDebug($"FORGIVENESS RANGE DEG:          {_sweetSpotRange}");
         SkillsExtendedPlugin.Log.LogDebug($"ROTATE SPEED:                   {rotateSpeed}");
         SkillsExtendedPlugin.Log.LogDebug($"TIME LIMIT:                     {_wiggleTimeLimit}");
         SkillsExtendedPlugin.Log.LogDebug($"CYLINDER ROTATE DEG:            {rotateToWin}");
         SkillsExtendedPlugin.Log.LogDebug($"CYLINDER POSITION WIN ANGLE:    {_lockPickSetAngle}");
-        SkillsExtendedPlugin.Log.LogDebug("========================================================");
+        SkillsExtendedPlugin.Log.LogDebug(
+            "========================================================"
+        );
     }
 
     private bool ShouldClose()
     {
-        return Input.GetMouseButtonDown(0) 
-               || Input.GetMouseButtonDown(1) 
-               || Input.GetKey(KeyCode.Escape); 
+        return Input.GetMouseButtonDown(0)
+            || Input.GetMouseButtonDown(1)
+            || Input.GetKey(KeyCode.Escape);
     }
 
     private void AdjustPickStrengthImage()
     {
         var rectTransform = pickStrengthRemainingUpper.gameObject.RectTransform();
-        
+
         // Calculate the ratio of time spent wiggling to the time limit
         var ratio = Mathf.Clamp(_timeSpentWiggling / _wiggleTimeLimit, 0f, 1f);
-        
+
         var scaleFactor = 1f - ratio;
-        
-        rectTransform.localScale = 
-            new Vector3(1f, Mathf.Min(scaleFactor, rectTransform.rect.height), 0f);
+
+        rectTransform.localScale = new Vector3(
+            1f,
+            Mathf.Min(scaleFactor, rectTransform.rect.height),
+            0f
+        );
     }
-    
+
     private void MoveLockPick()
     {
-        lockpick.eulerAngles = 
+        lockpick.eulerAngles =
             Mathf.Clamp(Input.mousePosition.x / Screen.width, 0.01f, 0.99f) * 180 * Vector3.forward;
 
         lockpick.eulerAngles = Vector3.forward * Mathf.Clamp(lockpick.eulerAngles.z, 0, 180);
-            
+
         _inSweetSpot = Mathf.Abs(_lockPickSetAngle - lockpick.eulerAngles.z) < _sweetSpotRange;
     }
 
@@ -305,19 +324,19 @@ public class LockPickingGame : MonoBehaviour
         {
             return;
         }
-        
+
         // Play the cylinder sound
         if (!audioSource.isPlaying)
         {
             audioSource.PlayOneShot(rotateSound);
         }
-        
+
         // If the cylinder rotates beyond this angle, we win
         if (cylinder!.eulerAngles.z < rotateToWin)
         {
             return;
         }
-        
+
         HandleWin();
     }
 
@@ -327,18 +346,20 @@ public class LockPickingGame : MonoBehaviour
         {
             return;
         }
-        
+
         // Return to original rotation
-        cylinder!.eulerAngles = 
-            Vector3.Slerp(cylinder.eulerAngles, Vector3.zero, Time.deltaTime * 10);
+        cylinder!.eulerAngles = Vector3.Slerp(
+            cylinder.eulerAngles,
+            Vector3.zero,
+            Time.deltaTime * 10
+        );
 
         if (wiggle)
         {
-            lockpick!.localPosition = 
-                new Vector3(Random.Range(-3, 3), Random.Range(-3, 3), 0);
+            lockpick!.localPosition = new Vector3(Random.Range(-3, 3), Random.Range(-3, 3), 0);
 
             _timeSpentWiggling += Time.deltaTime;
-            
+
             if (_timeSpentWiggling > _wiggleTimeLimit)
             {
 #if DEBUG
@@ -346,7 +367,7 @@ public class LockPickingGame : MonoBehaviour
 #endif
                 HandleWin(false);
             }
-            
+
             // Play the lock pick wiggle sound
             if (!audioSource.isPlaying)
             {
@@ -355,7 +376,7 @@ public class LockPickingGame : MonoBehaviour
 
             return;
         }
-        
+
         // Reset the lock pick position
         lockpick!.localPosition = Vector3.zero;
 
@@ -363,37 +384,37 @@ public class LockPickingGame : MonoBehaviour
         audioSource.Stop();
         //audioSource.PlayOneShot(resetSound);
     }
-    
+
     private void HandleWin(bool won = true)
     {
         _isUnlocked = true;
-        
+
         if (won)
         {
             animator.Play("Win");
             audioSource.PlayOneShot(winSound);
         }
-        
+
         // Unselect any buttons on the cylinder, so we don't press them when pressing 'SPACE' after closing the lock
         if (EventSystem.current)
         {
             EventSystem.current.SetSelectedGameObject(null);
         }
-        
+
         cylinder!.eulerAngles = Vector3.zero;
-        
+
         if (Player)
         {
             GamePlayerOwner.SetIgnoreInputWithKeepResetLook(false);
             Player.MovementContext.ToggleBlockInputPlayerRotation(false);
-            
+
             Cursor.visible = false;
             CursorSettings.SetCursor(ECursorType.Invisible);
             Cursor.lockState = CursorLockMode.Locked;
 
             _onUnlocked?.Invoke(won);
         }
-        
+
         gameObject.SetActive(false);
     }
 
@@ -409,24 +430,23 @@ public class LockPickingGame : MonoBehaviour
         SkillsExtendedPlugin.Log.LogDebug($"SKILL: {skillMod}");
         SkillsExtendedPlugin.Log.LogDebug($"DOOR: {doorMod}");
 #endif
-        
         var configVal = SkillsExtendedPlugin.SkillData.LockPicking.SweetSpotRangeBase;
-        
+
         _sweetSpotRange = Mathf.Clamp((configVal - doorMod) * skillMod, 0f, 20f);
 #if DEBUG
         SkillsExtendedPlugin.Log.LogDebug($"SWEET SPOT RANGE: {_sweetSpotRange}");
 #endif
     }
-    
+
     private void SetTimeLimit(int doorLevel)
     {
         var skillMod = 1 + SkillManager.SkillManagerExtended.LockPickingTimeBuff;
         var doorMod = Mathf.Clamp(doorLevel / 50f, 0.05f, 1f);
-        
+
         var configVal = SkillsExtendedPlugin.SkillData.LockPicking.PickStrengthBase;
-        
+
         var originalLimit = Mathf.Clamp((configVal - doorMod) * skillMod, 1f, 20f);
-        
+
         _wiggleTimeLimit = MathUtils.RandomizePercentage(originalLimit, 0.10f);
     }
 
@@ -439,24 +459,25 @@ public class LockPickingGame : MonoBehaviour
             // Create the indicator as a child of the cylinder
             sweetSpotIndicator = new GameObject("SweetSpotIndicator");
             sweetSpotIndicator.transform.SetParent(cylinder.parent); // Use same parent as cylinder
-            
+
             var rectTransform = sweetSpotIndicator.AddComponent<RectTransform>();
             rectTransform.anchoredPosition = Vector2.zero;
             rectTransform.sizeDelta = new Vector2(10f, indicatorRadius * 2f); // Thin vertical bar
             rectTransform.pivot = new Vector2(0.5f, 0.5f);
-            
+
             sweetSpotImage = sweetSpotIndicator.AddComponent<Image>();
             sweetSpotImage.color = sweetSpotColor;
             sweetSpotImage.raycastTarget = false;
         }
-        
+
         UpdateSweetSpotPosition();
     }
-    
+
     // Update the indicator position to show the sweet spot
     private void UpdateSweetSpotPosition()
     {
-        if (sweetSpotIndicator == null) return;
+        if (sweetSpotIndicator == null)
+            return;
 
         var rectTransform = sweetSpotIndicator.GetComponent<RectTransform>();
 
@@ -471,10 +492,11 @@ public class LockPickingGame : MonoBehaviour
         if (lockpick != null)
         {
             var proximity = Mathf.Abs(_lockPickSetAngle - lockpick.eulerAngles.z);
-            
-            sweetSpotImage.color = proximity < _sweetSpotRange 
-                ? new Color(0, 1, 0, 0.7f)  // Brighter green
-                : new Color(1, 1, 0, 0.3f); // Dim yellow
+
+            sweetSpotImage.color =
+                proximity < _sweetSpotRange
+                    ? new Color(0, 1, 0, 0.7f) // Brighter green
+                    : new Color(1, 1, 0, 0.3f); // Dim yellow
         }
     }
 #endif

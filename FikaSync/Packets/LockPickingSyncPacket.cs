@@ -1,5 +1,4 @@
-﻿using Fika.Core.Networking.LiteNetLib.Utils;
-using SkillsExtended.LockPicking;
+﻿using SkillsExtended.LockPicking;
 
 namespace SkillsExtendedFika.Packets;
 
@@ -17,7 +16,7 @@ public struct LockPickingSyncPacket : INetSerializable
         Unlocked = data.Unlocked;
         Broken = data.Broken;
     }
-    
+
     public void Serialize(NetDataWriter writer)
     {
         writer.Put(DoorId);

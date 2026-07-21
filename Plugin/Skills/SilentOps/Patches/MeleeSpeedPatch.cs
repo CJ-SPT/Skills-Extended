@@ -1,8 +1,5 @@
 ﻿using System.Reflection;
-using EFT;
 using HarmonyLib;
-using SkillsExtended.Helpers;
-using SkillsExtended.Skills.Core;
 using SkillsExtended.Utils;
 using SPT.Reflection.Patching;
 
@@ -12,7 +9,10 @@ public class MeleeSpeedPatch : ModulePatch
 {
     protected override MethodBase GetTargetMethod()
     {
-        return AccessTools.Method(typeof(ObjectInHandsAnimator), nameof(ObjectInHandsAnimator.SetMeleeSpeed));
+        return AccessTools.Method(
+            typeof(ObjectInHandsAnimator),
+            nameof(ObjectInHandsAnimator.SetMeleeSpeed)
+        );
     }
 
     [PatchPrefix]

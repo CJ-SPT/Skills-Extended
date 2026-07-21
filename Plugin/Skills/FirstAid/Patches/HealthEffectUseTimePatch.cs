@@ -2,8 +2,6 @@
 using EFT;
 using EFT.InventoryLogic;
 using HarmonyLib;
-using SkillsExtended.Helpers;
-using SkillsExtended.Skills.Core;
 using SkillsExtended.Utils;
 using SPT.Reflection.Patching;
 
@@ -13,7 +11,10 @@ internal class HealthEffectUseTimePatch : ModulePatch
 {
     protected override MethodBase GetTargetMethod()
     {
-        return AccessTools.PropertyGetter(typeof(HealthEffectsComponent), nameof(HealthEffectsComponent.UseTime));
+        return AccessTools.PropertyGetter(
+            typeof(HealthEffectsComponent),
+            nameof(HealthEffectsComponent.UseTime)
+        );
     }
 
     [PatchPostfix]
@@ -32,7 +33,7 @@ internal class HealthEffectUseTimePatch : ModulePatch
             Logger.LogError("Skill Manager is null");
             return;
         }
-        
+
         __result *= 1f - skillManager.SkillManagerExtended.FirstAidItemSpeedBuff;
     }
 }
@@ -41,7 +42,10 @@ internal class SpawnPatch : ModulePatch
 {
     protected override MethodBase GetTargetMethod()
     {
-        return AccessTools.Method(typeof(Player.MedsController), nameof(Player.MedsController.Spawn));
+        return AccessTools.Method(
+            typeof(Player.MedsController),
+            nameof(Player.MedsController.Spawn)
+        );
     }
 
     [PatchPrefix]
@@ -53,14 +57,14 @@ internal class SpawnPatch : ModulePatch
         {
             return;
         }
-        
+
         var skillManager = GameUtils.GetSkillManager();
         if (skillManager == null)
         {
             Logger.LogError("Skill Manager is null");
             return;
         }
-            
+
         animationSpeed *= 1f + skillManager.SkillManagerExtended.FirstAidItemSpeedBuff;
     }
 }

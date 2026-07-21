@@ -1,7 +1,6 @@
 ﻿using System.Reflection;
 using EFT;
 using HarmonyLib;
-using SkillsExtended.Helpers;
 using SkillsExtended.Utils;
 using SPT.Reflection.Patching;
 
@@ -16,7 +15,7 @@ public class SkillClassOnTriggerPatch : ModulePatch
 
     // BonusController is called in SkillClass.OnTrigger and must not be null,
     // otherwise it will trigger System.NullReferenceException.
-    
+
     [PatchPrefix]
     public static void PatchPrefix(SkillClass __instance)
     {
@@ -24,9 +23,9 @@ public class SkillClassOnTriggerPatch : ModulePatch
         {
             return;
         }
-        
-        __instance.SkillManager.BonusController = GameUtils.IsScav() 
-            ? GameUtils.GetProfile(EPlayerSide.Savage)?.BonusController 
+
+        __instance.SkillManager.BonusController = GameUtils.IsScav()
+            ? GameUtils.GetProfile(EPlayerSide.Savage)?.BonusController
             // Usec and bear retrieve the same profile
             : GameUtils.GetProfile(EPlayerSide.Usec)?.BonusController;
     }

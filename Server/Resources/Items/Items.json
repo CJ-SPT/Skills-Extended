@@ -20,6 +20,7 @@
         "parentId": "5c99f98d86f7745c314214b3",
         "handbookParentId": "5c518ec986f7743b68682ce2",
         "newId": "6622c28aed7e3bc72e301e22",
+        "newItemName": "lock_pick",
         "fleaPriceRoubles": 120000,
         "handbookPriceRoubles": 75000,
 
@@ -48,6 +49,7 @@
         "parentId": "5c164d2286f774194c5e69fa",
         "handbookParentId": "5c164d2286f774194c5e69fa",
         "newId": "662400eb756ca8948fe64fe8",
+        "newItemName": "pda",
         "fleaPriceRoubles": 3650000,
         "handbookPriceRoubles": 7560000,
 

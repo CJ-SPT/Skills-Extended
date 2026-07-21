@@ -27,10 +27,10 @@
                     <!-- Left side -->
                     <MudIconButton Icon="@Icons.Custom.Brands.GitHub"
                                    Color="Color.Inherit"
-                                   Href="@SeModMetadata.Instance.Url"/>
+                                   Href="@ModMetadata.Instance.Url"/>
 
                     <MudText Style="font-size: 12px">
-                        Version: @SeModMetadata.Instance.Version.ToString() for SPT: @SeModMetadata.Instance.SptVersion.ToString()
+                        Version: @ModMetadata.Instance.Version.ToString() for SPT: @ModMetadata.Instance.SptVersion.ToString()
                     </MudText>
                     
                     @if (ConfigController.ServerConfig.CheckForUpdates && UpdateChecker.UpdateAvailable)

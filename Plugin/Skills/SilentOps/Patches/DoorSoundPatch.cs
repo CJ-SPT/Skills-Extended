@@ -3,8 +3,6 @@ using Comfort.Common;
 using EFT;
 using EFT.Interactive;
 using HarmonyLib;
-using SkillsExtended.Helpers;
-using SkillsExtended.Skills.Core;
 using SkillsExtended.Utils;
 using SPT.Reflection.Patching;
 using UnityEngine;
@@ -14,10 +12,13 @@ namespace SkillsExtended.Skills.SilentOps.Patches;
 public class DoorSoundPatch : ModulePatch
 {
     private static SkillManager SkillManager => GameUtils.GetSkillManager();
-    
+
     protected override MethodBase GetTargetMethod()
     {
-        return AccessTools.Method(typeof(WorldInteractiveObject), nameof(WorldInteractiveObject.PlaySound));
+        return AccessTools.Method(
+            typeof(WorldInteractiveObject),
+            nameof(WorldInteractiveObject.PlaySound)
+        );
     }
 
     [PatchPrefix]
@@ -28,7 +29,7 @@ public class DoorSoundPatch : ModulePatch
         {
             return true;
         }
-        
+
         if (__instance.OpenSound.Length != 0 && state == EDoorState.Open)
         {
             PlayDoorOpenSound(__instance);
@@ -46,35 +47,37 @@ public class DoorSoundPatch : ModulePatch
     {
         var openSound = door.OpenSound[Random.Range(0, door.OpenSound.Length)];
         var bonus = 1f - SkillManager.SkillManagerExtended.SilentOpsReduceVolumeBuff;
-        
+
         if (openSound)
         {
             Singleton<BetterAudio>.Instance.PlayAtPoint(
-                door.transform.position, 
-                openSound, 
-                CameraClass.Instance.Distance(door.transform.position), 
-                BetterAudio.AudioSourceGroupType.Collisions, 
-                35, 
-                Random.Range(0.8f * bonus, 1f * bonus), 
-                EOcclusionTest.Fast);
+                door.transform.position,
+                openSound,
+                CameraClass.Instance.Distance(door.transform.position),
+                BetterAudio.AudioSourceGroupType.Collisions,
+                35,
+                Random.Range(0.8f * bonus, 1f * bonus),
+                EOcclusionTest.Fast
+            );
         }
     }
-    
+
     private static void PlayDoorSqueakSound(WorldInteractiveObject door)
     {
         var squeakSound = door.SqueakSound[Random.Range(0, door.SqueakSound.Length)];
-        var bonus = 1f - SkillManager.SkillManagerExtended.SilentOpsReduceVolumeBuff;    
-        
+        var bonus = 1f - SkillManager.SkillManagerExtended.SilentOpsReduceVolumeBuff;
+
         if (squeakSound)
         {
             Singleton<BetterAudio>.Instance.PlayAtPoint(
-                door.transform.position, 
-                squeakSound, 
-                CameraClass.Instance.Distance(door.transform.position), 
-                BetterAudio.AudioSourceGroupType.Collisions, 
-                35, 
-                Random.Range(0.8f * bonus, 1f * bonus), 
-                EOcclusionTest.Fast);
+                door.transform.position,
+                squeakSound,
+                CameraClass.Instance.Distance(door.transform.position),
+                BetterAudio.AudioSourceGroupType.Collisions,
+                35,
+                Random.Range(0.8f * bonus, 1f * bonus),
+                EOcclusionTest.Fast
+            );
         }
     }
 }

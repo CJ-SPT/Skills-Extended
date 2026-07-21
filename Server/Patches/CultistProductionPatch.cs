@@ -2,25 +2,29 @@
 using HarmonyLib;
 using SkillsExtended.Core;
 using SkillsExtended.Utils;
+using SPTarkov.DI.Annotations;
 using SPTarkov.Reflection.Patching;
-using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Hideout;
-using SPTarkov.Server.Core.Services;
+using SPTarkov.Server.Core.Services.Hideout;
 
 namespace SkillsExtended.Patches;
 
 /// <summary>
 ///     This patch is needed so we can get the sessionId of the profile starting the sacrifice
 /// </summary>
+[Injectable]
 public class StartSacrificePatch : AbstractPatch
 {
     internal static MongoId PmcProfileId { get; private set; }
-    
+
     protected override MethodBase? GetTargetMethod()
     {
-        return AccessTools.Method(typeof(CircleOfCultistService), nameof(CircleOfCultistService.StartSacrifice));
+        return AccessTools.Method(
+            typeof(CircleOfCultistService),
+            nameof(CircleOfCultistService.StartSacrifice)
+        );
     }
 
     [PatchPrefix]
@@ -39,13 +43,18 @@ public class StartSacrificePatch : AbstractPatch
 /// <summary>
 ///     This patch modifies the time required for a cultist circle return
 /// </summary>
-public class CultistProductionPatch : AbstractPatch
+[Injectable]
+public class CultistProductionPatch(ConfigController configController, SkillUtil skillUtil)
+    : AbstractPatch
 {
-    private static readonly ConfigController ConfigController = ServiceLocator.ServiceProvider.GetRequiredService<ConfigController>();
-    private static readonly SkillUtil SkillUtil = ServiceLocator.ServiceProvider.GetRequiredService<SkillUtil>();
-    
+    private static ConfigController _configController = null!;
+    private static SkillUtil _skillUtil = null!;
+
     protected override MethodBase? GetTargetMethod()
     {
+        _configController = configController;
+        _skillUtil = skillUtil;
+
         return AccessTools.Method(typeof(CircleOfCultistService), "GetCircleCraftingInfo");
     }
 
@@ -54,10 +63,18 @@ public class CultistProductionPatch : AbstractPatch
     {
         if (StartSacrificePatch.PmcProfileId.IsEmpty)
         {
-            throw new InvalidOperationException("[Skills Extended] Pmc ProfileId is empty when starting a cultist circle sacrifice.");
+            throw new InvalidOperationException(
+                "[Skills Extended] Pmc ProfileId is empty when starting a cultist circle sacrifice."
+            );
         }
 
-        if (!SkillUtil.TryGetSkillLevel(StartSacrificePatch.PmcProfileId, SkillTypes.Shadowconnections, out var skillLevel))
+        if (
+            !_skillUtil.TryGetSkillLevel(
+                StartSacrificePatch.PmcProfileId,
+                SkillTypes.Shadowconnections,
+                out var skillLevel
+            )
+        )
         {
             return;
         }
@@ -65,17 +82,18 @@ public class CultistProductionPatch : AbstractPatch
 #if DEBUG
         Console.WriteLine($"Cultist circle original time: `{__result.Time}` seconds");
 #endif
-        
-        var timeBonusPerLevel = ConfigController.SkillsConfig.ShadowConnections.CultistCircleReturnTimeReduction;
-        
+        var timeBonusPerLevel = _configController
+            .SkillsConfig
+            .ShadowConnections
+            .CultistCircleReturnTimeReduction;
+
         var buff = Math.Clamp(1f - timeBonusPerLevel * skillLevel, 0f, 1f);
 
 #if DEBUG
         Console.WriteLine($"Cultist Circle Buff: {buff}");
 #endif
-        
         __result.Time = (long)(__result.Time * buff);
-        
+
 #if DEBUG
         Console.WriteLine($"Cultist circle modified time: `{__result.Time}` seconds");
 #endif

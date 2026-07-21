@@ -1,17 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using EFT.UI;
-using EFT.UI.Screens;
-using SPT.Reflection.Patching;
 using System.Linq;
 using System.Reflection;
 using EFT;
 using EFT.InventoryLogic;
+using EFT.UI;
+using EFT.UI.Screens;
 using HarmonyLib;
-using SkillsExtended.Helpers;
 using SkillsExtended.Models;
-using SkillsExtended.Skills.Core;
 using SkillsExtended.Utils;
+using SPT.Reflection.Patching;
 
 namespace SkillsExtended.Skills.WeaponSkills.Patches;
 
@@ -20,52 +18,54 @@ internal class UpdateWeaponsPatch : ModulePatch
     // Store an object containing the weapons original stats.
     private static readonly Dictionary<string, OrigWeaponValues> UsecOriginalWeaponValues = [];
     private static readonly Dictionary<string, int> UsecWeaponInstanceIds = [];
-    
+
     private static readonly Dictionary<string, OrigWeaponValues> EasternOriginalWeaponValues = [];
     private static readonly Dictionary<string, int> EasternWeaponInstanceIds = [];
-    
+
     private static SkillManager SkillManager => GameUtils.GetSkillManager();
-    
+
     protected override MethodBase GetTargetMethod()
     {
         return AccessTools.Method(typeof(MenuTaskBar), nameof(MenuTaskBar.OnScreenChanged));
     }
-    
+
     [PatchPrefix]
     public static void Prefix(EEftScreenType eftScreenType)
     {
         if (SkillsExtendedPlugin.SkillData.NatoWeapons.Enabled)
         {
             UsecWeaponInstanceIds.Clear();
-            
+
             StaticManager.BeginCoroutine(UpdateUsecWeapons());
         }
 
         if (SkillsExtendedPlugin.SkillData.EasternWeapons.Enabled)
         {
             EasternWeaponInstanceIds.Clear();
-            
+
             StaticManager.BeginCoroutine(UpdateEasternWeapons());
         }
     }
-    
+
     private static IEnumerator UpdateUsecWeapons()
     {
         if (SkillManager is null)
         {
-            yield break; 
+            yield break;
         }
-        
+
         var natoWeapons = SkillsExtendedPlugin.SkillData.NatoWeapons;
 
         var side = GameUtils.IsScav() ? EPlayerSide.Savage : EPlayerSide.Usec;
-        
-        var weapons = GameUtils.GetProfile(side)!.Inventory.AllRealPlayerItems
-            .Where(x => natoWeapons.Weapons.Contains(x.TemplateId));
-        
+
+        var weapons = GameUtils
+            .GetProfile(side)!
+            .Inventory.AllRealPlayerItems.Where(x => natoWeapons.Weapons.Contains(x.TemplateId));
+
         foreach (var item in weapons)
         {
-            if (item is not Weapon weapon) continue;
+            if (item is not Weapon weapon)
+                continue;
 
             // Store the weapons original values
             if (!UsecOriginalWeaponValues.ContainsKey(weapon.TemplateId))
@@ -74,11 +74,13 @@ internal class UpdateWeaponsPatch : ModulePatch
                 {
                     ergo = weapon.Template.Ergonomics,
                     weaponUp = weapon.Template.RecoilForceUp,
-                    weaponBack = weapon.Template.RecoilForceBack
+                    weaponBack = weapon.Template.RecoilForceBack,
                 };
 
 #if DEBUG
-                SkillsExtendedPlugin.Log.LogDebug($"original {weapon.LocalizedName()} ergo: {weapon.Template.Ergonomics}, up {weapon.Template.RecoilForceUp}, back {weapon.Template.RecoilForceBack}");
+                SkillsExtendedPlugin.Log.LogDebug(
+                    $"original {weapon.LocalizedName()} ergo: {weapon.Template.Ergonomics}, up {weapon.Template.RecoilForceUp}, back {weapon.Template.RecoilForceBack}"
+                );
 #endif
                 UsecOriginalWeaponValues.Add(item.TemplateId, origVals);
             }
@@ -86,7 +88,10 @@ internal class UpdateWeaponsPatch : ModulePatch
             //Skip instances of the weapon that are already adjusted at this level.
             if (UsecWeaponInstanceIds.ContainsKey(item.Id))
             {
-                if (UsecWeaponInstanceIds[item.Id] == GameUtils.GetSkillManager()!.UsecArsystems.Level)
+                if (
+                    UsecWeaponInstanceIds[item.Id]
+                    == GameUtils.GetSkillManager()!.UsecArsystems.Level
+                )
                 {
                     continue;
                 }
@@ -95,15 +100,22 @@ internal class UpdateWeaponsPatch : ModulePatch
             }
 
             var skillMgrExt = SkillManager.SkillManagerExtended;
-            
-            weapon.Template.Ergonomics = UsecOriginalWeaponValues[item.TemplateId].ergo * (1 + skillMgrExt.UsecArSystemsErgoBuff);
-            weapon.Template.RecoilForceUp = UsecOriginalWeaponValues[item.TemplateId].weaponUp * (1 - skillMgrExt.UsecArSystemsRecoilBuff);
-            weapon.Template.RecoilForceBack = UsecOriginalWeaponValues[item.TemplateId].weaponBack * (1 - skillMgrExt.UsecArSystemsRecoilBuff);
+
+            weapon.Template.Ergonomics =
+                UsecOriginalWeaponValues[item.TemplateId].ergo
+                * (1 + skillMgrExt.UsecArSystemsErgoBuff);
+            weapon.Template.RecoilForceUp =
+                UsecOriginalWeaponValues[item.TemplateId].weaponUp
+                * (1 - skillMgrExt.UsecArSystemsRecoilBuff);
+            weapon.Template.RecoilForceBack =
+                UsecOriginalWeaponValues[item.TemplateId].weaponBack
+                * (1 - skillMgrExt.UsecArSystemsRecoilBuff);
 
 #if DEBUG
-            SkillsExtendedPlugin.Log.LogDebug($"New {weapon.LocalizedName()} ergo: {weapon.Template.Ergonomics}, up {weapon.Template.RecoilForceUp}, back {weapon.Template.RecoilForceBack}");
+            SkillsExtendedPlugin.Log.LogDebug(
+                $"New {weapon.LocalizedName()} ergo: {weapon.Template.Ergonomics}, up {weapon.Template.RecoilForceUp}, back {weapon.Template.RecoilForceBack}"
+            );
 #endif
-            
             UsecWeaponInstanceIds.Add(item.Id, GameUtils.GetSkillManager()!.UsecArsystems.Level);
 
             yield return null;
@@ -120,9 +132,10 @@ internal class UpdateWeaponsPatch : ModulePatch
         var easternWeapons = SkillsExtendedPlugin.SkillData.EasternWeapons;
 
         var side = GameUtils.IsScav() ? EPlayerSide.Savage : EPlayerSide.Usec;
-        
-        var weapons = GameUtils.GetProfile(side)!.Inventory.AllRealPlayerItems
-            .Where(x => easternWeapons.Weapons.Contains(x.TemplateId));
+
+        var weapons = GameUtils
+            .GetProfile(side)!
+            .Inventory.AllRealPlayerItems.Where(x => easternWeapons.Weapons.Contains(x.TemplateId));
 
         foreach (var item in weapons)
         {
@@ -138,14 +151,14 @@ internal class UpdateWeaponsPatch : ModulePatch
                 {
                     ergo = weapon.Template.Ergonomics,
                     weaponUp = weapon.Template.RecoilForceUp,
-                    weaponBack = weapon.Template.RecoilForceBack
+                    weaponBack = weapon.Template.RecoilForceBack,
                 };
 
 #if DEBUG
                 SkillsExtendedPlugin.Log.LogDebug(
-                    $"original {weapon.LocalizedName()} ergo: {weapon.Template.Ergonomics}, up {weapon.Template.RecoilForceUp}, back {weapon.Template.RecoilForceBack}");
+                    $"original {weapon.LocalizedName()} ergo: {weapon.Template.Ergonomics}, up {weapon.Template.RecoilForceUp}, back {weapon.Template.RecoilForceBack}"
+                );
 #endif
-                
                 EasternOriginalWeaponValues.Add(item.TemplateId, origVals);
             }
 
@@ -161,16 +174,22 @@ internal class UpdateWeaponsPatch : ModulePatch
             }
 
             var skillMgrExt = SkillManager.SkillManagerExtended;
-            
-            weapon.Template.Ergonomics = EasternOriginalWeaponValues[item.TemplateId].ergo * (1 + skillMgrExt.BearAkSystemsErgoBuff);
-            weapon.Template.RecoilForceUp = EasternOriginalWeaponValues[item.TemplateId].weaponUp * (1 - skillMgrExt.BearAkSystemsRecoilBuff);
-            weapon.Template.RecoilForceBack = EasternOriginalWeaponValues[item.TemplateId].weaponBack * (1 - skillMgrExt.BearAkSystemsRecoilBuff);
+
+            weapon.Template.Ergonomics =
+                EasternOriginalWeaponValues[item.TemplateId].ergo
+                * (1 + skillMgrExt.BearAkSystemsErgoBuff);
+            weapon.Template.RecoilForceUp =
+                EasternOriginalWeaponValues[item.TemplateId].weaponUp
+                * (1 - skillMgrExt.BearAkSystemsRecoilBuff);
+            weapon.Template.RecoilForceBack =
+                EasternOriginalWeaponValues[item.TemplateId].weaponBack
+                * (1 - skillMgrExt.BearAkSystemsRecoilBuff);
 
 #if DEBUG
             SkillsExtendedPlugin.Log.LogDebug(
-                $"New {weapon.LocalizedName()} ergo: {weapon.Template.Ergonomics}, up {weapon.Template.RecoilForceUp}, back {weapon.Template.RecoilForceBack}");
+                $"New {weapon.LocalizedName()} ergo: {weapon.Template.Ergonomics}, up {weapon.Template.RecoilForceUp}, back {weapon.Template.RecoilForceBack}"
+            );
 #endif
-            
             EasternWeaponInstanceIds.Add(item.Id, SkillManager.BearAksystems.Level);
 
             yield return null;

@@ -1,68 +1,67 @@
 ﻿using SkillsExtended.Config;
-using SkillsExtended.Models;
+using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.DI;
-using SPTarkov.Server.Core.Helpers;
-using SPTarkov.Server.Core.Models.Common;
+using SPTarkov.Server.Core.Helpers.Items;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Hideout;
+using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Mod;
-using SPTarkov.Server.Core.Models.Utils;
-using SPTarkov.Server.Core.Services;
-using SPTarkov.Server.Core.Services.Mod;
+using SPTarkov.Server.Core.Models.Spt.Tables;
+using SPTarkov.Server.Core.Services.Locales;
+using SPTarkov.Server.Core.Services.Modding.Custom;
 using SPTarkov.Server.Core.Utils;
 using Path = System.IO.Path;
 
 namespace SkillsExtended.Core;
 
-[Injectable(TypePriority = OnLoadOrder.PostDBModLoader + 1)]
+[Injectable(TypePriority = OnLoadOrder.PostLoad)]
 public class DatabaseImporter(
     ISptLogger<DatabaseImporter> logger,
     CustomItemService customItemService,
-    DatabaseService databaseService,
+    TemplateTable templateTable,
+    LocaleTable localeTable,
+    HideoutTable hideoutTable,
     LocaleService localeService,
     ItemHelper itemHelper,
-    FileUtil  fileUtil,
-    JsonUtil  jsonUtil
-    ) : IOnLoad
+    FileUtil fileUtil,
+    JsonUtil jsonUtil
+) : IOnLoad
 {
-    public async Task OnLoad()
+    public async Task OnLoadAsync(CancellationToken cancellationToken)
     {
         await LoadLocales();
         await CreateItems();
         await AddCraftsToDatabase();
         await LoadAchievements();
     }
-    
+
     public KeysData GetKeyLocales()
     {
-        var items = databaseService.GetItems().Values;
+        var items = templateTable.Items.Values;
         var locales = localeService.GetLocaleDb();
 
-        var keysResponse = new KeysData
-        {
-            KeyLocale = [],
-            ValueLocales = []
-        };
-        
-        var keys = items.Where(
-            item => item.Type == "Item" && 
-                    itemHelper.IsOfBaseclasses(
-                        item.Id, [BaseClasses.KEY, BaseClasses.KEY_MECHANICAL, BaseClasses.KEY_MECHANICAL]
-                        )
-                    );
-        
+        var keysResponse = new KeysData { KeyLocale = [], ValueLocales = [] };
+
+        var keys = items.Where(item =>
+            item.Type == "Item"
+            && itemHelper.IsOfBaseclasses(
+                item.Id,
+                [BaseClasses.KEY, BaseClasses.KEY_MECHANICAL, BaseClasses.KEY_MECHANICAL]
+            )
+        );
+
         foreach (var key in keys)
         {
-            keysResponse.KeyLocale[key.Id.ToString()] = locales[$"{key.Id} Name"];    
+            keysResponse.KeyLocale[key.Id.ToString()] = locales[$"{key.Id} Name"];
         }
-        
+
         return keysResponse;
     }
 
     private async ValueTask LoadLocales()
     {
-        var localesPath = Path.Combine(SeModMetadata.ResourcesDirectory, "Locales");
+        var localesPath = Path.Combine(ModMetadata.ResourcesDirectory, "Locales");
 
         var importedLocales = new Dictionary<string, Dictionary<string, string>>();
         foreach (var file in Directory.GetFiles(localesPath))
@@ -72,10 +71,10 @@ public class DatabaseImporter(
             var locales = jsonUtil.Deserialize<Dictionary<string, string>>(text)!;
             importedLocales[lang] = locales;
         }
-        
+
         ImportLocales(importedLocales);
     }
-    
+
     private void ImportLocales(Dictionary<string, Dictionary<string, string>> allLocales)
     {
         if (!allLocales.TryGetValue("en", out var enLocales))
@@ -85,7 +84,7 @@ public class DatabaseImporter(
         }
 
         // Set all languages to english first.
-        foreach (var (_, lazyLoad) in databaseService.GetLocales().Global)
+        foreach (var (_, lazyLoad) in localeTable.Global)
         {
             lazyLoad.AddTransformer(transformer =>
             {
@@ -93,7 +92,7 @@ public class DatabaseImporter(
                 {
                     transformer![key] = value;
                 }
-                
+
                 return transformer;
             });
         }
@@ -101,7 +100,7 @@ public class DatabaseImporter(
         // Apply an override for other languages
         foreach (var (lang, locales) in allLocales.Where(kvp => kvp.Key != "en"))
         {
-            if (databaseService.GetLocales().Global.TryGetValue(lang, out var lazyLoad))
+            if (localeTable.Global.TryGetValue(lang, out var lazyLoad))
             {
                 lazyLoad.AddTransformer(transformer =>
                 {
@@ -112,17 +111,17 @@ public class DatabaseImporter(
 
                     return transformer;
                 });
-                
+
                 continue;
             }
-            
+
             logger.Error($"[Skills Extended] Could not find language {lang} in global locales.");
         }
     }
 
     private async ValueTask CreateItems()
     {
-        var itemsPath = Path.Combine(SeModMetadata.ResourcesDirectory, "Items", "Items.json");
+        var itemsPath = Path.Combine(ModMetadata.ResourcesDirectory, "Items", "Items.json");
         var text = await fileUtil.ReadFileAsync(itemsPath);
         var items = jsonUtil.Deserialize<List<NewItemFromCloneDetails>>(text)!;
 
@@ -141,7 +140,7 @@ public class DatabaseImporter(
 
     private void AddItemToSpecSlots(string itemId)
     {
-        var dbItems = databaseService.GetItems();
+        var dbItems = templateTable.Items;
 
         foreach (var (id, item) in dbItems)
         {
@@ -162,26 +161,26 @@ public class DatabaseImporter(
 
     private async ValueTask AddCraftsToDatabase()
     {
-        var craftsPath = Path.Combine(SeModMetadata.ResourcesDirectory, "Items", "Crafting.json");
+        var craftsPath = Path.Combine(ModMetadata.ResourcesDirectory, "Items", "Crafting.json");
         var text = await fileUtil.ReadFileAsync(craftsPath);
         var productions = jsonUtil.Deserialize<List<HideoutProduction>>(text)!;
 
         foreach (var production in productions)
         {
-            databaseService.GetHideout().Production.Recipes!.Add(production);
+            hideoutTable.Production.Recipes!.Add(production);
         }
     }
 
     private async ValueTask LoadAchievements()
     {
-        var achievementsPath = Path.Combine(SeModMetadata.ResourcesDirectory, "Achievements");
-        var achievementsDb = databaseService.GetAchievements();
-        
+        var achievementsPath = Path.Combine(ModMetadata.ResourcesDirectory, "Achievements");
+        var achievementsDb = templateTable.Achievements;
+
         foreach (var file in Directory.GetFiles(achievementsPath))
         {
-            var text  = await fileUtil.ReadFileAsync(file);
+            var text = await fileUtil.ReadFileAsync(file);
             var achievements = jsonUtil.Deserialize<List<Achievement>>(text)!;
-            
+
             achievementsDb.AddRange(achievements);
         }
     }

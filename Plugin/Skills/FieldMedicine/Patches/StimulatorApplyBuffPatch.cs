@@ -1,6 +1,5 @@
 ﻿using System.Reflection;
 using EFT.HealthSystem;
-using SkillsExtended.Helpers;
 using SkillsExtended.Utils;
 using SPT.Reflection.Patching;
 using UnityEngine;
@@ -17,17 +16,24 @@ internal class StimulatorApplyBuffPatch : ModulePatch
     }
 
     [PatchPrefix]
-    public static bool Prefix(InjectorBuff buffSettings, float refValue, Vector2? limits, ref float __result)
+    public static bool Prefix(
+        InjectorBuff buffSettings,
+        float refValue,
+        Vector2? limits,
+        ref float __result
+    )
     {
         if (!SkillsExtendedPlugin.SkillData.FieldMedicine.Enabled || limits is null)
         {
             return true;
         }
-        
-        var value = buffSettings.AbsoluteValue ? buffSettings.Value : (buffSettings.Value + 1f) * refValue;
-        var skillManager =  GameUtils.GetSkillManager();
+
+        var value = buffSettings.AbsoluteValue
+            ? buffSettings.Value
+            : (buffSettings.Value + 1f) * refValue;
+        var skillManager = GameUtils.GetSkillManager();
         var newSkillCap = 60 * (1 + skillManager?.SkillManagerExtended.FieldMedicineSkillCap);
-        
+
         __result = Mathf.CeilToInt(Mathf.Clamp(value, limits.Value.x, newSkillCap));
 
 #if DEBUG
@@ -38,7 +44,6 @@ internal class StimulatorApplyBuffPatch : ModulePatch
         Logger.LogDebug($"Adjusted max skill cap:       `{__result}`");
         Logger.LogDebug("==================================================================");
 #endif
-        
         return false;
     }
 }

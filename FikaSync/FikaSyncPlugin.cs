@@ -1,9 +1,6 @@
 ﻿using System;
 using BepInEx;
 using BepInEx.Logging;
-using Fika.Core.Modding;
-using Fika.Core.Modding.Events;
-using Fika.Core.Networking;
 using SkillsExtended;
 using SkillsExtendedFika.Controllers;
 using SkillsExtendedFika.Packets;
@@ -16,9 +13,9 @@ namespace SkillsExtendedFika;
 [BepInDependency("com.fika.core", SkillsExtendedInfo.MIN_FIKA_VERSION)]
 public class FikaSyncPlugin : BaseUnityPlugin
 {
-    internal new static ManualLogSource? Logger;
+    internal static new ManualLogSource? Logger;
     private static PatchManager? _patchManager;
-    
+
     private void Awake()
     {
         Logger = base.Logger;
@@ -27,15 +24,15 @@ public class FikaSyncPlugin : BaseUnityPlugin
         {
             throw new Exception("Invalid EFT Version");
         }
-        
+
         _patchManager = new PatchManager(this, true);
         _patchManager.EnablePatches();
 
         SkillsExtendedInfo.SyncPluginPresent = true;
-        
+
         FikaEventDispatcher.SubscribeEvent<FikaNetworkManagerCreatedEvent>(OnNetworkManagerCreated);
     }
-    
+
     private static void OnNetworkManagerCreated(FikaNetworkManagerCreatedEvent createdEvent)
     {
         switch (createdEvent.Manager)
@@ -54,7 +51,6 @@ public class FikaSyncPlugin : BaseUnityPlugin
 #if DEBUG
         Logger?.LogDebug("Received LockPickingSyncPacket");
 #endif
-        
         LockPickingFikaController.HandlePacket(packet);
     }
 }

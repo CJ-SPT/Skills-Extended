@@ -1,6 +1,5 @@
 ﻿using System.Reflection;
 using HarmonyLib;
-using SkillsExtended.Helpers;
 using SkillsExtended.Utils;
 using SPT.Reflection.Patching;
 using UnityEngine;
@@ -11,7 +10,10 @@ public class AbstractSkillClassSummaryLevelPatch : ModulePatch
 {
     protected override MethodBase GetTargetMethod()
     {
-        return AccessTools.PropertyGetter(typeof(AbstractSkillClass), nameof(AbstractSkillClass.SummaryLevel));
+        return AccessTools.PropertyGetter(
+            typeof(AbstractSkillClass),
+            nameof(AbstractSkillClass.SummaryLevel)
+        );
     }
 
     [PatchPrefix]
@@ -21,19 +23,19 @@ public class AbstractSkillClassSummaryLevelPatch : ModulePatch
         {
             return true;
         }
-        
-        var skillManager =  GameUtils.GetSkillManager();
+
+        var skillManager = GameUtils.GetSkillManager();
         if (skillManager == null)
         {
             return true;
         }
-        
+
         var newSkillCap = 60 * (1 + skillManager?.SkillManagerExtended.FieldMedicineSkillCap);
 
         var level = __instance.Level;
         var buff = __instance.Buff;
         __result = Mathf.CeilToInt(Mathf.Min(buff > 0 ? newSkillCap : 51, level + buff));
-        
+
         return false;
     }
 }
