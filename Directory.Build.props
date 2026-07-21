@@ -1,0 +1,108 @@
+<Project>
+  <PropertyGroup>
+    <Version>3.0.0</Version>
+    <LangVersion>latest</LangVersion>
+    <RootNamespace>SkillsExtended</RootNamespace>
+    <DeploySkillsExtended Condition="'$(DeploySkillsExtended)' == ''">true</DeploySkillsExtended>
+
+    <SkillsExtendedProjectType Condition="'$(MSBuildProjectName)' == 'SkillsExtended.Client.API'">ClientFull</SkillsExtendedProjectType>
+    <SkillsExtendedProjectType Condition="'$(MSBuildProjectName)' == 'SkillsExtended.Client.Skills'">ClientFull</SkillsExtendedProjectType>
+    <SkillsExtendedProjectType Condition="'$(MSBuildProjectName)' == 'SkillsExtended.Client.Prepatch'">ClientPrepatch</SkillsExtendedProjectType>
+    <SkillsExtendedProjectType Condition="'$(MSBuildProjectName)' == 'SkillsExtended.Server'">Server</SkillsExtendedProjectType>
+
+    <IsSkillsExtendedClient Condition="'$(SkillsExtendedProjectType)' == 'ClientFull' Or '$(SkillsExtendedProjectType)' == 'ClientPrepatch'">true</IsSkillsExtendedClient>
+    <TargetFramework Condition="'$(IsSkillsExtendedClient)' == 'true'">netstandard2.1</TargetFramework>
+    <Configurations Condition="'$(SkillsExtendedProjectType)' == 'ClientFull' Or '$(SkillsExtendedProjectType)' == 'ClientPrepatch'">Debug;Release;BETA</Configurations>
+
+    <TarkovDir Condition="'$(TarkovDir)' == '' And ('$(IsSkillsExtendedClient)' == 'true' Or '$(SkillsExtendedProjectType)' == 'Server')">$([MSBuild]::NormalizeDirectory('$(MSBuildThisFileDirectory)..\..\'))</TarkovDir>
+    <TarkovPluginsDir Condition="'$(IsSkillsExtendedClient)' == 'true'">$(TarkovDir)BepInEx\plugins\</TarkovPluginsDir>
+    <TarkovPluginsSPTDir Condition="'$(IsSkillsExtendedClient)' == 'true'">$(TarkovPluginsDir)spt\</TarkovPluginsSPTDir>
+    <TarkovManagedDir Condition="'$(IsSkillsExtendedClient)' == 'true'">$(TarkovDir)EscapeFromTarkov_Data\Managed\</TarkovManagedDir>
+    <TarkovBepInExCoreDir Condition="'$(IsSkillsExtendedClient)' == 'true'">$(TarkovDir)BepInEx\core\</TarkovBepInExCoreDir>
+    <TarkovDumpedAssemblyDir Condition="'$(IsSkillsExtendedClient)' == 'true'">$(TarkovDir)BepInEx\DumpedAssemblies\EscapeFromTarkov\</TarkovDumpedAssemblyDir>
+    <SkillsExtendedClientDeployDir Condition="'$(IsSkillsExtendedClient)' == 'true'">$(TarkovPluginsDir)SkillsExtended\</SkillsExtendedClientDeployDir>
+    <SptModDir Condition="'$(SkillsExtendedProjectType)' == 'Server'">$(TarkovDir)SPT_Runtime\user\mods\SkillsExtended\</SptModDir>
+    <SptServerPackageVersion Condition="'$(SkillsExtendedProjectType)' == 'Server'">4.1.0-pre.202607161908</SptServerPackageVersion>
+
+    <DeployClientPlugin Condition="'$(MSBuildProjectName)' == 'SkillsExtended.Client.API' Or '$(MSBuildProjectName)' == 'SkillsExtended.Client.Skills'">true</DeployClientPlugin>
+    <DeployCommonDll Condition="'$(MSBuildProjectName)' == 'SkillsExtended.Client.Skills'">true</DeployCommonDll>
+    <DeployClientResources Condition="'$(MSBuildProjectName)' == 'SkillsExtended.Client.Skills'">true</DeployClientResources>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(MSBuildProjectName)' == 'SkillsExtended.Client.API' Or '$(MSBuildProjectName)' == 'SkillsExtended.Client.Skills' Or '$(MSBuildProjectName)' == 'SkillsExtended.Server'">
+    <ProjectReference Include="$(MSBuildThisFileDirectory)SkillsExtended.Common\SkillsExtended.Common.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(SkillsExtendedProjectType)' == 'ClientFull'">
+    <Reference Include="Assembly-CSharp" HintPath="$(TarkovDumpedAssemblyDir)Assembly-CSharp.dll" />
+    <Reference Include="ItemComponent.Types" HintPath="$(TarkovManagedDir)ItemComponent.Types.dll" />
+    <Reference Include="bsg.console.core" HintPath="$(TarkovManagedDir)bsg.console.core.dll" />
+    <Reference Include="Comfort" HintPath="$(TarkovManagedDir)Comfort.dll" />
+    <Reference Include="Comfort.Unity" HintPath="$(TarkovManagedDir)Comfort.Unity.dll" />
+    <Reference Include="Newtonsoft.Json" HintPath="$(TarkovManagedDir)Newtonsoft.Json.dll" />
+    <Reference Include="Sirenix.Serialization" HintPath="$(TarkovManagedDir)Sirenix.Serialization.dll" />
+    <Reference Include="UnityEngine" HintPath="$(TarkovManagedDir)UnityEngine.dll" />
+    <Reference Include="UnityEngine.CoreModule" HintPath="$(TarkovManagedDir)UnityEngine.CoreModule.dll" />
+    <Reference Include="UnityEngine.InputLegacyModule" HintPath="$(TarkovManagedDir)UnityEngine.InputLegacyModule.dll" />
+    <Reference Include="UnityEngine.IMGUIModule" HintPath="$(TarkovManagedDir)UnityEngine.IMGUIModule.dll" />
+    <Reference Include="UnityEngine.TextRenderingModule" HintPath="$(TarkovManagedDir)UnityEngine.TextRenderingModule.dll" />
+    <Reference Include="0Harmony" HintPath="$(TarkovBepInExCoreDir)0Harmony.dll" />
+    <Reference Include="BepInEx" HintPath="$(TarkovBepInExCoreDir)BepInEx.dll" />
+    <Reference Include="BepInEx.Preloader" HintPath="$(TarkovBepInExCoreDir)BepInEx.Preloader.dll" />
+    <Reference Include="spt-reflection" HintPath="$(TarkovPluginsSPTDir)spt-reflection.dll" />
+    <Reference Include="spt-custom" HintPath="$(TarkovPluginsSPTDir)spt-custom.dll" />
+    <Reference Include="spt-common" HintPath="$(TarkovPluginsSPTDir)spt-common.dll" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(SkillsExtendedProjectType)' == 'ClientFull'">
+    <Reference Include="Unity.TextMeshPro" HintPath="$(TarkovManagedDir)Unity.TextMeshPro.dll" />
+    <Reference Include="Unity.Postprocessing.Runtime" HintPath="$(TarkovManagedDir)Unity.Postprocessing.Runtime.dll" />
+    <Reference Include="UnityEngine.PhysicsModule" HintPath="$(TarkovManagedDir)UnityEngine.PhysicsModule.dll" />
+    <Reference Include="UnityEngine.ImageConversionModule" HintPath="$(TarkovManagedDir)UnityEngine.ImageConversionModule.dll" />
+    <Reference Include="UnityEngine.UI" HintPath="$(TarkovManagedDir)UnityEngine.UI.dll" />
+    <Reference Include="UnityEngine.UIModule" HintPath="$(TarkovManagedDir)UnityEngine.UIModule.dll" />
+    <Reference Include="UnityEngine.AIModule" HintPath="$(TarkovManagedDir)UnityEngine.AIModule.dll" />
+    <Reference Include="UnityEngine.ParticleSystemModule" HintPath="$(TarkovManagedDir)UnityEngine.ParticleSystemModule.dll" />
+    <Reference Include="UnityEngine.AssetBundleModule" HintPath="$(TarkovManagedDir)UnityEngine.AssetBundleModule.dll" />
+    <Reference Include="UnityEngine.AudioModule" HintPath="$(TarkovManagedDir)UnityEngine.AudioModule.dll" />
+    <Reference Include="UnityEngine.AnimationModule" HintPath="$(TarkovManagedDir)UnityEngine.AnimationModule.dll" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(SkillsExtendedProjectType)' == 'ClientPrepatch'">
+    <Reference Include="0Harmony" HintPath="$(TarkovBepInExCoreDir)0Harmony.dll" />
+    <Reference Include="BepInEx" HintPath="$(TarkovBepInExCoreDir)BepInEx.dll" />
+    <Reference Include="Mono.Cecil" HintPath="$(TarkovBepInExCoreDir)Mono.Cecil.dll" />
+    <Reference Include="Newtonsoft.Json" HintPath="$(TarkovManagedDir)Newtonsoft.Json.dll" />
+    <Reference Include="UnityEngine" HintPath="$(TarkovManagedDir)UnityEngine.dll" />
+    <Reference Include="UnityEngine.CoreModule" HintPath="$(TarkovManagedDir)UnityEngine.CoreModule.dll" />
+  </ItemGroup>
+
+  <Target Name="DeploySkillsExtendedClient" AfterTargets="PostBuildEvent" Condition="'$(DeploySkillsExtended)' == 'true' And '$(DeployClientPlugin)' == 'true'">
+    <ItemGroup>
+      <SkillsExtendedClientDeployFiles Include="$(TargetPath)" />
+      <SkillsExtendedClientDeployFiles Include="$(TargetDir)SkillsExtended.Common.dll" Condition="'$(DeployCommonDll)' == 'true'" />
+      <SkillsExtendedClientDeployFiles Include="$(ProjectDir)Resources\**\*.*" Condition="'$(DeployClientResources)' == 'true'" />
+    </ItemGroup>
+    <Copy SourceFiles="@(SkillsExtendedClientDeployFiles)" DestinationFolder="$(SkillsExtendedClientDeployDir)%(RecursiveDir)" SkipUnchangedFiles="true" />
+  </Target>
+
+  <Target Name="DeploySkillsExtendedPrepatcher" AfterTargets="PostBuildEvent" Condition="'$(DeploySkillsExtended)' == 'true' And '$(SkillsExtendedProjectType)' == 'ClientPrepatch'">
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(TarkovDir)BepInEx\patchers\" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="$(TargetDir)$(TargetName).pdb" DestinationFolder="$(TarkovDir)BepInEx\patchers\" Condition="'$(Configuration)' == 'Debug' And Exists('$(TargetDir)$(TargetName).pdb')" SkipUnchangedFiles="true" />
+    <Delete Files="$(TarkovDir)BepInEx\patchers\$(TargetName).pdb" Condition="'$(Configuration)' != 'Debug'" />
+  </Target>
+
+  <Target Name="DeploySkillsExtendedServer" AfterTargets="PostBuildEvent" Condition="'$(DeploySkillsExtended)' == 'true' And '$(SkillsExtendedProjectType)' == 'Server'">
+    <ItemGroup>
+      <SkillsExtendedServerAssemblies Include="$(TargetPath);$(TargetDir)SkillsExtended.Common.dll" />
+      <SkillsExtendedServerResources Include="$(ProjectDir)Resources\**\*.*" />
+      <SkillsExtendedServerWebAssets Include="$(ProjectDir)wwwroot\**\*.*" />
+      <SkillsExtendedServerBundles Include="$(ProjectDir)Bundles\**\*.*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(SkillsExtendedServerAssemblies)" DestinationFolder="$(SptModDir)" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(SkillsExtendedServerResources)" DestinationFolder="$(SptModDir)Resources\%(RecursiveDir)" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(SkillsExtendedServerWebAssets)" DestinationFolder="$(SptModDir)wwwroot\%(RecursiveDir)" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(SkillsExtendedServerBundles)" DestinationFolder="$(SptModDir)bundles\%(RecursiveDir)" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="$(ProjectDir)bundles.json" DestinationFolder="$(SptModDir)" SkipUnchangedFiles="true" />
+  </Target>
+</Project>

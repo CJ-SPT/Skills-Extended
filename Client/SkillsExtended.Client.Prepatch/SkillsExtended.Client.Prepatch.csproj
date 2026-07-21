@@ -1,43 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
-    <Version>3.0.0</Version>
-    <LangVersion>latest</LangVersion>
-    <Configurations>Debug;Release;BETA</Configurations>
-    <RootNamespace>SkillsExtended</RootNamespace>
     <Nullable>enable</Nullable>
   </PropertyGroup>
-
-  <ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
-    <PackageReference
-      Include="Microsoft.NETFramework.ReferenceAssemblies"
-      Version="1.0.2"
-      PrivateAssets="all"
-    />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="0Harmony">
-      <HintPath>..\..\..\..\Bepinex\Core\0Harmony.dll</HintPath>
-    </Reference>
-    <Reference Include="BepInEx">
-      <HintPath>..\..\..\..\Bepinex\Core\BepInEx.dll</HintPath>
-    </Reference>
-    <Reference Include="Mono.Cecil">
-      <HintPath>..\..\..\..\Bepinex\Core\Mono.Cecil.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\..\..\..\EscapeFromTarkov_Data\Managed\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine">
-      <HintPath>..\..\..\..\EscapeFromTarkov_data\managed\unityEngine.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.CoreModule">
-      <HintPath>..\..\..\..\EscapeFromTarkov_data\managed\UnityEngine.CoreModule.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="copy &quot;$(TargetPath)&quot; &quot;..\..\..\..\BepInEx\patchers\$(TargetName).dll&quot;&#xD;&#xA;if $(ConfigurationName) == Debug (&#xD;&#xA;    copy &quot;$(ProjectDir)$(OutDir)$(TargetName).pdb&quot; &quot;..\..\..\..\BepInEx\BepInEx\patchers\$(TargetName).pdb&quot;&#xD;&#xA;) else (&#xD;&#xA;    del &quot;..\..\..\..\BepInEx\BepInEx\patchers\$(TargetName).pdb&quot;&#xD;&#xA;)&#xD;&#xA;&#xD;&#xA;del &quot;..\..\..\..\BepInEx\config\com.dirtbikercj.template.cfg&quot;" />
-  </Target>
 </Project>
