@@ -20,7 +20,6 @@ public record ModMetadata : IModMetadata, IModBlazorMetadata
     public List<string>? Incompatibilities { get; init; }
     public Dictionary<string, Range>? ModDependencies { get; init; }
     public string? Url { get; init; } = "https://github.com/CJ-SPT/Skills-Extended";
-    public bool? IsBundleMod { get; init; } = true;
     public string License { get; init; } =
         "Attribution-NonCommercial-NoDerivatives 4.0 International";
 

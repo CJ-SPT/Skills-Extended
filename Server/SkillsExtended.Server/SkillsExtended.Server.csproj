@@ -7,8 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="SPTarkov.Reflection" Version="$(SptServerPackageVersion)" />
-    <PackageReference Include="SPTarkov.Server.Core" Version="$(SptServerPackageVersion)" />
-    <PackageReference Include="SPTarkov.Server.Web" Version="$(SptServerPackageVersion)" />
+    <PackageReference Include="SPTarkov.Reflection" Version="4.1.0" />
+    <PackageReference Include="SPTarkov.Server.Core" Version="4.1.0" />
+    <PackageReference Include="SPTarkov.Server.Web" Version="4.1.0" />
   </ItemGroup>
 </Project>
