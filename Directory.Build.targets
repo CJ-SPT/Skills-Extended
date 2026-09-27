@@ -1,0 +1,79 @@
+<Project>
+  <PropertyGroup>
+    <SkillsExtendedPackageOutputDir Condition="'$(SkillsExtendedPackageOutputDir)' == ''">$(MSBuildThisFileDirectory)artifacts\packages\$(Configuration)\</SkillsExtendedPackageOutputDir>
+  </PropertyGroup>
+  <!-- Build dependencies ensure a server/solution build packages fresh client binaries.
+       They are not assembly references or server runtime dependencies. -->
+  <ItemGroup Condition="'$(PackageSkillsExtended)' == 'true' And '$(SkillsExtendedProjectType)' == 'Server'">
+    <ProjectReference Include="$(MSBuildThisFileDirectory)Client\SkillsExtended.Client.API\SkillsExtended.Client.API.csproj" ReferenceOutputAssembly="false" Private="false" />
+    <ProjectReference Include="$(MSBuildThisFileDirectory)Client\SkillsExtended.Client.Skills\SkillsExtended.Client.Skills.csproj" ReferenceOutputAssembly="false" Private="false" />
+    <ProjectReference Include="$(MSBuildThisFileDirectory)Client\SkillsExtended.Client.Prepatch\SkillsExtended.Client.Prepatch.csproj" ReferenceOutputAssembly="false" Private="false" />
+  </ItemGroup>
+
+  <!-- Explicit runtime allowlist: never redistribute game, SPT, or NuGet DLLs. -->
+  <Target Name="GetSkillsExtendedPackageFiles" Returns="@(SkillsExtendedPackageFile)">
+    <ItemGroup Condition="'$(DeployClientPlugin)' == 'true' Or '$(MSBuildProjectName)' == 'SkillsExtended.Client.Fika'">
+      <SkillsExtendedPackageFile Include="$(TargetPath)">
+        <PackageDirectory>BepInEx\plugins\SkillsExtended\</PackageDirectory>
+      </SkillsExtendedPackageFile>
+      <SkillsExtendedPackageFile Include="$(TargetDir)SkillsExtended.Common.dll" Condition="'$(DeployCommonDll)' == 'true'">
+        <PackageDirectory>BepInEx\plugins\SkillsExtended\</PackageDirectory>
+      </SkillsExtendedPackageFile>
+      <SkillsExtendedPackageFile Include="$(ProjectDir)Resources\**\*" Condition="'$(DeployClientResources)' == 'true'">
+        <PackageDirectory>BepInEx\plugins\SkillsExtended\</PackageDirectory>
+      </SkillsExtendedPackageFile>
+    </ItemGroup>
+    <ItemGroup Condition="'$(SkillsExtendedProjectType)' == 'ClientPrepatch'">
+      <SkillsExtendedPackageFile Include="$(TargetPath)">
+        <PackageDirectory>BepInEx\patchers\</PackageDirectory>
+      </SkillsExtendedPackageFile>
+    </ItemGroup>
+    <ItemGroup Condition="'$(SkillsExtendedProjectType)' == 'Server'">
+      <SkillsExtendedPackageFile Include="$(TargetPath);$(TargetDir)SkillsExtended.Common.dll;$(ProjectDir)bundles.json">
+        <PackageDirectory>SPT_Runtime\user\mods\SkillsExtended\</PackageDirectory>
+      </SkillsExtendedPackageFile>
+      <SkillsExtendedPackageFile Include="$(ProjectDir)Resources\**\*">
+        <PackageDirectory>SPT_Runtime\user\mods\SkillsExtended\Resources\</PackageDirectory>
+      </SkillsExtendedPackageFile>
+      <SkillsExtendedPackageFile Include="$(ProjectDir)wwwroot\**\*">
+        <PackageDirectory>SPT_Runtime\user\mods\SkillsExtended\wwwroot\</PackageDirectory>
+      </SkillsExtendedPackageFile>
+      <SkillsExtendedPackageFile Include="$(ProjectDir)Bundles\**\*">
+        <PackageDirectory>SPT_Runtime\user\mods\SkillsExtended\bundles\</PackageDirectory>
+      </SkillsExtendedPackageFile>
+    </ItemGroup>
+    <ItemGroup>
+      <SkillsExtendedPackageFile Remove="@(SkillsExtendedPackageFile)" Condition="'%(SkillsExtendedPackageFile.Filename)%(SkillsExtendedPackageFile.Extension)' == '.gitkeep'" />
+      <SkillsExtendedPackageFile Update="@(SkillsExtendedPackageFile)">
+        <PackagePath>%(SkillsExtendedPackageFile.PackageDirectory)%(SkillsExtendedPackageFile.RecursiveDir)%(SkillsExtendedPackageFile.Filename)%(SkillsExtendedPackageFile.Extension)</PackagePath>
+      </SkillsExtendedPackageFile>
+    </ItemGroup>
+  </Target>
+
+  <Target Name="PackageSkillsExtendedMod" AfterTargets="Build"
+          DependsOnTargets="GetSkillsExtendedPackageFiles"
+          Condition="'$(PackageSkillsExtended)' == 'true' And '$(DesignTimeBuild)' != 'true' And ('$(SkillsExtendedProjectType)' == 'Server' Or '$(MSBuildProjectName)' == 'SkillsExtended.Client.Fika')">
+    <!-- Reuse the solution's resolved configuration mapping, including BETA. -->
+    <MSBuild Condition="'$(SkillsExtendedProjectType)' == 'Server'"
+             Projects="@(_MSBuildProjectReferenceExistent)"
+             Targets="GetSkillsExtendedPackageFiles"
+             Properties="%(_MSBuildProjectReferenceExistent.SetConfiguration);%(_MSBuildProjectReferenceExistent.SetPlatform);%(_MSBuildProjectReferenceExistent.SetTargetFramework)"
+             RemoveProperties="%(_MSBuildProjectReferenceExistent.GlobalPropertiesToRemove)">
+      <Output TaskParameter="TargetOutputs" ItemName="SkillsExtendedPackageFile" />
+    </MSBuild>
+    <PropertyGroup>
+      <_SkillsExtendedPackageName Condition="'$(SkillsExtendedProjectType)' == 'Server'">SkillsExtended</_SkillsExtendedPackageName>
+      <_SkillsExtendedPackageName Condition="'$(MSBuildProjectName)' == 'SkillsExtended.Client.Fika'">SkillsExtendedFika</_SkillsExtendedPackageName>
+      <_SkillsExtendedPackageStage>$(MSBuildProjectDirectory)\obj\package\$([System.Guid]::NewGuid())\</_SkillsExtendedPackageStage>
+      <_SkillsExtendedPackageZip>$([MSBuild]::NormalizePath('$(SkillsExtendedPackageOutputDir)', '$(_SkillsExtendedPackageName)-$(Version)-$(Configuration).zip'))</_SkillsExtendedPackageZip>
+    </PropertyGroup>
+    <Error Condition="!Exists('%(SkillsExtendedPackageFile.Identity)')" Text="Missing package input: %(SkillsExtendedPackageFile.Identity). Build all project references before packaging." />
+    <Copy SourceFiles="@(SkillsExtendedPackageFile)"
+          DestinationFiles="@(SkillsExtendedPackageFile->'$(_SkillsExtendedPackageStage)%(PackagePath)')" />
+    <MakeDir Directories="$(SkillsExtendedPackageOutputDir)" />
+    <ZipDirectory SourceDirectory="$(_SkillsExtendedPackageStage)" DestinationFile="$(_SkillsExtendedPackageZip)" Overwrite="true" />
+    <RemoveDir Directories="$(_SkillsExtendedPackageStage)" />
+    <Message Importance="high" Text="SPT mod package: $(_SkillsExtendedPackageZip)" />
+  </Target>
+</Project>
+

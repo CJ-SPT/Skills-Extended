@@ -4,6 +4,7 @@
     <LangVersion>latest</LangVersion>
     <RootNamespace>SkillsExtended</RootNamespace>
     <DeploySkillsExtended Condition="'$(DeploySkillsExtended)' == ''">true</DeploySkillsExtended>
+    <PackageSkillsExtended Condition="'$(PackageSkillsExtended)' == ''">true</PackageSkillsExtended>
 
     <SkillsExtendedProjectType Condition="'$(MSBuildProjectName)' == 'SkillsExtended.Client.API'">ClientFull</SkillsExtendedProjectType>
     <SkillsExtendedProjectType Condition="'$(MSBuildProjectName)' == 'SkillsExtended.Client.Skills'">ClientFull</SkillsExtendedProjectType>
