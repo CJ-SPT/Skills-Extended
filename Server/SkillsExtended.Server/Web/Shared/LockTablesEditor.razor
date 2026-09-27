@@ -1,0 +1,229 @@
+@using SkillsExtended.Config.Skills
+
+<section class="se-panel">
+    <details open>
+        <summary><h2>Advanced · XP by lock level</h2></summary>
+        <p>Lock level is difficulty, not the player's skill level. Missing XP entries award no XP.</p>
+        <div class="se-add-row">
+            <label class="se-field">
+                New lock level
+                <input type="text" inputmode="numeric" @bind="_xpKey" @bind:event="oninput" />
+            </label>
+            <button class="se-button" type="button" @onclick="AddXp">Add XP row</button>
+        </div>
+        <div class="se-table-wrap">
+            <table class="se-table">
+                <thead>
+                    <tr>
+                        <th>Lock level</th>
+                        <th>XP awarded</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var key in Data.XpTable.Keys.OrderBy(k => int.TryParse(k, out var n) ? n : int.MaxValue).ToArray())
+                    {
+                        var path = "LockPicking.XpTable." + key;
+                        <tr @key="key">
+                            <td>@key</td>
+                            <td>
+                                <input aria-label="@($"XP for lock level {key}")"
+                                       aria-invalid="@(Session.InputErrors.ContainsKey(path) ? "true" : "false")"
+                                       type="text"
+                                       inputmode="decimal"
+                                       value="@Session.Inputs.GetValueOrDefault(path, Data.XpTable[key].ToString(CultureInfo.CurrentCulture))"
+                                       @oninput="e => EditXp(key, e)" />
+                                <small class="se-error">@Session.InputErrors.GetValueOrDefault(path)</small>
+                            </td>
+                            <td>
+                                <button class="se-button se-subtle" @onclick="() => RemoveXp(key)">
+                                    Remove level @key
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </details>
+</section>
+
+<section class="se-panel">
+    <details>
+        <summary><h2>Advanced · Door requirements</h2></summary>
+        <p>Choose a map to edit its door IDs and lock difficulty. Removing a door removes its lockpicking lookup entry.</p>
+        <div class="se-fields">
+            <label class="se-field">
+                Map
+                <select @bind="_map">
+                    @foreach (var map in Maps)
+                    {
+                        <option value="@map">@map</option>
+                    }
+                </select>
+            </label>
+            <label class="se-field">
+                Search door IDs
+                <input type="search" @bind="_search" @bind:event="oninput" />
+            </label>
+        </div>
+        <div class="se-add-row">
+            <label class="se-field">
+                New door ID
+                <input type="text" @bind="_doorId" @bind:event="oninput" />
+            </label>
+            <button class="se-button" type="button" @onclick="AddDoor">Add door</button>
+        </div>
+        <div class="se-table-wrap">
+            <table class="se-table">
+                <thead>
+                    <tr>
+                        <th>Door ID</th>
+                        <th>Lock level</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var id in Doors.Keys.Where(k => k.Contains(_search, StringComparison.OrdinalIgnoreCase)).ToArray())
+                    {
+                        var path = DoorPath(id);
+                        <tr @key="(_map + id)">
+                            <td><code>@id</code></td>
+                            <td>
+                                <input aria-label="@($"Lock level for {id}")"
+                                       type="text"
+                                       inputmode="numeric"
+                                       aria-invalid="@(Session.InputErrors.ContainsKey(path) ? "true" : "false")"
+                                       value="@Session.Inputs.GetValueOrDefault(path, Doors[id].ToString(CultureInfo.CurrentCulture))"
+                                       @oninput="e => EditDoor(id, e)" />
+                                <small class="se-error">@Session.InputErrors.GetValueOrDefault(path)</small>
+                            </td>
+                            <td>
+                                <button class="se-button se-subtle"
+                                        aria-label="@($"Remove {id}")"
+                                        @onclick="() => RemoveDoor(id)">
+                                    Remove
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </details>
+    @foreach (var warning in ConfigRules.Warnings(Session.Skills))
+    {
+        <p class="se-warning">@warning</p>
+    }
+</section>
+<p class="se-error" role="status">@_error</p>
+
+@code
+{
+    [CascadingParameter]
+    public EditorSession Session { get; set; } = null!;
+    private LockPickingData Data => Session.Skills.LockPicking;
+    private static readonly string[] Maps = typeof(DoorPickLevels)
+        .GetProperties()
+        .Select(p => p.Name)
+        .ToArray();
+    private string _map = "Factory",
+        _search = "",
+        _doorId = "",
+        _xpKey = "",
+        _error = "";
+    private Dictionary<string, int> Doors =>
+        (Dictionary<string, int>)
+            typeof(DoorPickLevels).GetProperty(_map)!.GetValue(Data.DoorPickLevels)!;
+
+    private string DoorPath(string id) => "LockPicking.DoorPickLevels." + _map + "." + id;
+
+    private void AddXp()
+    {
+        if (!int.TryParse(_xpKey, out var n) || n < 0)
+        {
+            _error = "Enter a nonnegative whole lock level.";
+            return;
+        }
+        if (!Data.XpTable.TryAdd(n.ToString(CultureInfo.InvariantCulture), 0))
+        {
+            _error = "That lock level already has an XP entry.";
+            return;
+        }
+        _xpKey = "";
+        _error = "";
+        Session.Notify();
+    }
+
+    private void AddDoor()
+    {
+        var id = _doorId.Trim();
+        if (id.Length == 0)
+        {
+            _error = "Enter a door ID.";
+            return;
+        }
+        if (!Doors.TryAdd(id, 1))
+        {
+            _error = "That door is already listed on this map.";
+            return;
+        }
+        _doorId = "";
+        _error = "";
+        Session.Notify();
+    }
+
+    private void EditXp(string key, ChangeEventArgs e)
+    {
+        var path = "LockPicking.XpTable." + key;
+        var text = e.Value?.ToString() ?? "";
+        Session.Inputs[path] = text;
+        if (
+            float.TryParse(text, NumberStyles.Float, CultureInfo.CurrentCulture, out var n)
+            && float.IsFinite(n)
+            && n >= 0
+        )
+        {
+            Data.XpTable[key] = n;
+            Session.InputErrors.Remove(path);
+        }
+        else
+            Session.InputErrors[path] = "Enter finite, nonnegative XP.";
+        Session.Notify();
+    }
+
+    private void EditDoor(string id, ChangeEventArgs e)
+    {
+        var path = DoorPath(id);
+        var text = e.Value?.ToString() ?? "";
+        Session.Inputs[path] = text;
+        if (int.TryParse(text, out var n) && n >= 0)
+        {
+            Doors[id] = n;
+            Session.InputErrors.Remove(path);
+        }
+        else
+            Session.InputErrors[path] = "Enter a nonnegative whole level.";
+        Session.Notify();
+    }
+
+    private void Clear(string path)
+    {
+        Session.Inputs.Remove(path);
+        Session.InputErrors.Remove(path);
+        _error = "";
+        Session.Notify();
+    }
+
+    private void RemoveXp(string key)
+    {
+        Data.XpTable.Remove(key);
+        Clear("LockPicking.XpTable." + key);
+    }
+
+    private void RemoveDoor(string id)
+    {
+        Doors.Remove(id);
+        Clear(DoorPath(id));
+    }
+}

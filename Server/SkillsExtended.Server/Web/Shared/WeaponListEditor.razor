@@ -1,0 +1,113 @@
+@using SkillsExtended.Config.Skills
+@using SPTarkov.Server.Core.Services.Locales
+@inject LocaleService LocaleService
+
+<section class="se-panel">
+    <h2>
+        Weapons
+        <span class="se-badge">@Weapons.Count entries</span>
+    </h2>
+    <p>Search names or IDs. Category markers and unknown custom IDs are preserved.</p>
+
+    <label class="se-field">
+        Search weapons
+        <input type="search" @bind="_search" @bind:event="oninput" />
+    </label>
+    <div class="se-add-row">
+        <label class="se-field">
+            Weapon ID
+            <input type="text"
+                   @bind="_newId"
+                   @bind:event="oninput"
+                   aria-describedby="weapon-add-help" />
+        </label>
+        <button type="button" class="se-button" @onclick="Add">Add weapon</button>
+    </div>
+    <p id="weapon-add-help" class="se-error" role="status">@_error</p>
+
+    <ul class="se-entry-list">
+        @foreach (var id in Filtered)
+        {
+            <li @key="id">
+                <div>
+                    <strong>@Name(id)</strong>
+                    <code>@id</code>
+                </div>
+                <button type="button"
+                        class="se-button se-subtle"
+                        aria-label="@($"Remove {id}")"
+                        @onclick="() => Remove(id)">
+                    Remove
+                </button>
+            </li>
+        }
+    </ul>
+
+    @if (!Filtered.Any())
+    {
+        <p class="se-empty">No entries match this search.</p>
+    }
+</section>
+
+@code
+{
+    [CascadingParameter]
+    public EditorSession Session { get; set; } = null!;
+
+    [Parameter]
+    public string SkillKey { get; set; } = "";
+    private string _search = "",
+        _newId = "",
+        _error = "";
+    private Dictionary<string, string> _names = [];
+    private HashSet<string> Weapons =>
+        (
+            (WeaponSkillData)SkillCatalog.All.Single(s => s.Key == SkillKey).Data(Session.Skills)
+        ).Weapons;
+    private IEnumerable<string> Filtered =>
+        Weapons.Where(id =>
+            id.Contains(_search, StringComparison.OrdinalIgnoreCase)
+            || Name(id).Contains(_search, StringComparison.OrdinalIgnoreCase)
+        );
+
+    protected override void OnInitialized()
+    {
+        try
+        {
+            _names = LocaleService.GetLocaleDb().ToDictionary(p => p.Key, p => p.Value);
+        }
+        catch
+        {
+            _names = [];
+        } // IDs remain usable if locales are unavailable.
+    }
+
+    private string Name(string id) =>
+        id.StartsWith("__", StringComparison.Ordinal)
+            ? "Category marker"
+            : _names.GetValueOrDefault(id + " Name", "Custom or unresolved weapon");
+
+    private void Add()
+    {
+        var id = _newId.Trim();
+        if (id.Length == 0)
+        {
+            _error = "Enter a weapon ID.";
+            return;
+        }
+        if (!Weapons.Add(id))
+        {
+            _error = "That ID is already in this list.";
+            return;
+        }
+        _newId = "";
+        _error = "";
+        Session.Notify();
+    }
+
+    private void Remove(string id)
+    {
+        Weapons.Remove(id);
+        Session.Notify();
+    }
+}

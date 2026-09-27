@@ -1,63 +1,44 @@
-﻿using SkillsExtended.Config;
+using SkillsExtended.Config;
+using SkillsExtended.Core.Editing;
 using SkillsExtended.Models;
 using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Models.Spt.Mod;
-using SPTarkov.Server.Core.Utils;
 
 namespace SkillsExtended.Core;
 
 [Injectable(InjectionType.Singleton, OnLoadOrder.Preload)]
-public class ConfigController(
-    ISptLogger<ConfigController> logger,
-    FileUtil fileUtil,
-    JsonUtil jsonUtil,
-    IReadOnlyList<SptMod> loadedMods
-) : IOnLoad
+public class ConfigController(ISptLogger<ConfigController> logger, IReadOnlyList<SptMod> loadedMods)
+    : IOnLoad
 {
-    public ServerConfig ServerConfig { get; private set; } = null!;
-    public SkillsConfig SkillsConfig { get; private set; } = null!;
-
+    private readonly ConfigStore _store = new(
+        Path.Combine(ModMetadata.ResourcesDirectory, "Configs"),
+        new ConfigFiles()
+    );
+    private ConfigSnapshot _runtime = null!;
+    public ServerConfig ServerConfig => _runtime.Server;
+    public SkillsConfig SkillsConfig => _runtime.Skills;
     public bool IsFikaPresent { get; private set; }
 
     public async Task OnLoadAsync(CancellationToken cancellationToken)
     {
-        await LoadSkillsConfig();
-        await LoadServerConfig();
-
+        _runtime = await _store.ReadSnapshotAsync();
         IsFikaPresent = loadedMods.Any(m => m.ModMetadata.ModGuid == "Fika");
     }
 
-    public async Task SaveSkillsConfig()
+    public Task<ConfigSnapshot> GetSnapshotAsync() => _store.ReadSnapshotAsync();
+
+    public async Task<EditResult> SaveAsync(ConfigSnapshot draft)
     {
-        var path = Path.Combine(ModMetadata.ResourcesDirectory, "Configs", "SkillsConfig.json");
-
-        var text = jsonUtil.Serialize(SkillsConfig, true);
-        await fileUtil.WriteFileAsync(path, text!);
-    }
-
-    private async Task LoadSkillsConfig()
-    {
-        var path = Path.Combine(ModMetadata.ResourcesDirectory, "Configs", "SkillsConfig.json");
-
-        var text = await fileUtil.ReadFileAsync(path);
-        SkillsConfig = jsonUtil.Deserialize<SkillsConfig>(text)!;
-    }
-
-    public async Task SaveServerConfig()
-    {
-        var path = Path.Combine(ModMetadata.ResourcesDirectory, "Configs", "ServerConfig.json");
-
-        var text = jsonUtil.Serialize(ServerConfig, true);
-        await fileUtil.WriteFileAsync(path, text!);
-    }
-
-    private async Task LoadServerConfig()
-    {
-        var path = Path.Combine(ModMetadata.ResourcesDirectory, "Configs", "ServerConfig.json");
-
-        var text = await fileUtil.ReadFileAsync(path);
-        ServerConfig = jsonUtil.Deserialize<ServerConfig>(text)!;
+        var result = await _store.SaveAsync(
+            draft.Skills,
+            draft.Server,
+            draft.Revision,
+            snapshot => _runtime = snapshot
+        );
+        if (!result.Success)
+            logger.Warning($"[Skills Extended] {result.Message}");
+        return result;
     }
 }

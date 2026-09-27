@@ -1,83 +1,195 @@
-﻿@inherits LayoutComponentBase
-
-@inject ISnackbar Snackbar
+@inherits LayoutComponentBase
+@implements IDisposable
+@using Microsoft.JSInterop
 @inject ConfigController ConfigController
-@inject UpdateChecker UpdateChecker
+@inject IJSRuntime JS
+@inject NavigationManager Navigation
 
 <HeadContent>
     <link href="@Assets["_content/MudBlazor/MudBlazor.min.css"]" rel="stylesheet" />
-    <meta name="robots" content="noindex, nofollow">
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&amp;family=Roboto:ital,wght@0,100..900;1,100..900&amp;display=swap" rel="stylesheet">
+    <link href="/skills-extended/editor.css" rel="stylesheet" />
+    <meta name="robots" content="noindex, nofollow" />
 </HeadContent>
 
-<MudThemeProvider IsDarkMode="true"/>
-<MudPopoverProvider/>
-<MudSnackbarProvider/>
-<MudDialogProvider/>
+<MudThemeProvider IsDarkMode="true" />
+<MudPopoverProvider />
+<MudSnackbarProvider />
+<MudDialogProvider />
+<script src="@Assets["_content/MudBlazor/MudBlazor.min.js"]"></script>
 
-<main>
-    <script src="@Assets["_content/MudBlazor/MudBlazor.min.js"]"></script>
-    <MudLayout>
-        <MudAppBar Color="Color.Dark"
-                   Fixed="true"
-                   Elevation="4">
+<div class="se-app">
+    <a class="se-skip-link" href="#se-content">Skip to content</a>
+    <header class="se-topbar">
+        <button type="button"
+                class="se-button se-menu-button"
+                aria-label="Toggle navigation"
+                aria-controls="se-sidebar"
+                aria-expanded="@(_drawer ? "true" : "false")"
+                @onclick="() => _drawer = !_drawer">
+            ☰
+        </button>
+        <a class="se-brand" href="/skills-extended">SKILLS <span>EXTENDED</span></a>
+        <span class="se-version">@ModMetadata.Instance.Version · SPT @ModMetadata.Instance.SptVersion</span>
+        <a class="se-source-link" href="@ModMetadata.Instance.Url">Project</a>
+    </header>
 
-            <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Style="width: 100%;">
-                <MudStack Row="true" AlignItems="AlignItems.Center" Style="width: 100%;">
-                    <!-- Left side -->
-                    <MudIconButton Icon="@Icons.Custom.Brands.GitHub"
-                                   Color="Color.Inherit"
-                                   Href="@ModMetadata.Instance.Url"/>
-
-                    <MudText Style="font-size: 12px">
-                        Version: @ModMetadata.Instance.Version.ToString() for SPT: @ModMetadata.Instance.SptVersion.ToString()
-                    </MudText>
-                    
-                    @if (ConfigController.ServerConfig.CheckForUpdates && UpdateChecker.UpdateAvailable)
-                    {
-                        <MudText Style="font-size: 12px">
-                            Version: @UpdateChecker.ReleaseInformation!.Version Available
-                        </MudText>
-                    }
-                    
-                    <MudSwitch @bind-Value="@ConfigController.ServerConfig.CheckForUpdates" 
-                               Label="Check For Updates" 
-                               Color="Color.Info" 
-                    />
-                </MudStack>
-            
-                <MudButton Color="Color.Success"
-                           Style="font-size: 12px;"
-                           OnClick="SaveConfig"
-                           Variant="Variant.Outlined">
-                    Save Config
-                </MudButton>  
-            
-            </MudStack>
-        </MudAppBar>
-        
-        <MudDrawer Width="250px" 
-                   Open="true" 
-                   ClipMode="DrawerClipMode.Always" 
-                   Elevation="5" 
-                   Variant="@DrawerVariant.Mini" 
-                   OpenMiniOnHover="true" 
-                   Breakpoint="Breakpoint.None">
-            <NavMenu/>
-        </MudDrawer>
-        
-        <MudMainContent>
-            @Body
-        </MudMainContent>
-    </MudLayout>
-</main>
-
-@code {
-    private async Task SaveConfig()
+    @if (_session is null)
     {
-        await ConfigController.SaveSkillsConfig();
-        await ConfigController.SaveServerConfig();
-        
-        Snackbar.Add("Config Saved.", Severity.Success);
+        <main class="se-loading" role="status">
+            <p>@(_loadError ?? "Loading configuration…")</p>
+            @if (_loadError is not null)
+            {
+                <button class="se-button" @onclick="Load">Retry</button>
+            }
+        </main>
+    }
+    else
+    {
+        <CascadingValue Value="_session">
+            <NavigationLock ConfirmExternalNavigation="@_session.Dirty"
+                            OnBeforeInternalNavigation="GuardNavigation" />
+            <aside id="se-sidebar" class="@($"se-sidebar {(_drawer ? "se-open" : "")}")">
+                <NavMenu Navigate="() => _drawer = false" />
+            </aside>
+            <main id="se-content" class="se-content" tabindex="-1">
+                <fieldset class="se-editor-fields" disabled="@_session.Busy">
+                    @Body
+                </fieldset>
+            </main>
+            <footer class="se-savebar" aria-label="Configuration save controls">
+                <div class="se-save-status" role="status" aria-live="polite">
+                    <strong>
+                        @(_session.Busy ? "Saving…" : _session.Dirty ? $"{_session.ChangeCount} unsaved changes" : "All configuration changes saved")
+                    </strong>
+                    @if (_session.InputErrors.Count > 0)
+                    {
+                        <small class="se-error">Correct @_session.InputErrors.Count invalid field(s) before saving.</small>
+                    }
+                </div>
+                <button class="se-button se-subtle"
+                        disabled="@_session.Busy"
+                        @onclick="Discard">
+                    Discard changes
+                </button>
+                <button class="se-button se-primary"
+                        disabled="@(_session.Busy || !_session.Dirty || _session.InputErrors.Count > 0)"
+                        @onclick="Save">
+                    Save changes
+                </button>
+                @if (_message.Length > 0)
+                {
+                    <p class="@($"se-save-message {(_failed ? "se-error" : "")}")" role="status">
+                        @_message
+                    </p>
+                }
+            </footer>
+        </CascadingValue>
+    }
+</div>
+
+@code
+{
+    private EditorSession? _session;
+    private bool _drawer,
+        _failed;
+    private string? _loadError;
+    private string _message = "";
+
+    protected override Task OnInitializedAsync() => Load();
+
+    private async Task Load()
+    {
+        try
+        {
+            var snapshot = await ConfigController.GetSnapshotAsync();
+            ConfigRules.RequireStructure(snapshot.Skills);
+            if (_session is null)
+            {
+                _session = new(snapshot);
+                _session.Changed += Refresh;
+            }
+            else
+                _session.Reset(snapshot);
+            _loadError = null;
+        }
+        catch (Exception ex)
+        {
+            _loadError = "Could not load configuration: " + ex.Message;
+            _message = _loadError;
+            _failed = true;
+        }
+    }
+
+    private void Refresh() => InvokeAsync(StateHasChanged);
+
+    private async Task Save()
+    {
+        if (_session is null || _session.Busy || _session.InputErrors.Count > 0)
+            return;
+        _session.Busy = true;
+        try
+        {
+            var result = await ConfigController.SaveAsync(_session.Draft);
+            if (result.Success)
+                _session.Reset(result.Snapshot!);
+            _message = result.Message;
+            _failed = !result.Success;
+        }
+        catch (Exception ex)
+        {
+            _message = "Could not save: " + ex.Message + ". Your draft is intact.";
+            _failed = true;
+        }
+        finally
+        {
+            _session.Busy = false;
+        }
+    }
+
+    private async Task Discard()
+    {
+        if (_session is null || _session.Busy)
+            return;
+        if (
+            _session.Dirty
+            && !await JS.InvokeAsync<bool>(
+                "confirm",
+                "Discard all configuration changes and reload saved settings? Profile skill edits are separate."
+            )
+        )
+            return;
+        _message = "";
+        await Load();
+    }
+
+    private async Task GuardNavigation(LocationChangingContext context)
+    {
+        var target = new Uri(context.TargetLocation);
+        var current = new Uri(Navigation.Uri);
+        var withinEditor =
+            target.GetLeftPart(UriPartial.Authority) == current.GetLeftPart(UriPartial.Authority)
+            && (
+                target.AbsolutePath == "/skills-extended"
+                || target.AbsolutePath.StartsWith("/skills-extended/", StringComparison.Ordinal)
+            );
+        if (withinEditor)
+            return;
+        if (
+            _session?.Busy == true
+            || (
+                _session?.Dirty == true
+                && !await JS.InvokeAsync<bool>(
+                    "confirm",
+                    "Leave Skills Extended and discard unsaved configuration changes?"
+                )
+            )
+        )
+            context.PreventNavigation();
+    }
+
+    public void Dispose()
+    {
+        if (_session is not null)
+            _session.Changed -= Refresh;
     }
 }

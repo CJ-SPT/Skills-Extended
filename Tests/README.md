@@ -1,5 +1,8 @@
 # Skills Extended regression checks
 
+For configuration editing, profile tools, and offline page/layout checks, see
+[the web regression suite](SkillsExtended.WebRegression/README.md).
+
 Run from the repository root:
 
 ```powershell

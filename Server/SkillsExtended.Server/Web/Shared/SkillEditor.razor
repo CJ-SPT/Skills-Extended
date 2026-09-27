@@ -1,0 +1,55 @@
+@using SkillsExtended.Config.Skills
+
+<PageTitle>@Definition.Name · Skills Extended</PageTitle>
+
+<header class="se-page-heading">
+    <img src="@($"/skills-extended/icons/{Definition.Icon}.png")"
+         alt=""
+         width="48"
+         height="48" />
+    <div>
+        <p class="se-eyebrow">@Definition.Category</p>
+        <h1>@Definition.Name</h1>
+        <p>@Definition.Description</p>
+    </div>
+    <span class="se-badge">
+        @(Session.ChangesFor(SkillKey) == 0 ? "Saved" : $"{Session.ChangesFor(SkillKey)} pending")
+    </span>
+</header>
+
+<p class="se-notice">Save your changes, then restart connected game clients to load the new settings.</p>
+
+@foreach (var group in Definition.Fields.GroupBy(f => f.Group))
+{
+    <section class="se-panel" aria-label="@group.Key">
+        <h2>@group.Key</h2>
+        <div class="se-fields">
+            @foreach (var field in group)
+            {
+                <SettingField @key="(SkillKey + field.Key)"
+                              SkillKey="@SkillKey"
+                              Field="@field" />
+            }
+        </div>
+    </section>
+}
+
+@if (Definition.Data(Session.Skills) is WeaponSkillData)
+{
+    <WeaponListEditor @key="SkillKey" SkillKey="@SkillKey" />
+}
+
+@if (SkillKey == "LockPicking")
+{
+    <LockTablesEditor />
+}
+
+@code
+{
+    [CascadingParameter]
+    public EditorSession Session { get; set; } = null!;
+
+    [Parameter, EditorRequired]
+    public string SkillKey { get; set; } = "";
+    private SkillDefinition Definition => SkillCatalog.All.Single(s => s.Key == SkillKey);
+}

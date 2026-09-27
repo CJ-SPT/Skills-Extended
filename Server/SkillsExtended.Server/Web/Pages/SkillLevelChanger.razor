@@ -1,101 +1,311 @@
-﻿@page "/skills-extended/skill-level-changer"
-@using SPTarkov.Server.Core.Models.Eft.Common.Tables
-@using SPTarkov.Server.Core.Models.Eft.Profile
-@layout BaseLayout;
-
+@page "/skills-extended/skill-level-changer"
+@layout BaseLayout
+@using Microsoft.JSInterop
 @inject SkillLevelAdjuster SkillLevelAdjuster
+@inject IJSRuntime JS
+@inject NavigationManager Navigation
 
-<MudGrid Justify="Justify.Center" Style="min-height:100vh; display:flex; align-items:center;">
-    <MudItem xs="12">
-        <MudPaper Style="width:100%;">
-            <MudContainer MaxWidth="MaxWidth.Medium">
-                <MudGrid>
-                    <MudItem xs="6">
-                        <MudSelect @bind-Value="_selectedProfile"
-                                   Variant="Variant.Outlined"
-                                   Label="Profile"
-                                   Dense="true"
-                                   OnClose="OnStateChanged"
-                                   ReadOnly="false"
-                                   Clearable="false"
-                                   Modal="true">
-                            @foreach (var (_, profile) in SkillLevelAdjuster.GetAllProfiles())
-                            {
-                                <MudSelectItem Value="profile">@profile.ProfileInfo?.Username</MudSelectItem>
-                            }
-                        </MudSelect>
-                    </MudItem>
-                    
-                    <MudItem xs="6">
-                        <MudSelect @bind-Value="_selectedSide"
-                                   Variant="Variant.Outlined"
-                                   Label="Side"
-                                   Dense="true"
-                                   OnClose="OnStateChanged"
-                                   ReadOnly="false"
-                                   Clearable="false"
-                                   Modal="true">
-                            @foreach (var side in _sideList)
-                            {
-                                <MudSelectItem Value="side">@side</MudSelectItem>
-                            }
-                        </MudSelect>
-                    </MudItem>
-                    
-                    @foreach (var skill in GetSelectedSkills()) 
+<PageTitle>Profile skill levels · Skills Extended</PageTitle>
+<NavigationLock ConfirmExternalNavigation="@Dirty" OnBeforeInternalNavigation="GuardNavigation" />
+
+<header class="se-page-heading">
+    <div>
+        <p class="se-eyebrow">Profile tools</p>
+        <h1>Skill levels</h1>
+        <p>Review and apply changes to one character. These edits are separate from mod configuration.</p>
+    </div>
+</header>
+<p class="se-notice">Close the game client before applying profile changes. An active client can overwrite edited progress.</p>
+
+<section class="se-panel">
+    <fieldset class="se-editor-fields" disabled="@(_busy || _review)">
+        <div class="se-fields">
+            <label class="se-field">
+                Profile
+                <select value="@_profileId" @onchange="ChangeProfile" @key="_selectionVersion">
+                    <option value="">Select a profile</option>
+                    @foreach (var profile in _profiles)
                     {
-                        <MudItem xs="4">
-                            <MudPaper Class="pa-4" Elevation="2">
-                                <MudSlider @bind-Value="@skill.Progress"
-                                           Min="0" Max="5100"
-                                           T="double">
-                                    Skill: @skill.Id Level: @ConvertProgressToLevel((float)skill.Progress)
-                                </MudSlider>
-                            </MudPaper>
-                        </MudItem>
+                        <option value="@profile.Id">@profile.Name · @profile.Id</option>
                     }
-                    
-                </MudGrid>
-            </MudContainer>
-        </MudPaper>
-    </MudItem>
-</MudGrid>
-
-@code {
-    private SptProfile? _selectedProfile;
-    private readonly HashSet<string> _sideList =
-    [
-        "Pmc",
-        "Scav"
-    ];
-    private string _selectedSide;
-
-    private IEnumerable<CommonSkill> GetSelectedSkills()
+                </select>
+            </label>
+            <label class="se-field">
+                Character
+                <select value="@_side" @onchange="ChangeSide" @key="(_selectionVersion + 1)">
+                    <option value="Pmc">PMC</option>
+                    <option value="Scav">Scav</option>
+                </select>
+            </label>
+        </div>
+    </fieldset>
+    @if (_profiles.Count == 0)
     {
-        if (_selectedProfile is null || string.IsNullOrEmpty(_selectedSide))
+        <p class="se-empty">No profiles are available.</p>
+    }
+</section>
+
+@if (_draft is not null)
+{
+    <section class="se-panel">
+        <div class="se-toolbar">
+            <label class="se-field">
+                Search skills
+                <input type="search" @bind="_search" @bind:event="oninput" />
+            </label>
+            <label class="se-toggle">
+                <input type="checkbox" @bind="_sliders" />
+                <span>Show sliders</span>
+            </label>
+        </div>
+        <fieldset class="se-editor-fields" disabled="@(_busy || _review)">
+            <div class="se-fields">
+                @foreach (var id in _draft.Baseline.Progress.Keys.Where(k => k.Contains(_search, StringComparison.OrdinalIgnoreCase)).OrderBy(k => k))
+                {
+                    <div class="se-field" @key="id">
+                        <label for="@("level-" + id)">
+                            @id
+                            @if (_draft.Changes.ContainsKey(id))
+                            {
+                                <span class="se-badge se-pending">Changed</span>
+                            }
+                        </label>
+                        <div class="se-profile-level">
+                            <input id="@("level-" + id)"
+                                   type="text"
+                                   inputmode="numeric"
+                                   aria-invalid="@(_draft.Errors.ContainsKey(id) ? "true" : "false")"
+                                   aria-describedby="@("help-" + id)"
+                                   value="@_draft.Inputs.GetValueOrDefault(id, _draft.Level(id).ToString())"
+                                   @oninput="e => Edit(id, e)" />
+                            @if (_sliders)
+                            {
+                                <input type="range"
+                                       min="0"
+                                       max="51"
+                                       step="1"
+                                       aria-label="@($"{id} level slider")"
+                                       value="@_draft.Level(id)"
+                                       @oninput="e => Edit(id, e)" />
+                            }
+                        </div>
+                        <small id="@("help-" + id)" class="@(_draft.Errors.ContainsKey(id) ? "se-error" : "")">
+                            @(_draft.Errors.GetValueOrDefault(id) ?? $"Saved progress: {_draft.Baseline.Progress[id]:G} · Level 0–51")
+                        </small>
+                    </div>
+                }
+            </div>
+        </fieldset>
+        @if (_draft.Baseline.Progress.Count == 0)
         {
-            return [];
+            <p class="se-empty">This character has no skills to edit.</p>
+        }
+        else if (!_draft.Baseline.Progress.Keys.Any(k => k.Contains(_search, StringComparison.OrdinalIgnoreCase)))
+        {
+            <p class="se-empty">No skills match this search.</p>
+        }
+        <div class="se-profile-actions">
+            <button class="se-button se-primary"
+                    disabled="@(_busy || _review || _draft.Changes.Count == 0 || _draft.Errors.Count > 0)"
+                    @onclick="() => _review = true">
+                Review @_draft.Changes.Count skill changes
+            </button>
+            <button class="se-button se-subtle" disabled="@_busy" @onclick="Discard">
+                Discard / reload profile
+            </button>
+        </div>
+        @if (_draft.Errors.Count > 0)
+        {
+            <p class="se-error">Correct @_draft.Errors.Count invalid skill level(s) before applying.</p>
+        }
+    </section>
+}
+
+@if (_review && _draft is not null)
+{
+    <section class="se-review" aria-label="Review profile changes">
+        <h2>Confirm profile changes</h2>
+        <p>@ProfileName · @_profileId · @_side</p>
+        <ul>
+            @foreach (var (id, progress) in _draft.Changes)
+            {
+                <li>@id: level @Math.Floor(_draft.Baseline.Progress[id] / 100) → @(progress / 100)</li>
+            }
+        </ul>
+        <label class="se-toggle">
+            <input type="checkbox" @bind="_clientClosed" disabled="@_busy" />
+            <span>I have closed the game client for this profile.</span>
+        </label>
+        <div class="se-profile-actions">
+            <button class="se-button se-primary"
+                    disabled="@(_busy || !_clientClosed)"
+                    @onclick="Apply">
+                @(_busy ? "Saving profile…" : "Apply skill changes")
+            </button>
+            <button class="se-button se-subtle" disabled="@_busy" @onclick="CancelReview">
+                Back to editing
+            </button>
+        </div>
+    </section>
+}
+
+@if (_message.Length > 0)
+{
+    <p class="@(_failed ? "se-error" : "se-notice")" role="status">@_message</p>
+}
+
+@code
+{
+    private IReadOnlyList<ProfileChoice> _profiles = [];
+    private ProfileDraft? _draft;
+    private string _profileId = "",
+        _side = "Pmc",
+        _search = "",
+        _message = "";
+    private bool _sliders,
+        _review,
+        _busy,
+        _failed,
+        _clientClosed;
+    private int _selectionVersion;
+    private bool Dirty => _draft?.Dirty == true;
+    private string ProfileName =>
+        _profiles.FirstOrDefault(p => p.Id == _profileId)?.Name ?? "Unknown profile";
+
+    protected override void OnInitialized()
+    {
+        try
+        {
+            _profiles = SkillLevelAdjuster.GetProfiles();
+        }
+        catch (Exception ex)
+        {
+            _message = "Could not list profiles: " + ex.Message;
+            _failed = true;
+        }
+    }
+
+    private void Edit(string id, ChangeEventArgs e)
+    {
+        _draft!.Edit(id, e.Value?.ToString() ?? "");
+        _message = "";
+    }
+
+    private async Task<bool> CanSwitch() =>
+        !_busy
+        && (
+            !Dirty
+            || await JS.InvokeAsync<bool>(
+                "confirm",
+                "Discard pending profile skill edits? Configuration edits will be kept."
+            )
+        );
+
+    private async Task ChangeProfile(ChangeEventArgs e)
+    {
+        if (await CanSwitch())
+        {
+            _profileId = e.Value?.ToString() ?? "";
+            LoadProfile();
+        }
+        _selectionVersion += 2;
+    }
+
+    private async Task ChangeSide(ChangeEventArgs e)
+    {
+        if (await CanSwitch())
+        {
+            _side = e.Value?.ToString() ?? "Pmc";
+            LoadProfile();
+        }
+        _selectionVersion += 2;
+    }
+
+    private void LoadProfile()
+    {
+        _review = false;
+        _clientClosed = false;
+        _message = "";
+        _failed = false;
+        _draft = null;
+        if (_profileId.Length == 0)
+            return;
+        try
+        {
+            var snapshot = SkillLevelAdjuster.GetSnapshot(_profileId, _side);
+            if (snapshot is null)
+            {
+                _message = "The selected profile or character is unavailable.";
+                _failed = true;
+            }
+            else
+                _draft = new(snapshot);
+        }
+        catch (Exception ex)
+        {
+            _message = "Could not load skills: " + ex.Message;
+            _failed = true;
+        }
+    }
+
+    private async Task Discard()
+    {
+        if (await CanSwitch())
+            LoadProfile();
+    }
+
+    private void CancelReview()
+    {
+        _review = false;
+        _clientClosed = false;
+    }
+
+    private async Task Apply()
+    {
+        if (_draft is null || _busy || !_review || !_clientClosed || _draft.Errors.Count > 0)
+            return;
+        _busy = true;
+        try
+        {
+            var result = await SkillLevelAdjuster.ApplyAsync(_draft.Baseline, _draft.Changes);
+            if (result.Success)
+                LoadProfile();
+            _message = result.Message;
+            _failed = !result.Success;
+        }
+        catch (Exception ex)
+        {
+            _message = "Could not apply profile changes: " + ex.Message;
+            _failed = true;
+        }
+        finally
+        {
+            _busy = false;
+            _review = false;
+            _clientClosed = false;
+        }
+    }
+
+    private async Task GuardNavigation(LocationChangingContext context)
+    {
+        if (
+            new Uri(context.TargetLocation).GetLeftPart(UriPartial.Query)
+            == new Uri(Navigation.Uri).GetLeftPart(UriPartial.Query)
+        )
+        {
+            return;
         }
 
-        var skills = _selectedSide == "Pmc"
-            ? _selectedProfile.CharacterData?.PmcData?.Skills?.Common
-            : _selectedProfile.CharacterData?.ScavData?.Skills?.Common;
-        
-        return skills ?? [];
-    }
-
-    private void OnStateChanged()
-    {
-       StateHasChanged();
-    }
-    
-    private void OnStateChangedDouble(double val)
-    {
-        StateHasChanged();
-    }
-
-    private int ConvertProgressToLevel(float progress)
-    {
-        return (int)MathF.Floor(progress / 100);
+        if (
+            _busy
+            || (
+                Dirty
+                && !await JS.InvokeAsync<bool>(
+                    "confirm",
+                    "Leave this page and discard pending profile skill changes?"
+                )
+            )
+        )
+            context.PreventNavigation();
     }
 }

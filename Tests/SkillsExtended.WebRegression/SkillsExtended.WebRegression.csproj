@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <DeploySkillsExtended>false</DeploySkillsExtended>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../Server/SkillsExtended.Server/SkillsExtended.Server.csproj" />
+    <None
+      Include="../../Server/SkillsExtended.Server/Resources/Configs/*.json"
+      Link="Resources/Configs/%(Filename)%(Extension)"
+      CopyToOutputDirectory="PreserveNewest"
+    />
+    <None
+      Include="../../Server/SkillsExtended.Server/wwwroot/editor.css"
+      Link="editor.css"
+      CopyToOutputDirectory="PreserveNewest"
+    />
+    <None
+      Include="../../Server/SkillsExtended.Server/wwwroot/icons/*.png"
+      Link="icons/%(Filename)%(Extension)"
+      CopyToOutputDirectory="PreserveNewest"
+    />
+  </ItemGroup>
+</Project>

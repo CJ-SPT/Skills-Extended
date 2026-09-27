@@ -1,157 +1,91 @@
-﻿@page "/skills-extended"
-@using SPTarkov.Server.Core.Utils
-@layout BaseLayout;
+@page "/skills-extended"
+@layout BaseLayout
+@inject IServiceProvider Services
 
-@inject FileUtil FileUtil
-@inject JsonUtil JsonUtil
+<PageTitle>Configuration · Skills Extended</PageTitle>
 
-<PageTitle>Release Notes</PageTitle>
+<header class="se-page-heading">
+    <div>
+        <p class="se-eyebrow">Skills Extended</p>
+        <h1>Make every skill your own</h1>
+        <p>Configure progression and bonuses. Changes stay in your draft until you save.</p>
+    </div>
+</header>
 
-<MudContainer MaxWidth="MaxWidth.Large" Class="mt-4">
-    <MudPaper Elevation="0" Class="pa-6">
-        <MudText Typo="Typo.h3" Class="mb-2">Release Notes</MudText>
-        
-        <MudStack Row="true" Class="mb-4" Spacing="2">
-            <MudChip T="string" Color="Color.Primary" OnClick="@(() => FilterByType("all"))" 
-                     Variant="@(_selectedFilter == "all" ? Variant.Filled : Variant.Outlined)">
-                All
-            </MudChip>
-            <MudChip T="string" Color="Color.Success" OnClick="@(() => FilterByType("feature"))"
-                     Variant="@(_selectedFilter == "feature" ? Variant.Filled : Variant.Outlined)">
-                Features
-            </MudChip>
-            <MudChip T="string" Color="Color.Info" OnClick="@(() => FilterByType("improvement"))"
-                     Variant="@(_selectedFilter == "improvement" ? Variant.Filled : Variant.Outlined)">
-                Improvements
-            </MudChip>
-            <MudChip T="string" Color="Color.Error" OnClick="@(() => FilterByType("bugfix"))"
-                     Variant="@(_selectedFilter == "bugfix" ? Variant.Filled : Variant.Outlined)">
-                Bug Fixes
-            </MudChip>
-        </MudStack>
+<section class="se-panel se-overview">
+    <div>
+        <strong>@SkillCatalog.All.Count skills</strong>
+        <p>@EnabledCount enabled · @Session.ChangeCount pending changes</p>
+    </div>
+    <label class="se-toggle">
+        <input type="checkbox"
+               checked="@Session.Server.CheckForUpdates"
+               @onchange="ToggleUpdates" />
+        <span>
+            <strong>Check for updates</strong>
+            <small>Takes effect on the next server startup. Game settings require a client restart after saving.</small>
+        </span>
+    </label>
+</section>
 
-        @foreach (var release in FilteredReleases)
+@if (Session.Server.CheckForUpdates && Updates?.UpdateAvailable == true && Updates.ReleaseInformation is { } release)
+{
+    <p class="se-notice">
+        Version @release.Version is available.
+        <a href="@release.DownloadUrl">View release</a>
+    </p>
+}
+
+@foreach (var category in SkillCatalog.All.GroupBy(s => s.Category))
+{
+    <h2 class="se-category-heading">@category.Key</h2>
+    <div class="se-card-grid">
+        @foreach (var skill in category)
         {
-            <MudPaper Elevation="2" Class="mb-4">
-                <MudExpansionPanels>
-                    <MudExpansionPanel>
-                        <TitleContent>
-                            <div class="d-flex align-center justify-space-between" style="width: 100%">
-                                <div class="d-flex align-center gap-2">
-                                    <MudText Typo="Typo.h6">Version @release.Version</MudText>
-
-                                    @switch (release.IsLatest)
-                                    {
-                                        case true:
-                                            <MudChip T="string" Size="Size.Small" Color="Color.Success">Latest</MudChip>
-                                            break;
-                                    }
-
-                                </div>
-                                <MudText Typo="Typo.body2" Color="Color.Secondary">@release.ReleaseDate</MudText>
-                            </div>
-                        </TitleContent>
-                        <ChildContent>
-                            <MudDivider Class="mb-4" />
-                            
-                            @if (release.Features?.Any() ?? false)
-                            {
-                                <div class="mb-4">
-                                    <MudText Typo="Typo.h6" Color="Color.Success" Class="mb-2">
-                                        <MudIcon Icon="@Icons.Material.Filled.NewReleases" Size="Size.Small" /> New Features
-                                    </MudText>
-                                    <MudList T="string" Dense="true">
-                                        @foreach (var feature in release.Features)
-                                        {
-                                            <MudListItem T="string" Icon="@Icons.Material.Filled.CheckCircle" IconColor="Color.Success">
-                                                @feature
-                                            </MudListItem>
-                                        }
-                                    </MudList>
-                                </div>
-                            }
-
-                            @if (release.Improvements?.Any() ?? false)
-                            {
-                                <div class="mb-4">
-                                    <MudText Typo="Typo.h6" Color="Color.Info" Class="mb-2">
-                                        <MudIcon Icon="@Icons.Material.Filled.TrendingUp" Size="Size.Small" /> Improvements
-                                    </MudText>
-                                    <MudList T="string" Dense="true">
-                                        @foreach (var improvement in release.Improvements)
-                                        {
-                                            <MudListItem T="string" Icon="@Icons.Material.Filled.ArrowUpward" IconColor="Color.Info">
-                                                @improvement
-                                            </MudListItem>
-                                        }
-                                    </MudList>
-                                </div>
-                            }
-
-                            @if (release.BugFixes?.Any() ?? false)
-                            {
-                                <div class="mb-4">
-                                    <MudText Typo="Typo.h6" Color="Color.Error" Class="mb-2">
-                                        <MudIcon Icon="@Icons.Material.Filled.BugReport" Size="Size.Small" /> Bug Fixes
-                                    </MudText>
-                                    <MudList T="string" Dense="true">
-                                        @foreach (var bugfix in release.BugFixes)
-                                        {
-                                            <MudListItem T="string" Icon="@Icons.Material.Filled.Build" IconColor="Color.Error">
-                                                @bugfix
-                                            </MudListItem>
-                                        }
-                                    </MudList>
-                                </div>
-                            }
-                        </ChildContent>
-                    </MudExpansionPanel>
-                </MudExpansionPanels>
-            </MudPaper>
+            <a class="se-skill-card" href="@skill.Url">
+                <img src="@($"/skills-extended/icons/{skill.Icon}.png")"
+                     alt=""
+                     width="40"
+                     height="40" />
+                <div>
+                    <h3>@skill.Name</h3>
+                    <p>@skill.Description</p>
+                    <span class="se-badge">@(IsEnabled(skill) ? "Enabled" : "Disabled")</span>
+                    @if (Session.ChangesFor(skill.Key) > 0)
+                    {
+                        <span class="se-badge se-pending">@Session.ChangesFor(skill.Key) pending</span>
+                    }
+                </div>
+            </a>
         }
-    </MudPaper>
-</MudContainer>
+    </div>
+}
 
-@code {
-    private string _selectedFilter = "all";
-    private List<ReleaseNote>? _releaseNotes;
-    private List<ReleaseNote> FilteredReleases => GetFilteredReleases();
+<section class="se-panel se-links">
+    <a href="/skills-extended/skill-level-changer">Edit profile skill levels</a>
+    <a href="/skills-extended/release-notes">Read release notes</a>
+</section>
 
-    protected override async Task OnInitializedAsync()
-    {
-        await LoadReleaseNotes();
-        await base.OnInitializedAsync();
-    }
-    
-    private async Task LoadReleaseNotes()
-    {
-        var path = Path.Combine(ModMetadata.ResourcesDirectory, "ReleaseNotes.json");
-        var text = await FileUtil.ReadFileAsync(path);
-        _releaseNotes = JsonUtil.Deserialize<List<ReleaseNote>>(text)!;
-    }
+@code
+{
+    private UpdateChecker? Updates => Services.GetService<UpdateChecker>();
 
-    private void FilterByType(string type)
-    {
-        _selectedFilter = type;
-    }
+    [CascadingParameter]
+    public EditorSession Session { get; set; } = null!;
 
-    private List<ReleaseNote> GetFilteredReleases()
+    private bool IsEnabled(SkillDefinition skill) =>
+        (bool)
+            skill
+                .Data(Session.Skills)
+                .GetType()
+                .GetProperty("Enabled")!
+                .GetValue(skill.Data(Session.Skills))!;
+
+    private int EnabledCount => SkillCatalog.All.Count(IsEnabled);
+
+    private void ToggleUpdates(ChangeEventArgs e)
     {
-        if (_selectedFilter == "all")
-        {
-            return _releaseNotes ?? [];
-        }
-        
-        return _releaseNotes?.Select(r => new ReleaseNote
-        {
-            Version = r.Version,
-            ReleaseDate = r.ReleaseDate,
-            IsLatest = r.IsLatest,
-            Features = _selectedFilter == "feature" ? r.Features : [],
-            Improvements = _selectedFilter == "improvement" ? r.Improvements : [],
-            BugFixes = _selectedFilter == "bugfix" ? r.BugFixes : []
-        })
-        .Where(r => (r.Features?.Any() ?? false) || (r.Improvements?.Any() ?? false) || (r.BugFixes?.Any() ?? false))
-        .ToList() ?? [];
+        Session.Server.CheckForUpdates = e.Value is true;
+        Session.Notify();
     }
 }

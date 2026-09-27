@@ -1,0 +1,73 @@
+@if (Field.IsBoolean)
+{
+    <label class="se-toggle" for="@Id">
+        <input id="@Id"
+               type="checkbox"
+               checked="@((bool)Field.Property.GetValue(Data)!)"
+               @onchange="Toggle" />
+        <span>
+            <strong>@Field.Label</strong>
+            <small>@Field.Help</small>
+        </span>
+    </label>
+}
+else
+{
+    <div class="se-field">
+        <label for="@Id">
+            @Field.Label
+            <span class="se-unit">@Field.Unit</span>
+        </label>
+        <input id="@Id"
+               type="text"
+               inputmode="@(Field.IsInteger ? "numeric" : "decimal")"
+               value="@Text"
+               @oninput="Edit"
+               aria-invalid="@(Error is not null ? "true" : "false")"
+               aria-describedby="@(Id + "-help")" />
+        <small id="@(Id + "-help")" class="@(Error is not null ? "se-error" : "")">
+            @(Error ?? Field.Help)
+        </small>
+    </div>
+}
+
+@code
+{
+    [CascadingParameter]
+    public EditorSession Session { get; set; } = null!;
+
+    [Parameter, EditorRequired]
+    public string SkillKey { get; set; } = "";
+
+    [Parameter, EditorRequired]
+    public SettingDefinition Field { get; set; } = null!;
+    private object Data => SkillCatalog.All.Single(s => s.Key == SkillKey).Data(Session.Skills);
+    private string Id => SkillKey + "." + Field.Key;
+    private string Text =>
+        Session.Inputs.GetValueOrDefault(
+            Id,
+            Convert.ToString(Field.Property.GetValue(Data), CultureInfo.CurrentCulture) ?? ""
+        );
+    private string? Error => Session.InputErrors.GetValueOrDefault(Id);
+
+    private void Toggle(ChangeEventArgs e)
+    {
+        Field.Property.SetValue(Data, e.Value is true);
+        Session.Notify();
+    }
+
+    private void Edit(ChangeEventArgs e)
+    {
+        var text = e.Value?.ToString() ?? "";
+        Session.Inputs[Id] = text;
+        var error = Field.Parse(text, out var parsed);
+        if (error is null)
+        {
+            Field.Property.SetValue(Data, parsed);
+            Session.InputErrors.Remove(Id);
+        }
+        else
+            Session.InputErrors[Id] = error;
+        Session.Notify();
+    }
+}
