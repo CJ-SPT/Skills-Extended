@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using HarmonyLib;
 using SkillsExtended.Core;
+using SkillsExtended.Extensions;
 using SkillsExtended.Utils;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Reflection.Patching;
@@ -61,6 +62,11 @@ public class CultistProductionPatch(ConfigController configController, SkillUtil
     [PatchPostfix]
     public static void Postfix(CircleCraftDetails __result)
     {
+        if (!_configController.SkillsConfig.ShadowConnections.Enabled)
+        {
+            return;
+        }
+
         if (StartSacrificePatch.PmcProfileId.IsEmpty)
         {
             throw new InvalidOperationException(
@@ -85,7 +91,7 @@ public class CultistProductionPatch(ConfigController configController, SkillUtil
         var timeBonusPerLevel = _configController
             .SkillsConfig
             .ShadowConnections
-            .CultistCircleReturnTimeReduction;
+            .CultistCircleReturnTimeReduction.NormalizeToPercentage();
 
         var buff = Math.Clamp(1f - timeBonusPerLevel * skillLevel, 0f, 1f);
 

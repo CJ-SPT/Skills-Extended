@@ -15,7 +15,7 @@ public class EnduranceSkill(SkillManager skillManager)
 {
     private static readonly EnduranceData Data = SkillsExtendedPlugin.SkillData.Endurance;
 
-    private static SkillManager.SkillAction[] GetActions(SkillManager skillManager)
+    internal static SkillManager.SkillAction[] GetActions(SkillManager skillManager)
     {
         var actions = new EnduranceActions(skillManager);
 
@@ -26,12 +26,12 @@ public class EnduranceSkill(SkillManager skillManager)
         ];
     }
 
-    private static SkillManager.Buff[] GetBuffs(SkillManager skillManager)
+    internal static SkillManager.Buff[] GetBuffs(SkillManager skillManager)
     {
         return
         [
             skillManager
-                .EnduranceBuffEnduranceInc.Max(Data.BuffBreathTimeIncMax.NormalizeToPercentage())
+                .EnduranceBuffEnduranceInc.Max(Data.BuffEnduranceIncMax.NormalizeToPercentage())
                 .Elite(Data.BuffEnduranceIncElite.NormalizeToPercentage()),
             skillManager
                 .EnduranceHands.PerLevel(Data.HandsPerLevel.NormalizeToPercentage())

@@ -27,8 +27,7 @@ internal class PersonalBuffPatch : ModulePatch
             return;
         }
 
-        skills.SkillsExtendedManager.AdjustStimulatorBuff(
-            (EffectsSettings.StimulatorSettings.StimulatorBuffSettings)__result.Clone()
-        );
+        // The game already returns a personal copy of the shared injector settings.
+        skills.SkillsExtendedManager.AdjustStimulatorBuff(__result);
     }
 }

@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>annotations</Nullable>
+    <DeploySkillsExtended>false</DeploySkillsExtended>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../SkillsExtended.Common/SkillsExtended.Common.csproj" />
+    <Compile Include="../../Client/SkillsExtended.Client.API/SkillsExtendedManager.cs" Link="Production/SkillsExtendedManager.cs" />
+    <Compile Include="../../Client/SkillsExtended.Client.Skills/Skills/SkillClasses/Physical/*.cs" Link="Production/Physical/%(Filename)%(Extension)" />
+    <Compile Include="../../Client/SkillsExtended.Client.Skills/Skills/Core/Patches/CreateSkillPatches.cs" Link="Production/CreateSkillPatches.cs" />
+    <Compile Include="../../Client/SkillsExtended.Client.Skills/Skills/FieldMedicine/Patches/PersonalBuffPatch.cs" Link="Production/PersonalBuffPatch.cs" />
+    <Compile Include="../../Client/SkillsExtended.Client.Skills/Skills/FirstAid/Patches/HealthEffectComponentPatch.cs" Link="Production/HealthEffectComponentPatch.cs" />
+    <Compile Include="../../Client/SkillsExtended.Client.Skills/Skills/ProneMovement/Patches/ProneMoveStatePatch.cs" Link="Production/ProneMoveStatePatch.cs" />
+    <Compile Include="../../Client/SkillsExtended.Client.Skills/Skills/SilentOps/Patches/DoorSoundPatch.cs" Link="Production/DoorSoundPatch.cs" />
+    <Compile Include="../../Client/SkillsExtended.Client.Skills/Skills/Strength/Patches/MovementContextSetSpeedLimitPatch.cs" Link="Production/MovementContextSetSpeedLimitPatch.cs" />
+    <Compile Include="../../Server/SkillsExtended.Server/Patches/QuestExperienceRewardPatch.cs" Link="Production/QuestExperienceRewardPatch.cs" />
+    <Compile Include="../../Server/SkillsExtended.Server/Patches/QuestMoneyRewardPatch.cs" Link="Production/QuestMoneyRewardPatch.cs" />
+    <Compile Include="../../Server/SkillsExtended.Server/Patches/CultistProductionPatch.cs" Link="Production/CultistProductionPatch.cs" />
+    <Compile Include="../../Server/SkillsExtended.Server/Patches/GetTraderAssortPatch.cs" Link="Production/GetTraderAssortPatch.cs" />
+    <Compile Include="../../Server/SkillsExtended.Server/Patches/ScavCooldownTimerPatch.cs" Link="Production/ScavCooldownTimerPatch.cs" />
+    <None Include="../../Server/SkillsExtended.Server/Resources/Configs/SkillsConfig.json" Link="SkillsConfig.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

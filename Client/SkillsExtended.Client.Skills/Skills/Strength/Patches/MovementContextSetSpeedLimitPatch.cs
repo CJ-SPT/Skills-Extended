@@ -1,75 +1,63 @@
-﻿/*
-
-using System.Reflection;
+﻿using System.Reflection;
 using EFT;
 using HarmonyLib;
-using SkillsExtended.Utils;
 using SPT.Reflection.Patching;
+using UnityEngine;
 
 namespace SkillsExtended.Skills.Strength.Patches;
 
 public class MovementContextSetSpeedLimitPatch : ModulePatch
 {
-    protected override MethodBase GetTargetMethod()
-    {
-        return AccessTools.Method(typeof(MovementContext), nameof(MovementContext.method_0));
-    }
+    protected override MethodBase GetTargetMethod() =>
+        AccessTools.Method(typeof(MovementContext), nameof(MovementContext.RefreshObstacleRestrictions));
 
     [PatchPrefix]
-    public static bool Prefix(MovementContext __instance)
+    public static bool Prefix(MovementContext __instance, Player ____player)
     {
-        var skillData = SkillsExtendedPlugin.SkillData;
-        if (!skillData.Strength.Enabled)
+        if (!SkillsExtendedPlugin.SkillData.Strength.Enabled || !____player.IsYourPlayer)
         {
             return true;
         }
 
-        var skillMgrExt = GameUtils.GetSkillManager()!.SkillManagerExtended;
-
-        MovementContext.Struct333 gStruct;
-        gStruct.movementContext_0 = __instance;
-        gStruct.conditions = EPhysicalCondition.None;
-
-        var flag = false;
-        foreach (var collider in __instance.EnteredObstacles)
+        var skills = ____player.Skills.SkillsExtendedManager;
+        var conditions = EPhysicalCondition.None;
+        var hasSwampSpeedLimit = false;
+        foreach (var obstacle in __instance._enteredObstacles)
         {
-            gStruct.conditions |= collider.ConditionsMask;
-            flag |= collider.HasSwampSpeedLimit;
+            conditions |= obstacle.ConditionsMask;
+            hasSwampSpeedLimit |= obstacle.HasSwampSpeedLimit;
         }
 
-        __instance.method_28(EPhysicalCondition.ProneDisabled, ref gStruct);
-        __instance.method_28(EPhysicalCondition.ProneMovementDisabled, ref gStruct);
-
-        var bushSpeedElite = skillMgrExt.StrengthBushSpeedIncBuffElite;
-        if (!bushSpeedElite)
+        if (skills.StrengthBushSpeedIncBuffElite.Value)
         {
-            __instance.method_28(EPhysicalCondition.SprintDisabled, ref gStruct);
-            __instance.method_28(EPhysicalCondition.JumpDisabled, ref gStruct);
+            conditions &= ~(EPhysicalCondition.SprintDisabled | EPhysicalCondition.JumpDisabled);
         }
+
+        __instance.SetPhysicalCondition(EPhysicalCondition.ProneDisabled,
+            (conditions & EPhysicalCondition.ProneDisabled) != 0);
+        __instance.SetPhysicalCondition(EPhysicalCondition.ProneMovementDisabled,
+            (conditions & EPhysicalCondition.ProneMovementDisabled) != 0);
+        __instance.SetPhysicalCondition(EPhysicalCondition.SprintDisabled,
+            (conditions & EPhysicalCondition.SprintDisabled) != 0);
+        __instance.SetPhysicalCondition(EPhysicalCondition.JumpDisabled,
+            (conditions & EPhysicalCondition.JumpDisabled) != 0);
 
         if (__instance.PhysicalConditionIs(EPhysicalCondition.SprintDisabled))
         {
             __instance.EnableSprint(false);
         }
 
-        if (flag)
+        if (hasSwampSpeedLimit && !skills.StrengthBushSpeedIncBuffElite.Value)
         {
-            var speedLimit = bushSpeedElite.Value
-                ? 1f
-                : 0.2f * (1 + skillMgrExt.StrengthBushSpeedIncBuff);
-
-#if DEBUG
-            Logger.LogDebug(
-                $"Collider speed limit: {speedLimit} :: IsElite {bushSpeedElite.Value}"
-            );
-#endif
-            __instance.AddStateSpeedLimit(speedLimit, Player.ESpeedLimit.Swamp);
-            return false;
+            __instance.AddStateSpeedLimit(
+                Mathf.Clamp01(0.2f * (1f + skills.StrengthBushSpeedIncBuff)),
+                Player.ESpeedLimit.Swamp);
+        }
+        else
+        {
+            __instance.RemoveStateSpeedLimit(Player.ESpeedLimit.Swamp);
         }
 
-        __instance.RemoveStateSpeedLimit(Player.ESpeedLimit.Swamp);
         return false;
     }
 }
-
-*/

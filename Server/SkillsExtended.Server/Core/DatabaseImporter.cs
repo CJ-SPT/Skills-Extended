@@ -15,7 +15,7 @@ using Path = System.IO.Path;
 
 namespace SkillsExtended.Core;
 
-[Injectable(TypePriority = OnLoadOrder.PostLoad)]
+[Injectable(TypePriority = OnLoadOrder.Preload)]
 public class DatabaseImporter(
     ISptLogger<DatabaseImporter> logger,
     CustomItemService customItemService,

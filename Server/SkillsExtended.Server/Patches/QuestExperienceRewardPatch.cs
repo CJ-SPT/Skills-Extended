@@ -84,7 +84,8 @@ public class QuestExperienceRewardPatch(
             return;
         }
 
-        var bonus = config.QuestExpRewardInc * skillLevel;
+        // Keep the calculation in double precision until the final XP truncation.
+        var bonus = config.QuestExpRewardInc / 100d * skillLevel;
 
 #if DEBUG
         Console.WriteLine($"Quest experience base reward: {baseReward}");

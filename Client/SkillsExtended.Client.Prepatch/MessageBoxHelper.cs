@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace Skills_Extended_Patcher;
+namespace SkillsExtended;
 
 /// <summary>
 ///     Credits SPT

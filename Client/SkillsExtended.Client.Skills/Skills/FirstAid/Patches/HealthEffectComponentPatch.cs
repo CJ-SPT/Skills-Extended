@@ -3,194 +3,58 @@ using System.Reflection;
 using EFT;
 using EFT.InventoryLogic;
 using HarmonyLib;
-using SkillsExtended.Utils;
+using JsonType;
 using SPT.Reflection.Patching;
+using UnityEngine;
 
 namespace SkillsExtended.Skills.FirstAid.Patches;
 
-/*
 public class HealthEffectComponentPatch : ModulePatch
 {
-    protected override MethodBase GetTargetMethod()
-    {
-        return AccessTools.Constructor(
-            typeof(HealthEffectsComponent),
-            [typeof(Item), typeof(IHealthEffectsComponentTemplate)]
-        );
-    }
-
-    private static readonly Dictionary<MongoID, int> InstanceIdsChangedAtLevel = [];
-    private static readonly Dictionary<MongoID, OriginalCostsData> OriginalCosts = [];
+    protected override MethodBase GetTargetMethod() =>
+        AccessTools.PropertyGetter(typeof(HealthEffectsComponent), nameof(HealthEffectsComponent.DamageEffects));
 
     [PatchPostfix]
-    public static void PostFix(Item item, IHealthEffectsComponentTemplate template)
-    {
-        var skillData = SkillsExtendedPlugin.SkillData.FirstAid;
-        if (!skillData.Enabled)
-        {
-            return;
-        }
-
-        var skillManager = GameUtils.GetSkillManager();
-        if (skillManager == null)
-        {
-            return;
-        }
-
-        if (template.DamageEffects is null || item is not Medical meds)
-        {
-            return;
-        }
-
-        // Why? -- I don't know, but leave it for now because something probably broke
-        if (meds.TemplateId.LocalizedName().Contains("Name"))
-        {
-            return;
-        }
-
-        ResetLevelChangedAt(meds, skillManager);
-
-        if (!OriginalCosts.TryGetValue(meds.TemplateId, out var originalCosts))
-        {
-            originalCosts = new OriginalCostsData(0, 0, 0);
-            OriginalCosts.Add(meds.TemplateId, originalCosts);
-        }
-
-        if (
-            !AdjustLightBleedCost(template, originalCosts, skillManager)
-            && !AdjustHeavyBleedCost(template, originalCosts, skillManager)
-            && !AdjustFractureCost(template, originalCosts, skillManager)
-        )
-        {
-            return;
-        }
-
-        InstanceIdsChangedAtLevel[item.TemplateId] = skillManager.FirstAid.Level;
-
-#if DEBUG
-        Logger.LogDebug($"Updated Template: {meds.TemplateId.LocalizedName()} \n");
-#endif
-    }
-
-    private static void ResetLevelChangedAt(Medical meds, SkillManager skillManager)
-    {
-        if (
-            !InstanceIdsChangedAtLevel.TryGetValue(meds.TemplateId, out var level)
-            || level == skillManager.FirstAid.Level
-        )
-        {
-            return;
-        }
-
-        InstanceIdsChangedAtLevel.Remove(meds.TemplateId);
-    }
-
-    private static bool AdjustFractureCost(
-        IHealthEffectsComponentTemplate template,
-        OriginalCostsData originalCosts,
-        SkillManager skillManager
+    public static void Postfix(
+        HealthEffectsComponent __instance,
+        ref Dictionary<EDamageEffectType, DamageEffectSpecification> __result
     )
     {
-        if (!template.DamageEffects.TryGetValue(EDamageEffectType.Fracture, out var fracture))
+        if (!SkillsExtendedPlugin.SkillData.FirstAid.Enabled || __result == null
+            || __instance.Item.GetItemComponent<MedKitComponent>() == null
+            || __instance.Item.Owner is not InventoryController inventory
+            || inventory.Profile?.SkillsInfo is not SkillManager skills
+            || skills.SkillsExtendedManager == null)
         {
-            return false;
+            return;
         }
 
-        if (fracture is null || fracture.Cost <= 0)
+        var reduction = Mathf.Clamp01(skills.SkillsExtendedManager.FirstAidResourceCostBuff.Value);
+        if (reduction <= 0f)
         {
-            return false;
+            return;
         }
 
-        originalCosts.Fracture =
-            originalCosts.Fracture == 0 && fracture.Cost > 0
-                ? fracture.Cost
-                : originalCosts.Fracture;
-
-        var originalCost = originalCosts.Fracture;
-
-        skillManager.SkillsExtendedManager.FirstAidResourceCostBuff.Apply(ref fracture.Cost);
-
-#if DEBUG
-        Logger.LogDebug($"[FirstAid] Original Fracture Value: {originalCost}");
-        Logger.LogDebug($"[FirstAid] New Fracture Value: {fracture.Cost}");
-#endif
-        return true;
-    }
-
-    private static bool AdjustLightBleedCost(
-        IHealthEffectsComponentTemplate template,
-        OriginalCostsData originalCosts,
-        SkillManager skillManager
-    )
-    {
-        if (
-            !template.DamageEffects.TryGetValue(EDamageEffectType.LightBleeding, out var lightBleed)
-        )
+        // Templates are shared by every instance. Return personal costs so treatment
+        // eligibility and resource consumption agree without changing anyone else's kit.
+        var adjusted = new Dictionary<EDamageEffectType, DamageEffectSpecification>(__result);
+        foreach (var type in new[] { EDamageEffectType.LightBleeding, EDamageEffectType.HeavyBleeding, EDamageEffectType.Fracture })
         {
-            return false;
+            if (!__result.TryGetValue(type, out var effect) || effect == null || effect.Cost <= 0)
+            {
+                continue;
+            }
+
+            adjusted[type] = new DamageEffectSpecification
+            {
+                Cost = Mathf.CeilToInt(effect.Cost * (1f - reduction)),
+                Delay = effect.Delay,
+                Duration = effect.Duration,
+                FadeOut = effect.FadeOut,
+                HealthPenaltyMin = effect.HealthPenaltyMin,
+                HealthPenaltyMax = effect.HealthPenaltyMax,
+            };
         }
-
-        if (lightBleed is null || lightBleed.Cost <= 0)
-        {
-            return false;
-        }
-
-        originalCosts.LightBleed =
-            originalCosts.LightBleed == 0 && lightBleed.Cost > 0
-                ? lightBleed.Cost
-                : originalCosts.LightBleed;
-
-        var originalCost = originalCosts.LightBleed;
-        skillManager.SkillsExtendedManager.FirstAidResourceCostBuff.Apply(ref lightBleed.Cost);
-
-#if DEBUG
-        Logger.LogDebug($"[FirstAid] Original LightBleeding Value: {originalCost}");
-        Logger.LogDebug($"[FirstAid] New LightBleeding Value: {lightBleed.Cost}");
-#endif
-        return true;
-    }
-
-    private static bool AdjustHeavyBleedCost(
-        IHealthEffectsComponentTemplate healthEffect,
-        OriginalCostsData originalCosts,
-        SkillManager skillManager
-    )
-    {
-        if (
-            !healthEffect.DamageEffects.TryGetValue(
-                EDamageEffectType.HeavyBleeding,
-                out var heavyBleed
-            )
-        )
-        {
-            return false;
-        }
-
-        if (heavyBleed is null || heavyBleed.Cost <= 0)
-        {
-            return false;
-        }
-
-        originalCosts.HeavyBleed =
-            originalCosts.HeavyBleed == 0 && heavyBleed.Cost > 0
-                ? heavyBleed.Cost
-                : originalCosts.HeavyBleed;
-
-        var originalCost = originalCosts.HeavyBleed;
-        skillManager.SkillsExtendedManager.FirstAidResourceCostBuff.Apply(ref heavyBleed.Cost);
-
-#if DEBUG
-        Logger.LogDebug($"[FirstAid] Original HeavyBleeding Value: {originalCost}");
-        Logger.LogDebug($"[FirstAid] New HeavyBleeding Value: {heavyBleed.Cost}");
-#endif
-        return true;
-    }
-
-    private class OriginalCostsData(int fracture = 0, int lightBleed = 0, int heavyBleed = 0)
-    {
-        public int Fracture = fracture;
-        public int LightBleed = lightBleed;
-        public int HeavyBleed = heavyBleed;
+        __result = adjusted;
     }
 }
-*/

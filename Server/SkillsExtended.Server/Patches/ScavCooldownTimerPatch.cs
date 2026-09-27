@@ -43,6 +43,11 @@ public class ScavCooldownTimerPatch(
     [PatchPrefix]
     public static bool Prefix(PmcData scavData, PmcData pmcData)
     {
+        if (!_configController.SkillsConfig.ShadowConnections.Enabled)
+        {
+            return true;
+        }
+
         if (_skillUtil.IsEliteLevel(pmcData.Id!.Value, SkillTypes.Shadowconnections))
         {
 #if DEBUG

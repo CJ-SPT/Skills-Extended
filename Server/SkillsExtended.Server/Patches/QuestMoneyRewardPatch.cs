@@ -2,6 +2,7 @@
 using HarmonyLib;
 using SkillsExtended.Core;
 using SkillsExtended.Utils;
+using SPTarkov.DI.Annotations;
 using SPTarkov.Reflection.Patching;
 using SPTarkov.Server.Core.Helpers.Quest;
 using SPTarkov.Server.Core.Models.Eft.Common;
@@ -9,6 +10,7 @@ using SPTarkov.Server.Core.Models.Enums;
 
 namespace SkillsExtended.Patches;
 
+[Injectable]
 public class QuestMoneyRewardPatch(ConfigController configController, SkillUtil skillUtil)
     : AbstractPatch
 {

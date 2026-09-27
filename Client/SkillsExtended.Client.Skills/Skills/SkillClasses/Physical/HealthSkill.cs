@@ -20,7 +20,7 @@ public class HealthSkill(SkillManager skillManager)
         ESkillId.Vitality,
     ];
 
-    private static SkillManager.SkillAction[] GetActions(SkillManager skillManager)
+    internal static SkillManager.SkillAction[] GetActions(SkillManager skillManager)
     {
         return
         [
@@ -30,7 +30,7 @@ public class HealthSkill(SkillManager skillManager)
         ];
     }
 
-    private static SkillManager.Buff[] GetBuffs(SkillManager skillManager)
+    internal static SkillManager.Buff[] GetBuffs(SkillManager skillManager)
     {
         var data = SkillsExtendedPlugin.SkillData.Health;
 

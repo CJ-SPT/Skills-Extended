@@ -1,5 +1,7 @@
 ﻿using SkillsExtended.LockPicking;
 
+using Fika.Core.Networking.LiteNetLib.Utils;
+
 namespace SkillsExtendedFika.Packets;
 
 public struct LockPickingSyncPacket : INetSerializable

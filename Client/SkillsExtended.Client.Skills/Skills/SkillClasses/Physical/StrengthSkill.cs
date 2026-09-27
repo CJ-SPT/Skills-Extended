@@ -16,7 +16,7 @@ public class StrengthSkill(SkillManager skillManager)
 {
     private static readonly StrengthData Data = SkillsExtendedPlugin.SkillData.Strength;
 
-    private static SkillManager.SkillAction[] GetActions(SkillManager skillManager)
+    internal static SkillManager.SkillAction[] GetActions(SkillManager skillManager)
     {
         var actions = new StrengthActions(skillManager);
 
@@ -30,7 +30,7 @@ public class StrengthSkill(SkillManager skillManager)
         ];
     }
 
-    private static SkillManager.Buff[] GetBuffs(SkillManager skillManager)
+    internal static SkillManager.Buff[] GetBuffs(SkillManager skillManager)
     {
         return
         [

@@ -1,4 +1,4 @@
-<Project>
+﻿<Project>
   <PropertyGroup>
     <Version>3.0.0</Version>
     <LangVersion>latest</LangVersion>
@@ -7,6 +7,7 @@
 
     <SkillsExtendedProjectType Condition="'$(MSBuildProjectName)' == 'SkillsExtended.Client.API'">ClientFull</SkillsExtendedProjectType>
     <SkillsExtendedProjectType Condition="'$(MSBuildProjectName)' == 'SkillsExtended.Client.Skills'">ClientFull</SkillsExtendedProjectType>
+    <SkillsExtendedProjectType Condition="'$(MSBuildProjectName)' == 'SkillsExtended.Client.Fika'">ClientFull</SkillsExtendedProjectType>
     <SkillsExtendedProjectType Condition="'$(MSBuildProjectName)' == 'SkillsExtended.Client.Prepatch'">ClientPrepatch</SkillsExtendedProjectType>
     <SkillsExtendedProjectType Condition="'$(MSBuildProjectName)' == 'SkillsExtended.Server'">Server</SkillsExtendedProjectType>
 

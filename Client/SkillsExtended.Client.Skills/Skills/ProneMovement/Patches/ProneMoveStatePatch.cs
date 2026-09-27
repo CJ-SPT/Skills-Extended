@@ -64,18 +64,18 @@ public class ProneMoveVolumePatch : ModulePatch
         );
     }
 
-    [PatchPrefix]
-    private static bool Prefix(MovementContext __instance, ref float __result)
+    [PatchPostfix]
+    private static void Postfix(MovementContext __instance, ref float __result)
     {
         if (!proneData.Enabled)
-            return true;
+            return;
         if (__instance.CurrentState is not ProneMovePlayerState)
-            return true;
+            return;
 
         var player = (Player)_playerField.GetValue(__instance);
 
         if (!player.IsYourPlayer)
-            return true;
+            return;
 
         var buff = player.Skills.ProneMovementVolume;
         var bonus = 1f - buff;
@@ -84,8 +84,6 @@ public class ProneMoveVolumePatch : ModulePatch
         Logger.LogDebug($"Original Prone volume: {__result}");
         Logger.LogDebug($"Updated Prone volume: {__result * bonus}");
 #endif
-        __result = Mathf.Clamp(__result * bonus, 0f, __result * bonus);
-
-        return false;
+        __result *= Mathf.Clamp01(bonus);
     }
 }

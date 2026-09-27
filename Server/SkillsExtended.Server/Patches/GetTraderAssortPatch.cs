@@ -78,7 +78,7 @@ public class GetTraderAssortPatch(
         var discount = 0.0f;
 
         // Peacekeeper discount only
-        if (traderId == Traders.PEACEKEEPER)
+        if (usecConfig.Enabled && traderId == Traders.PEACEKEEPER)
         {
             if (profile.Info?.Side == "Usec" || !usecConfig.FactionLocked)
             {
@@ -88,9 +88,9 @@ public class GetTraderAssortPatch(
         }
 
         // Prapor discount only
-        if (traderId == Traders.PRAPOR)
+        if (bearConfig.Enabled && traderId == Traders.PRAPOR)
         {
-            if (profile.Info?.Side == "Bear" || !usecConfig.FactionLocked)
+            if (profile.Info?.Side == "Bear" || !bearConfig.FactionLocked)
             {
                 discount += bearConfig.PraporTradingCostDec.NormalizeToPercentage() * bearLevel;
             }

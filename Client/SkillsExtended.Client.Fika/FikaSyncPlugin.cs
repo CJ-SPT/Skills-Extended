@@ -1,6 +1,9 @@
 ﻿using System;
 using BepInEx;
 using BepInEx.Logging;
+using Fika.Core.Modding;
+using Fika.Core.Modding.Events;
+using Fika.Core.Networking;
 using SkillsExtended;
 using SkillsExtendedFika.Controllers;
 using SkillsExtendedFika.Packets;
@@ -9,7 +12,7 @@ using SPT.Reflection.Patching;
 namespace SkillsExtendedFika;
 
 [BepInPlugin("com.cj.SkillsExtendedFika", "Skills Extended Fika", SkillsExtendedInfo.SYNC_VERSION)]
-[BepInDependency("com.cj.SkillsExtended", SkillsExtendedInfo.MIN_MOD_VERSION_FOR_SYNC)]
+[BepInDependency(SkillsExtendedInfo.MOD_GUID, SkillsExtendedInfo.VERSION)]
 [BepInDependency("com.fika.core", SkillsExtendedInfo.MIN_FIKA_VERSION)]
 public class FikaSyncPlugin : BaseUnityPlugin
 {

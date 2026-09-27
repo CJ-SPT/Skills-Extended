@@ -13,7 +13,7 @@ public class ImmunitySkill(SkillManager skillManager)
         GetBuffs(skillManager)
     )
 {
-    private static SkillManager.SkillAction[] GetActions(SkillManager skillManager)
+    internal static SkillManager.SkillAction[] GetActions(SkillManager skillManager)
     {
         return
         [
@@ -26,7 +26,7 @@ public class ImmunitySkill(SkillManager skillManager)
         ];
     }
 
-    private static SkillManager.Buff[] GetBuffs(SkillManager skillManager)
+    internal static SkillManager.Buff[] GetBuffs(SkillManager skillManager)
     {
         var data = SkillsExtendedPlugin.SkillData.Immunity;
 
