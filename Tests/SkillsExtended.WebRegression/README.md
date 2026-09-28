@@ -19,6 +19,11 @@ rollback and retry, PMC/Scav separation, fractional progress preservation, profi
 conflicts, and failed profile saves. Real component event handlers are dispatched to
 verify that input validation and switches update only the draft.
 
+Authorization checks discover every production page, verify its SPT `Administrator`
+policy, and check the administrator claim grants access. Actual `AuthorizeRouteView`
+renders verify anonymous visitors and signed-in non-admin users cannot instantiate
+the pages or their configuration/profile editor layout.
+
 Actual layout and page components are also rendered into `bin/Release/net10.0/rendered`.
 Inspect those fixtures at desktop and mobile widths using Playwright:
 
@@ -38,6 +43,9 @@ acceptance of a live SPT browser circuit or actual gameplay/profile persistence.
 
 After installing and restarting on your normal schedule:
 
+- Open Skills Extended while signed out and verify SPT prompts for sign-in. A
+  non-admin account must be denied; an administrator must be able to open the
+  overview, skill settings, profile skill editor, and release notes directly.
 - Edit settings on multiple pages; verify drafts persist while navigating and another
   browser session sees only saved values. Check save, discard, invalid input, conflict
   feedback, and leaving/closing with pending edits.

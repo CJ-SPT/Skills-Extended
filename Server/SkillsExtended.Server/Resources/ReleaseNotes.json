@@ -1,8 +1,18 @@
 [
   {
+    "Version": "3.0.1",
+    "ReleaseDate": "September 28, 2026",
+    "IsLatest": true,
+    "Features": [
+      "All Skills Extended web pages now require SPT administrator access, using the server's existing sign-in."
+    ],
+    "Improvements": [],
+    "BugFixes": []
+  },
+  {
     "Version": "2.2.1",
     "ReleaseDate": "December 17, 2025",
-    "IsLatest": true,
+    "IsLatest": false,
     "Features": [],
     "Improvements": [],
     "BugFixes": [

@@ -352,6 +352,7 @@ Check(
     ).Status == EditStatus.Conflict,
     "Deleted profile is rejected at apply time"
 );
+await AuthorizationChecks.Run(Check);
 await RenderingChecks.Run(Check);
 await ComponentChecks.Run(shipped, Check);
 Console.WriteLine($"{checks} web editor regression checks passed.");

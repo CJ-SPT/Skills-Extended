@@ -13,6 +13,9 @@ To produce a release package without copying files into your game installation:
 dotnet build 'Skills Extended.sln' -c Release -p:DeploySkillsExtended=false
 ```
 
+All Skills Extended web pages require an SPT administrator account. Open
+`/skills-extended` on your SPT server and use the server's existing sign-in.
+
 Extract the ZIP directly into the SPT installation folder. Its layout is:
 
 ```text
