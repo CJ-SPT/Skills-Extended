@@ -689,16 +689,12 @@
             "679b9819a2f2dd4da9023512": 3
         },
         "ExcludedDoors": [],
-        "ExcludedKeycards": [
-            "5c94bbff86f7747ee735c08f",
-            "679b9819a2f2dd4da9023512",
-            "5e42c81886f7742a01529f57"
-        ],
+        "ExcludedKeycards": [],
         "Tiers": [
             {
                 "Level": 1,
                 "Name": "Standard",
-                "Nodes": 19,
+                "Nodes": 21,
                 "Defenses": 3,
                 "Utilities": 2,
                 "Caches": 1,
