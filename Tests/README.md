@@ -6,9 +6,19 @@ For configuration editing, profile tools, and offline page/layout checks, see
 Run from the repository root:
 
 ```powershell
+dotnet run --project Tests/SkillsExtended.ElectronicsTests -c Release -p:DeploySkillsExtended=false -p:PackageSkillsExtended=false
 dotnet run --project Tests/SkillsExtended.Regression -c Release -p:DeploySkillsExtended=false
 dotnet build 'Skills Extended.sln' -c Release -p:DeploySkillsExtended=false -p:FikaAssemblyPath='C:\path\to\Fika.Core.dll'
 ```
+
+The Electronics suite covers seeded graphs at levels 0/25/51, defenses, utilities,
+turn ordering, XP/attempt authority, profile initialization, and ID 200 round trips
+through the installed client's enum converter and the actual server profile model.
+It also exercises the production client configuration reader with the installed
+Newtonsoft assembly: full, partial, legacy, customized and explicitly empty
+collections must load without appending built-in defaults. Add `-- --installed-config`
+to validate the installed configuration read-only.
+See [Electronics acceptance](../ELECTRONICS.md) for the remaining in-raid checks.
 
 The solution uses the installed game's managed and dumped assemblies. Fika defaults
 to `BepInEx/plugins/Fika/Fika.Core.dll`; use `FikaAssemblyPath` for a separate reference
@@ -23,6 +33,9 @@ real dependency APIs.
 
 Coverage includes:
 
+- Cursor method discovery with overloaded methods and unrelated static/instance types.
+- Electronics menu practice leaving player-dependent input flags untouched, raid
+  capture/restoration, repeated cleanup, and player disappearance during teardown.
 - Quest XP at levels 0, 1, 10 and 51, disabled skills and faction eligibility.
 - Cultist Circle timers and disabled behavior without a sacrifice session.
 - Quest cash patch registration and percentage units.

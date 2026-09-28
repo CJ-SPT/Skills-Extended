@@ -6,7 +6,10 @@ var checks = 0;
 void Check(bool condition, string name)
 {
     if (!condition)
+    {
         throw new InvalidOperationException(name);
+    }
+
     checks++;
     Console.WriteLine($"PASS {name}");
 }
@@ -19,7 +22,7 @@ Check(
     "Every shipped field passes shared validation"
 );
 ConfigRules.RequireStructure(shipped.Skills);
-Check(SkillCatalog.All.Count == 17, "All 17 skill pages are catalogued");
+Check(SkillCatalog.All.Count == 18, "All 18 skill pages are catalogued");
 Check(
     SkillCatalog.All.All(s => s.Fields.All(f => f.Label != f.Key)),
     "Every scalar has a readable label"
@@ -29,7 +32,6 @@ Check(
     SkillCatalog.Fields["LockPicking"].Single(f => f.Key == "SweetSpotRangeBase").Maximum is null,
     "Lock sweet spot permits shipped 3.75 value"
 );
-
 var editor = new EditorSession(shipped);
 editor.Skills.FirstAid.XpPerAction = 12.5f;
 editor.Skills.NatoWeapons.Weapons.Add("offline-test-weapon");
@@ -55,12 +57,12 @@ Check(
 );
 editor.Skills.NatoWeapons.Weapons = editor.Skills.NatoWeapons.Weapons.Reverse().ToHashSet();
 Check(!editor.Dirty, "Weapon set order does not create changes");
-
 foreach (var text in new[] { "", "NaN", "Infinity", "-1", "1e99", "invalid" })
 {
     var field = SkillCatalog.Fields["FirstAid"].Single(f => f.Key == "XpPerAction");
     Check(field.Parse(text, out _) is not null, $"Reject invalid XP '{text}'");
 }
+
 Check(
     SkillCatalog
         .Fields["NatoWeapons"]
@@ -89,7 +91,6 @@ Check(
     "Locale decimal input preserves small XP values"
 );
 CultureInfo.CurrentCulture = culture;
-
 var fake = new MemoryFiles(
     await File.ReadAllTextAsync(Path.Combine(source, "SkillsConfig.json")),
     await File.ReadAllTextAsync(Path.Combine(source, "ServerConfig.json"))
@@ -150,7 +151,6 @@ Check(
         == EditStatus.Validation,
     "Backend independently rejects invalid configuration"
 );
-
 foreach (var failure in new[] { "stage1", "stage2", "replace1", "replace2" })
 {
     var fixture = new MemoryFiles(
@@ -189,6 +189,7 @@ foreach (var failure in new[] { "stage1", "stage2", "replace1", "replace2" })
         $"{failure}: preserved draft can retry"
     );
 }
+
 var parallelFixture = new MemoryFiles(
     await File.ReadAllTextAsync(Path.Combine(source, "SkillsConfig.json")),
     await File.ReadAllTextAsync(Path.Combine(source, "ServerConfig.json"))
@@ -266,6 +267,7 @@ foreach (var value in new[] { "-1", "52", "1.5", "NaN", "" })
         $"Reject invalid profile level '{value}'"
     );
 }
+
 profileDraft.Edit("Endurance", "0");
 Check(
     (await profileEditor.ApplyAsync(profileDraft.Baseline, profileDraft.Changes)).Success
@@ -350,7 +352,6 @@ Check(
     ).Status == EditStatus.Conflict,
     "Deleted profile is rejected at apply time"
 );
-
 await RenderingChecks.Run(Check);
 await ComponentChecks.Run(shipped, Check);
 Console.WriteLine($"{checks} web editor regression checks passed.");
@@ -362,8 +363,8 @@ sealed class MemoryFiles(string skills, string server) : IConfigFiles
         [Path.Combine("fixture", "SkillsConfig.json")] = skills,
         [Path.Combine("fixture", "ServerConfig.json")] = server,
     };
-    private int _writes,
-        _replaces;
+    private int _writes;
+    private int _replaces;
     public string FailAt { get; set; } = "";
     public IEnumerable<string> Paths => _data.Keys;
 
@@ -373,14 +374,20 @@ sealed class MemoryFiles(string skills, string server) : IConfigFiles
     {
         await Task.Yield();
         if (FailAt == "stage" + ++_writes)
+        {
             throw new IOException("Simulated staging failure");
+        }
+
         _data[path] = text;
     }
 
     public void Replace(string staged, string destination, string backup)
     {
         if (FailAt == "replace" + ++_replaces)
+        {
             throw new IOException("Simulated replacement failure");
+        }
+
         _data[backup] = _data[destination];
         _data[destination] = _data[staged];
         _data.Remove(staged);
@@ -411,7 +418,10 @@ sealed class MemoryProfiles : IProfileSkillStore
     public IReadOnlyList<LiveSkill>? Skills(string profileId, string side)
     {
         if (!Exists || profileId != "one")
+        {
             return null;
+        }
+
         var values = side == "Pmc" ? Pmc : Scav;
         return values
             .Keys.Select(id => new LiveSkill(id, () => values[id], v => values[id] = v))
@@ -425,6 +435,7 @@ sealed class MemoryProfiles : IProfileSkillStore
             FailNextSave = false;
             throw new IOException("Simulated profile write failure");
         }
+
         PersistedPmc = new(Pmc);
         return Task.CompletedTask;
     }

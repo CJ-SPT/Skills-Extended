@@ -13,10 +13,17 @@ public static class CursorSettings
     
     static CursorSettings()
     {
-        var cursorType = PatchConstants.EftTypes.Single(x => x.GetMethod("SetCursor") != null);
+        const BindingFlags flags = BindingFlags.Public | BindingFlags.Static;
+        var cursorParameters = new[] { typeof(ECursorType) };
+        var lockParameters = new[] { typeof(bool), typeof(FullScreenMode) };
+
+        // SetCursor also has a CursorData overload; resolve the signatures we invoke.
+        var cursorType = PatchConstants.EftTypes.Single(x =>
+            x.GetMethod("SetCursor", flags, null, cursorParameters, null) != null &&
+            x.GetMethod("SetCursorLockMode", flags, null, lockParameters, null) != null);
         
-        SetCursorMethod = cursorType.GetMethod("SetCursor");
-        SetCursorLockMethod = cursorType.GetMethod("SetCursorLockMode");
+        SetCursorMethod = cursorType.GetMethod("SetCursor", flags, null, cursorParameters, null);
+        SetCursorLockMethod = cursorType.GetMethod("SetCursorLockMode", flags, null, lockParameters, null);
     }
 
     public static void SetCursor(ECursorType type)

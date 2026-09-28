@@ -1,0 +1,141 @@
+@using SkillsExtended.Config.Skills
+
+<section class="se-panel">
+    <h2>Board difficulties</h2>
+    <p>Board content is fixed when an attempt starts. Leave at least eight empty nodes for safe initial routes.</p>
+    @foreach (var tier in Data.Tiers)
+    {
+        <h3>@tier.Name</h3>
+        <div class="se-fields">
+            <label class="se-field">
+                Nodes
+                <input type="number" @bind="tier.Nodes" @bind:after="Session.Notify" />
+            </label>
+            <label class="se-field">
+                Defenses
+                <input type="number" @bind="tier.Defenses" @bind:after="Session.Notify" />
+            </label>
+            <label class="se-field">
+                Utilities
+                <input type="number" @bind="tier.Utilities" @bind:after="Session.Notify" />
+            </label>
+            <label class="se-field">
+                Caches
+                <input type="number" @bind="tier.Caches" @bind:after="Session.Notify" />
+            </label>
+            <label class="se-field">
+                Core coherence
+                <input type="number" @bind="tier.CoreCoherence" @bind:after="Session.Notify" />
+            </label>
+            <label class="se-field">
+                Core strength
+                <input type="number" @bind="tier.CoreStrength" @bind:after="Session.Notify" />
+            </label>
+            <label class="se-field">
+                Success XP
+                <input type="number" step="0.1" @bind="tier.SuccessXp" @bind:after="Session.Notify" />
+            </label>
+        </div>
+    }
+</section>
+<section class="se-panel">
+    <h2>Door rules</h2>
+    <p>Difficulty: 1 Standard, 2 Secure, 3 Hardened. Enter one rule per line. Exclusions always win.</p>
+    @foreach (var field in Fields)
+    {
+        <label class="se-field">@field.Label
+            <textarea rows="5" value="@Value(field.Key)" @onchange="e => Edit(field.Key, e.Value?.ToString() ?? string.Empty)"></textarea>
+        </label>
+        @if (Session.InputErrors.TryGetValue("Electronics." + field.Key, out var error))
+        {
+            <p role="alert">@error</p>
+        }
+    }
+</section>
+
+@code
+{
+    [CascadingParameter]
+    public EditorSession Session { get; set; } = null!;
+    private ElectronicsData Data => Session.Skills.Electronics;
+
+    private static readonly (string Key, string Label)[] Fields =
+    {
+        ("DoorDifficulties", "Map/door overrides (map/door ID = difficulty)"),
+        ("KeycardDifficulties", "Keycard overrides (template ID = difficulty)"),
+        ("ExcludedDoors", "Excluded doors (map/door ID)"),
+        ("ExcludedKeycards", "Excluded keycards (template ID)"),
+    };
+
+    private string Value(string key) =>
+        Session.Inputs.TryGetValue("Electronics." + key, out var input)
+            ? input
+            : key switch
+            {
+                "DoorDifficulties" => string.Join(
+                    "\n",
+                    Data.DoorDifficulties.Select(p => p.Key + " = " + p.Value)
+                ),
+                "KeycardDifficulties" => string.Join(
+                    "\n",
+                    Data.KeycardDifficulties.Select(p => p.Key + " = " + p.Value)
+                ),
+                "ExcludedDoors" => string.Join("\n", Data.ExcludedDoors),
+                _ => string.Join("\n", Data.ExcludedKeycards),
+            };
+
+    private void Edit(string key, string value)
+    {
+        var path = "Electronics." + key;
+        Session.Inputs[path] = value;
+        var lines = value.Split(
+            '\n',
+            StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries
+        );
+        if (key.StartsWith("Excluded"))
+        {
+            if (key == "ExcludedDoors")
+            {
+                Data.ExcludedDoors = lines.Distinct().ToList();
+            }
+            else
+            {
+                Data.ExcludedKeycards = lines.Distinct().ToList();
+            }
+        }
+        else
+        {
+            var rules = new Dictionary<string, int>();
+            foreach (var line in lines)
+            {
+                var parts = line.Split('=', 2, StringSplitOptions.TrimEntries);
+                if (
+                    parts.Length != 2
+                    || parts[0].Length == 0
+                    || !int.TryParse(parts[1], out var level)
+                    || level < 1
+                    || level > 3
+                    || !rules.TryAdd(parts[0], level)
+                )
+                {
+                    Session.InputErrors[path] =
+                        "Use a unique ID = difficulty on each line, with difficulty 1, 2, or 3.";
+                    Session.Notify();
+                    return;
+                }
+            }
+
+            if (key == "DoorDifficulties")
+            {
+                Data.DoorDifficulties = rules;
+            }
+            else
+            {
+                Data.KeycardDifficulties = rules;
+            }
+        }
+
+        Session.InputErrors.Remove(path);
+        Session.Notify();
+    }
+}

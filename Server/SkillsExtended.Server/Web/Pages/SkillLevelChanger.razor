@@ -60,11 +60,11 @@
         </div>
         <fieldset class="se-editor-fields" disabled="@(_busy || _review)">
             <div class="se-fields">
-                @foreach (var id in _draft.Baseline.Progress.Keys.Where(k => k.Contains(_search, StringComparison.OrdinalIgnoreCase)).OrderBy(k => k))
+                @foreach (var id in _draft.Baseline.Progress.Keys.Where(k => (k == "200" ? "Electronics" : k).Contains(_search, StringComparison.OrdinalIgnoreCase)).OrderBy(k => k))
                 {
                     <div class="se-field" @key="id">
                         <label for="@("level-" + id)">
-                            @id
+                            @(id == "200" ? "Electronics" : id)
                             @if (_draft.Changes.ContainsKey(id))
                             {
                                 <span class="se-badge se-pending">Changed</span>
@@ -100,7 +100,7 @@
         {
             <p class="se-empty">This character has no skills to edit.</p>
         }
-        else if (!_draft.Baseline.Progress.Keys.Any(k => k.Contains(_search, StringComparison.OrdinalIgnoreCase)))
+        else if (!_draft.Baseline.Progress.Keys.Any(k => (k == "200" ? "Electronics" : k).Contains(_search, StringComparison.OrdinalIgnoreCase)))
         {
             <p class="se-empty">No skills match this search.</p>
         }

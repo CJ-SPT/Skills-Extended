@@ -17,14 +17,31 @@ public class ConfigController(ISptLogger<ConfigController> logger, IReadOnlyList
         new ConfigFiles()
     );
     private ConfigSnapshot _runtime = null!;
+    private readonly SemaphoreSlim _loadLock = new(1, 1);
     public ServerConfig ServerConfig => _runtime.Server;
     public SkillsConfig SkillsConfig => _runtime.Skills;
     public bool IsFikaPresent { get; private set; }
 
     public async Task OnLoadAsync(CancellationToken cancellationToken)
     {
-        _runtime = await _store.ReadSnapshotAsync();
+        await EnsureLoadedAsync();
         IsFikaPresent = loadedMods.Any(m => m.ModMetadata.ModGuid == "Fika");
+    }
+
+    public async Task EnsureLoadedAsync()
+    {
+        await _loadLock.WaitAsync();
+        try
+        {
+            if (_runtime == null)
+            {
+                _runtime = await _store.ReadSnapshotAsync();
+            }
+        }
+        finally
+        {
+            _loadLock.Release();
+        }
     }
 
     public Task<ConfigSnapshot> GetSnapshotAsync() => _store.ReadSnapshotAsync();
@@ -38,7 +55,10 @@ public class ConfigController(ISptLogger<ConfigController> logger, IReadOnlyList
             snapshot => _runtime = snapshot
         );
         if (!result.Success)
+        {
             logger.Warning($"[Skills Extended] {result.Message}");
+        }
+
         return result;
     }
 }

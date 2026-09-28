@@ -2,9 +2,9 @@
   "6622c28aed7e3bc72e301e22 Name": "Juego de ganzúas",
   "6622c28aed7e3bc72e301e22 ShortName": "Ganzúa",
   "6622c28aed7e3bc72e301e22 Description": "Un conjunto de herramientas usado para abrir cerraduras",
-  "662400eb756ca8948fe64fe8 Name": "Flipper zero",
-  "662400eb756ca8948fe64fe8 ShortName": "Flipper",
-  "662400eb756ca8948fe64fe8 Description": "Un dispositivo PDA modificado usado en el bajo mundo criminal con fines maliciosos",
+  "662400eb756ca8948fe64fe8 Name": "Modified PDA",
+  "662400eb756ca8948fe64fe8 ShortName": "PDA",
+  "662400eb756ca8948fe64fe8 Description": "A modified handheld computer for bypassing electronic door security. Reusable; craft at Workbench level 2.",
 
   "FirstAid": "Primeros Auxilios",
   "FirstAidDescription": "Las habilidades de primeros auxilios permiten usar objetos médicos más rápido y de manera más efectiva.",

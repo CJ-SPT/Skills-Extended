@@ -1,0 +1,23 @@
+{
+  "lucideCommit": "66d8f9fc394b8530377e5f6112f0b8908ba01280",
+  "kenneyUI": "https://kenney.nl/assets/ui-pack-sci-fi",
+  "kenneyAudio": "https://kenney.nl/assets/interface-sounds",
+  "sha256": {
+    "bug.svg": "c4fddf0d43b4c4f0b8fc52eb8810173c8d8bd25618034a70f162d85e8189d69d",
+    "cpu.svg": "ec83bb69ec029d367d749afc445b39c8e95891ebf99b0400652677c2b149b99c",
+    "database.svg": "471eb14bc8d144896a82dfc4aa9daf350f769f0896f4bef33e50aabdbb51130d",
+    "failure.ogg": "46e67425d16339772e8d328fb36a49426c9467418686e11beeb71ff84b0f6433",
+    "heart-pulse.svg": "103d6b99ac9ab53c5861317673880ae5d6e2491efa7a40e8b89ecac449842df2",
+    "node.png": "6783bef965a2926e7f8550d3a8480d13a53854899534ac59e3edd16453820e3f",
+    "panel.png": "5eb86209b7d455cffdb34e71701f6c6d50f8e406abbe58e0c32d008a669f872a",
+    "radio.svg": "e55ef723902350caaabb68c8814ba57c4c2d237e0747a5f0520624e6f2f8c861",
+    "reveal.ogg": "ccfb7fa0cccdd9faec0eb16033c732b1e308d139d80f799161495d58f7adcdb9",
+    "scissors.svg": "4c831fc2c903825f68565c28ffab945c34b2c60b6c564e2ae54250e1099fa550",
+    "shield-check.svg": "8d4fcdbde5bba4abb1a2f6fe53e37ceb6343a1d5449a9d88f6f97c1971d26c4e",
+    "shield.svg": "be32f6a86df7cbe43a83c439dd8849e5bcf5145e484d23420c20d8b98a78e82b",
+    "success.ogg": "063564703b6094d70718a3e787a55cc9141611e4ecd6b6637f8828f79b4a8c3a",
+    "utility.ogg": "aec0c31ea934a35936ae0d2ab8fac8123c93aa5647f935853a58dbaf90278b7a",
+    "wrench.svg": "b5f3bf792743edb9e81b543dd1b13ccc26d3afe1d33500a1cd8dee2e052d6197",
+    "zap.svg": "4c395891eab4d1e5627c5d414a16db037317cb2f12453de0f3a1130964c6d444"
+  }
+}

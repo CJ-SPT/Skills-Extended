@@ -1,0 +1,11 @@
+TerraGroup gauge emblem
+
+User-requested monochrome geometric redraw of the TerraGroup emblem from
+Escape from Tarkov, a Battlestate Games brand. Generated reproducibly by
+Tools/ElectronicsAssets/ElectronicsHudArtwork.cs, with no external image dependency.
+This attribution does not place the underlying emblem under the fallback artwork licenses.
+
+Visual references (not included in runtime packages):
+https://steamcommunity.com/sharedfiles/filedetails/?id=3050626902
+https://i.imgur.com/X2ZT4Va.png
+https://steamcommunity.com/sharedfiles/filedetails/?id=1947176705

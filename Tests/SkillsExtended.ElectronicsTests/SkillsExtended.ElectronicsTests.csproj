@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType><TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings><Nullable>disable</Nullable>
+    <DeploySkillsExtended>false</DeploySkillsExtended><PackageSkillsExtended>false</PackageSkillsExtended>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="../../Client/SkillsExtended.Client.Skills/Helpers/ConfigurationJson.cs" Link="ConfigurationJson.cs" />
+    <ProjectReference Include="../../SkillsExtended.Common/SkillsExtended.Common.csproj" />
+    <ProjectReference Include="../../Server/SkillsExtended.Server/SkillsExtended.Server.csproj" />
+    <ProjectReference Include="../../Client/SkillsExtended.Client.Prepatch/SkillsExtended.Client.Prepatch.csproj" />
+    <Reference Include="Mono.Cecil" HintPath="../../../../BepInEx/core/Mono.Cecil.dll" />
+    <Reference Include="Newtonsoft.Json" HintPath="../../../../EscapeFromTarkov_Data/Managed/Newtonsoft.Json.dll" />
+  </ItemGroup>
+</Project>

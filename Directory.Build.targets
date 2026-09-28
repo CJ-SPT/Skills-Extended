@@ -1,6 +1,7 @@
 <Project>
   <PropertyGroup>
-    <SkillsExtendedPackageOutputDir Condition="'$(SkillsExtendedPackageOutputDir)' == ''">$(MSBuildThisFileDirectory)artifacts\packages\$(Configuration)\</SkillsExtendedPackageOutputDir>
+    <SkillsExtendedPackageConfiguration Condition="'$(SkillsExtendedPackageConfiguration)' == ''">$(Configuration)</SkillsExtendedPackageConfiguration>
+    <SkillsExtendedPackageOutputDir Condition="'$(SkillsExtendedPackageOutputDir)' == ''">$(MSBuildThisFileDirectory)artifacts\packages\$(SkillsExtendedPackageConfiguration)\</SkillsExtendedPackageOutputDir>
   </PropertyGroup>
   <!-- Build dependencies ensure a server/solution build packages fresh client binaries.
        They are not assembly references or server runtime dependencies. -->
@@ -28,6 +29,19 @@
         <PackageDirectory>BepInEx\patchers\</PackageDirectory>
       </SkillsExtendedPackageFile>
     </ItemGroup>
+    <ItemGroup Condition="'$(MSBuildProjectName)' == 'SkillsExtended.Client.Fika'">
+      <SkillsExtendedPackageFile Include="$(MSBuildThisFileDirectory)Client\SkillsExtended.Client.Skills\Resources\bundles\electronics_ui.bundle">
+        <PackageDirectory>BepInEx\plugins\SkillsExtended\bundles\</PackageDirectory>
+      </SkillsExtendedPackageFile>
+      <SkillsExtendedPackageFile Include="$(MSBuildThisFileDirectory)Client\SkillsExtended.Client.Skills\Resources\Notices\**\*">
+        <PackageDirectory>BepInEx\plugins\SkillsExtended\Notices\</PackageDirectory>
+      </SkillsExtendedPackageFile>
+    </ItemGroup>
+    <ItemGroup Condition="'$(SkillsExtendedProjectType)' == 'Server' Or '$(MSBuildProjectName)' == 'SkillsExtended.Client.Fika'">
+      <SkillsExtendedPackageFile Include="$(MSBuildThisFileDirectory)ELECTRONICS.md">
+        <PackageDirectory>SkillsExtended-Docs\</PackageDirectory>
+      </SkillsExtendedPackageFile>
+    </ItemGroup>
     <ItemGroup Condition="'$(SkillsExtendedProjectType)' == 'Server'">
       <SkillsExtendedPackageFile Include="$(TargetPath);$(TargetDir)SkillsExtended.Common.dll;$(ProjectDir)bundles.json">
         <PackageDirectory>SPT_Runtime\user\mods\SkillsExtended\</PackageDirectory>
@@ -50,8 +64,8 @@
     </ItemGroup>
   </Target>
 
-  <Target Name="PackageSkillsExtendedMod" AfterTargets="Build"
-          DependsOnTargets="GetSkillsExtendedPackageFiles"
+  <Target Name="PackageSkillsExtendedMod"
+          DependsOnTargets="AssignProjectConfiguration;_SplitProjectReferencesByFileExistence;GetSkillsExtendedPackageFiles"
           Condition="'$(PackageSkillsExtended)' == 'true' And '$(DesignTimeBuild)' != 'true' And ('$(SkillsExtendedProjectType)' == 'Server' Or '$(MSBuildProjectName)' == 'SkillsExtended.Client.Fika')">
     <!-- Reuse the solution's resolved configuration mapping, including BETA. -->
     <MSBuild Condition="'$(SkillsExtendedProjectType)' == 'Server'"
@@ -65,7 +79,7 @@
       <_SkillsExtendedPackageName Condition="'$(SkillsExtendedProjectType)' == 'Server'">SkillsExtended</_SkillsExtendedPackageName>
       <_SkillsExtendedPackageName Condition="'$(MSBuildProjectName)' == 'SkillsExtended.Client.Fika'">SkillsExtendedFika</_SkillsExtendedPackageName>
       <_SkillsExtendedPackageStage>$(MSBuildProjectDirectory)\obj\package\$([System.Guid]::NewGuid())\</_SkillsExtendedPackageStage>
-      <_SkillsExtendedPackageZip>$([MSBuild]::NormalizePath('$(SkillsExtendedPackageOutputDir)', '$(_SkillsExtendedPackageName)-$(Version)-$(Configuration).zip'))</_SkillsExtendedPackageZip>
+      <_SkillsExtendedPackageZip>$([MSBuild]::NormalizePath('$(SkillsExtendedPackageOutputDir)', '$(_SkillsExtendedPackageName)-$(Version)-$(SkillsExtendedPackageConfiguration).zip'))</_SkillsExtendedPackageZip>
     </PropertyGroup>
     <Error Condition="!Exists('%(SkillsExtendedPackageFile.Identity)')" Text="Missing package input: %(SkillsExtendedPackageFile.Identity). Build all project references before packaging." />
     <Copy SourceFiles="@(SkillsExtendedPackageFile)"

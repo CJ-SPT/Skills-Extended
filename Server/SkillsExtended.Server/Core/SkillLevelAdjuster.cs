@@ -41,7 +41,10 @@ public class SkillLevelAdjuster
     {
         var result = await _editor.ApplyAsync(baseline, changes);
         if (!result.Success)
+        {
             _logger.Warning($"[Skills Extended] {result.Message}");
+        }
+
         return result;
     }
 
@@ -66,8 +69,13 @@ public class SkillLevelAdjuster
         private KeyValuePair<MongoId, SptProfile>? Find(string id)
         {
             foreach (var pair in profiles.GetProfiles())
+            {
                 if (pair.Key.ToString() == id)
+                {
                     return pair;
+                }
+            }
+
             return null;
         }
 
@@ -82,6 +90,11 @@ public class SkillLevelAdjuster
         public IReadOnlyList<LiveSkill>? Skills(string profileId, string side)
         {
             var profile = Find(profileId);
+            if (profile is not null && side == "Pmc")
+            {
+                Patches.ElectronicsProfile.Ensure(profile.Value.Value.CharacterData?.PmcData);
+            }
+
             return profile is null
                 ? null
                 : CharacterSkills(profile.Value.Value, side)
@@ -102,7 +115,10 @@ public class SkillLevelAdjuster
             var pair =
                 Find(profileId) ?? throw new InvalidOperationException("Profile no longer exists.");
             if (saves.IsProfileInvalidOrUnloadable(pair.Key))
+            {
                 throw new InvalidOperationException("SPT cannot save this profile.");
+            }
+
             await saves.SaveProfileAsync(pair.Key, CancellationToken.None);
             // SaveProfileAsync may skip unchanged hashes. Read back the affected skills before reporting success.
             var text = await files.ReadFileAsync(
@@ -117,7 +133,9 @@ public class SkillLevelAdjuster
                 skills is null
                 || expected.Any(p => !skills.TryGetValue(p.Key, out var value) || value != p.Value)
             )
+            {
                 throw new IOException("Saved skill progress did not match the requested changes.");
+            }
         }
     }
 }

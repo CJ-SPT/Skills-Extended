@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using BepInEx;
 using BepInEx.Logging;
 using Fika.Core.Modding;
@@ -22,7 +22,6 @@ public class FikaSyncPlugin : BaseUnityPlugin
     private void Awake()
     {
         Logger = base.Logger;
-
         if (!VersionChecker.CheckEftVersion(Logger, Config))
         {
             throw new Exception("Invalid EFT Version");
@@ -30,14 +29,14 @@ public class FikaSyncPlugin : BaseUnityPlugin
 
         _patchManager = new PatchManager(this, true);
         _patchManager.EnablePatches();
-
         SkillsExtendedInfo.SyncPluginPresent = true;
-
+        ElectronicsFikaBridge.Initialize();
         FikaEventDispatcher.SubscribeEvent<FikaNetworkManagerCreatedEvent>(OnNetworkManagerCreated);
     }
 
     private static void OnNetworkManagerCreated(FikaNetworkManagerCreatedEvent createdEvent)
     {
+        ElectronicsFikaBridge.Connect(createdEvent.Manager);
         switch (createdEvent.Manager)
         {
             case FikaServer server:

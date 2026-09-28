@@ -1,4 +1,4 @@
-﻿using SkillsExtended.Config;
+using SkillsExtended.Config;
 using SPTarkov.Common.Models.Logging;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Server.Core.DI;
@@ -23,6 +23,7 @@ public class DatabaseImporter(
     LocaleTable localeTable,
     HideoutTable hideoutTable,
     LocaleService localeService,
+    ConfigController configController,
     ItemHelper itemHelper,
     FileUtil fileUtil,
     JsonUtil jsonUtil
@@ -30,6 +31,7 @@ public class DatabaseImporter(
 {
     public async Task OnLoadAsync(CancellationToken cancellationToken)
     {
+        await configController.EnsureLoadedAsync();
         await LoadLocales();
         await CreateItems();
         await AddCraftsToDatabase();
@@ -40,9 +42,7 @@ public class DatabaseImporter(
     {
         var items = templateTable.Items.Values;
         var locales = localeService.GetLocaleDb();
-
         var keysResponse = new KeysData { KeyLocale = [], ValueLocales = [] };
-
         var keys = items.Where(item =>
             item.Type == "Item"
             && itemHelper.IsOfBaseclasses(
@@ -50,7 +50,6 @@ public class DatabaseImporter(
                 [BaseClasses.KEY, BaseClasses.KEY_MECHANICAL, BaseClasses.KEY_MECHANICAL]
             )
         );
-
         foreach (var key in keys)
         {
             keysResponse.KeyLocale[key.Id.ToString()] = locales[$"{key.Id} Name"];
@@ -62,7 +61,6 @@ public class DatabaseImporter(
     private async ValueTask LoadLocales()
     {
         var localesPath = Path.Combine(ModMetadata.ResourcesDirectory, "Locales");
-
         var importedLocales = new Dictionary<string, Dictionary<string, string>>();
         foreach (var file in Directory.GetFiles(localesPath))
         {
@@ -111,7 +109,6 @@ public class DatabaseImporter(
 
                     return transformer;
                 });
-
                 continue;
             }
 
@@ -124,16 +121,25 @@ public class DatabaseImporter(
         var itemsPath = Path.Combine(ModMetadata.ResourcesDirectory, "Items", "Items.json");
         var text = await fileUtil.ReadFileAsync(itemsPath);
         var items = jsonUtil.Deserialize<List<NewItemFromCloneDetails>>(text)!;
-
         foreach (var item in items)
         {
-            // Skip PDA for now
-            if (item.NewId == "662400eb756ca8948fe64fe8")
+            if (item.NewId == Electronics.ElectronicsIds.Pda)
             {
-                continue;
+                item.HandbookPriceRoubles = item.FleaPriceRoubles = configController
+                    .SkillsConfig
+                    .Electronics
+                    .PdaReferenceValue;
             }
 
             customItemService.CreateItemFromClone(item);
+            if (item.NewId == Electronics.ElectronicsIds.Pda)
+            {
+                templateTable.Items[item.NewId].Properties!.CreditsPrice = configController
+                    .SkillsConfig
+                    .Electronics
+                    .PdaReferenceValue;
+            }
+
             AddItemToSpecSlots(item.NewId!);
         }
     }
@@ -141,7 +147,6 @@ public class DatabaseImporter(
     private void AddItemToSpecSlots(string itemId)
     {
         var dbItems = templateTable.Items;
-
         foreach (var (id, item) in dbItems)
         {
             if (id != "627a4e6b255f7527fb05a0f6" && item.Id != "65e080be269cbd5c5005e529")
@@ -164,7 +169,6 @@ public class DatabaseImporter(
         var craftsPath = Path.Combine(ModMetadata.ResourcesDirectory, "Items", "Crafting.json");
         var text = await fileUtil.ReadFileAsync(craftsPath);
         var productions = jsonUtil.Deserialize<List<HideoutProduction>>(text)!;
-
         foreach (var production in productions)
         {
             hideoutTable.Production.Recipes!.Add(production);
@@ -175,12 +179,10 @@ public class DatabaseImporter(
     {
         var achievementsPath = Path.Combine(ModMetadata.ResourcesDirectory, "Achievements");
         var achievementsDb = templateTable.Achievements;
-
         foreach (var file in Directory.GetFiles(achievementsPath))
         {
             var text = await fileUtil.ReadFileAsync(file);
             var achievements = jsonUtil.Deserialize<List<Achievement>>(text)!;
-
             achievementsDb.AddRange(achievements);
         }
     }

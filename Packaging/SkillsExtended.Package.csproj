@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Configurations>Debug;Release;BETA</Configurations>
+    <IsPackable>false</IsPackable>
+    <!-- Always refresh archives when Build Solution is used in Visual Studio. -->
+    <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Server\SkillsExtended.Server\SkillsExtended.Server.csproj" ReferenceOutputAssembly="false" Private="false" />
+    <ProjectReference Include="..\Client\SkillsExtended.Client.Fika\SkillsExtended.Client.Fika.csproj" ReferenceOutputAssembly="false" Private="false" />
+  </ItemGroup>
+
+  <Target Name="PackageSkillsExtendedSolution" AfterTargets="Build"
+          Condition="'$(PackageSkillsExtended)' == 'true' And '$(DesignTimeBuild)' != 'true'">
+    <!-- Project references put this final step after both server and client builds.
+         Preserve BETA's project mappings, but label archives with the solution configuration. -->
+    <MSBuild Projects="@(_MSBuildProjectReferenceExistent)"
+             Targets="PackageSkillsExtendedMod"
+             Properties="%(_MSBuildProjectReferenceExistent.SetConfiguration);%(_MSBuildProjectReferenceExistent.SetPlatform);%(_MSBuildProjectReferenceExistent.SetTargetFramework);SkillsExtendedPackageConfiguration=$(Configuration);SkillsExtendedPackageOutputDir=$(SkillsExtendedPackageOutputDir)"
+             RemoveProperties="%(_MSBuildProjectReferenceExistent.GlobalPropertiesToRemove)" />
+  </Target>
+</Project>

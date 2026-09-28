@@ -51,21 +51,34 @@ public record SettingDefinition(
             || !double.IsFinite(number)
             || number < 0
         )
+        {
             return "Enter a finite, nonnegative number.";
+        }
+
         if (Maximum is { } maximum && number > maximum)
+        {
             return $"Enter a value between 0 and {maximum}.";
+        }
+
         if (IsInteger)
         {
             if (number != Math.Truncate(number) || number > int.MaxValue)
+            {
                 return "Enter a nonnegative whole number.";
+            }
+
             value = (int)number;
         }
         else
         {
             if (number > float.MaxValue)
+            {
                 return "This number is too large.";
+            }
+
             value = (float)number;
         }
+
         return null;
     }
 }
@@ -74,6 +87,14 @@ public static class SkillCatalog
 {
     public static readonly IReadOnlyList<SkillDefinition> All =
     [
+        new(
+            "Electronics",
+            "electronics",
+            "Electronics",
+            "Skill_Electronics",
+            "Hack keycard doors with a Modified PDA. Configure attempts, hacking stats, and door difficulty.",
+            "Extended skills"
+        ),
         new(
             "FirstAid",
             "first-aid",
@@ -213,6 +234,16 @@ public static class SkillCatalog
     ];
     private static readonly Dictionary<string, string> Labels = new()
     {
+        ["AttemptsPerDoor"] = "Failed attempts allowed per door",
+        ["BaseCoherence"] = "Starting coherence at level zero",
+        ["CoherencePerLevel"] = "Extra coherence per level",
+        ["BaseStrength"] = "Starting attack strength",
+        ["LevelsPerStrength"] = "Levels for each extra strength point",
+        ["UtilitySlots"] = "Utility inventory slots",
+        ["EliteUtilitySlots"] = "Utility inventory slots at elite",
+        ["FailureXpRatio"] = "Coherence loss XP ratio",
+        ["PdaReferenceValue"] = "PDA reference value in roubles",
+        ["DefaultDifficulty"] = "Default difficulty (1-3)",
         ["AllTraderCostDecrease"] = "All-trader discount at elite",
         ["AlwaysLevelEndurance"] = "Always Level Endurance",
         ["AlwaysLevelStrength"] = "Always Level Strength",
@@ -299,7 +330,12 @@ public static class SkillCatalog
     private static SettingDefinition Describe(PropertyInfo p)
     {
         var key = p.Name;
-        var ratio = key is "SkillShareXpRatio" or "InspectLockXpRatio" or "FailureLockXpRatio";
+        var ratio =
+            key
+            is "SkillShareXpRatio"
+                or "InspectLockXpRatio"
+                or "FailureLockXpRatio"
+                or "FailureXpRatio";
         var chance = key is "AvoidPoisonChanceElite" or "AvoidMiscEffectsChanceElite";
         var unit =
             ratio ? "ratio"

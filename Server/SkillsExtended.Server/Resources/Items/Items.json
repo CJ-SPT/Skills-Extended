@@ -23,7 +23,6 @@
         "newItemName": "lock_pick",
         "fleaPriceRoubles": 120000,
         "handbookPriceRoubles": 75000,
-
         "locales": {
             "en": {}
         }
@@ -44,15 +43,19 @@
             "Prefab": {
                 "path": "pda.bundle",
                 "rcid": ""
-            }
+            },
+            "CreditsPrice": 150000,
+            "RarityPvE": "Not_exist",
+            "Weight": 0.4,
+            "Width": 1,
+            "Height": 2
         },
-        "parentId": "5c164d2286f774194c5e69fa",
-        "handbookParentId": "5c164d2286f774194c5e69fa",
+        "parentId": "5c99f98d86f7745c314214b3",
+        "handbookParentId": "5c518ec986f7743b68682ce2",
         "newId": "662400eb756ca8948fe64fe8",
         "newItemName": "pda",
-        "fleaPriceRoubles": 3650000,
-        "handbookPriceRoubles": 7560000,
-
+        "fleaPriceRoubles": 150000,
+        "handbookPriceRoubles": 150000,
         "locales": {
             "en": {}
         }

@@ -16,18 +16,37 @@ public static class ConfigRules
                     $"Missing {skill.Name} section. Restore it in SkillsConfig.json."
                 );
             if (data is WeaponSkillData { Weapons: null })
+            {
                 throw new InvalidDataException($"Missing {skill.Name} weapon list.");
+            }
         }
+
         if (config.LockPicking.XpTable is null || config.LockPicking.DoorPickLevels is null)
+        {
             throw new InvalidDataException("Missing lockpicking tables.");
+        }
+
         foreach (var map in typeof(DoorPickLevels).GetProperties())
+        {
             if (map.GetValue(config.LockPicking.DoorPickLevels) is null)
+            {
                 throw new InvalidDataException($"Missing door table: {map.Name}.");
+            }
+        }
     }
 
     public static List<string> Validate(SkillsConfig config)
     {
         var errors = new List<string>();
+        try
+        {
+            config.Electronics?.Validate();
+        }
+        catch (ArgumentException ex)
+        {
+            errors.Add(ex.Message);
+        }
+
         foreach (var skill in SkillCatalog.All)
         {
             var data = skill.Data(config);
@@ -36,6 +55,7 @@ public static class ConfigRules
                 errors.Add($"{skill.Name}: missing configuration section.");
                 continue;
             }
+
             foreach (var field in skill.Fields.Where(f => !f.IsBoolean))
             {
                 var error = field.Parse(
@@ -43,20 +63,32 @@ public static class ConfigRules
                     out _
                 );
                 if (error is not null)
+                {
                     errors.Add($"{skill.Name} / {field.Label}: {error}");
+                }
             }
+
             if (
                 data is WeaponSkillData weapon
                 && (weapon.Weapons is null || weapon.Weapons.Any(string.IsNullOrWhiteSpace))
             )
+            {
                 errors.Add($"{skill.Name}: weapon IDs must not be empty.");
+            }
         }
+
         var locks = config.LockPicking;
         if (locks is null)
+        {
             return errors;
+        }
+
         if (locks.XpTable is null)
+        {
             errors.Add("Lock Picking: missing XP table.");
+        }
         else
+        {
             foreach (var (key, value) in locks.XpTable)
             {
                 if (
@@ -69,15 +101,25 @@ public static class ConfigRules
                     || level < 0
                     || key != level.ToString(CultureInfo.InvariantCulture)
                 )
+                {
                     errors.Add(
                         $"Lock Picking: XP level '{key}' must be a nonnegative integer without leading zeros."
                     );
+                }
+
                 if (!float.IsFinite(value) || value < 0)
+                {
                     errors.Add($"Lock Picking: XP for level {key} must be finite and nonnegative.");
+                }
             }
+        }
+
         if (locks.DoorPickLevels is null)
+        {
             errors.Add("Lock Picking: missing map tables.");
+        }
         else
+        {
             foreach (var map in typeof(DoorPickLevels).GetProperties())
             {
                 if (map.GetValue(locks.DoorPickLevels) is not Dictionary<string, int> doors)
@@ -85,25 +127,38 @@ public static class ConfigRules
                     errors.Add($"Lock Picking: missing {map.Name} table.");
                     continue;
                 }
+
                 foreach (var (id, level) in doors)
+                {
                     if (string.IsNullOrWhiteSpace(id) || id != id.Trim() || level < 0)
+                    {
                         errors.Add(
                             $"{map.Name}: door IDs must be nonempty and levels nonnegative."
                         );
+                    }
+                }
             }
+        }
+
         return errors;
     }
 
     public static IEnumerable<string> Warnings(SkillsConfig config)
     {
         if (config.LockPicking?.DoorPickLevels is null || config.LockPicking.XpTable is null)
+        {
             yield break;
+        }
+
         foreach (var map in typeof(DoorPickLevels).GetProperties())
         {
             if (
                 map.GetValue(config.LockPicking.DoorPickLevels) is not Dictionary<string, int> doors
             )
+            {
                 continue;
+            }
+
             foreach (
                 var level in doors
                     .Values.Distinct()
@@ -113,7 +168,9 @@ public static class ConfigRules
                         )
                     )
             )
+            {
                 yield return $"{map.Name}: lock level {level} has no XP entry; those locks award no XP.";
+            }
         }
     }
 }

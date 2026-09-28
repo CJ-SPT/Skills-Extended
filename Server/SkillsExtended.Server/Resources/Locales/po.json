@@ -19,8 +19,11 @@
     "BearAkSystemsErgo": "Aumenta a ergonomia das armas russas em [{0:0.#%}]",
     "BearAkSystemsRecoil": "Reduz o recuo das armas russas em [{0:0.#%}]",
     "Lockpicking": "Arrombamento",
-    "LockpickingDescription": "Arrombe fechaduras e acesse salas mesmo sem a chave. No nível 25, você pode usar um \"Flipper Zero\" para tentar hackear portas com cartão-chave.",
+    "LockpickingDescription": "Pick mechanical locks without a key. Electronic doors require Electronics and a Modified PDA.",
     "LockpickingLevelingUpDescription": "Aprimorada ao inspecionar e arrombar fechaduras.",
     "LockpickingTimeReduction": "Reduz o tempo necessário para inspecionar e arrombar fechaduras em [{0:0.#%}]",
-    "LockpickingUseElite": "Você não quebra mais gazuas."
+    "LockpickingUseElite": "Você não quebra mais gazuas.",
+    "662400eb756ca8948fe64fe8 Name": "Modified PDA",
+    "662400eb756ca8948fe64fe8 ShortName": "PDA",
+    "662400eb756ca8948fe64fe8 Description": "A modified handheld computer for bypassing electronic door security. Reusable; craft at Workbench level 2."
 }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using Comfort.Common;
 using EFT;
@@ -27,7 +27,6 @@ public static class WorldInteractionUtils
     )
     {
         LockPickingInteraction lockPickInteraction = new(interactiveObject, owner);
-
         if (!IsDoorValidForLockPicking(interactiveObject))
         {
             // Secondary check to prevent action showing on open or closed doors that have
@@ -45,10 +44,8 @@ public static class WorldInteractionUtils
                 Name = "Door cannot be opened",
                 Disabled = interactiveObject.Operatable,
             };
-
             notValidAction.Action = lockPickInteraction.DoorNotValid;
             actionReturn.Actions.Add(notValidAction);
-
             return;
         }
 
@@ -59,47 +56,7 @@ public static class WorldInteractionUtils
                 !interactiveObject.Operatable
                 && !LockPickingHelpers.GetLockPicksInInventory().Any(),
         };
-
         validAction.Action = lockPickInteraction.TryPickLock;
-        actionReturn.Actions.Add(validAction);
-    }
-
-    public static void AddKeyCardInteraction(
-        this KeycardDoor door,
-        AvailableInteractionState actionReturn,
-        GamePlayerOwner owner
-    )
-    {
-        HackTerminalInteraction hackTerminalOperation = new(door, owner);
-
-        if (!IsDoorValidForLockPicking(door))
-        {
-            // Secondary check to prevent action showing on open or closed doors that have
-            // already been picked.
-            if (door.DoorState == EDoorState.Open || door.DoorState == EDoorState.Shut)
-            {
-                return;
-            }
-
-            InteractionAction notValidAction = new()
-            {
-                Name = "Door cannot be opened",
-                Disabled = door.Operatable,
-            };
-
-            notValidAction.Action = hackTerminalOperation.DoorNotValid;
-            actionReturn.Actions.Add(notValidAction);
-
-            return;
-        }
-
-        InteractionAction validAction = new()
-        {
-            Name = "Hack terminal",
-            Disabled = !door.Operatable && !LockPickingHelpers.IsFlipperZeroInInventory(),
-        };
-
-        validAction.Action = hackTerminalOperation.TryHackTerminal;
         actionReturn.Actions.Add(validAction);
     }
 
@@ -119,9 +76,7 @@ public static class WorldInteractionUtils
             Name = "Inspect Lock",
             Disabled = !interactiveObject.Operatable,
         };
-
         LockInspectInteraction keyInfoAction = new(interactiveObject, owner);
-
         action.Action = keyInfoAction.TryInspectLock;
         actionReturn.Actions.Add(action);
     }
@@ -185,30 +140,6 @@ public static class WorldInteractionUtils
         }
     }
 
-    private sealed class HackTerminalInteraction
-    {
-        private GamePlayerOwner owner;
-        private KeycardDoor door;
-
-        public HackTerminalInteraction() { }
-
-        public HackTerminalInteraction(KeycardDoor door, GamePlayerOwner owner)
-        {
-            this.door = door ?? throw new ArgumentNullException("keycard door is Null...");
-            this.owner = owner ?? throw new ArgumentNullException("Owner is null...");
-        }
-
-        public void TryHackTerminal()
-        {
-            LockPickActions.HackTerminal(door, owner);
-        }
-
-        public void DoorNotValid()
-        {
-            owner.DisplayPreloaderUiNotification("This door is cannot be opened.");
-        }
-    }
-
     private sealed class LockInspectInteraction
     {
         private GamePlayerOwner owner;
@@ -236,7 +167,6 @@ public static class WorldInteractionUtils
                     Owner = owner,
                     InteractiveObject = interactiveObject,
                 };
-
                 LockPickActions.InspectDoor(interactiveObject, owner, handler.InspectLockAction);
                 return;
             }

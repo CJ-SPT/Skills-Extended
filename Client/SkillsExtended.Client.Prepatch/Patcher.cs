@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -13,8 +13,8 @@ namespace SkillsExtended;
 public static class SkillsExtendedPatcher
 {
     public static IEnumerable<string> TargetDLLs { get; } = ["Assembly-CSharp.dll"];
-    private static TypeDefinition _skillManager;
 
+    private static TypeDefinition _skillManager;
     private static readonly string PatcherPath = Path.GetDirectoryName(
         Assembly.GetExecutingAssembly().Location
     );
@@ -36,18 +36,17 @@ public static class SkillsExtendedPatcher
                 "Skills Extended error.",
                 MessageBoxHelper.MessageBoxType.OK
             );
-
             Environment.Exit(1);
             return;
         }
+
 #endif
         try
         {
             _skillManager = assembly.MainModule.GetType("EFT.SkillManager");
-
             PatchNewBuffs(ref assembly);
+            PatchElectronics(ref assembly);
             PatchSkillManager(ref assembly);
-
             Logger.CreateLogSource("Skills Extended PrePatch").LogInfo("Patching Complete!");
         }
         catch (Exception ex)
@@ -58,7 +57,6 @@ public static class SkillsExtendedPatcher
             var frame = st.GetFrame(0);
             // Get the line number from the stack frame
             var line = frame.GetFileLineNumber();
-
             Logger
                 .CreateLogSource("Skills Extended PrePatch")
                 .LogError("Error When Patching: " + ex.Message + " - Line " + line);
@@ -74,11 +72,8 @@ public static class SkillsExtendedPatcher
     )
     {
         var enumAttributeClass = assembly.MainModule.GetType("EFT.JsonEnumNameAttribute");
-
         var attributeConstructor = enumAttributeClass.Methods.First(m => m.IsConstructor);
-
         var attribute = new CustomAttribute(attributeConstructor);
-
         if (attributeName is not null)
         {
             var valueArgument = new CustomAttributeArgument(
@@ -99,9 +94,7 @@ public static class SkillsExtendedPatcher
         {
             Constant = customConstant,
         };
-
         newEnum.CustomAttributes.Add(attribute);
-
         return newEnum;
     }
 
@@ -110,7 +103,6 @@ public static class SkillsExtendedPatcher
         // New Buffs Enums
         var buffEnums = assembly.MainModule.GetType("EFT.EBuffId");
         var index = 1000;
-
         // New skills
         FirstAidBuffs(assembly, buffEnums, ref index);
         FieldMedicineBuffs(assembly, buffEnums, ref index);
@@ -121,7 +113,6 @@ public static class SkillsExtendedPatcher
         ShadowConnectionsBuffs(assembly, buffEnums, ref index);
         BearRawPowerBuffs(assembly, buffEnums, ref index);
         UsecNegotiationsBuffs(assembly, buffEnums, ref index);
-
         // Existing skills
         StrengthBuffs(assembly, buffEnums, ref index);
     }
@@ -139,7 +130,6 @@ public static class SkillsExtendedPatcher
             buffEnum,
             index++
         );
-
         var firstAidHealingCostEnum = CreateNewEnum(
             ref assembly,
             "FirstAidResourceCost",
@@ -147,7 +137,6 @@ public static class SkillsExtendedPatcher
             buffEnum,
             index++
         );
-
         var firstAidMovementSpeedElite = CreateNewEnum(
             ref assembly,
             "FirstAidMovementSpeedElite",
@@ -155,7 +144,6 @@ public static class SkillsExtendedPatcher
             buffEnum,
             index++
         );
-
         buffEnum.Fields.Add(firstAidHealingSpeedEnum);
         buffEnum.Fields.Add(firstAidHealingCostEnum);
         buffEnum.Fields.Add(firstAidMovementSpeedElite);
@@ -174,7 +162,6 @@ public static class SkillsExtendedPatcher
             buffEnum,
             index++
         );
-
         var fieldMedicineDurationBonus = CreateNewEnum(
             ref assembly,
             "FieldMedicineDurationBonus",
@@ -182,7 +169,6 @@ public static class SkillsExtendedPatcher
             buffEnum,
             index++
         );
-
         var fieldMedicineChanceBonus = CreateNewEnum(
             ref assembly,
             "FieldMedicineChanceBonus",
@@ -190,7 +176,6 @@ public static class SkillsExtendedPatcher
             buffEnum,
             index++
         );
-
         buffEnum.Fields.Add(fieldMedicineSkillCap);
         buffEnum.Fields.Add(fieldMedicineDurationBonus);
         buffEnum.Fields.Add(fieldMedicineChanceBonus);
@@ -209,7 +194,6 @@ public static class SkillsExtendedPatcher
             buffEnum,
             index++
         );
-
         var usecArSystemsErgoEnum = CreateNewEnum(
             ref assembly,
             "UsecArSystemsErgo",
@@ -217,7 +201,6 @@ public static class SkillsExtendedPatcher
             buffEnum,
             index++
         );
-
         buffEnum.Fields.Add(usecArSystemsRecoilEnum);
         buffEnum.Fields.Add(usecArSystemsErgoEnum);
     }
@@ -235,7 +218,6 @@ public static class SkillsExtendedPatcher
             buffEnum,
             index++
         );
-
         var bearAkSystemsErgoEnum = CreateNewEnum(
             ref assembly,
             "BearAkSystemsErgo",
@@ -243,7 +225,6 @@ public static class SkillsExtendedPatcher
             buffEnum,
             index++
         );
-
         buffEnum.Fields.Add(bearAkSystemsRecoilEnum);
         buffEnum.Fields.Add(bearAkSystemsErgoEnum);
     }
@@ -261,7 +242,6 @@ public static class SkillsExtendedPatcher
             buffEnum,
             index++
         );
-
         var lockpickingForgivenessAngle = CreateNewEnum(
             ref assembly,
             "LockpickingForgivenessAngle",
@@ -269,7 +249,6 @@ public static class SkillsExtendedPatcher
             buffEnum,
             index++
         );
-
         var lockpickingUseElite = CreateNewEnum(
             ref assembly,
             "LockpickingUseElite",
@@ -277,7 +256,6 @@ public static class SkillsExtendedPatcher
             buffEnum,
             index++
         );
-
         buffEnum.Fields.Add(lockpickingTimeIncrease);
         buffEnum.Fields.Add(lockpickingForgivenessAngle);
         buffEnum.Fields.Add(lockpickingUseElite);
@@ -296,7 +274,6 @@ public static class SkillsExtendedPatcher
             buffEnum,
             index++
         );
-
         var silentOpsRedVolume = CreateNewEnum(
             ref assembly,
             "SilentOpsRedVolume",
@@ -304,7 +281,6 @@ public static class SkillsExtendedPatcher
             buffEnum,
             index++
         );
-
         var silentOpsSilencerCostRed = CreateNewEnum(
             ref assembly,
             "SilentOpsSilencerCostRed",
@@ -312,7 +288,6 @@ public static class SkillsExtendedPatcher
             buffEnum,
             index++
         );
-
         buffEnum.Fields.Add(silentOpsIncMeleeSpeed);
         buffEnum.Fields.Add(silentOpsRedVolume);
         buffEnum.Fields.Add(silentOpsSilencerCostRed);
@@ -331,7 +306,6 @@ public static class SkillsExtendedPatcher
             buffEnum,
             index++
         );
-
         var incBushSpeedElite = CreateNewEnum(
             ref assembly,
             "StrengthColliderSpeedBuffElite",
@@ -339,7 +313,6 @@ public static class SkillsExtendedPatcher
             buffEnum,
             index++
         );
-
         buffEnum.Fields.Add(incBushSpeed);
         buffEnum.Fields.Add(incBushSpeedElite);
     }
@@ -357,7 +330,6 @@ public static class SkillsExtendedPatcher
             buffEnum,
             index++
         );
-
         var decScavCooldownElite = CreateNewEnum(
             ref assembly,
             "ShadowConnectionsScavCooldownTimeElite",
@@ -365,7 +337,6 @@ public static class SkillsExtendedPatcher
             buffEnum,
             index++
         );
-
         var decCultistCircleReturn = CreateNewEnum(
             ref assembly,
             "ShadowConnectionsCultistCircleReturnTimeDec",
@@ -373,7 +344,6 @@ public static class SkillsExtendedPatcher
             buffEnum,
             index++
         );
-
         var scavGenerateAsCultistChance = CreateNewEnum(
             ref assembly,
             "ScavGenerateAsCultistChance",
@@ -381,7 +351,6 @@ public static class SkillsExtendedPatcher
             buffEnum,
             index++
         );
-
         buffEnum.Fields.Add(decScavCooldown);
         buffEnum.Fields.Add(decScavCooldownElite);
         buffEnum.Fields.Add(decCultistCircleReturn);
@@ -401,7 +370,6 @@ public static class SkillsExtendedPatcher
             buffEnum,
             index++
         );
-
         var questRewardExpInc = CreateNewEnum(
             ref assembly,
             "BearRawPowerQuestRewardExpInc",
@@ -409,7 +377,6 @@ public static class SkillsExtendedPatcher
             buffEnum,
             index++
         );
-
         var bearRawPowerAllTraderCostDec = CreateNewEnum(
             ref assembly,
             "BearRawPowerAllTraderCostDec",
@@ -417,7 +384,6 @@ public static class SkillsExtendedPatcher
             buffEnum,
             index++
         );
-
         buffEnum.Fields.Add(praporTraderCostDec);
         buffEnum.Fields.Add(questRewardExpInc);
         buffEnum.Fields.Add(bearRawPowerAllTraderCostDec);
@@ -436,7 +402,6 @@ public static class SkillsExtendedPatcher
             buffEnum,
             index++
         );
-
         var questRewardMoneyInc = CreateNewEnum(
             ref assembly,
             "UsecNegotiationRewardMoneyInc",
@@ -444,7 +409,6 @@ public static class SkillsExtendedPatcher
             buffEnum,
             index++
         );
-
         var usecNegotiationsAllTraderCostDec = CreateNewEnum(
             ref assembly,
             "UsecNegotiationsAllTraderCostDec",
@@ -452,7 +416,6 @@ public static class SkillsExtendedPatcher
             buffEnum,
             index++
         );
-
         buffEnum.Fields.Add(peacekeeperTraderCostDec);
         buffEnum.Fields.Add(questRewardMoneyInc);
         buffEnum.Fields.Add(usecNegotiationsAllTraderCostDec);
@@ -467,13 +430,64 @@ public static class SkillsExtendedPatcher
         var skillManagerExtendedTypeRef = assembly.MainModule.ImportReference(
             skillManagerExtendedType
         );
-
         var skillManagerExtField = new FieldDefinition(
             "SkillsExtendedManager",
             FieldAttributes.Public,
             skillManagerExtendedTypeRef
         );
-
         _skillManager.Fields.Add(skillManagerExtField);
+    }
+
+    private static void PatchElectronics(ref AssemblyDefinition assembly)
+    {
+        var skills = assembly.MainModule.GetType("EFT.ESkillId");
+        AddReserved(ref assembly, skills, "Electronics", "200", 200);
+        var buffs = assembly.MainModule.GetType("EFT.EBuffId");
+        AddReserved(ref assembly, buffs, "ElectronicsCoherence", "ElectronicsCoherence", 1028);
+        AddReserved(ref assembly, buffs, "ElectronicsStrength", "ElectronicsStrength", 1029);
+        AddReserved(
+            ref assembly,
+            buffs,
+            "ElectronicsUtilitySlots",
+            "ElectronicsUtilitySlots",
+            1030
+        );
+    }
+
+    private static void AddReserved(
+        ref AssemblyDefinition assembly,
+        TypeDefinition type,
+        string name,
+        string jsonName,
+        int value
+    )
+    {
+        var existing = type.Fields.FirstOrDefault(f =>
+            f.HasConstant && Convert.ToInt32(f.Constant) == value
+        );
+        if (existing != null)
+        {
+            if (existing.Name != name)
+            {
+                throw new InvalidOperationException(
+                    $"Electronics enum collision: {type.FullName} {value} is {existing.Name}"
+                );
+            }
+
+            return;
+        }
+
+        if (type.Fields.Any(f => f.Name == name))
+        {
+            throw new InvalidOperationException($"Electronics enum name collision: {name}");
+        }
+
+        var field = CreateNewEnum(ref assembly, jsonName, name, type, value);
+        if (type.Fields.First(f => f.Name == "value__").FieldType.MetadataType == MetadataType.Byte)
+        {
+            field.Constant = (byte)value;
+        }
+
+        type.Fields.Add(field);
     }
 }

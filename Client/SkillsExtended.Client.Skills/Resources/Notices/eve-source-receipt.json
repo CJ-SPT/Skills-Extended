@@ -1,0 +1,206 @@
+[
+  {
+    "Name": "hud-icon",
+    "Resource": "res:/ui/texture/classes/hacking/hudicon.png",
+    "Source": "E:\\Eve\\ResFiles\\04\\04f24a5af3ac2479_36c899c337b0f2b211ad6ab7ba74cb07",
+    "SHA256": "6BF32647772740C114FF10F5262CF0F562E0341C715F5E300042E6542F0CE13E"
+  },
+  {
+    "Name": "hud-bar-mirror",
+    "Resource": "res:/ui/texture/classes/hacking/hudbarstripesmirrored.png",
+    "Source": "E:\\Eve\\ResFiles\\1f\\1f836c0115c3daeb_7f74e1ff467ea8e17f4b763cbe4bbdcb",
+    "SHA256": "D44D4D1E74C5BA647A0A5C93249CF11950D2AE558C3117F0093261F139C12A6E"
+  },
+  {
+    "Name": "hidden-node",
+    "Resource": "res:/ui/texture/classes/hacking/tileblocked.png",
+    "Source": "E:\\Eve\\ResFiles\\22\\22bb81909572a7e5_6ba3a56774ac0e80b9fa57555adc0388",
+    "SHA256": "803829399DA74EE6B55FD916BA4FFC7C20B4A58C0E1836B1F3340E7BEC541BC7"
+  },
+  {
+    "Name": "fx-glow",
+    "Resource": "res:/ui/texture/classes/hacking/healring1.png",
+    "Source": "E:\\Eve\\ResFiles\\2f\\2fed95c36c1c4734_2d83dadfda191264f4abe5a6f41c7d3b",
+    "SHA256": "9EE8CF655DBEA6755481C9E8CADAC9628A180AD65664CC5DAA8CDEE4E09E735D"
+  },
+  {
+    "Name": "bug",
+    "Resource": "res:/ui/texture/classes/hacking/defsoftantivirus.png",
+    "Source": "E:\\Eve\\ResFiles\\b0\\b06e32e85fcd4afd_10d1023e0ad0216f37a9511b79f62590",
+    "SHA256": "1CF4EE6FCF60C838D09C07F644DA04F8CF46446D7729CAE0E5D683570B29B806"
+  },
+  {
+    "Name": "fx-infected",
+    "Resource": "res:/ui/texture/classes/hacking/infected1.png",
+    "Source": "E:\\Eve\\ResFiles\\4a\\4affc5e461949a08_c9085d2bb73107c136a60f98e6a0dddf",
+    "SHA256": "5945F420F49E4473E2CBFD7DE3228BD0C10DCBCDF016D0A494A50B37CAEFF3F3"
+  },
+  {
+    "Name": "cpu",
+    "Resource": "res:/ui/texture/classes/hacking/coremedium.png",
+    "Source": "E:\\Eve\\ResFiles\\fc\\fc50a84e7e067c11_aa9a7361a75e389c9ceba61669bb1bf7",
+    "SHA256": "20ED4393BEF8CA7C37BB17092F3E9FAE062CE637240A4F72D54DA9CF81369B55"
+  },
+  {
+    "Name": "actionable-node",
+    "Resource": "res:/ui/texture/classes/hacking/tileunflipped.png",
+    "Source": "E:\\Eve\\ResFiles\\5a\\5a366e43cf91c2ea_d33bf6193dbc5a344487321509834071",
+    "SHA256": "900D23ABBC2AF1DCA63224746BE2B7FD26190487D0E140F02E13F44F8DCA8BA5"
+  },
+  {
+    "Name": "fx-trace-3",
+    "Resource": "res:/ui/texture/classes/hacking/linebleed/horiz03.png",
+    "Source": "E:\\Eve\\ResFiles\\57\\57afdad0739c1f77_9c562470347af328deda5907dfd0eb59",
+    "SHA256": "5D8340DF743BF64BEA2E4B75C279AE952005D964E139A20DFD3D01FA43B2BBEF"
+  },
+  {
+    "Name": "core-secure",
+    "Resource": "res:/ui/texture/classes/hacking/coremedium.png",
+    "Source": "E:\\Eve\\ResFiles\\fc\\fc50a84e7e067c11_aa9a7361a75e389c9ceba61669bb1bf7",
+    "SHA256": "20ED4393BEF8CA7C37BB17092F3E9FAE062CE637240A4F72D54DA9CF81369B55"
+  },
+  {
+    "Name": "fx-ring",
+    "Resource": "res:/ui/texture/classes/hacking/healring2.png",
+    "Source": "E:\\Eve\\ResFiles\\b0\\b0a301a97e574997_63e9d5c173e0e7e4fe0f294b9420dc71",
+    "SHA256": "249799E99656D32B453CCB9B48BDFACDEC8CE485FA5AC8A2DF1B4FD83888D260"
+  },
+  {
+    "Name": "board-background",
+    "Resource": "res:/ui/texture/classes/hacking/boardbg.png",
+    "Source": "E:\\Eve\\ResFiles\\09\\09c4ff2e150e1e94_85b8e5773281a3bd83425d7e143a7ce0",
+    "SHA256": "7443A1C8039475FCCBC765810987123353854627FF614C0A650786BE3233861E"
+  },
+  {
+    "Name": "hud-bar",
+    "Resource": "res:/ui/texture/classes/hacking/hudbarstripes.png",
+    "Source": "E:\\Eve\\ResFiles\\de\\decb0492e1ebcd39_c1a828c6b355a41a9e5a34072124e5c5",
+    "SHA256": "E000F9F9F4FFA576BF802130F68CAFAC90A0E428B0AFAEFC1A82D3C4F28533EA"
+  },
+  {
+    "Name": "radio",
+    "Resource": "res:/ui/texture/classes/hacking/defsofthoneypotstrength.png",
+    "Source": "E:\\Eve\\ResFiles\\ad\\ad0b24d9faab33e9_007f1e2f8d946270078652ce87cf279f",
+    "SHA256": "D8EB8B31551D746C9E1482CEB631F234F8E0EDC3902C8E7A518B6EF9AB016490"
+  },
+  {
+    "Name": "strength-symbol",
+    "Resource": "res:/ui/texture/classes/hacking/strength.png",
+    "Source": "E:\\Eve\\ResFiles\\1e\\1eaa1896a9750f52_f8d025242fc62e5f71b14fc99dab8f48",
+    "SHA256": "00960A09EC90C0BCCF592FB85EC56FAA69879AEA998DFB292A5BECDFAFD8A6A4"
+  },
+  {
+    "Name": "zap",
+    "Resource": "res:/ui/texture/classes/hacking/utilsecondvector.png",
+    "Source": "E:\\Eve\\ResFiles\\6c\\6c6a77e1598cbd70_86a55cea9378657eaabc1a6bc50da9e2",
+    "SHA256": "0CDC42A85FC09DC96747622C4CF8341F8267947FB47024EDF4A43B5595CE3AE7"
+  },
+  {
+    "Name": "core-standard",
+    "Resource": "res:/ui/texture/classes/hacking/corelow.png",
+    "Source": "E:\\Eve\\ResFiles\\a8\\a8d2b499318d7e30_1fb430e8905bc8eb14120bb0ea478efc",
+    "SHA256": "3DF6F98A2BC46674EB6999E273FA1F02BA88ADF6192EDED7E43D51BDC34DEB17"
+  },
+  {
+    "Name": "coherence-symbol",
+    "Resource": "res:/ui/texture/classes/hacking/coherence.png",
+    "Source": "E:\\Eve\\ResFiles\\28\\28c588818c11511b_98272cff9b9eab31ff8c830dfe7b5a56",
+    "SHA256": "6329CDAE935F68897A9F07B5062BFAC68B22DD25129A6F7AE83CC5D3104B888E"
+  },
+  {
+    "Name": "core-hardened",
+    "Resource": "res:/ui/texture/classes/hacking/corehigh.png",
+    "Source": "E:\\Eve\\ResFiles\\17\\17c0ce3fc1928674_df2143137bf5a3bee332e479d88ddedd",
+    "SHA256": "A1E9D1A49453D906BBCD3B4A705674C35BFBD708548643C708238BA01229AA59"
+  },
+  {
+    "Name": "node-ring",
+    "Resource": "res:/ui/texture/classes/hacking/tileexplored.png",
+    "Source": "E:\\Eve\\ResFiles\\4a\\4aa759bd0361059e_63e79348001b234d749b5f0ad58b999e",
+    "SHA256": "AE36F74E92CEBC4688DE2EBFE41341F582E527A137939DC4F539D11D583C3E12"
+  },
+  {
+    "Name": "hud-background",
+    "Resource": "res:/ui/texture/classes/hacking/hudbg.png",
+    "Source": "E:\\Eve\\ResFiles\\3b\\3b338548813d610b_3377e03c4921a62169ce963666e573cb",
+    "SHA256": "F91A5E2EF3858B2FB03E8ED2E7B47773B6CA891980ECEE52CD1B730F3B62004D"
+  },
+  {
+    "Name": "wrench",
+    "Resource": "res:/ui/texture/classes/hacking/defsofthoneypothealing.png",
+    "Source": "E:\\Eve\\ResFiles\\77\\77913f2148462d56_e468aa797a6c4745a3ae1b1f03e8f82c",
+    "SHA256": "87494CEF01F2EBDD93E29E6DB9BCED4830883306EED3DCBD733EC190A8DEAB21"
+  },
+  {
+    "Name": "fx-white",
+    "Resource": "res:/ui/texture/classes/hacking/tile.png",
+    "Source": "E:\\Eve\\ResFiles\\0f\\0f4c551751ceb2f1_fb0d404adcd0666f740a80fb006d6777",
+    "SHA256": "CEFA55F92DC2FDF889C8DCBBF20C6C60E4867CC3BC1E977DDC86D610B1147A69"
+  },
+  {
+    "Name": "heart-pulse",
+    "Resource": "res:/ui/texture/classes/hacking/utilselfrepair.png",
+    "Source": "E:\\Eve\\ResFiles\\c2\\c29c16e32c63c22c_d18d9fa08a19ffbc44d8599d748f197c",
+    "SHA256": "17D901D8804251D89C3E18C3836B4F4BDC5619BD2BE8D5CA9D033F667DB0F47F"
+  },
+  {
+    "Name": "fx-trace-4",
+    "Resource": "res:/ui/texture/classes/hacking/linebleed/horiz04.png",
+    "Source": "E:\\Eve\\ResFiles\\49\\49268f096eea6bb0_973e8bf6b5c941d725ddb79798a5ff29",
+    "SHA256": "F3AC6419FE7C450595D037E55B95727E6169E90A17D003A3ED26D0B7FA079344"
+  },
+  {
+    "Name": "defense-ring",
+    "Resource": "res:/ui/texture/classes/hacking/tileiconframe.png",
+    "Source": "E:\\Eve\\ResFiles\\e7\\e7b15133017eafdb_e99f5bc0a01f9135d9565442d14e3a82",
+    "SHA256": "8600C573378B0CC48DB7A157FF3C7B1108D746A8C1F5F40B97243718B841CABF"
+  },
+  {
+    "Name": "utility-slot",
+    "Resource": "res:/ui/texture/classes/hacking/utiltilebase.png",
+    "Source": "E:\\Eve\\ResFiles\\33\\3399ac03888b365e_e9f25994a2d462d36ca042872323113f",
+    "SHA256": "6410BBDC7EB14B0D419CA2ACA5A3A35B137E6C045E7F41DF68CA5F72C3E1A46E"
+  },
+  {
+    "Name": "scissors",
+    "Resource": "res:/ui/texture/classes/hacking/utilkernalrot.png",
+    "Source": "E:\\Eve\\ResFiles\\62\\626bc5db1f63058b_f5e1285eb1a78040d99701fd12f02b63",
+    "SHA256": "8D7916701AA753E8B7B62E0E1211F37D172FFC76F3D001947209C0D850039CDA"
+  },
+  {
+    "Name": "database",
+    "Resource": "res:/ui/texture/classes/hacking/tiledatacache.png",
+    "Source": "E:\\Eve\\ResFiles\\62\\6282a0680082c4b7_cc10c9140d867f3a8ef5f9a45dff1f5c",
+    "SHA256": "70D2AA102D890AD2D894438F743E739325FA0E405ECE1DEAE05259420807CC77"
+  },
+  {
+    "Name": "hover-node",
+    "Resource": "res:/ui/texture/classes/hacking/tilehover.png",
+    "Source": "E:\\Eve\\ResFiles\\64\\64c414b989ba718b_ad2eb6110f429f8d74776b1c2e7f9615",
+    "SHA256": "1D2CA18F2C6919D5F3CDD0C2847999AC509006FA2DF6F5A98D7CCBD07219143A"
+  },
+  {
+    "Name": "shield-check",
+    "Resource": "res:/ui/texture/classes/hacking/utilpolymorphshield.png",
+    "Source": "E:\\Eve\\ResFiles\\c9\\c9155cec873a2cb2_2dbd9d5d5a2157060eb78a12844a73be",
+    "SHA256": "D72ECF57F779388F9D7EFFD33753BA2150BDFAA5A449423A962BAEC04A1CAE3A"
+  },
+  {
+    "Name": "fx-trace-1",
+    "Resource": "res:/ui/texture/classes/hacking/linebleed/horiz01.png",
+    "Source": "E:\\Eve\\ResFiles\\07\\07743adfacf59ed5_0f3a56fec2d0f39cb4c7f7460f9bb4b6",
+    "SHA256": "BD61D2F6A961359EA13A8C153B3BCAD26B3421FA1A295AFCF2A9780F1CA55A9D"
+  },
+  {
+    "Name": "fx-trace-2",
+    "Resource": "res:/ui/texture/classes/hacking/linebleed/horiz02.png",
+    "Source": "E:\\Eve\\ResFiles\\d5\\d5de6ed8b6eb3996_2d69ef81e14b18cf99be0bc1f973d048",
+    "SHA256": "DAC90E8390D5E7968D1838262BA9184A9185A6212589D19C105EDCDF0A9C20E0"
+  },
+  {
+    "Name": "shield",
+    "Resource": "res:/ui/texture/classes/hacking/defsoftfirewall.png",
+    "Source": "E:\\Eve\\ResFiles\\c5\\c5f02801062494d4_4be30787f07ac4bf12aafeae4a4643d4",
+    "SHA256": "BCD394E2F7F674C4E1A776AC049DCAC81583EA20B020F224280781EA10727297"
+  }
+]

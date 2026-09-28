@@ -1,0 +1,212 @@
+{
+  "bank": "E:\\Eve\\ResFiles\\3e\\3ec4e5ac3c6c1a2f_71e6975d47bbe91223e5584cc8960a4a",
+  "bankSha256": "d9737a24ddc1f72b833bfe2cd2fd76c6a67ee1f47638a4f4f17debdd20bd224d",
+  "actionMapping": {
+    "startup": "hack_startup1",
+    "reveal": "hack_click1",
+    "attack": "hack_click5",
+    "cache": "hack_click6",
+    "utility": "hack_click4",
+    "shield-on": "hack_shieldTurnOn",
+    "shield-off": "hack_shieldOFF",
+    "success": "hack_Win2",
+    "failure": "hack_Loose",
+    "abort": "hack_shutdown1",
+    "ambient": "hack_bgloop1",
+    "low-coherence": "coheren_low_hack_loop"
+  },
+  "decoded": [
+    {
+      "name": "hack_shutdown1",
+      "mediaId": "3480898",
+      "seconds": 11.697,
+      "channels": 2,
+      "sampleRate": 48000,
+      "sha256": "f4d3ef1267cc9023f775598ea1093f6044bd6c8f2bd3b4ecee30c797d48e8bde"
+    },
+    {
+      "name": "hack_click6",
+      "mediaId": "11374949",
+      "seconds": 1.351,
+      "channels": 2,
+      "sampleRate": 48000,
+      "sha256": "4ddae64aa611ee55eed56ddd84ca9887b61315e652d06e7526afe40bde112576"
+    },
+    {
+      "name": "hack_bgloop2",
+      "mediaId": "110651932",
+      "seconds": 21.616,
+      "channels": 2,
+      "sampleRate": 48000,
+      "sha256": "f30540c40851359991962eb6abf15a63dfe41455f13728b5d7beea41a1f9df19"
+    },
+    {
+      "name": "hack_startup2",
+      "mediaId": "175509756",
+      "seconds": 15.533,
+      "channels": 2,
+      "sampleRate": 48000,
+      "sha256": "d6b384cefd0536b710e68ed1d77ccc8aaa5791c4c91f3b34bcdb26cc532e730a"
+    },
+    {
+      "name": "hack_click7",
+      "mediaId": "206671359",
+      "seconds": 3.181,
+      "channels": 2,
+      "sampleRate": 48000,
+      "sha256": "fac706fc47528d3bea8326b90269dbe603c58a5675c5f03dbf42f5e6be91394f"
+    },
+    {
+      "name": "hack_shieldOFF",
+      "mediaId": "237884188",
+      "seconds": 4.997,
+      "channels": 2,
+      "sampleRate": 48000,
+      "sha256": "cb820a2947f5449707b6aa84ba20d8a95489c0b0aff717e02f83b897ad8c64de"
+    },
+    {
+      "name": "hack_Win2",
+      "mediaId": "283595033",
+      "seconds": 4.426,
+      "channels": 2,
+      "sampleRate": 48000,
+      "sha256": "6b2bf0d23f8e4250d349d64051304c547ab8bdb336b08aab7088057805a59a3e"
+    },
+    {
+      "name": "hack_click1",
+      "mediaId": "292165616",
+      "seconds": 1.323,
+      "channels": 2,
+      "sampleRate": 48000,
+      "sha256": "33c7c6e907c30416e6722019c053760edacb260a8474feecf789cbd5313526db"
+    },
+    {
+      "name": "hack_bgloop1",
+      "mediaId": "312157781",
+      "seconds": 23.102,
+      "channels": 2,
+      "sampleRate": 48000,
+      "sha256": "76341f031156664e035f8128322788fce328b23e2c3887a0e7d5429fcdd10c80"
+    },
+    {
+      "name": "hack_click5",
+      "mediaId": "459933129",
+      "seconds": 1.287,
+      "channels": 2,
+      "sampleRate": 48000,
+      "sha256": "94905d784f3c10c0f17889a67084cee51a4caa6b5375286999830499c944135f"
+    },
+    {
+      "name": "hack_click4",
+      "mediaId": "474173127",
+      "seconds": 3.47,
+      "channels": 2,
+      "sampleRate": 48000,
+      "sha256": "31ca5d08f9892821c6091a12a967311e4a6bc3bf05732b9ca24527104b85415a"
+    },
+    {
+      "name": "hack_click8",
+      "mediaId": "496231856",
+      "seconds": 1.33,
+      "channels": 2,
+      "sampleRate": 48000,
+      "sha256": "83b2ac943f43ec0cfb04053055450bd74042cf9b5c60745096cecd874793a00e"
+    },
+    {
+      "name": "hack_click10",
+      "mediaId": "619318816",
+      "seconds": 2.856,
+      "channels": 2,
+      "sampleRate": 48000,
+      "sha256": "585abdc2dd96f8b69cc1275ecad5c17e5563926789ac8306c8d0b9c701b81f36"
+    },
+    {
+      "name": "hack_click2",
+      "mediaId": "619559664",
+      "seconds": 2.16,
+      "channels": 2,
+      "sampleRate": 48000,
+      "sha256": "bac62a415b223348510a49dc003a76417fc567aecf743a8523c3da26af70c932"
+    },
+    {
+      "name": "hack_startup1",
+      "mediaId": "619839232",
+      "seconds": 13.648,
+      "channels": 2,
+      "sampleRate": 48000,
+      "sha256": "a3bd74244a825430f75619d1c787741d237aa1619b615427dd54b6dabd843bdf"
+    },
+    {
+      "name": "coheren_low_hack_loop",
+      "mediaId": "623961746",
+      "seconds": 38.988,
+      "channels": 2,
+      "sampleRate": 48000,
+      "sha256": "ccff9ff02170786b47609fc266c60c1941606303d6132e2a78b05a837bcf0aef"
+    },
+    {
+      "name": "hack_shutdown2",
+      "mediaId": "713469440",
+      "seconds": 7.108,
+      "channels": 2,
+      "sampleRate": 48000,
+      "sha256": "0e8c93806a90cae4f3a1553646f202bf862b10d27dc2884b35afe592289caef7"
+    },
+    {
+      "name": "hack_shieldTurnOn",
+      "mediaId": "743363827",
+      "seconds": 5.242,
+      "channels": 2,
+      "sampleRate": 48000,
+      "sha256": "61f0d99bc23ef8a565065c701e81d3d58253adea3c6b825941c8f270142a5b93"
+    },
+    {
+      "name": "hack_restart",
+      "mediaId": "780764883",
+      "seconds": 4.019,
+      "channels": 2,
+      "sampleRate": 48000,
+      "sha256": "ef5e031a8a26d5dd8b8502096814873f05f891e6a6d821265100a44de887ee23"
+    },
+    {
+      "name": "hack_shieldIsOn",
+      "mediaId": "926573234",
+      "seconds": 7.158,
+      "channels": 2,
+      "sampleRate": 48000,
+      "sha256": "4af328c1124dfecac050002655e948ec179a81e4c4a776d5fca21b6a4cacbe0f"
+    },
+    {
+      "name": "hack_Loose",
+      "mediaId": "939885571",
+      "seconds": 9.936,
+      "channels": 2,
+      "sampleRate": 48000,
+      "sha256": "3a352f9279b1bdd67766574cd1b9347d31ebc8f9e73d7337dd52af720251e758"
+    },
+    {
+      "name": "hack_click9",
+      "mediaId": "941801701",
+      "seconds": 1.621,
+      "channels": 2,
+      "sampleRate": 48000,
+      "sha256": "fc4f9ed6d4302fdb9d8676cd8f5fd8ce0c86564764bce74a8d631b5a65a106d4"
+    },
+    {
+      "name": "hack_click3",
+      "mediaId": "980968207",
+      "seconds": 2.597,
+      "channels": 2,
+      "sampleRate": 48000,
+      "sha256": "2a1e6a74b7280ddc09f64432ac63937355f4917c2a6778d3cd8d39d89a3f44a5"
+    },
+    {
+      "name": "hack_bgloop3",
+      "mediaId": "1036985891",
+      "seconds": 44.112,
+      "channels": 2,
+      "sampleRate": 48000,
+      "sha256": "2651c9f13c4081c2cafdc5aeb24e833b0561022703f7938af126842976b5ea0f"
+    }
+  ]
+}

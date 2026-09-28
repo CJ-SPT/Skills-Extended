@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.Linq;
 using BepInEx;
@@ -53,21 +53,17 @@ public class SkillsExtendedPlugin : BaseUnityPlugin
 
         Log = Logger;
         ConfigManager.RegisterConfig(Config);
-
         _patchManager = new PatchManager(this, true);
         _patchManager.EnablePatches();
-
         SkillsExtendedInfo.IsFikaPresent = Chainloader.PluginInfos.Keys.Contains("com.fika.core");
         SkillsExtendedInfo.IsFikaHeadless = Chainloader.PluginInfos.Keys.Contains(
             "com.fika.headless"
         );
-
 #if DEBUG
         Logger.LogWarning($"PRE RELEASE BUILD OF `{SkillsExtendedInfo.VERSION}` - NO SUPPORT");
         Logger.LogWarning("DEBUG BUILD FEATURES ENABLED");
         ConsoleCommands.RegisterCommands();
 #endif
-
         DetectSoftDependencies();
     }
 
@@ -75,6 +71,11 @@ public class SkillsExtendedPlugin : BaseUnityPlugin
     {
         Keys = Get<KeysData>("/skills-extended/get-keys");
         SkillData = Get<SkillsConfig>("/skills-extended/get-skills-config");
+        SkillData.Electronics.Validate();
+        if (!SkillsExtendedInfo.IsFikaHeadless)
+        {
+            EFT.UI.ConsoleScreen.Processor.RegisterCommandGroup<Skills.Electronics.ElectronicsConsoleCommands>();
+        }
 
         LockPickingHelpers.LoadMiniGame();
     }
@@ -82,21 +83,20 @@ public class SkillsExtendedPlugin : BaseUnityPlugin
     /// <summary>
     ///     Get json from the server
     /// </summary>
-    /// <param name="url">url to request</param>
-    /// <typeparam name="T">Type of response</typeparam>
+    /// <param name = "url">url to request</param>
+    /// <typeparam name = "T">Type of response</typeparam>
     /// <returns>Response</returns>
-    /// <exception cref="InvalidOperationException"></exception>
+    /// <exception cref = "InvalidOperationException"></exception>
     private static T Get<T>(string url)
         where T : class
     {
         var req = RequestHandler.GetJson(url);
-
         if (string.IsNullOrEmpty(req))
         {
             throw new InvalidOperationException("The response from the server is null or empty.");
         }
 
-        return JsonConvert.DeserializeObject<T>(req);
+        return ConfigurationJson.Deserialize<T>(req);
     }
 
     private static void DetectSoftDependencies()
@@ -127,7 +127,6 @@ public class SkillsExtendedPlugin : BaseUnityPlugin
                 $"ERROR: This version of Skills Extended was built for Tarkov {SkillsExtendedInfo.TARKOV_VERSION}, but you are running {currentVersion}. Please download the correct plugin version.";
             logger.LogError(errorMessage);
             Chainloader.DependencyErrors.Add(errorMessage);
-
             // TypeofThis results in a bogus config entry in the BepInEx config file for the plugin, but it shouldn't hurt anything
             // We leave the "section" parameter empty so there's no section header drawn
             config?.Bind(
@@ -147,14 +146,12 @@ public class SkillsExtendedPlugin : BaseUnityPlugin
                     }
                 )
             );
-
             return false;
         }
 
         private static void ErrorLabelDrawer(ConfigEntryBase entry)
         {
             var styleNormal = new GUIStyle(GUI.skin.label) { wordWrap = true, stretchWidth = true };
-
             var styleError = new GUIStyle(GUI.skin.label)
             {
                 stretchWidth = true,
@@ -162,7 +159,6 @@ public class SkillsExtendedPlugin : BaseUnityPlugin
                 normal = { textColor = Color.red },
                 fontStyle = FontStyle.Bold,
             };
-
             // General notice that we're the wrong version
             GUILayout.BeginVertical();
             GUILayout.Label(
@@ -170,7 +166,6 @@ public class SkillsExtendedPlugin : BaseUnityPlugin
                 styleNormal,
                 GUILayout.ExpandWidth(true)
             );
-
             // Centered red disabled text
             GUILayout.Label(
                 "SkillsExtended.Client.Skills has been disabled!",

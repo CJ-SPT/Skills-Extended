@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -19,11 +19,8 @@ public static class LockPickingHelpers
 {
     public static readonly Dictionary<string, int> DoorAttempts = [];
     public static readonly Dictionary<string, float> DoorSweetSpotRanges = [];
-
     public static readonly List<string> InspectedDoors = [];
-
     public static GameObject LockPickingGame;
-
     private static LockPickingData LockPickingData => SkillsExtendedPlugin.SkillData.LockPicking;
 
     private static readonly Dictionary<string, Dictionary<string, int>> LocationDoorIdLevels = new()
@@ -46,8 +43,8 @@ public static class LockPickingHelpers
     /// <summary>
     /// Get the door level given a location ID and door ID
     /// </summary>
-    /// <param name="locationId"></param>
-    /// <param name="doorId"></param>
+    /// <param name = "locationId"></param>
+    /// <param name = "doorId"></param>
     /// <returns>Door level if found, -1 if not found</returns>
     public static int GetLevelForDoor(string locationId, string doorId)
     {
@@ -67,23 +64,9 @@ public static class LockPickingHelpers
     public static IEnumerable<Item> GetLockPicksInInventory()
     {
         var player = Singleton<GameWorld>.Instance.MainPlayer;
-
         return player
             .Inventory.GetPlayerItems(EPlayerItems.Equipment)
             .Where(x => x.TemplateId == "6622c28aed7e3bc72e301e22");
-    }
-
-    /// <summary>
-    /// Gets if a flipper zero exists in the inventory
-    /// </summary>
-    /// <returns>true if in inventory</returns>
-    public static bool IsFlipperZeroInInventory()
-    {
-        var player = Singleton<GameWorld>.Instance.MainPlayer;
-
-        return player
-            .Inventory.GetPlayerItems(EPlayerItems.Equipment)
-            .Any(x => x.TemplateId == "662400eb756ca8948fe64fe8");
     }
 
     private static float xpToApply = 0.0f;
@@ -101,7 +84,6 @@ public static class LockPickingHelpers
             out var xp
         );
         var player = Singleton<GameWorld>.Instance.MainPlayer;
-
         if (!xpExists || player.Skills.Lockpicking.IsEliteLevel)
         {
             return;
@@ -110,11 +92,9 @@ public static class LockPickingHelpers
         xpToApply = isInspect
             ? xp * SkillsExtendedPlugin.SkillData.LockPicking.InspectLockXpRatio
             : xp;
-
         xpToApply = isFailure
             ? xpToApply * SkillsExtendedPlugin.SkillData.LockPicking.FailureLockXpRatio
             : xpToApply;
-
         player.ExecuteSkill(CompleteLockPickAction);
     }
 
@@ -135,7 +115,6 @@ public static class LockPickingHelpers
     )
     {
         var doorLevel = GetLevelForDoor(owner.Player.Location, interactiveObject.Id);
-
         // Display inspection info
         NotificationManager.DisplayMessageNotification(
             $"Key for door is {SkillsExtendedPlugin.Keys.KeyLocale[interactiveObject.KeyId]}"
@@ -146,35 +125,27 @@ public static class LockPickingHelpers
     public static void LoadMiniGame()
     {
         var directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-
         var assetBundle = AssetBundle.LoadFromFile($"{directory}/bundles/doorlock.bundle");
         var gameObject = assetBundle.LoadAssetWithSubAssets("DoorLock").First();
         LockPickingGame = Object.Instantiate(gameObject as GameObject);
-
         Object.DontDestroyOnLoad(LockPickingGame);
         var lpComp = LockPickingGame.GetOrAddComponent<LockPickingGame>();
-
         var audioSources = LockPickingGame.GetComponents(typeof(AudioSource));
-
         foreach (var source in audioSources)
         {
             var audio = source as AudioSource;
             audio!.playOnAwake = false;
-
             switch (audio!.clip.name)
             {
                 case "LockpickingReset":
                     lpComp.resetSound = audio.clip;
                     break;
-
                 case "LockpickingStuck":
                     lpComp.clickSound = audio.clip;
                     break;
-
                 case "LockpickingTurn":
                     lpComp.rotateSound = audio.clip;
                     break;
-
                 case "LockpickingUnlocked":
                     lpComp.winSound = audio.clip;
                     break;
@@ -182,27 +153,20 @@ public static class LockPickingHelpers
         }
 
         var children = LockPickingGame.GetComponentsInChildren<RectTransform>();
-
         lpComp.cylinder = children.First(x => x.gameObject.name == "Cylinder");
-
         lpComp.lockpick = children.First(x => x.gameObject.name == "Lockpick");
-
         lpComp.levelText = LockPickingGame
             .GetComponentsInChildren<Text>()
             .FirstOrDefault(x => x.gameObject.name == "LockLevelText");
-
         lpComp.keyText = LockPickingGame
             .GetComponentsInChildren<Text>()
             .FirstOrDefault(x => x.gameObject.name == "KeyNameText");
-
         lpComp.pickStrengthRemainingLower = LockPickingGame
             .GetComponentsInChildren<Image>()
             .FirstOrDefault(x => x.gameObject.name == "PickStrengthBarLower");
-
         lpComp.pickStrengthRemainingUpper = LockPickingGame
             .GetComponentsInChildren<Image>()
             .FirstOrDefault(x => x.gameObject.name == "PickStrengthBarUpper");
-
         LockPickingGame.SetActive(false);
     }
 
@@ -211,7 +175,6 @@ public static class LockPickingHelpers
         InspectedDoors.Clear();
         DoorAttempts.Clear();
         DoorSweetSpotRanges.Clear();
-
         foreach (var door in LocationDoorIdLevels[location].Keys)
         {
             DoorAttempts.Add(door, 0);
@@ -219,16 +182,13 @@ public static class LockPickingHelpers
 
         var skillManager = GameUtils.GetSkillManager()?.SkillsExtendedManager;
         var sweetSpotRangeBase = SkillsExtendedPlugin.SkillData.LockPicking.SweetSpotRangeBase;
-
         foreach (var (doorId, level) in LocationDoorIdLevels[location])
         {
             var skillMod = 1 + skillManager?.LockPickingForgiveness;
             var doorMod = Mathf.Clamp(level / 35f, 0.05f, 1.5f);
             var sweetSpotRange = Mathf.Clamp((sweetSpotRangeBase - doorMod) * skillMod, 0f, 20f);
-
             DoorSweetSpotRanges[doorId] = sweetSpotRange;
         }
-
 #if DEBUG
         SkillsExtendedPlugin.Log.LogDebug(
             $"Initialized `{LocationDoorIdLevels[location].Count}` doors on map `{location}`"

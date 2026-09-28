@@ -2,9 +2,9 @@
     "6622c28aed7e3bc72e301e22 Name": "Lockpick set",
     "6622c28aed7e3bc72e301e22 ShortName": "Lockpick",
     "6622c28aed7e3bc72e301e22 Description": "A set of tools used for picking locks",
-    "662400eb756ca8948fe64fe8 Name": "Flipper zero",
-    "662400eb756ca8948fe64fe8 ShortName": "Flipper",
-    "662400eb756ca8948fe64fe8 Description": "A modified PDA device used in the criminal under world for malicious purposes",
+    "662400eb756ca8948fe64fe8 Name": "Modified PDA",
+    "662400eb756ca8948fe64fe8 ShortName": "PDA",
+    "662400eb756ca8948fe64fe8 Description": "A modified handheld computer for bypassing electronic door security. Reusable; craft at Workbench level 2.",
   
     "FirstAid": "First Aid",
     "FirstAidDescription": "First aid skills make use of medical items quicker and more effective.",
@@ -154,5 +154,14 @@
     "66bdc88a6a83c63707069713 Name": "Quentin Tarantino movie survivor",
     "66bdc88a6a83c63707069713 Description": "Reach level 40 vitality as a PMC",
     "66bdc88acf92f5fe60bb3ae1 Name": "Can't kill what doesn't bleed",
-    "66bdc88acf92f5fe60bb3ae1 Description": "Reach level elite vitality as a PMC"
+    "66bdc88acf92f5fe60bb3ae1 Description": "Reach level elite vitality as a PMC",
+    "Electronics": "Electronics",
+    "ElectronicsDescription": "Explore security networks and defeat their cores to unlock keycard doors using a Modified PDA. Levels increase coherence and attack strength.",
+    "ElectronicsLevelingUpDescription": "Improved by successfully hacking keycard doors; limited progress from genuine failed attempts.",
+    "200": "Electronics",
+    "200Description": "Hack keycard doors with a Modified PDA.",
+    "200LevelingUpDescription": "Hack doors to improve Electronics.",
+    "ElectronicsCoherence": "Increases starting hacking coherence by [{0:0.#%}]",
+    "ElectronicsStrength": "Increases hacking attack strength by [{0:0.#%}]",
+    "ElectronicsUtilitySlots": "Adds a fourth hacking utility slot at elite"
 }

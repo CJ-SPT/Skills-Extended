@@ -1,0 +1,10 @@
+Local EVE asset build, requested by Corey.
+
+The Electronics interface includes EVE Online hacking textures and sound recordings
+read from the user's E:\Eve installation. These are CCP Games assets, distinct from
+the CC0 Kenney and ISC/MIT Lucide materials whose notices are retained separately.
+This file is a provenance notice; it does not grant rights to redistribute EVE assets.
+
+Reproduction: Tools/ElectronicsAssets/README.md in the source repository.
+Import receipts record resource paths/media IDs and SHA-256 hashes. No EVE client
+code, raw audio bank, or vgmstream decoder binary is included in runtime packages.

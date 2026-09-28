@@ -80,6 +80,7 @@ public static class RenderingChecks
             );
             await Write(output, skill.Slug, html);
         }
+
         await using var homeProvider = services.BuildServiceProvider();
         await using var homeRenderer = new HtmlRenderer(
             homeProvider,
@@ -98,7 +99,7 @@ public static class RenderingChecks
             return root.ToHtmlString();
         });
         check(
-            home.Contains("17 skills") && home.Contains("se-card-grid"),
+            home.Contains($"{SkillCatalog.All.Count} skills") && home.Contains("se-card-grid"),
             "Render actual overview with all skill cards"
         );
         await Write(output, "overview", home);

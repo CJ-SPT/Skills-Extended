@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -15,25 +15,27 @@ namespace SkillsExtended.Skills.UI.Patches;
 public class SkillIconShowPatch : ModulePatch
 {
     private static GameObject rootObject;
-    
-    private static Dictionary<EBuffId, Sprite> _buffSprites = new()
-    {
-        
-    };
-    
+    private static Dictionary<EBuffId, Sprite> _buffSprites = new() { };
+
     protected override MethodBase GetTargetMethod()
     {
         return AccessTools.Method(typeof(SkillIcon), nameof(SkillIcon.Show));
     }
 
     [PatchPostfix]
-    private static void Postfix(SkillIcon __instance, Image ____icon)
+    private static void Postfix(SkillIcon __instance, Skill skill, Image ____icon)
     {
+        if ((byte)skill.Id == SkillsExtended.Electronics.ElectronicsIds.Skill)
+        {
+            ____icon.sprite = Electronics.HackingView.Icon("cpu");
+            return;
+        }
+
         if (rootObject is null)
         {
             LoadBundle();
         }
-        
+
         try
         {
             if (____icon.sprite is null)
@@ -52,7 +54,6 @@ public class SkillIconShowPatch : ModulePatch
     {
         var directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         var fullPath = Path.Combine(directory, "bundles", "skill_images.bundle");
-        
         var assetBundle = AssetBundle.LoadFromFile(fullPath);
         rootObject = (GameObject)assetBundle.LoadAssetWithSubAssets("skill_images").First();
     }

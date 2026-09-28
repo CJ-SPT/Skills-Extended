@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Reflection;
 using EFT;
 using HarmonyLib;
@@ -35,13 +35,14 @@ internal class SkillManagerConstructorPatch : ModulePatch
         InitializeNewSkills(__instance, ref ___Skills);
         ModifyDisplayList(__instance, ref ___DisplayList);
         LockSkills(__instance);
+        Electronics.ElectronicsSkill.Attach(__instance, ref ___Skills, ref ___DisplayList);
     }
 
     /// <summary>
     ///     Initializes new skills
     /// </summary>
-    /// <param name="skillManager">skill manager</param>
-    /// <param name="skills">skills</param>
+    /// <param name = "skillManager">skill manager</param>
+    /// <param name = "skills">skills</param>
     private static void InitializeNewSkills(SkillManager skillManager, ref Skill[] skills)
     {
         skillManager.UsecArsystems = new Skill(
@@ -51,7 +52,6 @@ internal class SkillManagerConstructorPatch : ModulePatch
             [],
             []
         );
-
         skillManager.BearAksystems = new Skill(
             skillManager,
             ESkillId.BearAksystems,
@@ -59,7 +59,6 @@ internal class SkillManagerConstructorPatch : ModulePatch
             [],
             []
         );
-
         skillManager.UsecNegotiations = new Skill(
             skillManager,
             ESkillId.UsecNegotiations,
@@ -67,7 +66,6 @@ internal class SkillManagerConstructorPatch : ModulePatch
             [],
             []
         );
-
         skillManager.BearRawpower = new Skill(
             skillManager,
             ESkillId.BearRawpower,
@@ -75,9 +73,7 @@ internal class SkillManagerConstructorPatch : ModulePatch
             [],
             []
         );
-
         Array.Resize(ref skills, skills.Length + 7);
-
         skills[^1] = skillManager.UsecArsystems;
         skills[^2] = skillManager.BearAksystems;
         skills[^3] = skillManager.Lockpicking;
@@ -90,16 +86,13 @@ internal class SkillManagerConstructorPatch : ModulePatch
     /// <summary>
     ///     Modifies the display list so we can add new skills
     /// </summary>
-    /// <param name="skillManager">skill manager</param>
-    /// <param name="displayList">display list</param>
+    /// <param name = "skillManager">skill manager</param>
+    /// <param name = "displayList">display list</param>
     private static void ModifyDisplayList(SkillManager skillManager, ref Skill[] displayList)
     {
         const int insertIndex = 12;
-
         var newDisplayList = new Skill[displayList.Length + 7];
-
         Array.Copy(displayList, newDisplayList, insertIndex);
-
         newDisplayList[12] = skillManager.UsecArsystems;
         newDisplayList[12 + 1] = skillManager.BearAksystems;
         newDisplayList[12 + 2] = skillManager.Lockpicking;
@@ -107,7 +100,6 @@ internal class SkillManagerConstructorPatch : ModulePatch
         newDisplayList[12 + 4] = skillManager.SilentOps;
         newDisplayList[12 + 5] = skillManager.UsecNegotiations;
         newDisplayList[12 + 6] = skillManager.BearRawpower;
-
         Array.Copy(
             displayList,
             insertIndex,
@@ -115,14 +107,13 @@ internal class SkillManagerConstructorPatch : ModulePatch
             insertIndex + 7,
             displayList.Length - insertIndex
         );
-
         displayList = newDisplayList;
     }
 
     /// <summary>
     ///     Locks skills if they are not enabled
     /// </summary>
-    /// <param name="skillManager">skill manager</param>
+    /// <param name = "skillManager">skill manager</param>
     private static void LockSkills(SkillManager skillManager)
     {
         AccessTools
@@ -131,43 +122,36 @@ internal class SkillManagerConstructorPatch : ModulePatch
                 skillManager.UsecArsystems,
                 !SkillsExtendedPlugin.SkillData.NatoWeapons.Enabled
             );
-
         AccessTools
             .Field(typeof(Skill), "Locked")
             .SetValue(
                 skillManager.BearAksystems,
                 !SkillsExtendedPlugin.SkillData.EasternWeapons.Enabled
             );
-
         AccessTools
             .Field(typeof(Skill), "Locked")
             .SetValue(
                 skillManager.Lockpicking,
                 !SkillsExtendedPlugin.SkillData.LockPicking.Enabled
             );
-
         AccessTools
             .Field(typeof(Skill), "Locked")
             .SetValue(
                 skillManager.FieldMedicine,
                 !SkillsExtendedPlugin.SkillData.FieldMedicine.Enabled
             );
-
         AccessTools
             .Field(typeof(Skill), "Locked")
             .SetValue(skillManager.FirstAid, !SkillsExtendedPlugin.SkillData.FirstAid.Enabled);
-
         AccessTools
             .Field(typeof(Skill), "Locked")
             .SetValue(
                 skillManager.ProneMovement,
                 !SkillsExtendedPlugin.SkillData.ProneMovement.Enabled
             );
-
         AccessTools
             .Field(typeof(Skill), "Locked")
             .SetValue(skillManager.SilentOps, !SkillsExtendedPlugin.SkillData.SilentOps.Enabled);
-
         AccessTools
             .Field(typeof(Skill), "Locked")
             .SetValue(

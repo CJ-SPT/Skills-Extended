@@ -662,5 +662,68 @@
       "PeacekeeperTradingCostDec": 0.5,
       "QuestMoneyRewardInc": 0.5,
       "AllTraderCostDecrease": 7
+    },
+    "Electronics": {
+        "Enabled": true,
+        "AttemptsPerDoor": 3,
+        "BaseCoherence": 60,
+        "CoherencePerLevel": 1,
+        "BaseStrength": 20,
+        "LevelsPerStrength": 5,
+        "UtilitySlots": 3,
+        "EliteUtilitySlots": 4,
+        "FailureXpRatio": 0.2,
+        "PdaReferenceValue": 150000,
+        "DefaultDifficulty": 2,
+        "DoorDifficulties": {},
+        "KeycardDifficulties": {
+            "5c1d0d6d86f7744bb2683e1f": 1,
+            "5c1d0c5f86f7744bb2683cf0": 3,
+            "5c1d0dc586f7744baf2e7b79": 3,
+            "5c1d0efb86f7744baf2e7b7b": 3,
+            "5c1d0f4986f7744bb01837fa": 3,
+            "5c1e495a86f7743109743dfb": 3
+        },
+        "ExcludedDoors": [],
+        "ExcludedKeycards": [
+            "5c94bbff86f7747ee735c08f",
+            "679b9819a2f2dd4da9023512",
+            "5e42c81886f7742a01529f57"
+        ],
+        "Tiers": [
+            {
+                "Level": 1,
+                "Name": "Standard",
+                "Nodes": 19,
+                "Defenses": 3,
+                "Utilities": 2,
+                "Caches": 1,
+                "CoreCoherence": 40,
+                "CoreStrength": 10,
+                "SuccessXp": 10
+            },
+            {
+                "Level": 2,
+                "Name": "Secure",
+                "Nodes": 31,
+                "Defenses": 6,
+                "Utilities": 3,
+                "Caches": 2,
+                "CoreCoherence": 70,
+                "CoreStrength": 15,
+                "SuccessXp": 15
+            },
+            {
+                "Level": 3,
+                "Name": "Hardened",
+                "Nodes": 43,
+                "Defenses": 9,
+                "Utilities": 4,
+                "Caches": 2,
+                "CoreCoherence": 100,
+                "CoreStrength": 20,
+                "SuccessXp": 20
+            }
+        ]
     }
 }

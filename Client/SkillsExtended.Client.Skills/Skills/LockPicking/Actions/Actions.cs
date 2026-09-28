@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using EFT;
 using EFT.Communications;
@@ -43,7 +43,6 @@ public static class LockPickActions
 
         var currentState = owner.Player.CurrentState;
         var type = currentState.GetType();
-
         // Only allow lockpicking if the player is stationary
         if (
             currentState is IdlePlayerState
@@ -54,7 +53,6 @@ public static class LockPickActions
                 owner.Player.Location,
                 interactiveObject.Id
             );
-
             // Return out if the door level is not found
             if (level == -1)
             {
@@ -82,66 +80,14 @@ public static class LockPickActions
                 Owner = owner,
                 InteractiveObject = interactiveObject,
             };
-
             LockPickingHelpers.LockPickingGame.SetActive(true);
-
             LockPickingHelpers
                 .LockPickingGame.GetComponent<LockPickingGame>()
                 .Activate(owner, interactiveObject, handler.PickLockAction, range);
-
             return;
         }
 
         owner.DisplayPreloaderUiNotification("Cannot pick the lock while moving.");
-    }
-
-    public static void HackTerminal(KeycardDoor door, GamePlayerOwner owner)
-    {
-        if (!LockPickingHelpers.IsFlipperZeroInInventory())
-        {
-            owner.DisplayPreloaderUiNotification(
-                "You must have a Flipper Zero in your inventory to hack a key card door..."
-            );
-            return;
-        }
-
-        // Check if the locks broken
-        if (LockPickingHelpers.DoorAttempts.TryGetValue(door.Id, out var val))
-        {
-            if (val > 3)
-            {
-                owner.DisplayPreloaderUiNotification("Security protocols tripped...");
-                return;
-            }
-        }
-
-        // Only allow lockpicking if the player is stationary
-        if (owner.Player.CurrentState is IdlePlayerState)
-        {
-            var level = LockPickingHelpers.GetLevelForDoor(owner.Player.Location, door.Id);
-
-            // Return out if the door level is not found
-            if (level == -1)
-            {
-                NotificationManager.DisplayMessageNotification(
-                    $"ERROR: Door {door.Id} on map {owner.Player.Location} not found in lookup table, screenshot and report this error to the developer.",
-                    ENotificationDurationType.Long,
-                    ENotificationIconType.Alert
-                );
-
-                return;
-            }
-
-            HackingActionHandler handler = new() { Owner = owner, InteractiveObject = door };
-
-            Action<bool> action = new(handler.HackTerminalAction);
-
-            // TODO RE-IMPLEMENT THIS
-        }
-        else
-        {
-            owner.DisplayPreloaderUiNotification("Cannot hack the terminal while moving.");
-        }
     }
 
     public static void InspectDoor(
@@ -151,7 +97,6 @@ public static class LockPickActions
     )
     {
         var level = LockPickingHelpers.GetLevelForDoor(owner.Player.Location, interactiveObject.Id);
-
         // Return out if the door level is not found
         if (level == -1)
         {
@@ -160,7 +105,6 @@ public static class LockPickActions
                 ENotificationDurationType.Long,
                 ENotificationIconType.Alert
             );
-
             return;
         }
 
