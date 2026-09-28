@@ -3,6 +3,9 @@ using System.Runtime.Loader;
 using Mono.Cecil;
 using Newtonsoft.Json;
 using SPTarkov.Server.Core.Models.Enums;
+using SPTarkov.Server.Core.Models.Eft.Match;
+using SPTarkov.Server.Core.Utils;
+using SPTarkov.Server.Core.Utils.Json;
 
 internal static class ClientSerialization
 {
@@ -74,6 +77,60 @@ internal static class ClientSerialization
         }
 
         var value = Enum.ToObject(idType, 200);
+        // Raid saves use EftJsonConverters, whose fallback for ESkillId is StringEnumConverter.
+        // The explicit EFT.EnumConverter below is not the normal raid-save path.
+        var saveConverters = (JsonConverter[])game.GetType("EFT.EftJsonConverters", true)
+            .GetField("Converters").GetValue(null);
+        var saveWire = JsonConvert.SerializeObject(value, saveConverters);
+        if (saveWire != "\"200\"")
+        {
+            throw new Exception("Raid-save skill ID lost numeric identity: " + saveWire);
+        }
+
+        var descriptorType = game.GetType("EFT.SkillsDescriptor+SkillInfoDescriptor", true);
+        var descriptors = Array.CreateInstance(descriptorType, 53);
+        var stockIds = Enum.GetValues(idType).Cast<object>().Where(id => Convert.ToInt32(id) != 200).ToArray();
+        foreach (var stockId in stockIds)
+        {
+            if (JsonConvert.SerializeObject(stockId, saveConverters) != JsonConvert.SerializeObject(stockId.ToString()))
+            {
+                throw new Exception("Stock skill wire name changed: " + stockId);
+            }
+        }
+
+        for (var i = 0; i < descriptors.Length; i++)
+        {
+            var descriptor = Activator.CreateInstance(descriptorType);
+            descriptorType.GetField("Id").SetValue(descriptor, i == 52 ? value : stockIds[i]);
+            descriptorType.GetField("Progress").SetValue(descriptor, i == 52 ? 321f : 123f);
+            descriptorType.GetField("PointsEarnedDuringSession").SetValue(descriptor, 7f);
+            descriptors.SetValue(descriptor, i);
+        }
+
+        var requestWire = JsonConvert.SerializeObject(new
+        {
+            results = new { profile = new { Skills = new { Common = descriptors } } }
+        }, saveConverters);
+        var json = new JsonUtil([new SptJsonConverterRegistrator()]);
+        var request = (EndLocalRaidRequestData)json.Deserialize(requestWire, typeof(EndLocalRaidRequestData));
+        var skills = request.Results.Profile.Skills.Common.ToArray();
+        if (skills.Length != 53 || (int)skills[52].Id != 200 || skills[52].Progress != 321
+            || skills[52].PointsEarnedDuringSession != 7 || skills.Take(52).Any(s => s.Progress != 123))
+        {
+            throw new Exception("Raid-end request lost skill progress.");
+        }
+
+        var savedRequest = json.Deserialize<EndLocalRaidRequestData>(json.Serialize(request));
+        var savedSkills = savedRequest.Results.Profile.Skills.Common;
+        var loadedDescriptors = (Array)JsonConvert.DeserializeObject(
+            json.Serialize(savedSkills), descriptors.GetType(), saveConverters);
+        var loadedHacking = loadedDescriptors.GetValue(52);
+        if (Convert.ToInt32(descriptorType.GetField("Id").GetValue(loadedHacking)) != 200
+            || (float)descriptorType.GetField("Progress").GetValue(loadedHacking) != 321f)
+        {
+            throw new Exception("Saved Hacking progress did not reload in the client.");
+        }
+
         var converter = (JsonConverter)
             Activator.CreateInstance(
                 game.GetType("EFT.EnumConverter`1", true).MakeGenericType(idType)
@@ -98,7 +155,7 @@ internal static class ClientSerialization
         }
 
         Console.WriteLine(
-            "Hacking skill/buff identifiers verified; actual game EnumConverter<byte> -> server SkillTypes -> game roundtrip passed (ID 200)."
+            "Hacking identifiers verified; actual EFT save converters -> SPT raid-end request -> saved profile -> client reload passed (ID 200, index 52). Explicit EnumConverter roundtrip also passed."
         );
     }
 }

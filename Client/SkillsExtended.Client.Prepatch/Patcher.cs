@@ -442,6 +442,37 @@ public static class SkillsExtendedPatcher
     {
         var skills = assembly.MainModule.GetType("EFT.ESkillId");
         AddReserved(ref assembly, skills, "Hacking", "200", 200);
+        // Raid saves use Newtonsoft's StringEnumConverter, which ignores JsonEnumName.
+        // Keep the reserved numeric wire ID for both serializers, including existing entries.
+        var hacking = skills.Fields.Single(f => f.Name == "Hacking");
+        const string enumMemberName = "System.Runtime.Serialization.EnumMemberAttribute";
+        var enumMember = hacking.CustomAttributes.FirstOrDefault(a =>
+            a.AttributeType.FullName == enumMemberName
+        );
+        if (enumMember == null)
+        {
+            // Resolve against the game's framework, not the framework hosting an offline test.
+            var serialization = assembly.MainModule.AssemblyResolver.Resolve(
+                new AssemblyNameReference("System.Runtime.Serialization", new Version(4, 0, 0, 0))
+            );
+            var constructor = serialization.MainModule.GetType(enumMemberName).Methods.Single(m =>
+                m.IsConstructor && !m.IsStatic && !m.HasParameters
+            );
+            enumMember = new CustomAttribute(assembly.MainModule.ImportReference(constructor));
+            hacking.CustomAttributes.Add(enumMember);
+        }
+
+        for (var i = enumMember.Properties.Count - 1; i >= 0; i--)
+        {
+            if (enumMember.Properties[i].Name == "Value")
+            {
+                enumMember.Properties.RemoveAt(i);
+            }
+        }
+
+        enumMember.Properties.Add(new Mono.Cecil.CustomAttributeNamedArgument(
+            "Value", new CustomAttributeArgument(assembly.MainModule.TypeSystem.String, "200")
+        ));
         var buffs = assembly.MainModule.GetType("EFT.EBuffId");
         AddReserved(ref assembly, buffs, "HackingCoherence", "HackingCoherence", 1028);
         AddReserved(ref assembly, buffs, "HackingStrength", "HackingStrength", 1029);

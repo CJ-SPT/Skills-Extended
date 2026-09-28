@@ -1,8 +1,19 @@
 [
   {
-    "Version": "3.0.1",
+    "Version": "3.0.2",
     "ReleaseDate": "September 28, 2026",
     "IsLatest": true,
+    "Features": [],
+    "Improvements": [],
+    "BugFixes": [
+      "Fix the raid-end skill serialization error that prevented saving profiles with Hacking.",
+      "Prevent duplicate skill entries, including SilentOps, in raid saves and the skill display."
+    ]
+  },
+  {
+    "Version": "3.0.1",
+    "ReleaseDate": "September 28, 2026",
+    "IsLatest": false,
     "Features": [
       "New skill and minigame. Leaving it a mystery for now. Craft the item at workbench level 2.",
       "All Skills Extended web pages now require SPT administrator access, using the server's existing sign-in."

@@ -45,42 +45,39 @@ internal class SkillManagerConstructorPatch : ModulePatch
     /// <param name = "skills">skills</param>
     private static void InitializeNewSkills(SkillManager skillManager, ref Skill[] skills)
     {
-        skillManager.UsecArsystems = new Skill(
+        skillManager.UsecArsystems ??= new Skill(
             skillManager,
             ESkillId.UsecArsystems,
             ESkillClass.Combat,
             [],
             []
         );
-        skillManager.BearAksystems = new Skill(
+        skillManager.BearAksystems ??= new Skill(
             skillManager,
             ESkillId.BearAksystems,
             ESkillClass.Combat,
             [],
             []
         );
-        skillManager.UsecNegotiations = new Skill(
+        skillManager.UsecNegotiations ??= new Skill(
             skillManager,
             ESkillId.UsecNegotiations,
             ESkillClass.Special,
             [],
             []
         );
-        skillManager.BearRawpower = new Skill(
+        skillManager.BearRawpower ??= new Skill(
             skillManager,
             ESkillId.BearRawpower,
             ESkillClass.Special,
             [],
             []
         );
-        Array.Resize(ref skills, skills.Length + 7);
-        skills[^1] = skillManager.UsecArsystems;
-        skills[^2] = skillManager.BearAksystems;
-        skills[^3] = skillManager.Lockpicking;
-        skills[^4] = skillManager.ProneMovement;
-        skills[^5] = skillManager.SilentOps;
-        skills[^6] = skillManager.UsecNegotiations;
-        skills[^7] = skillManager.BearRawpower;
+        // SilentOps already belongs to the native list in this EFT version.
+        skills = SkillLists.AddMissing(skills,
+            skillManager.BearRawpower, skillManager.UsecNegotiations, skillManager.SilentOps,
+            skillManager.ProneMovement, skillManager.Lockpicking,
+            skillManager.BearAksystems, skillManager.UsecArsystems);
     }
 
     /// <summary>
@@ -90,24 +87,10 @@ internal class SkillManagerConstructorPatch : ModulePatch
     /// <param name = "displayList">display list</param>
     private static void ModifyDisplayList(SkillManager skillManager, ref Skill[] displayList)
     {
-        const int insertIndex = 12;
-        var newDisplayList = new Skill[displayList.Length + 7];
-        Array.Copy(displayList, newDisplayList, insertIndex);
-        newDisplayList[12] = skillManager.UsecArsystems;
-        newDisplayList[12 + 1] = skillManager.BearAksystems;
-        newDisplayList[12 + 2] = skillManager.Lockpicking;
-        newDisplayList[12 + 3] = skillManager.ProneMovement;
-        newDisplayList[12 + 4] = skillManager.SilentOps;
-        newDisplayList[12 + 5] = skillManager.UsecNegotiations;
-        newDisplayList[12 + 6] = skillManager.BearRawpower;
-        Array.Copy(
-            displayList,
-            insertIndex,
-            newDisplayList,
-            insertIndex + 7,
-            displayList.Length - insertIndex
-        );
-        displayList = newDisplayList;
+        displayList = SkillLists.Insert(displayList, 12,
+            skillManager.UsecArsystems, skillManager.BearAksystems, skillManager.Lockpicking,
+            skillManager.ProneMovement, skillManager.SilentOps,
+            skillManager.UsecNegotiations, skillManager.BearRawpower);
     }
 
     /// <summary>

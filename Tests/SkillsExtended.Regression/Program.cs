@@ -56,6 +56,7 @@ Bind(
 Bind(new ProneMoveVolumePatch());
 var failures = new List<string>();
 var assertions = 0;
+Run("Skill registration preserves unique save and display entries", () => SkillListChecks.Run(Check));
 Run("Hacking cursor and UI event ownership", () => HackingUiInputChecks.Run(Check));
 Run("Electronic keypad discovery and authority lookup", () => ElectronicsDoorChecks.Run(Check));
 Run(

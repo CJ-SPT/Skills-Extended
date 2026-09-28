@@ -78,6 +78,10 @@ Hacking uses reserved numeric skill ID **200**, distinct from Lock Picking.
 The skill identifier and configuration key are `Hacking`; buff identifiers are
 `HackingCoherence`, `HackingStrength`, and `HackingUtilitySlots`, retaining numeric
 IDs 1028, 1029, and 1030 respectively. Profile serialization still uses `200`.
+The prepatcher supplies both `JsonEnumName("200")` and `EnumMember(Value = "200")`
+so EFT's enum converter and the standard raid-save `StringEnumConverter` agree.
+The offline serialization check uses the game's actual converter list and skill
+descriptors through SPT's raid-end request model, then verifies progress on reload.
 Missing progress is initialized once at zero. Existing progress and other skills
 are preserved. Success XP is awarded once per player/door/raid; qualifying failure
 XP is also awarded at most once. Both use the normal skill-action pipeline with

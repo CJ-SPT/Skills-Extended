@@ -50,9 +50,7 @@ public sealed class HackingSkill
     public static void Attach(SkillManager manager, ref Skill[] skills, ref Skill[] display)
     {
         var skill = Get(manager).Skill;
-        Array.Resize(ref skills, skills.Length + 1);
-        skills[skills.Length - 1] = skill;
-        Array.Resize(ref display, display.Length + 1);
-        display[display.Length - 1] = skill;
+        skills = Core.SkillLists.AddMissing(skills, skill);
+        display = Core.SkillLists.AddMissing(display, skill);
     }
 }
