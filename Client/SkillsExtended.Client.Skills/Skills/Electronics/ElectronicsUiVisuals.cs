@@ -3,7 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace SkillsExtended.Electronics.UI
+namespace SkillsExtended.Hacking.UI
 {
     // Shared by the runtime renderer and the offline Unity layout validator. No game dependencies.
     public static class ElectronicsUiVisuals

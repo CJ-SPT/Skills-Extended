@@ -40,7 +40,7 @@ public static class ConfigRules
         var errors = new List<string>();
         try
         {
-            config.Electronics?.Validate();
+            config.Hacking?.Validate();
         }
         catch (ArgumentException ex)
         {

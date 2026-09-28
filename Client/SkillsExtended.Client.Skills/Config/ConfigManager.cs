@@ -8,12 +8,12 @@ public static class ConfigManager
     private static int _lpOrder = 1000;
     public static ConfigEntry<KeyCode> LpMiniGameTurnKey;
     public static ConfigEntry<bool> LpMiniEnableHealthBar;
-    public static ConfigEntry<int> ElectronicsVolume;
+    public static ConfigEntry<int> HackingVolume;
 
     public static void RegisterConfig(ConfigFile config)
     {
-        ElectronicsVolume = config.Bind(
-            "Electronics",
+        HackingVolume = config.Bind(
+            "Hacking",
             "Hacking volume (%)",
             100,
             new ConfigDescription(
@@ -23,6 +23,7 @@ public static class ConfigManager
                 new ConfigurationManagerAttributes
                 {
                     Order = 1000,
+                    Category = "Hacking",
                     IsAdvanced = false,
                     ShowRangeAsPercent = false,
                 }

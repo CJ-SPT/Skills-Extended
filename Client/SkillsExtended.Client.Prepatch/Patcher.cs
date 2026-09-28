@@ -45,7 +45,7 @@ public static class SkillsExtendedPatcher
         {
             _skillManager = assembly.MainModule.GetType("EFT.SkillManager");
             PatchNewBuffs(ref assembly);
-            PatchElectronics(ref assembly);
+            PatchHacking(ref assembly);
             PatchSkillManager(ref assembly);
             Logger.CreateLogSource("Skills Extended PrePatch").LogInfo("Patching Complete!");
         }
@@ -438,18 +438,18 @@ public static class SkillsExtendedPatcher
         _skillManager.Fields.Add(skillManagerExtField);
     }
 
-    private static void PatchElectronics(ref AssemblyDefinition assembly)
+    private static void PatchHacking(ref AssemblyDefinition assembly)
     {
         var skills = assembly.MainModule.GetType("EFT.ESkillId");
-        AddReserved(ref assembly, skills, "Electronics", "200", 200);
+        AddReserved(ref assembly, skills, "Hacking", "200", 200);
         var buffs = assembly.MainModule.GetType("EFT.EBuffId");
-        AddReserved(ref assembly, buffs, "ElectronicsCoherence", "ElectronicsCoherence", 1028);
-        AddReserved(ref assembly, buffs, "ElectronicsStrength", "ElectronicsStrength", 1029);
+        AddReserved(ref assembly, buffs, "HackingCoherence", "HackingCoherence", 1028);
+        AddReserved(ref assembly, buffs, "HackingStrength", "HackingStrength", 1029);
         AddReserved(
             ref assembly,
             buffs,
-            "ElectronicsUtilitySlots",
-            "ElectronicsUtilitySlots",
+            "HackingUtilitySlots",
+            "HackingUtilitySlots",
             1030
         );
     }
@@ -470,7 +470,7 @@ public static class SkillsExtendedPatcher
             if (existing.Name != name)
             {
                 throw new InvalidOperationException(
-                    $"Electronics enum collision: {type.FullName} {value} is {existing.Name}"
+                    $"Hacking enum collision: {type.FullName} {value} is {existing.Name}"
                 );
             }
 
@@ -479,7 +479,7 @@ public static class SkillsExtendedPatcher
 
         if (type.Fields.Any(f => f.Name == name))
         {
-            throw new InvalidOperationException($"Electronics enum name collision: {name}");
+            throw new InvalidOperationException($"Hacking enum name collision: {name}");
         }
 
         var field = CreateNewEnum(ref assembly, jsonName, name, type, value);

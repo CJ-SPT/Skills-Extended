@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace SkillsExtended.Config.Skills;
 
-public class ElectronicsData
+public class HackingData
 {
     public bool Enabled { get; set; } = true;
     public int AttemptsPerDoor { get; set; } = 3;
@@ -113,7 +113,7 @@ public class ElectronicsData
         )
         {
             throw new ArgumentException(
-                "Electronics: invalid stat, slot, attempt, difficulty or XP setting."
+                "Hacking: invalid stat, slot, attempt, difficulty or XP setting."
             );
         }
 
@@ -131,7 +131,7 @@ public class ElectronicsData
             || Tiers.Select(t => t.Level).Distinct().Count() != 3
         )
         {
-            throw new ArgumentException("Electronics: invalid door rules or difficulty tiers.");
+            throw new ArgumentException("Hacking: invalid door rules or difficulty tiers.");
         }
 
         foreach (var t in Tiers)
@@ -156,7 +156,7 @@ public class ElectronicsData
                 || t.SuccessXp > 1000
             )
             {
-                throw new ArgumentException("Electronics: invalid board settings.");
+                throw new ArgumentException("Hacking: invalid board settings.");
             }
         }
     }

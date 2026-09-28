@@ -123,20 +123,20 @@ public class DatabaseImporter(
         var items = jsonUtil.Deserialize<List<NewItemFromCloneDetails>>(text)!;
         foreach (var item in items)
         {
-            if (item.NewId == Electronics.ElectronicsIds.Pda)
+            if (item.NewId == Hacking.HackingIds.Pda)
             {
                 item.HandbookPriceRoubles = item.FleaPriceRoubles = configController
                     .SkillsConfig
-                    .Electronics
+                    .Hacking
                     .PdaReferenceValue;
             }
 
             customItemService.CreateItemFromClone(item);
-            if (item.NewId == Electronics.ElectronicsIds.Pda)
+            if (item.NewId == Hacking.HackingIds.Pda)
             {
                 templateTable.Items[item.NewId].Properties!.CreditsPrice = configController
                     .SkillsConfig
-                    .Electronics
+                    .Hacking
                     .PdaReferenceValue;
             }
 

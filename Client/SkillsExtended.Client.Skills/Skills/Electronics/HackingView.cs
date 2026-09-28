@@ -7,14 +7,14 @@ using Comfort.Common;
 using EFT;
 using EFT.Console.Core;
 using EFT.UI;
-using SkillsExtended.Electronics;
-using SkillsExtended.Electronics.UI;
+using SkillsExtended.Hacking;
+using SkillsExtended.Hacking.UI;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace SkillsExtended.Skills.Electronics;
+namespace SkillsExtended.Skills.Hacking;
 
 /// <summary>Presentation only: every raid action is resolved by ElectronicsRuntime's authority.</summary>
 public sealed class HackingView : MonoBehaviour
@@ -56,10 +56,9 @@ public sealed class HackingView : MonoBehaviour
     private bool _closing;
     private bool _waiting;
     private bool _captured;
-    private bool _oldCursor;
     private readonly HackingInputState _inputState = new();
+    private readonly HackingUiInputState _uiInputState = new();
     private static readonly Dictionary<string, AudioClip> Sounds = new();
-    private CursorLockMode _oldLock;
     private int _selected = -1;
     private int _level;
     private int _hoveredNode = -1;
@@ -180,13 +179,13 @@ public sealed class HackingView : MonoBehaviour
 
         if (Singleton<GameWorld>.Instantiated && Singleton<GameWorld>.Instance.MainPlayer)
         {
-            ElectronicsRuntime.Notify("Use electronics at the main menu.");
+            ElectronicsRuntime.Notify("Use hacking at the main menu.");
             return;
         }
 
         if (difficulty < 1 || difficulty > 3 || level < 0 || level > 51)
         {
-            ElectronicsRuntime.Notify("Usage: electronics [difficulty 1-3] [level 0-51] [seed]");
+            ElectronicsRuntime.Notify("Usage: hacking [difficulty 1-3] [level 0-51] [seed]");
             return;
         }
 
@@ -226,9 +225,8 @@ public sealed class HackingView : MonoBehaviour
         view._practice = practice;
         view._player = player;
         view._inputState.Capture(!practice && player);
-        view._oldCursor = Cursor.visible;
-        view._oldLock = Cursor.lockState;
         view._captured = true;
+        view._uiInputState.Capture();
         view._header = view.Text("Header");
         view._stats = view.Text("Stats");
         view._message = view.Text("Message");
@@ -239,7 +237,7 @@ public sealed class HackingView : MonoBehaviour
         );
         view.transform.Find("Panel/Abort").GetComponent<Button>().onClick.AddListener(view.Abort);
         view.transform.Find("Panel/Retry").GetComponent<Button>().onClick.AddListener(view.Retry);
-        var audioObject = new GameObject("Electronics audio");
+        var audioObject = new GameObject("Hacking audio");
         audioObject.transform.SetParent(go.transform, false);
         view._audio = audioObject.AddComponent<HackingAudio>();
         view._audio.Initialize(Sounds);
@@ -808,8 +806,7 @@ public sealed class HackingView : MonoBehaviour
     {
         if (!_closing)
         {
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
+            _uiInputState.Maintain();
         }
     }
 
@@ -844,8 +841,7 @@ public sealed class HackingView : MonoBehaviour
 
         _captured = false;
         _inputState.Restore();
-        Cursor.lockState = _oldLock;
-        Cursor.visible = _oldCursor;
+        _uiInputState.Restore();
     }
 
     private void OnDestroy()
@@ -872,9 +868,9 @@ public sealed class HackingView : MonoBehaviour
 public class ElectronicsConsoleCommands
 {
     [ConsoleCommand(
-        "electronics",
+        "hacking",
         "",
-        "PDA hacking practice: difficulty (1-3), Electronics level (0-51), seed"
+        "PDA hacking practice: difficulty (1-3), Hacking level (0-51), seed"
     )]
     public static void Practice(
         [ConsoleArgument(2)] int difficulty,

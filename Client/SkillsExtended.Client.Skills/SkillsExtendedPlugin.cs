@@ -71,10 +71,10 @@ public class SkillsExtendedPlugin : BaseUnityPlugin
     {
         Keys = Get<KeysData>("/skills-extended/get-keys");
         SkillData = Get<SkillsConfig>("/skills-extended/get-skills-config");
-        SkillData.Electronics.Validate();
+        SkillData.Hacking.Validate();
         if (!SkillsExtendedInfo.IsFikaHeadless)
         {
-            EFT.UI.ConsoleScreen.Processor.RegisterCommandGroup<Skills.Electronics.ElectronicsConsoleCommands>();
+            EFT.UI.ConsoleScreen.Processor.RegisterCommandGroup<Skills.Hacking.ElectronicsConsoleCommands>();
         }
 
         LockPickingHelpers.LoadMiniGame();

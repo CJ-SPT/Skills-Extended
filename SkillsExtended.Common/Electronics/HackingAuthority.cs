@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using SkillsExtended.Config.Skills;
 
-namespace SkillsExtended.Electronics;
+namespace SkillsExtended.Hacking;
 
 public class HackRequest
 {
@@ -53,11 +53,11 @@ public sealed class HackingAuthority
     private readonly HashSet<string> _successXp = new();
     private readonly HashSet<string> _failureXp = new();
     private readonly HashSet<string> _requests = new();
-    private readonly ElectronicsData _config;
+    private readonly HackingData _config;
     private uint _seed;
     private long _revision;
 
-    public HackingAuthority(ElectronicsData config, uint seed)
+    public HackingAuthority(HackingData config, uint seed)
     {
         config.Validate();
         _config = config;

@@ -11,6 +11,9 @@
     <Compile Include="../../Client/SkillsExtended.Client.API/SkillsExtendedManager.cs" Link="Production/SkillsExtendedManager.cs" />
     <Compile Include="../../Client/SkillsExtended.Client.Skills/Helpers/CursorSettings.cs" Link="Production/CursorSettings.cs" />
     <Compile Include="../../Client/SkillsExtended.Client.Skills/Skills/Electronics/HackingInputState.cs" Link="Production/HackingInputState.cs" />
+    <Compile Include="../../Client/SkillsExtended.Client.Skills/Skills/Electronics/HackingUiInputState.cs" Link="Production/HackingUiInputState.cs" />
+    <Compile Include="../../Client/SkillsExtended.Client.Skills/Skills/Electronics/ElectronicsCursorPatch.cs" Link="Production/ElectronicsCursorPatch.cs" />
+    <Compile Include="../../Client/SkillsExtended.Client.Skills/Skills/Electronics/ElectronicsDoorRegistry.cs" Link="Production/ElectronicsDoorRegistry.cs" />
     <Compile Include="../../Client/SkillsExtended.Client.Skills/Skills/SkillClasses/Physical/*.cs" Link="Production/Physical/%(Filename)%(Extension)" />
     <Compile Include="../../Client/SkillsExtended.Client.Skills/Skills/Core/Patches/CreateSkillPatches.cs" Link="Production/CreateSkillPatches.cs" />
     <Compile Include="../../Client/SkillsExtended.Client.Skills/Skills/FieldMedicine/Patches/PersonalBuffPatch.cs" Link="Production/PersonalBuffPatch.cs" />

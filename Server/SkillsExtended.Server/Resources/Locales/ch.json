@@ -28,7 +28,7 @@
     "BearAkSystemsErgo": "提高华约武器的人机功效 [{0:0.#%}]",
     "BearAkSystemsRecoil": "减少华约武器的后坐力 [{0:0.#%}]",
     "Lockpicking": "开锁",
-    "LockpickingDescription": "Pick mechanical locks without a key. Electronic doors require Electronics and a Modified PDA.",
+    "LockpickingDescription": "Pick mechanical locks without a key. Electronic doors require Hacking and a Modified PDA.",
     "LockpickingLevelingUpDescription": "通过开锁来提升技能水平。",
     "LockpickingTimeIncrease": "提高开锁工具的强度 [{0:0.#%}]",
     "LockpickingForgivenessAngle": "减少锁的难度 [{0:0.#%}]",

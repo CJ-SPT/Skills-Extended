@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SkillsExtended.Electronics;
+namespace SkillsExtended.Hacking;
 
 public enum NodeMotion
 {

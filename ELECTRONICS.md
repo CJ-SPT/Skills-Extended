@@ -1,8 +1,8 @@
-# Electronics: local PDA hacking build
+# Hacking: local PDA hacking build
 
-At the main menu, open the game console and run `electronics 2 25 42`.
-Arguments are difficulty (1 Standard, 2 Secure, 3 Hardened), Electronics level
-(0–51), and seed. `electronics` uses Secure, level 0, seed 1. Practice uses the
+At the main menu, open the game console and run `hacking 2 25 42`.
+Arguments are difficulty (1 Standard, 2 Secure, 3 Hardened), Hacking level
+(0–51), and seed. `hacking` uses Secure, level 0, seed 1. Practice uses the
 same simulation and interface as a raid, without doors, inventory requirements,
 failure counts, or XP. Escape closes practice; a finished board offers another seed.
 
@@ -35,7 +35,7 @@ battery drain, or added loot distribution.
 
 ## Configuration and persistence
 
-In the BepInEx configuration menu (F12), open **Skills Extended > Electronics >
+In the BepInEx configuration menu (F12), open **Skills Extended > Hacking >
 Hacking volume (%)**. The local 0–100 slider controls all PDA hacking audio,
 including ambience, low-coherence alerts and result sounds. Zero mutes it; the
 default 100 preserves the existing mix. Changes apply immediately, including
@@ -43,7 +43,7 @@ during menu practice and a live attempt, with short fades to avoid clicks.
 The setting is saved in the plugin's BepInEx configuration and also respects the
 game's volume settings. Each Fika player controls their own volume.
 
-Edit Electronics in the existing web skill editor, or the `Electronics` section of
+Edit Hacking in the web skill editor at `/skills-extended/hacking`, or the `Hacking` section of
 `SPT_Runtime/user/mods/SkillsExtended/Resources/Configs/SkillsConfig.json`.
 Older configurations receive initialized defaults. Restart/reload follows the
 mod's existing configuration lifecycle; changing settings mid-raid is not a supported
@@ -71,9 +71,13 @@ uses `mapId/doorId`; `ExcludedKeycards` uses template IDs. Exclusions always win
 Labs Yellow defaults to Standard; Blue, Green, Red, Black, and Violet to Hardened.
 Entry cards and the scripted saferoom extraction card are excluded. Native power,
 accessibility, reader-side, and skill requirements still apply. Mechanical locks
-and special subclasses of keycard doors are unsupported.
+are not electronic readers. Keypad-door subclasses and readers without a keycard
+ID are supported; readers without a keycard difficulty override use the default.
 
-Electronics uses reserved numeric skill ID **200**, distinct from Lock Picking.
+Hacking uses reserved numeric skill ID **200**, distinct from Lock Picking.
+The skill identifier and configuration key are `Hacking`; buff identifiers are
+`HackingCoherence`, `HackingStrength`, and `HackingUtilitySlots`, retaining numeric
+IDs 1028, 1029, and 1030 respectively. Profile serialization still uses `200`.
 Missing progress is initialized once at zero. Existing progress and other skills
 are preserved. Success XP is awarded once per player/door/raid; qualifying failure
 XP is also awarded at most once. Both use the normal skill-action pipeline with
@@ -92,9 +96,9 @@ audio cues/loops. The game plugin supplies controllers at runtime. Headless host
 run only the shared model. The host owns reservations, action ordering, failure
 counts and results; all players need the matching core and Fika add-on versions.
 
-## Live acceptance checklist (Corey)
+## Live acceptance checklist
 
-- Menu: run `electronics 1 0 1`, `electronics 2 25 42`, and `electronics 3 51 7`.
+- Menu: run `hacking 1 0 1`, `hacking 2 25 42`, and `hacking 3 51 7`.
   Check grid alignment, labels, tooltips, hotkeys, sounds, ending/retrying, and cursor
   restoration at 1080p, 1440p, and ultrawide resolutions.
   Inspect diagonal connections and moving pulses for jagged edges, and the gauge
@@ -111,8 +115,8 @@ counts and results; all players need the matching core and Fika add-on versions.
 - Lifecycle: abort by Escape, movement, damage, range, death and disconnect. Each
   consumes exactly one attempt; inspect the same door after a new raid to see reset.
   Win, wait for native relocking, and hack again without duplicate success XP.
-- Persistence: earn Electronics XP, finish/save the raid, reload the profile, and
-  confirm progress. Disable/re-enable Electronics and confirm that progress survives.
+- Persistence: earn Hacking XP, finish/save the raid, reload the profile, and
+  confirm progress. Disable/re-enable Hacking and confirm that progress survives.
 - Fika: two players start on the same door; only one wins the reservation. Test
   legitimate unlocking by the other player, hacker disconnect/reconnect, shared
   lockout counts, exactly one XP award, and a headless host.

@@ -4,7 +4,7 @@ using EFT.UI;
 using SkillsExtended.Config;
 using UnityEngine;
 
-namespace SkillsExtended.Skills.Electronics;
+namespace SkillsExtended.Skills.Hacking;
 
 /// <summary>Preloaded 2D audio, bounded feedback voices, and short fades between cues.</summary>
 public sealed class HackingAudio : MonoBehaviour
@@ -129,7 +129,7 @@ public sealed class HackingAudio : MonoBehaviour
     {
         // Read the local preference on every frame, including detached result sounds.
         // Keep the fade speed independent of this multiplier so zero can still fade out.
-        var volume = Mathf.Clamp01((ConfigManager.ElectronicsVolume?.Value ?? 100) / 100f);
+        var volume = Mathf.Clamp01((ConfigManager.HackingVolume?.Value ?? 100) / 100f);
         for (var i = 0; i < _feedback.Length; i++)
         {
             var source = _feedback[i];

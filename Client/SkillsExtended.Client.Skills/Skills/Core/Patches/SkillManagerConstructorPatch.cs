@@ -35,7 +35,7 @@ internal class SkillManagerConstructorPatch : ModulePatch
         InitializeNewSkills(__instance, ref ___Skills);
         ModifyDisplayList(__instance, ref ___DisplayList);
         LockSkills(__instance);
-        Electronics.ElectronicsSkill.Attach(__instance, ref ___Skills, ref ___DisplayList);
+        Hacking.HackingSkill.Attach(__instance, ref ___Skills, ref ___DisplayList);
     }
 
     /// <summary>

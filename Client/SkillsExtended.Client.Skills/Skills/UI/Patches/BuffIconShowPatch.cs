@@ -26,7 +26,7 @@ internal class BuffIconShowPatch : ModulePatch
     {
         if ((int)buff.Id >= 1028 && (int)buff.Id <= 1030)
         {
-            ____icon.sprite = Electronics.HackingView.Icon(
+            ____icon.sprite = Hacking.HackingView.Icon(
                 (int)buff.Id == 1028 ? "heart-pulse"
                 : (int)buff.Id == 1029 ? "zap"
                 : "database"

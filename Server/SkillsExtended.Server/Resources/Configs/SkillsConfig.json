@@ -663,7 +663,7 @@
       "QuestMoneyRewardInc": 0.5,
       "AllTraderCostDecrease": 7
     },
-    "Electronics": {
+    "Hacking": {
         "Enabled": true,
         "AttemptsPerDoor": 3,
         "BaseCoherence": 60,
@@ -677,12 +677,16 @@
         "DefaultDifficulty": 2,
         "DoorDifficulties": {},
         "KeycardDifficulties": {
-            "5c1d0d6d86f7744bb2683e1f": 1,
+            "5c1d0d6d86f7744bb2683e1f": 2,
             "5c1d0c5f86f7744bb2683cf0": 3,
             "5c1d0dc586f7744baf2e7b79": 3,
             "5c1d0efb86f7744baf2e7b7b": 3,
             "5c1d0f4986f7744bb01837fa": 3,
-            "5c1e495a86f7743109743dfb": 3
+            "5c1e495a86f7743109743dfb": 3,
+            "5e42c83786f7742a021fdf3c": 1,
+            "5e42c81886f7742a01529f57": 1,
+            "5efde6b4f5448336730dbd61": 2,
+            "679b9819a2f2dd4da9023512": 3
         },
         "ExcludedDoors": [],
         "ExcludedKeycards": [

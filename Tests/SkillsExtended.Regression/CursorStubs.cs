@@ -6,6 +6,7 @@ namespace EFT.UI
     {
         public sealed class CursorData;
         public static ECursorType LastCursor;
+        public static ECursorType PreviousType => LastCursor;
         public static bool LastVisible;
         public static UnityEngine.FullScreenMode LastFullscreenMode;
 
@@ -15,6 +16,7 @@ namespace EFT.UI
         {
             LastVisible = visible;
             LastFullscreenMode = mode;
+            UnityEngine.Cursor.lockState = visible ? UnityEngine.CursorLockMode.None : UnityEngine.CursorLockMode.Locked;
         }
         public static void SetCursorLockMode(bool visible) => throw new Exception("Wrong lock overload");
     }

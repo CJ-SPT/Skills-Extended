@@ -94,6 +94,10 @@ namespace EFT.Interactive
 {
     public class WorldInteractiveObject
     {
+        public string Id;
+        public string KeyId;
+        public bool Destroyed;
+        public static implicit operator bool(WorldInteractiveObject value) => value is not null && !value.Destroyed;
         public object InteractingPlayer;
         public void PlaySound() { }
     }

@@ -4,10 +4,16 @@
     "ReleaseDate": "September 28, 2026",
     "IsLatest": true,
     "Features": [
+      "New skill and minigame. Leaving it a mystery for now. Craft the item at workbench level 2.",
       "All Skills Extended web pages now require SPT administrator access, using the server's existing sign-in."
     ],
     "Improvements": [],
-    "BugFixes": []
+    "BugFixes": [
+      "Fix lock picking not working correctly",
+      "Repair the Modified PDA's obsolete shader reference that caused a purple item preview.",
+      "Fix keypad discovery so Hack with PDA starts correctly, including keypad-door subclasses and readers without a keycard ID.",
+      "Restore the visible cursor and mouse clicks while hacking in raid, and restore normal input when the puzzle closes."
+    ]
   },
   {
     "Version": "2.2.1",

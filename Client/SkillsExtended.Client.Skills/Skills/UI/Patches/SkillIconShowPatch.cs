@@ -16,6 +16,8 @@ public class SkillIconShowPatch : ModulePatch
 {
     private static GameObject rootObject;
     private static Dictionary<EBuffId, Sprite> _buffSprites = new() { };
+    private static Sprite _hackingSprite;
+    private static bool _hackingIconLoaded;
 
     protected override MethodBase GetTargetMethod()
     {
@@ -25,9 +27,13 @@ public class SkillIconShowPatch : ModulePatch
     [PatchPostfix]
     private static void Postfix(SkillIcon __instance, Skill skill, Image ____icon)
     {
-        if ((byte)skill.Id == SkillsExtended.Electronics.ElectronicsIds.Skill)
+        if ((byte)skill.Id == SkillsExtended.Hacking.HackingIds.Skill)
         {
-            ____icon.sprite = Electronics.HackingView.Icon("cpu");
+            var icon = LoadHackingIcon();
+            if (icon)
+            {
+                ____icon.sprite = icon;
+            }
             return;
         }
 
@@ -48,6 +54,37 @@ public class SkillIconShowPatch : ModulePatch
             Console.WriteLine(e);
             throw;
         }
+    }
+
+    private static Sprite LoadHackingIcon()
+    {
+        if (_hackingIconLoaded)
+            return _hackingSprite;
+
+        _hackingIconLoaded = true;
+        Texture2D texture = null;
+        try
+        {
+            var directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var bytes = File.ReadAllBytes(Path.Combine(directory, "Images", "HackingSkillIcon.png"));
+            texture = new Texture2D(2, 2, TextureFormat.RGBA32, false)
+            {
+                name = "Hacking skill icon",
+                filterMode = FilterMode.Bilinear,
+                wrapMode = TextureWrapMode.Clamp,
+            };
+            if (!texture.LoadImage(bytes, true))
+                throw new InvalidDataException("Could not decode HackingSkillIcon.png");
+            _hackingSprite = Sprite.Create(texture,
+                new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
+        }
+        catch (Exception ex)
+        {
+            if (texture)
+                UnityEngine.Object.Destroy(texture);
+            SkillsExtendedPlugin.Log.LogError("Could not load Hacking skill icon: " + ex.Message);
+        }
+        return _hackingSprite;
     }
 
     private static void LoadBundle()

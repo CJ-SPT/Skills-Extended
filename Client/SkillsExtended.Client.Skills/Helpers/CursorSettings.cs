@@ -10,6 +10,7 @@ public static class CursorSettings
 {
     private static readonly MethodInfo SetCursorMethod;
     private static readonly MethodInfo SetCursorLockMethod;
+    private static readonly PropertyInfo PreviousCursorProperty;
     
     static CursorSettings()
     {
@@ -24,12 +25,15 @@ public static class CursorSettings
         
         SetCursorMethod = cursorType.GetMethod("SetCursor", flags, null, cursorParameters, null);
         SetCursorLockMethod = cursorType.GetMethod("SetCursorLockMode", flags, null, lockParameters, null);
+        PreviousCursorProperty = cursorType.GetProperty("PreviousType", flags);
     }
 
     public static void SetCursor(ECursorType type)
     {
         SetCursorMethod.Invoke(null, new object[] { type });
     }
+
+    public static ECursorType CurrentCursor => (ECursorType)PreviousCursorProperty.GetValue(null);
     
     public static void SetCursorLockMode(bool visible, FullScreenMode fullscreenMode)
     {

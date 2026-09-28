@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace SkillsExtended.Electronics.UI
+namespace SkillsExtended.Hacking.UI
 {
     /// <summary>Cosmetic only. Uses unscaled time; it never calls the model or blocks input.
     /// The same renderer is sampled by the offline Unity animation preview.</summary>

@@ -1,6 +1,6 @@
 using EFT;
 
-namespace SkillsExtended.Skills.Electronics;
+namespace SkillsExtended.Skills.Hacking;
 
 /// <summary>Only a raid with a local player may enable EFT's player-dependent input flags.</summary>
 public sealed class HackingInputState

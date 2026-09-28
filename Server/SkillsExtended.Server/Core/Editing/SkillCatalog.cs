@@ -88,10 +88,10 @@ public static class SkillCatalog
     public static readonly IReadOnlyList<SkillDefinition> All =
     [
         new(
-            "Electronics",
-            "electronics",
-            "Electronics",
-            "Skill_Electronics",
+            "Hacking",
+            "hacking",
+            "Hacking",
+            "Skill_Hacking",
             "Hack keycard doors with a Modified PDA. Configure attempts, hacking stats, and door difficulty.",
             "Extended skills"
         ),

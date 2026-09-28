@@ -5,7 +5,7 @@ using EFT.InputSystem;
 using HarmonyLib;
 using SPT.Reflection.Patching;
 
-namespace SkillsExtended.Skills.Electronics;
+namespace SkillsExtended.Skills.Hacking;
 
 // Observe translated movement axes before the game's input suppression. This respects remapped keys.
 public class ElectronicsAxesPatch : ModulePatch

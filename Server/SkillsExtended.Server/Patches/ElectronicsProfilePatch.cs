@@ -1,6 +1,6 @@
 using System.Reflection;
 using HarmonyLib;
-using SkillsExtended.Electronics;
+using SkillsExtended.Hacking;
 using SPTarkov.DI.Annotations;
 using SPTarkov.Reflection.Patching;
 using SPTarkov.Server.Core.Helpers.Profile;
@@ -11,7 +11,7 @@ using SPTarkov.Server.Core.Models.Enums;
 
 namespace SkillsExtended.Patches;
 
-public static class ElectronicsProfile
+public static class HackingProfile
 {
     public static void Ensure(PmcData? profile)
     {
@@ -23,12 +23,12 @@ public static class ElectronicsProfile
         lock (profile.Skills)
         {
             var list = profile.Skills.Common.ToList();
-            if (list.Any(s => (int)s.Id == ElectronicsIds.Skill))
+            if (list.Any(s => (int)s.Id == HackingIds.Skill))
             {
                 return;
             }
 
-            list.Add(new CommonSkill { Id = (SkillTypes)ElectronicsIds.Skill, Progress = 0 });
+            list.Add(new CommonSkill { Id = (SkillTypes)HackingIds.Skill, Progress = 0 });
             profile.Skills.Common = list;
         }
     }
@@ -41,7 +41,7 @@ public class ElectronicsPmcProfilePatch : AbstractPatch
         AccessTools.Method(typeof(ProfileHelper), nameof(ProfileHelper.GetPmcProfile));
 
     [PatchPostfix]
-    public static void Postfix(PmcData? __result) => ElectronicsProfile.Ensure(__result);
+    public static void Postfix(PmcData? __result) => HackingProfile.Ensure(__result);
 }
 
 [Injectable]
@@ -52,5 +52,5 @@ public class ElectronicsFullProfilePatch : AbstractPatch
 
     [PatchPostfix]
     public static void Postfix(SptProfile? __result) =>
-        ElectronicsProfile.Ensure(__result?.CharacterData?.PmcData);
+        HackingProfile.Ensure(__result?.CharacterData?.PmcData);
 }

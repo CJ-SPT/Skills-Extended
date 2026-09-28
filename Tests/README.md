@@ -33,6 +33,10 @@ real dependency APIs.
 
 Coverage includes:
 
+- Hacking cursor graphics, native cursor policy, UI event processing, and restoration
+  of prior input state after close, repeated cleanup, and scene teardown.
+- Keypad discovery through the native scene registry, Factory hacking starts,
+  derived/keyless readers, late loading, destroyed targets, and peer unlock lookup.
 - Cursor method discovery with overloaded methods and unrelated static/instance types.
 - Electronics menu practice leaving player-dependent input flags untouched, raid
   capture/restoration, repeated cleanup, and player disappearance during teardown.

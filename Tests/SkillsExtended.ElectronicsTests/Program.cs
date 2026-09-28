@@ -5,7 +5,7 @@ using Mono.Cecil;
 using Newtonsoft.Json;
 using SkillsExtended.Config;
 using SkillsExtended.Config.Skills;
-using SkillsExtended.Electronics;
+using SkillsExtended.Hacking;
 using SkillsExtended.Patches;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
@@ -24,22 +24,22 @@ void Check(bool condition, string name)
 }
 
 string Json(object o) => JsonSerializer.Serialize(o);
-var config = new ElectronicsData();
+var config = new HackingData();
 
 // Exercise the production client reader with the installed game's Newtonsoft assembly.
 var clientConfig = SkillsExtended.Helpers.ConfigurationJson.Deserialize<SkillsConfig>(
     Json(new SkillsConfig())
 );
 Console.WriteLine(
-    $"Client config: {clientConfig.Electronics.Tiers.Count} tiers, {clientConfig.Electronics.ExcludedKeycards.Count} excluded keycards."
+    $"Client config: {clientConfig.Hacking.Tiers.Count} tiers, {clientConfig.Hacking.ExcludedKeycards.Count} excluded keycards."
 );
 Check(
-    clientConfig.Electronics.Tiers.Count == 3,
+    clientConfig.Hacking.Tiers.Count == 3,
     "client config must replace initialized tiers, not append them"
 );
-clientConfig.Electronics.Validate();
+clientConfig.Hacking.Validate();
 Check(
-    clientConfig.Electronics.ExcludedKeycards.Count == 3,
+    clientConfig.Hacking.ExcludedKeycards.Count == 3,
     "client config must not duplicate exclusions"
 );
 Check(
@@ -47,31 +47,31 @@ Check(
     "complete server configuration survives client roundtrip unchanged"
 );
 var configured = new SkillsConfig();
-configured.Electronics.Tiers[1].SuccessXp = 17;
-configured.Electronics.KeycardDifficulties.Clear();
-configured.Electronics.ExcludedKeycards.Clear();
+configured.Hacking.Tiers[1].SuccessXp = 17;
+configured.Hacking.KeycardDifficulties.Clear();
+configured.Hacking.ExcludedKeycards.Clear();
 var customClient = SkillsExtended.Helpers.ConfigurationJson.Deserialize<SkillsConfig>(
     Json(configured)
 );
-customClient.Electronics.Validate();
+customClient.Hacking.Validate();
 Check(
-    customClient.Electronics.Tier(2).SuccessXp == 17,
+    customClient.Hacking.Tier(2).SuccessXp == 17,
     "custom tiers survive client loading exactly once"
 );
 Check(
-    customClient.Electronics.KeycardDifficulties.Count == 0
-        && customClient.Electronics.ExcludedKeycards.Count == 0,
+    customClient.Hacking.KeycardDifficulties.Count == 0
+        && customClient.Hacking.ExcludedKeycards.Count == 0,
     "explicit empty overrides replace defaults"
 );
 var legacyClient = SkillsExtended.Helpers.ConfigurationJson.Deserialize<SkillsConfig>("{}");
-legacyClient.Electronics.Validate();
-Check(legacyClient.Electronics.Tiers.Count == 3, "missing section retains client defaults");
+legacyClient.Hacking.Validate();
+Check(legacyClient.Hacking.Tiers.Count == 3, "missing section retains client defaults");
 var partialClient = SkillsExtended.Helpers.ConfigurationJson.Deserialize<SkillsConfig>(
-    "{\"Electronics\":{\"Enabled\":false}}"
+    "{\"Hacking\":{\"Enabled\":false}}"
 );
-partialClient.Electronics.Validate();
+partialClient.Hacking.Validate();
 Check(
-    !partialClient.Electronics.Enabled && partialClient.Electronics.Tiers.Count == 3,
+    !partialClient.Hacking.Enabled && partialClient.Hacking.Tiers.Count == 3,
     "partial sections retain omitted defaults and enabled flag"
 );
 if (args.Contains("--installed-config"))
@@ -82,7 +82,7 @@ if (args.Contains("--installed-config"))
     var installed = SkillsExtended.Helpers.ConfigurationJson.Deserialize<SkillsConfig>(
         File.ReadAllText(installedPath)
     );
-    installed.Electronics.Validate();
+    installed.Hacking.Validate();
     Console.WriteLine("Installed configuration passed client startup validation (read only).");
 }
 
@@ -608,12 +608,12 @@ var profile = new PmcData
         },
     },
 };
-ElectronicsProfile.Ensure(profile);
-ElectronicsProfile.Ensure(profile);
+HackingProfile.Ensure(profile);
+HackingProfile.Ensure(profile);
 Check(profile.Skills.Common.Count() == 2, "profile initialized once");
 var electronics = profile.Skills.Common.Single(s => (int)s.Id == 200);
 electronics.Progress = 321;
-ElectronicsProfile.Ensure(profile);
+HackingProfile.Ensure(profile);
 Check(electronics.Progress == 321, "existing progress preserved");
 var roundtrip = JsonSerializer.Deserialize<PmcData>(Json(profile));
 Check(
@@ -623,11 +623,11 @@ Check(
 );
 var oldConfig = JsonSerializer.Deserialize<SkillsConfig>("{}");
 Check(
-    oldConfig.Electronics.Enabled && oldConfig.Electronics.Tiers.Count == 3,
+    oldConfig.Hacking.Enabled && oldConfig.Hacking.Tiers.Count == 3,
     "old configs receive defaults"
 );
-oldConfig.Electronics.Enabled = false;
-ElectronicsProfile.Ensure(roundtrip);
+oldConfig.Hacking.Enabled = false;
+HackingProfile.Ensure(roundtrip);
 Check(
     roundtrip.Skills.Common.Single(s => (int)s.Id == 200).Progress == 321,
     "disable preserves saved progress"
@@ -636,7 +636,7 @@ if (args.Contains("--write-config"))
 {
     var path = Path.GetFullPath("Server/SkillsExtended.Server/Resources/Configs/SkillsConfig.json");
     var document = System.Text.Json.Nodes.JsonNode.Parse(File.ReadAllText(path));
-    document["Electronics"] = System.Text.Json.Nodes.JsonNode.Parse(Json(config));
+    document["Hacking"] = System.Text.Json.Nodes.JsonNode.Parse(Json(config));
     File.WriteAllText(
         path,
         document.ToJsonString(new JsonSerializerOptions { WriteIndented = true }) + "\n"

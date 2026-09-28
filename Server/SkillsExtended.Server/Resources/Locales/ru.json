@@ -30,7 +30,7 @@
   "BearAkSystemsErgo": "Повышает эргономичность Российского оружия на [{0:0.#%}]",
   "BearAkSystemsRecoil": "Снижает отдачу Российского оружия на [{0:0.#%}]",
   "Lockpicking": "Взлом замков",
-  "LockpickingDescription": "Pick mechanical locks without a key. Electronic doors require Electronics and a Modified PDA.",
+  "LockpickingDescription": "Pick mechanical locks without a key. Electronic doors require Hacking and a Modified PDA.",
   "LockpickingLevelingUpDescription": "Прокачивается при проверке дверей и вскрытии замков.",
   "LockpickingTimeReduction": "Сокращает время, необходимое для осмотра и вскрытия замков, на [{0:0.#%}]",
   "LockpickingForgivenessAngle": "Снижение сложности взлома замков на [{0:0.#%}]",

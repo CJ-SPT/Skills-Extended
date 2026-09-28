@@ -2,24 +2,24 @@ using System;
 using System.Runtime.CompilerServices;
 using EFT;
 using HarmonyLib;
-using SkillsExtended.Electronics;
+using SkillsExtended.Hacking;
 
-namespace SkillsExtended.Skills.Electronics;
+namespace SkillsExtended.Skills.Hacking;
 
-public sealed class ElectronicsSkill
+public sealed class HackingSkill
 {
-    private static readonly ConditionalWeakTable<SkillManager, ElectronicsSkill> Registrations =
+    private static readonly ConditionalWeakTable<SkillManager, HackingSkill> Registrations =
         new();
     public Skill Skill { get; }
     public SkillManager.SkillAction Action { get; } = new();
 
-    private ElectronicsSkill(SkillManager manager)
+    private HackingSkill(SkillManager manager)
     {
         var config =
-            SkillsExtendedPlugin.SkillData?.Electronics ?? new Config.Skills.ElectronicsData();
+            SkillsExtendedPlugin.SkillData?.Hacking ?? new Config.Skills.HackingData();
         Skill = new Skill(
             manager,
-            (ESkillId)ElectronicsIds.Skill,
+            (ESkillId)HackingIds.Skill,
             ESkillClass.Practical,
             config.Enabled ? new[] { Action.Factor(1f) } : Array.Empty<SkillManager.SkillAction>(),
             config.Enabled
@@ -27,16 +27,16 @@ public sealed class ElectronicsSkill
                 {
                     new SkillManager.FloatBuff
                     {
-                        Id = (EBuffId)ElectronicsIds.CoherenceBuff,
+                        Id = (EBuffId)HackingIds.CoherenceBuff,
                     }.Custom(level =>
                         (float)(level * config.CoherencePerLevel) / config.BaseCoherence
                     ),
-                    new SkillManager.FloatBuff { Id = (EBuffId)ElectronicsIds.StrengthBuff }.Custom(
+                    new SkillManager.FloatBuff { Id = (EBuffId)HackingIds.StrengthBuff }.Custom(
                         level => (float)(level / config.LevelsPerStrength) / config.BaseStrength
                     ),
                     new SkillManager.BooleanBuff
                     {
-                        Id = (EBuffId)ElectronicsIds.SlotsBuff,
+                        Id = (EBuffId)HackingIds.SlotsBuff,
                         BuffType = SkillManager.EBuffType.Elite,
                     },
                 }
@@ -44,8 +44,8 @@ public sealed class ElectronicsSkill
         );
     }
 
-    public static ElectronicsSkill Get(SkillManager manager) =>
-        Registrations.GetValue(manager, m => new ElectronicsSkill(m));
+    public static HackingSkill Get(SkillManager manager) =>
+        Registrations.GetValue(manager, m => new HackingSkill(m));
 
     public static void Attach(SkillManager manager, ref Skill[] skills, ref Skill[] display)
     {

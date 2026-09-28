@@ -6,8 +6,8 @@ using Fika.Core.Networking;
 using Fika.Core.Networking.LiteNetLib;
 using Fika.Core.Networking.LiteNetLib.Utils;
 using Newtonsoft.Json;
-using SkillsExtended.Electronics;
-using SkillsExtended.Skills.Electronics;
+using SkillsExtended.Hacking;
+using SkillsExtended.Skills.Hacking;
 
 namespace SkillsExtendedFika;
 

@@ -92,7 +92,7 @@ public class SkillLevelAdjuster
             var profile = Find(profileId);
             if (profile is not null && side == "Pmc")
             {
-                Patches.ElectronicsProfile.Ensure(profile.Value.Value.CharacterData?.PmcData);
+                Patches.HackingProfile.Ensure(profile.Value.Value.CharacterData?.PmcData);
             }
 
             return profile is null

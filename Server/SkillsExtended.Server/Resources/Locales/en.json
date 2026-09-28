@@ -155,13 +155,13 @@
     "66bdc88a6a83c63707069713 Description": "Reach level 40 vitality as a PMC",
     "66bdc88acf92f5fe60bb3ae1 Name": "Can't kill what doesn't bleed",
     "66bdc88acf92f5fe60bb3ae1 Description": "Reach level elite vitality as a PMC",
-    "Electronics": "Electronics",
-    "ElectronicsDescription": "Explore security networks and defeat their cores to unlock keycard doors using a Modified PDA. Levels increase coherence and attack strength.",
-    "ElectronicsLevelingUpDescription": "Improved by successfully hacking keycard doors; limited progress from genuine failed attempts.",
-    "200": "Electronics",
+    "Hacking": "Hacking",
+    "HackingDescription": "Explore security networks and defeat their cores to unlock keycard doors using a Modified PDA. Levels increase coherence and attack strength.",
+    "HackingLevelingUpDescription": "Improved by successfully hacking keycard doors; limited progress from genuine failed attempts.",
+    "200": "Hacking",
     "200Description": "Hack keycard doors with a Modified PDA.",
-    "200LevelingUpDescription": "Hack doors to improve Electronics.",
-    "ElectronicsCoherence": "Increases starting hacking coherence by [{0:0.#%}]",
-    "ElectronicsStrength": "Increases hacking attack strength by [{0:0.#%}]",
-    "ElectronicsUtilitySlots": "Adds a fourth hacking utility slot at elite"
+    "200LevelingUpDescription": "Hack doors to improve Hacking.",
+    "HackingCoherence": "Increases starting hacking coherence by [{0:0.#%}]",
+    "HackingStrength": "Increases hacking attack strength by [{0:0.#%}]",
+    "HackingUtilitySlots": "Adds a fourth hacking utility slot at elite"
 }

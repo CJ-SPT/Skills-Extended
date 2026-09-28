@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using SkillsExtended.Config.Skills;
 
-namespace SkillsExtended.Electronics;
+namespace SkillsExtended.Hacking;
 
-public static class ElectronicsIds
+public static class HackingIds
 {
     public const byte Skill = 200;
     public const string Pda = "662400eb756ca8948fe64fe8";
@@ -382,7 +382,7 @@ public static class HackingEngine
     };
 
     public static HackBoard StartAttempt(
-        ElectronicsData config,
+        HackingData config,
         int difficulty,
         int level,
         uint seed

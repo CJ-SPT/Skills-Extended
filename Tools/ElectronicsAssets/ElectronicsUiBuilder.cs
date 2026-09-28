@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using SkillsExtended.Electronics.UI;
+using SkillsExtended.Hacking.UI;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
@@ -17,7 +17,7 @@ public static class ElectronicsUiBuilder
     private static Sprite _panel;
     private static Sprite _node;
 
-    [MenuItem("SDK/Skills Extended/Build Electronics UI")]
+    [MenuItem("SDK/Skills Extended/Build Hacking UI")]
     public static void Build()
     {
         if (Application.unityVersion != "2022.3.43f1")
@@ -121,7 +121,7 @@ public static class ElectronicsUiBuilder
         var lineShader = AssetDatabase.LoadAssetAtPath<Shader>(Root + "/ElectronicsLine.shader");
         if (!lineShader || ShaderUtil.ShaderHasError(lineShader))
         {
-            throw new Exception("Electronics line shader failed compilation.");
+            throw new Exception("Hacking line shader failed compilation.");
         }
 
         var lineMaterialPath = Generated + "/ElectronicsLine.mat";
@@ -514,7 +514,7 @@ public static class ElectronicsUiBuilder
                 + string.Join("\n", AssetDatabase.GetDependencies(assets, true))
         );
         loaded.Unload(true);
-        Debug.Log("Electronics bundle validated: " + output);
+        Debug.Log("Hacking bundle validated: " + output);
     }
 
     private static void ValidateSharpness(AssetBundle bundle, string output)

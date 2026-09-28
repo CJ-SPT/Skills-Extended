@@ -4,7 +4,7 @@ namespace SkillsExtended.Config;
 
 public class SkillsConfig
 {
-    public ElectronicsData Electronics { get; set; } = new();
+    public HackingData Hacking { get; set; } = new();
     public FirstAidData FirstAid { get; set; }
     public FieldMedicineData FieldMedicine { get; set; }
     public WeaponSkillData NatoWeapons { get; set; }

@@ -11,11 +11,11 @@ using EFT.InventoryLogic;
 using EFT.UI;
 using HarmonyLib;
 using SkillsExtended.Config.Skills;
-using SkillsExtended.Electronics;
+using SkillsExtended.Hacking;
 using SPT.Reflection.Patching;
 using UnityEngine;
 
-namespace SkillsExtended.Skills.Electronics;
+namespace SkillsExtended.Skills.Hacking;
 
 public sealed class ElectronicsRuntime : MonoBehaviour
 {
@@ -25,11 +25,11 @@ public sealed class ElectronicsRuntime : MonoBehaviour
     public static Func<bool> IsAuthority = () => !SkillsExtendedInfo.IsFikaPresent;
     public static Action<HackRequest> Transport;
     public static event Action<HackReply> AuthorityReply;
-    public static ElectronicsData Config => SkillsExtendedPlugin.SkillData.Electronics;
+    public static HackingData Config => SkillsExtendedPlugin.SkillData.Hacking;
     public GameWorld World { get; private set; }
     public HackingAuthority Authority { get; private set; }
 
-    private readonly Dictionary<string, KeycardDoor> _doors = new();
+    private readonly ElectronicsDoorRegistry _doors = new();
     private readonly Dictionary<string, Vector3> _origins = new();
     private readonly HashSet<string> _appliedUnlocks = new();
     private readonly HashSet<string> _appliedXp = new();
@@ -59,15 +59,7 @@ public sealed class ElectronicsRuntime : MonoBehaviour
             return;
         }
 
-        foreach (
-            var door in LocationScene.GetAllObjectsAndWhenISayAllIActuallyMeanIt<KeycardDoor>()
-        )
-        {
-            if (!string.IsNullOrEmpty(door.Id))
-            {
-                runtime._doors[door.Id] = door;
-            }
-        }
+        runtime._doors.Refresh();
 
         if (IsAuthority())
         {
@@ -79,7 +71,7 @@ public sealed class ElectronicsRuntime : MonoBehaviour
     public static bool HasPda(Player player) =>
         player
             ?.Inventory?.GetPlayerItems(EPlayerItems.Equipment)
-            .Any(i => i.TemplateId == ElectronicsIds.Pda) == true;
+            .Any(i => i.TemplateId == HackingIds.Pda) == true;
 
     public int Remaining(string door) =>
         Math.Max(0, Config.AttemptsPerDoor - (_failures.TryGetValue(door, out var n) ? n : 0));
@@ -91,7 +83,7 @@ public sealed class ElectronicsRuntime : MonoBehaviour
     {
         if (!Config.Enabled)
         {
-            return "Electronics is disabled.";
+            return "Hacking is disabled.";
         }
 
         if (!player || player.Side == EPlayerSide.Savage || !player.HealthController.IsAlive)
@@ -99,9 +91,9 @@ public sealed class ElectronicsRuntime : MonoBehaviour
             return "Only a living PMC can hack.";
         }
 
-        if (!door || door.GetType() != typeof(KeycardDoor) || string.IsNullOrEmpty(door.KeyId))
+        if (!ElectronicsDoorRegistry.Supports(door))
         {
-            return "Unsupported electronic lock.";
+            return "Electronic lock is unavailable. Try the reader again.";
         }
 
         if (Config.Excluded(World.LocationId, door.Id, door.KeyId))
@@ -195,6 +187,7 @@ public sealed class ElectronicsRuntime : MonoBehaviour
             return;
         }
 
+        _doors.Register(door);
         _pendingStart = door.Id;
         Send(
             new HackRequest
@@ -227,7 +220,7 @@ public sealed class ElectronicsRuntime : MonoBehaviour
         }
 
         var player = FindPlayer(request.Actor);
-        _doors.TryGetValue(request.Door ?? "", out var door);
+        var door = _doors.Resolve(request.Door);
         var error =
             request.Operation == "sync"
                 ? null
@@ -239,7 +232,7 @@ public sealed class ElectronicsRuntime : MonoBehaviour
             return;
         }
 
-        var skill = player ? ElectronicsSkill.Get(player.Skills).Skill : null;
+        var skill = player ? HackingSkill.Get(player.Skills).Skill : null;
         var level = skill == null ? 0 : Math.Max(0, Math.Min(51, skill.Level + skill.Buff));
         var difficulty = door ? Config.Difficulty(World.LocationId, door.Id, door.KeyId) : 2;
         var reply = Authority.Process(request, level, difficulty, error);
@@ -334,7 +327,7 @@ public sealed class ElectronicsRuntime : MonoBehaviour
             reply.Unlock
             && !string.IsNullOrEmpty(reply.Attempt)
             && _appliedUnlocks.Add(reply.Attempt)
-            && _doors.TryGetValue(reply.Door, out var door)
+            && _doors.Resolve(reply.Door) is { } door
             && door.DoorState == EDoorState.Locked
         )
         {
@@ -355,7 +348,7 @@ public sealed class ElectronicsRuntime : MonoBehaviour
         if (reply.Xp > 0 && _appliedXp.Add(reply.Attempt))
         {
             player.ExecuteSkill(() =>
-                ElectronicsSkill.Get(player.Skills).Action.Complete(reply.Xp)
+                HackingSkill.Get(player.Skills).Action.Complete(reply.Xp)
             );
         }
 
@@ -440,7 +433,7 @@ public sealed class ElectronicsRuntime : MonoBehaviour
         foreach (var session in Authority.Active.Values.ToArray())
         {
             var player = FindPlayer(session.Actor);
-            _doors.TryGetValue(session.Door, out var door);
+            var door = _doors.Resolve(session.Door);
             if (!door || door.DoorState != EDoorState.Locked)
             {
                 Publish(Authority.End(session.Door, false));

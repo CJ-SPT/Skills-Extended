@@ -34,15 +34,35 @@ internal static class ClientSerialization
         resolver.AddSearchDirectory(Path.Combine(root, "BepInEx/core"));
         resolver.AddSearchDirectory(Path.GetDirectoryName(typeof(object).Assembly.Location));
         using var original = AssemblyDefinition.ReadAssembly(
-            Path.Combine(root, "BepInEx/DumpedAssemblies/EscapeFromTarkov/Assembly-CSharp.dll"),
+            Path.Combine(root, "EscapeFromTarkov_Data/Managed/Assembly-CSharp.dll"),
             new ReaderParameters { AssemblyResolver = resolver }
         );
+        // Start from the unpatched game assembly, not a dump containing an older local prepatch.
         // Invoke the production enum patch on an in-memory copy. Never overwrite installed assemblies.
         var patch = typeof(SkillsExtended.SkillsExtendedPatcher).GetMethod(
-            "PatchElectronics",
+            "PatchHacking",
             BindingFlags.Static | BindingFlags.NonPublic
         );
         patch.Invoke(null, new object[] { original });
+        // Reapplying must retain one named entry at each reserved numeric ID.
+        patch.Invoke(null, new object[] { original });
+        foreach (var (typeName, name, number, wireName) in new[]
+        {
+            ("EFT.ESkillId", "Hacking", 200, "200"),
+            ("EFT.EBuffId", "HackingCoherence", 1028, "HackingCoherence"),
+            ("EFT.EBuffId", "HackingStrength", 1029, "HackingStrength"),
+            ("EFT.EBuffId", "HackingUtilitySlots", 1030, "HackingUtilitySlots"),
+        })
+        {
+            var type = original.MainModule.GetType(typeName);
+            var field = type.Fields.Single(f => f.HasConstant && Convert.ToInt32(f.Constant) == number);
+            var attribute = field.CustomAttributes.Single(a => a.AttributeType.FullName == "EFT.JsonEnumNameAttribute");
+            if (field.Name != name || (string)attribute.ConstructorArguments[0].Value != wireName
+                || type.Fields.Any(f => f.Name.StartsWith("Electronics", StringComparison.Ordinal)))
+            {
+                throw new Exception($"Hacking identifier contract failed: {typeName}.{name} = {number}");
+            }
+        }
         using var stream = new MemoryStream();
         original.Write(stream);
         stream.Position = 0;
@@ -78,7 +98,7 @@ internal static class ClientSerialization
         }
 
         Console.WriteLine(
-            "Actual game EnumConverter<byte> -> server SkillTypes -> game roundtrip passed (ID 200)."
+            "Hacking skill/buff identifiers verified; actual game EnumConverter<byte> -> server SkillTypes -> game roundtrip passed (ID 200)."
         );
     }
 }

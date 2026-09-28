@@ -56,14 +56,16 @@ Bind(
 Bind(new ProneMoveVolumePatch());
 var failures = new List<string>();
 var assertions = 0;
+Run("Hacking cursor and UI event ownership", () => HackingUiInputChecks.Run(Check));
+Run("Electronic keypad discovery and authority lookup", () => ElectronicsDoorChecks.Run(Check));
 Run(
-    "Electronics practice never enables player-dependent raid input",
+    "Hacking practice never enables player-dependent raid input",
     () =>
     {
         GamePlayerOwner.MyPlayer = null;
         GamePlayerOwner.IgnoreInputWithKeepResetLook = GamePlayerOwner.IgnoreInputInNPCDialog =
             false;
-        var state = new SkillsExtended.Skills.Electronics.HackingInputState();
+        var state = new SkillsExtended.Skills.Hacking.HackingInputState();
         state.Capture(false);
         Check(
             !GamePlayerOwner.IgnoreInputInNPCDialog

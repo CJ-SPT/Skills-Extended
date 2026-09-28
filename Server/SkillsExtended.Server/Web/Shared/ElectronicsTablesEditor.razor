@@ -46,7 +46,7 @@
         <label class="se-field">@field.Label
             <textarea rows="5" value="@Value(field.Key)" @onchange="e => Edit(field.Key, e.Value?.ToString() ?? string.Empty)"></textarea>
         </label>
-        @if (Session.InputErrors.TryGetValue("Electronics." + field.Key, out var error))
+        @if (Session.InputErrors.TryGetValue("Hacking." + field.Key, out var error))
         {
             <p role="alert">@error</p>
         }
@@ -57,7 +57,7 @@
 {
     [CascadingParameter]
     public EditorSession Session { get; set; } = null!;
-    private ElectronicsData Data => Session.Skills.Electronics;
+    private HackingData Data => Session.Skills.Hacking;
 
     private static readonly (string Key, string Label)[] Fields =
     {
@@ -68,7 +68,7 @@
     };
 
     private string Value(string key) =>
-        Session.Inputs.TryGetValue("Electronics." + key, out var input)
+        Session.Inputs.TryGetValue("Hacking." + key, out var input)
             ? input
             : key switch
             {
@@ -86,7 +86,7 @@
 
     private void Edit(string key, string value)
     {
-        var path = "Electronics." + key;
+        var path = "Hacking." + key;
         Session.Inputs[path] = value;
         var lines = value.Split(
             '\n',
