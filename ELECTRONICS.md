@@ -77,11 +77,17 @@ ID are supported; readers without a keycard difficulty override use the default.
 Hacking uses reserved numeric skill ID **200**, distinct from Lock Picking.
 The skill identifier and configuration key are `Hacking`; buff identifiers are
 `HackingCoherence`, `HackingStrength`, and `HackingUtilitySlots`, retaining numeric
-IDs 1028, 1029, and 1030 respectively. Profile serialization still uses `200`.
-The prepatcher supplies both `JsonEnumName("200")` and `EnumMember(Value = "200")`
+IDs 1028, 1029, and 1030 respectively. SPT's server enum extension declares
+`Hacking = 200` through `user/patchers/com.cj.skillsextended/EnumExtensions.json`.
+Profile saves and responses use `"Id": "Hacking"` through SPT's standard serializer.
+Existing numeric `200` and string `"200"` IDs still load with their progress intact;
+the next normal save writes the named string. Stock skill names are unchanged.
+The client prepatcher supplies both `JsonEnumName("Hacking")` and `EnumMember(Value = "Hacking")`
 so EFT's enum converter and the standard raid-save `StringEnumConverter` agree.
 The offline serialization check uses the game's actual converter list and skill
 descriptors through SPT's raid-end request model, then verifies progress on reload.
+Run `Tests/SkillsExtended.ElectronicsTests/Run-SerializationChecks.ps1` to build and
+check an isolated copy of the server assembly with the shipped enum declaration applied.
 Missing progress is initialized once at zero. Existing progress and other skills
 are preserved. Success XP is awarded once per player/door/raid; qualifying failure
 XP is also awarded at most once. Both use the normal skill-action pipeline with

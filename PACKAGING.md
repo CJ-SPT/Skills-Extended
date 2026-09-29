@@ -34,7 +34,14 @@ SPT_Runtime/user/mods/SkillsExtended/
   Resources/
   wwwroot/
   bundles/
+SPT_Runtime/user/patchers/com.cj.skillsextended/
+  EnumExtensions.json
 ```
+
+The server enum declaration is required: it adds `Hacking = 200` before SPT loads
+the mod. Install the complete core package and restart the server before starting
+the client so both sides serialize the skill as `Hacking`. Existing skill progress
+stored under numeric ID 200 remains readable.
 
 The solution also produces `SkillsExtendedFika-<Version>-<Configuration>.zip`
 containing `BepInEx/plugins/SkillsExtended/SkillsExtendedFika.dll`, the matching

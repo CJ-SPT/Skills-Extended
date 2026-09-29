@@ -11,7 +11,7 @@ public record ModMetadata : IModMetadata, IModBlazorMetadata
     public static ModMetadata Instance { get; } = new();
     public Version Version { get; init; } = new(SkillsExtendedInfo.VERSION);
     public Range SptVersion { get; init; } = new(SkillsExtendedInfo.SPT_VERSION);
-    public bool HasPrepatcher { get; init; }
+    public bool HasPrepatcher { get; init; } = true;
 
     public string ModGuid { get; init; } = SkillsExtendedInfo.MOD_GUID;
     public string Name { get; init; } = "Skills Extended";

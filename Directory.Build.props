@@ -1,6 +1,6 @@
 ﻿<Project>
   <PropertyGroup>
-    <Version>3.0.2</Version>
+    <Version>3.0.3</Version>
     <LangVersion>latest</LangVersion>
     <RootNamespace>SkillsExtended</RootNamespace>
     <DeploySkillsExtended Condition="'$(DeploySkillsExtended)' == ''">true</DeploySkillsExtended>
@@ -106,5 +106,6 @@
     <Copy SourceFiles="@(SkillsExtendedServerWebAssets)" DestinationFolder="$(SptModDir)wwwroot\%(RecursiveDir)" SkipUnchangedFiles="true" />
     <Copy SourceFiles="@(SkillsExtendedServerBundles)" DestinationFolder="$(SptModDir)bundles\%(RecursiveDir)" SkipUnchangedFiles="true" />
     <Copy SourceFiles="$(ProjectDir)bundles.json" DestinationFolder="$(SptModDir)" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="$(ProjectDir)Prepatch\EnumExtensions.json" DestinationFolder="$(TarkovDir)SPT_Runtime\user\patchers\com.cj.skillsextended\" SkipUnchangedFiles="true" />
   </Target>
 </Project>

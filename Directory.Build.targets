@@ -43,6 +43,9 @@
       </SkillsExtendedPackageFile>
     </ItemGroup>
     <ItemGroup Condition="'$(SkillsExtendedProjectType)' == 'Server'">
+      <SkillsExtendedPackageFile Include="$(ProjectDir)Prepatch\EnumExtensions.json">
+        <PackageDirectory>SPT_Runtime\user\patchers\com.cj.skillsextended\</PackageDirectory>
+      </SkillsExtendedPackageFile>
       <SkillsExtendedPackageFile Include="$(TargetPath);$(TargetDir)SkillsExtended.Common.dll;$(ProjectDir)bundles.json">
         <PackageDirectory>SPT_Runtime\user\mods\SkillsExtended\</PackageDirectory>
       </SkillsExtendedPackageFile>

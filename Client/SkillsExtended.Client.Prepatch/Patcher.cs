@@ -441,9 +441,9 @@ public static class SkillsExtendedPatcher
     private static void PatchHacking(ref AssemblyDefinition assembly)
     {
         var skills = assembly.MainModule.GetType("EFT.ESkillId");
-        AddReserved(ref assembly, skills, "Hacking", "200", 200);
+        AddReserved(ref assembly, skills, "Hacking", "Hacking", 200);
         // Raid saves use Newtonsoft's StringEnumConverter, which ignores JsonEnumName.
-        // Keep the reserved numeric wire ID for both serializers, including existing entries.
+        // Match the server's declared enum name while retaining the reserved numeric ID.
         var hacking = skills.Fields.Single(f => f.Name == "Hacking");
         const string enumMemberName = "System.Runtime.Serialization.EnumMemberAttribute";
         var enumMember = hacking.CustomAttributes.FirstOrDefault(a =>
@@ -455,9 +455,9 @@ public static class SkillsExtendedPatcher
             var serialization = assembly.MainModule.AssemblyResolver.Resolve(
                 new AssemblyNameReference("System.Runtime.Serialization", new Version(4, 0, 0, 0))
             );
-            var constructor = serialization.MainModule.GetType(enumMemberName).Methods.Single(m =>
-                m.IsConstructor && !m.IsStatic && !m.HasParameters
-            );
+            var constructor = serialization
+                .MainModule.GetType(enumMemberName)
+                .Methods.Single(m => m.IsConstructor && !m.IsStatic && !m.HasParameters);
             enumMember = new CustomAttribute(assembly.MainModule.ImportReference(constructor));
             hacking.CustomAttributes.Add(enumMember);
         }
@@ -470,19 +470,16 @@ public static class SkillsExtendedPatcher
             }
         }
 
-        enumMember.Properties.Add(new Mono.Cecil.CustomAttributeNamedArgument(
-            "Value", new CustomAttributeArgument(assembly.MainModule.TypeSystem.String, "200")
-        ));
+        enumMember.Properties.Add(
+            new Mono.Cecil.CustomAttributeNamedArgument(
+                "Value",
+                new CustomAttributeArgument(assembly.MainModule.TypeSystem.String, "Hacking")
+            )
+        );
         var buffs = assembly.MainModule.GetType("EFT.EBuffId");
         AddReserved(ref assembly, buffs, "HackingCoherence", "HackingCoherence", 1028);
         AddReserved(ref assembly, buffs, "HackingStrength", "HackingStrength", 1029);
-        AddReserved(
-            ref assembly,
-            buffs,
-            "HackingUtilitySlots",
-            "HackingUtilitySlots",
-            1030
-        );
+        AddReserved(ref assembly, buffs, "HackingUtilitySlots", "HackingUtilitySlots", 1030);
     }
 
     private static void AddReserved(

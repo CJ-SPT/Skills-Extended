@@ -2,8 +2,8 @@ using System.Reflection;
 using System.Runtime.Loader;
 using Mono.Cecil;
 using Newtonsoft.Json;
-using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Eft.Match;
+using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Json;
 
@@ -11,6 +11,12 @@ internal static class ClientSerialization
 {
     public static void Verify()
     {
+        if (!Enum.TryParse<SkillTypes>("Hacking", out var injected) || (int)injected != 200)
+        {
+            throw new Exception(
+                "Server enum extension missing. Run Run-SerializationChecks.ps1 to prepare the isolated server fixture."
+            );
+        }
         var root = Environment.GetEnvironmentVariable("SKILLS_EFT_ROOT") ?? @"F:\SPT 4.1.x";
         AssemblyLoadContext.Default.Resolving += (_, name) =>
         {
@@ -49,21 +55,32 @@ internal static class ClientSerialization
         patch.Invoke(null, new object[] { original });
         // Reapplying must retain one named entry at each reserved numeric ID.
         patch.Invoke(null, new object[] { original });
-        foreach (var (typeName, name, number, wireName) in new[]
-        {
-            ("EFT.ESkillId", "Hacking", 200, "200"),
-            ("EFT.EBuffId", "HackingCoherence", 1028, "HackingCoherence"),
-            ("EFT.EBuffId", "HackingStrength", 1029, "HackingStrength"),
-            ("EFT.EBuffId", "HackingUtilitySlots", 1030, "HackingUtilitySlots"),
-        })
+        foreach (
+            var (typeName, name, number, wireName) in new[]
+            {
+                ("EFT.ESkillId", "Hacking", 200, "Hacking"),
+                ("EFT.EBuffId", "HackingCoherence", 1028, "HackingCoherence"),
+                ("EFT.EBuffId", "HackingStrength", 1029, "HackingStrength"),
+                ("EFT.EBuffId", "HackingUtilitySlots", 1030, "HackingUtilitySlots"),
+            }
+        )
         {
             var type = original.MainModule.GetType(typeName);
-            var field = type.Fields.Single(f => f.HasConstant && Convert.ToInt32(f.Constant) == number);
-            var attribute = field.CustomAttributes.Single(a => a.AttributeType.FullName == "EFT.JsonEnumNameAttribute");
-            if (field.Name != name || (string)attribute.ConstructorArguments[0].Value != wireName
-                || type.Fields.Any(f => f.Name.StartsWith("Electronics", StringComparison.Ordinal)))
+            var field = type.Fields.Single(f =>
+                f.HasConstant && Convert.ToInt32(f.Constant) == number
+            );
+            var attribute = field.CustomAttributes.Single(a =>
+                a.AttributeType.FullName == "EFT.JsonEnumNameAttribute"
+            );
+            if (
+                field.Name != name
+                || (string)attribute.ConstructorArguments[0].Value != wireName
+                || type.Fields.Any(f => f.Name.StartsWith("Electronics", StringComparison.Ordinal))
+            )
             {
-                throw new Exception($"Hacking identifier contract failed: {typeName}.{name} = {number}");
+                throw new Exception(
+                    $"Hacking identifier contract failed: {typeName}.{name} = {number}"
+                );
             }
         }
         using var stream = new MemoryStream();
@@ -79,20 +96,26 @@ internal static class ClientSerialization
         var value = Enum.ToObject(idType, 200);
         // Raid saves use EftJsonConverters, whose fallback for ESkillId is StringEnumConverter.
         // The explicit EFT.EnumConverter below is not the normal raid-save path.
-        var saveConverters = (JsonConverter[])game.GetType("EFT.EftJsonConverters", true)
-            .GetField("Converters").GetValue(null);
+        var saveConverters = (JsonConverter[])
+            game.GetType("EFT.EftJsonConverters", true).GetField("Converters").GetValue(null);
         var saveWire = JsonConvert.SerializeObject(value, saveConverters);
-        if (saveWire != "\"200\"")
+        if (saveWire != "\"Hacking\"")
         {
             throw new Exception("Raid-save skill ID lost numeric identity: " + saveWire);
         }
 
         var descriptorType = game.GetType("EFT.SkillsDescriptor+SkillInfoDescriptor", true);
         var descriptors = Array.CreateInstance(descriptorType, 53);
-        var stockIds = Enum.GetValues(idType).Cast<object>().Where(id => Convert.ToInt32(id) != 200).ToArray();
+        var stockIds = Enum.GetValues(idType)
+            .Cast<object>()
+            .Where(id => Convert.ToInt32(id) != 200)
+            .ToArray();
         foreach (var stockId in stockIds)
         {
-            if (JsonConvert.SerializeObject(stockId, saveConverters) != JsonConvert.SerializeObject(stockId.ToString()))
+            if (
+                JsonConvert.SerializeObject(stockId, saveConverters)
+                != JsonConvert.SerializeObject(stockId.ToString())
+            )
             {
                 throw new Exception("Stock skill wire name changed: " + stockId);
             }
@@ -107,26 +130,101 @@ internal static class ClientSerialization
             descriptors.SetValue(descriptor, i);
         }
 
-        var requestWire = JsonConvert.SerializeObject(new
-        {
-            results = new { profile = new { Skills = new { Common = descriptors } } }
-        }, saveConverters);
+        var requestWire = JsonConvert.SerializeObject(
+            new { results = new { profile = new { Skills = new { Common = descriptors } } } },
+            saveConverters
+        );
         var json = new JsonUtil([new SptJsonConverterRegistrator()]);
-        var request = (EndLocalRaidRequestData)json.Deserialize(requestWire, typeof(EndLocalRaidRequestData));
+        foreach (var stockId in Enum.GetValues<SkillTypes>())
+        {
+            var stockSkill = new SPTarkov.Server.Core.Models.Eft.Common.Tables.CommonSkill
+            {
+                Id = stockId,
+            };
+            using var stockJson = System.Text.Json.JsonDocument.Parse(json.Serialize(stockSkill));
+            if (
+                stockJson.RootElement.GetProperty("Id").GetString() != stockId.ToString()
+                || json.Deserialize<SPTarkov.Server.Core.Models.Eft.Common.Tables.CommonSkill>(
+                    json.Serialize(stockSkill)
+                ).Id != stockId
+            )
+            {
+                throw new Exception("Server stock skill serialization changed: " + stockId);
+            }
+        }
+        foreach (var oldWire in new[] { "200", "\"200\"", "\"Hacking\"" })
+        {
+            var oldSkill =
+                json.Deserialize<SPTarkov.Server.Core.Models.Eft.Common.Tables.CommonSkill>(
+                    "{\"Id\":"
+                        + oldWire
+                        + ",\"Progress\":321,\"PointsEarnedDuringSession\":7,\"LastAccess\":1234}"
+                );
+            foreach (var indented in new[] { false, true })
+            {
+                var savedWire = json.Serialize(oldSkill, indented);
+                using var savedJson = System.Text.Json.JsonDocument.Parse(savedWire);
+                var savedId = savedJson.RootElement.GetProperty("Id");
+                var loaded =
+                    json.Deserialize<SPTarkov.Server.Core.Models.Eft.Common.Tables.CommonSkill>(
+                        savedWire
+                    );
+                if (
+                    savedId.ValueKind != System.Text.Json.JsonValueKind.String
+                    || savedId.GetString() != "Hacking"
+                    || (int)loaded.Id != 200
+                    || loaded.Progress != 321
+                    || loaded.PointsEarnedDuringSession != 7
+                    || loaded.LastAccess != 1234
+                )
+                {
+                    throw new Exception(
+                        "Existing Hacking skill failed string serialization/progress preservation: "
+                            + savedWire
+                    );
+                }
+            }
+        }
+        var request = (EndLocalRaidRequestData)
+            json.Deserialize(requestWire, typeof(EndLocalRaidRequestData));
         var skills = request.Results.Profile.Skills.Common.ToArray();
-        if (skills.Length != 53 || (int)skills[52].Id != 200 || skills[52].Progress != 321
-            || skills[52].PointsEarnedDuringSession != 7 || skills.Take(52).Any(s => s.Progress != 123))
+        if (
+            skills.Length != 53
+            || (int)skills[52].Id != 200
+            || skills[52].Progress != 321
+            || skills[52].PointsEarnedDuringSession != 7
+            || skills.Take(52).Any(s => s.Progress != 123)
+        )
         {
             throw new Exception("Raid-end request lost skill progress.");
         }
 
         var savedRequest = json.Deserialize<EndLocalRaidRequestData>(json.Serialize(request));
         var savedSkills = savedRequest.Results.Profile.Skills.Common;
-        var loadedDescriptors = (Array)JsonConvert.DeserializeObject(
-            json.Serialize(savedSkills), descriptors.GetType(), saveConverters);
+        using (var savedJson = System.Text.Json.JsonDocument.Parse(json.Serialize(savedSkills)))
+        {
+            var hackingId = savedJson.RootElement[52].GetProperty("Id");
+            if (
+                hackingId.ValueKind != System.Text.Json.JsonValueKind.String
+                || hackingId.GetString() != "Hacking"
+            )
+            {
+                throw new Exception(
+                    "Server must write Hacking as a string ID for profile tools: " + hackingId
+                );
+            }
+        }
+        var loadedDescriptors = (Array)
+            JsonConvert.DeserializeObject(
+                json.Serialize(savedSkills),
+                descriptors.GetType(),
+                saveConverters
+            );
         var loadedHacking = loadedDescriptors.GetValue(52);
-        if (Convert.ToInt32(descriptorType.GetField("Id").GetValue(loadedHacking)) != 200
-            || (float)descriptorType.GetField("Progress").GetValue(loadedHacking) != 321f)
+        if (
+            Convert.ToInt32(descriptorType.GetField("Id").GetValue(loadedHacking)) != 200
+            || (float)descriptorType.GetField("Progress").GetValue(loadedHacking) != 321f
+        )
         {
             throw new Exception("Saved Hacking progress did not reload in the client.");
         }
@@ -136,12 +234,12 @@ internal static class ClientSerialization
                 game.GetType("EFT.EnumConverter`1", true).MakeGenericType(idType)
             );
         var wire = JsonConvert.SerializeObject(value, converter);
-        if (wire != "\"200\"")
+        if (wire != "\"Hacking\"")
         {
             throw new Exception("Client skill ID lost numeric identity: " + wire);
         }
 
-        var serverId = System.Text.Json.JsonSerializer.Deserialize<SkillTypes>(wire);
+        var serverId = json.Deserialize<SkillTypes>(wire);
         if ((int)serverId != 200)
         {
             throw new Exception("Server rejected client skill ID.");
@@ -155,7 +253,7 @@ internal static class ClientSerialization
         }
 
         Console.WriteLine(
-            "Hacking identifiers verified; actual EFT save converters -> SPT raid-end request -> saved profile -> client reload passed (ID 200, index 52). Explicit EnumConverter roundtrip also passed."
+            "Hacking identifiers verified; actual EFT save converters -> SPT raid-end request -> saved profile -> client reload passed (Hacking = 200, index 52). Stock skill names, legacy numeric saves, compact/indented JSON, and explicit EnumConverter roundtrip passed."
         );
     }
 }
