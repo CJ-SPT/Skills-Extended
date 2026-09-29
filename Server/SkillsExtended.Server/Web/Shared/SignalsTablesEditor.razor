@@ -1,0 +1,46 @@
+@using SkillsExtended.Signals
+
+<section class="se-panel">
+    <h2>Cache locations</h2>
+    <p>One enabled location is selected per raid. Coordinates use the game's world space. Validate placements in-game before enabling newly authored locations.</p>
+    @foreach (var p in Session.Skills.SignalsIntelligence.Placements.ToArray())
+    {
+        <details class="se-panel">
+            <summary>@p.Map · @p.Name</summary>
+            <div class="se-fields">
+                <label class="se-field">Enabled <input type="checkbox" @bind="p.Enabled" @bind:after="Session.Notify" /></label>
+                <label class="se-field">ID <input @bind="p.Id" @bind:after="Session.Notify" /></label>
+                <label class="se-field">Name <input @bind="p.Name" @bind:after="Session.Notify" /></label>
+                <label class="se-field">Map <select @bind="p.Map" @bind:after="Session.Notify"><option value="bigmap">Customs</option><option value="woods">Woods</option></select></label>
+                <label class="se-field">X <input type="number" step="0.01" @bind="p.Position.X" @bind:after="Session.Notify" /></label>
+                <label class="se-field">Y <input type="number" step="0.01" @bind="p.Position.Y" @bind:after="Session.Notify" /></label>
+                <label class="se-field">Z <input type="number" step="0.01" @bind="p.Position.Z" @bind:after="Session.Notify" /></label>
+                <label class="se-field">Rotation <input type="number" step="1" @bind="p.Yaw" @bind:after="Session.Notify" /></label>
+            </div>
+            <button @onclick="() => Remove(p)">Remove location</button>
+        </details>
+    }
+    <button @onclick="AddPlacement">Add location</button>
+</section>
+<section class="se-panel">
+    <h2>Treasure tables</h2>
+    <p>Each cache uses one theme. Relative weights control selection. Rewards must fit the case and meet its configured handbook value range; invalid tables suppress the hunt.</p>
+    @foreach (var entry in Session.Skills.SignalsIntelligence.Loot.ToArray())
+    {
+        <div class="se-fields">
+            <label class="se-field">Item template ID <input @bind="entry.Template" @bind:after="Session.Notify" /></label>
+            <label class="se-field">Theme <input @bind="entry.Theme" @bind:after="Session.Notify" /></label>
+            <label class="se-field">Weight <input type="number" min="1" @bind="entry.Weight" @bind:after="Session.Notify" /></label>
+            <button @onclick="() => Remove(entry)">Remove item</button>
+        </div>
+    }
+    <button @onclick="AddLoot">Add reward item</button>
+</section>
+
+@code {
+    [CascadingParameter] public EditorSession Session { get; set; } = null!;
+    private void AddPlacement() { Session.Skills.SignalsIntelligence.Placements.Add(new SignalPlacement { Id=Guid.NewGuid().ToString("N"),Name="New location",Map="bigmap",Enabled=false }); Session.Notify(); }
+    private void AddLoot() { Session.Skills.SignalsIntelligence.Loot.Add(new SignalLootEntry()); Session.Notify(); }
+    private void Remove(SignalPlacement p) { Session.Skills.SignalsIntelligence.Placements.Remove(p); Session.Notify(); }
+    private void Remove(SignalLootEntry p) { Session.Skills.SignalsIntelligence.Loot.Remove(p); Session.Notify(); }
+}

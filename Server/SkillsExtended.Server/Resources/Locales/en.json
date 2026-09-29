@@ -4,7 +4,7 @@
     "6622c28aed7e3bc72e301e22 Description": "A set of tools used for picking locks",
     "662400eb756ca8948fe64fe8 Name": "Modified PDA",
     "662400eb756ca8948fe64fe8 ShortName": "PDA",
-    "662400eb756ca8948fe64fe8 Description": "A modified handheld computer for bypassing electronic door security. Reusable; craft at Workbench level 2.",
+    "662400eb756ca8948fe64fe8 Description": "A modified handheld computer for bypassing electronic door security and tracking signal caches. Reusable; craft at Workbench level 2.",
   
     "FirstAid": "First Aid",
     "FirstAidDescription": "First aid skills make use of medical items quicker and more effective.",
@@ -163,5 +163,14 @@
     "200LevelingUpDescription": "Hack doors to improve Hacking.",
     "HackingCoherence": "Increases starting hacking coherence by [{0:0.#%}]",
     "HackingStrength": "Increases hacking attack strength by [{0:0.#%}]",
-    "HackingUtilitySlots": "Adds a fourth hacking utility slot at elite"
+    "HackingUtilitySlots": "Adds a fourth hacking utility slot at elite",
+    "SignalsIntelligence": "Signals Intelligence",
+    "SignalsIntelligenceDescription": "Tune transmissions, triangulate beacons and unlock signal caches with your Modified PDA.",
+    "SignalsIntelligenceLevelingUpDescription": "Record useful bearings and help unlock signal caches.",
+    "SignalsBearingAccuracy": "Improves bearing precision by [{0:0.#%}]",
+    "SignalsTuningTolerance": "Increases receiver tuning tolerance by [{0:0.#%}]",
+    "SignalsReadingMemory": "Retains six plotted bearings.",
+    "201": "Signals Intelligence",
+    "201Description": "Tune transmissions, triangulate beacons and unlock signal caches with your Modified PDA.",
+    "201LevelingUpDescription": "Record useful bearings and help unlock signal caches."
 }

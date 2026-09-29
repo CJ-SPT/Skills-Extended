@@ -47,6 +47,9 @@ internal class DoorActionPatch : ModulePatch
             return;
         }
 
+        if (worldInteractiveObject.Id?.StartsWith(SkillsExtended.Signals.SignalsIds.Prefix) == true)
+            return;
+
         worldInteractiveObject.AddLockpickingInteraction(__result, owner);
         worldInteractiveObject.AddInspectInteraction(__result, owner);
     }

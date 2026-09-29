@@ -24,6 +24,11 @@ internal class BuffIconShowPatch : ModulePatch
     [PatchPostfix]
     public static void Postfix(BuffIcon __instance, SkillManager.Buff buff, Image ____icon)
     {
+        if ((int)buff.Id >= 1031 && (int)buff.Id <= 1033)
+        {
+            ____icon.sprite = Signals.SignalsAssets.Icon();
+            return;
+        }
         if ((int)buff.Id >= 1028 && (int)buff.Id <= 1030)
         {
             ____icon.sprite = Hacking.HackingView.Icon(

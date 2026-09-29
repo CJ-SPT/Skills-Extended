@@ -9,9 +9,26 @@ public static class ConfigManager
     public static ConfigEntry<KeyCode> LpMiniGameTurnKey;
     public static ConfigEntry<bool> LpMiniEnableHealthBar;
     public static ConfigEntry<int> HackingVolume;
+    public static ConfigEntry<int> SignalsVolume;
+    public static ConfigEntry<KeyboardShortcut> SignalsShortcut;
 
     public static void RegisterConfig(ConfigFile config)
     {
+        SignalsVolume = config.Bind(
+            "Signals Intelligence",
+            "Receiver volume (%)",
+            70,
+            new ConfigDescription(
+                "Live receiver and search-area proximity beep volume. Visual readings work when muted.",
+                new AcceptableValueRange<int>(0, 100)
+            )
+        );
+        SignalsShortcut = config.Bind(
+            "Signals Intelligence",
+            "Open receiver",
+            new KeyboardShortcut(KeyCode.P, KeyCode.LeftControl),
+            "Open the receiver while carrying a Modified PDA."
+        );
         HackingVolume = config.Bind(
             "Hacking",
             "Hacking volume (%)",

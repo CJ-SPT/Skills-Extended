@@ -3,5 +3,10 @@
     "enumType": "SPTarkov.Server.Core.Models.Enums.SkillTypes",
     "constantName": "Hacking",
     "constantValue": 200
+  },
+  {
+    "enumType": "SPTarkov.Server.Core.Models.Enums.SkillTypes",
+    "constantName": "SignalsIntelligence",
+    "constantValue": 201
   }
 ]

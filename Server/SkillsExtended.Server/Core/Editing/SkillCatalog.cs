@@ -88,6 +88,14 @@ public static class SkillCatalog
     public static readonly IReadOnlyList<SkillDefinition> All =
     [
         new(
+            "SignalsIntelligence",
+            "signals-intelligence",
+            "Signals Intelligence",
+            "Skill_SignalsIntelligence",
+            "Tune and triangulate hidden supply caches using the Modified PDA.",
+            "Extended skills"
+        ),
+        new(
             "Hacking",
             "hacking",
             "Hacking",
@@ -330,6 +338,27 @@ public static class SkillCatalog
     private static SettingDefinition Describe(PropertyInfo p)
     {
         var key = p.Name;
+        if (p.DeclaringType == typeof(SkillsExtended.Config.Skills.SignalsIntelligenceData))
+        {
+            var signalUnit =
+                key.EndsWith("Seconds") ? "seconds"
+                : key.Contains("Uncertainty") ? "degrees"
+                : key == "MinimumSeparation" ? "metres"
+                : key == "TuningTolerance" ? "MHz"
+                : key == "TuningBonus" ? "ratio"
+                : key.EndsWith("Xp") ? "XP"
+                : key.Contains("LootValue") ? "roubles"
+                : "";
+            return new SettingDefinition(
+                p,
+                key == "Enabled"
+                    ? "Enable Signals Intelligence"
+                    : System.Text.RegularExpressions.Regex.Replace(key, "([a-z])([A-Z])", "$1 $2"),
+                signalUnit,
+                "Receiver and rewards",
+                null
+            );
+        }
         var ratio =
             key
             is "SkillShareXpRatio"

@@ -46,6 +46,34 @@ internal static class ClientSerialization
             Path.Combine(root, "EscapeFromTarkov_Data/Managed/Assembly-CSharp.dll"),
             new ReaderParameters { AssemblyResolver = resolver }
         );
+        var localBase = original.MainModule.GetType("EFT.LocalGame").BaseType.Resolve();
+        var lootBoundary = localBase.Methods.Single(m => m.Name == "SpawnLoot");
+        if (
+            lootBoundary.ReturnType.FullName != "System.Threading.Tasks.Task"
+            || lootBoundary.Parameters.Count != 1
+        )
+            throw new Exception("Signals loot initialization boundary changed.");
+        var nativeWorld = original.MainModule.GetType("EFT.World");
+        foreach (
+            var name in new[]
+            {
+                "_interactiveObjectsDictionary",
+                "_interactables",
+                "_interactableObjectsForNetSync",
+            }
+        )
+            if (!nativeWorld.Fields.Any(f => f.Name == name))
+                throw new Exception("Signals native interaction registry changed: " + name);
+        var fikaPath = Path.Combine(root, "BepInEx/plugins/Fika/Fika.Core.dll");
+        if (File.Exists(fikaPath))
+        {
+            using var fika = AssemblyDefinition.ReadAssembly(fikaPath);
+            if (
+                fika.MainModule.GetType("Fika.Core.Main.GameMode.CoopGame").BaseType.FullName
+                != original.MainModule.GetType("EFT.LocalGame").BaseType.FullName
+            )
+                throw new Exception("Fika and solo loot initialization boundaries differ.");
+        }
         // Start from the unpatched game assembly, not a dump containing an older local prepatch.
         // Invoke the production enum patch on an in-memory copy. Never overwrite installed assemblies.
         var patch = typeof(SkillsExtended.SkillsExtendedPatcher).GetMethod(
@@ -82,6 +110,28 @@ internal static class ClientSerialization
                     $"Hacking identifier contract failed: {typeName}.{name} = {number}"
                 );
             }
+        }
+        var signalsPatch = typeof(SkillsExtended.SkillsExtendedPatcher).GetMethod(
+            "PatchSignals",
+            BindingFlags.Static | BindingFlags.NonPublic
+        )!;
+        signalsPatch.Invoke(null, new object[] { original });
+        signalsPatch.Invoke(null, new object[] { original });
+        foreach (
+            var pair in new[]
+            {
+                ("EFT.ESkillId", "SignalsIntelligence", 201),
+                ("EFT.EBuffId", "SignalsBearingAccuracy", 1031),
+                ("EFT.EBuffId", "SignalsTuningTolerance", 1032),
+                ("EFT.EBuffId", "SignalsReadingMemory", 1033),
+            }
+        )
+        {
+            var field = original
+                .MainModule.GetType(pair.Item1)
+                .Fields.Single(f => f.HasConstant && Convert.ToInt32(f.Constant) == pair.Item3);
+            if (field.Name != pair.Item2)
+                throw new Exception("Signals enum contract failed.");
         }
         using var stream = new MemoryStream();
         original.Write(stream);
@@ -251,6 +301,39 @@ internal static class ClientSerialization
         {
             throw new Exception("Client rejected server numeric ID.");
         }
+
+        var signalValue = Enum.ToObject(idType, 201);
+        var signalDescriptor = Activator.CreateInstance(descriptorType);
+        descriptorType.GetField("Id").SetValue(signalDescriptor, signalValue);
+        descriptorType.GetField("Progress").SetValue(signalDescriptor, 417f);
+        var signalRequestWire = JsonConvert.SerializeObject(
+            new
+            {
+                results = new
+                {
+                    profile = new { Skills = new { Common = new[] { signalDescriptor } } },
+                },
+            },
+            saveConverters
+        );
+        var signalRequest = json.Deserialize<EndLocalRaidRequestData>(signalRequestWire);
+        var savedSignal = json.Deserialize<EndLocalRaidRequestData>(json.Serialize(signalRequest))
+            .Results.Profile.Skills.Common.Single();
+        var back = JsonConvert.DeserializeObject(
+            json.Serialize(savedSignal),
+            descriptorType,
+            saveConverters
+        );
+        if (
+            (int)savedSignal.Id != 201
+            || savedSignal.Progress != 417
+            || Convert.ToInt32(descriptorType.GetField("Id").GetValue(back)) != 201
+            || JsonConvert.SerializeObject(signalValue, converter) != "\"SignalsIntelligence\""
+        )
+            throw new Exception("Signals raid-save/profile/client roundtrip failed.");
+        Console.WriteLine(
+            "Signals Intelligence 201: real client converter, raid-end request, server persistence and client reload passed."
+        );
 
         Console.WriteLine(
             "Hacking identifiers verified; actual EFT save converters -> SPT raid-end request -> saved profile -> client reload passed (Hacking = 200, index 52). Stock skill names, legacy numeric saves, compact/indented JSON, and explicit EnumConverter roundtrip passed."

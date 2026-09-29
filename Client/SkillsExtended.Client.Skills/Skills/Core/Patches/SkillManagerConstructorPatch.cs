@@ -36,6 +36,7 @@ internal class SkillManagerConstructorPatch : ModulePatch
         ModifyDisplayList(__instance, ref ___DisplayList);
         LockSkills(__instance);
         Hacking.HackingSkill.Attach(__instance, ref ___Skills, ref ___DisplayList);
+        Signals.SignalsSkill.Attach(__instance, ref ___Skills, ref ___DisplayList);
     }
 
     /// <summary>
@@ -74,10 +75,16 @@ internal class SkillManagerConstructorPatch : ModulePatch
             []
         );
         // SilentOps already belongs to the native list in this EFT version.
-        skills = SkillLists.AddMissing(skills,
-            skillManager.BearRawpower, skillManager.UsecNegotiations, skillManager.SilentOps,
-            skillManager.ProneMovement, skillManager.Lockpicking,
-            skillManager.BearAksystems, skillManager.UsecArsystems);
+        skills = SkillLists.AddMissing(
+            skills,
+            skillManager.BearRawpower,
+            skillManager.UsecNegotiations,
+            skillManager.SilentOps,
+            skillManager.ProneMovement,
+            skillManager.Lockpicking,
+            skillManager.BearAksystems,
+            skillManager.UsecArsystems
+        );
     }
 
     /// <summary>
@@ -87,10 +94,17 @@ internal class SkillManagerConstructorPatch : ModulePatch
     /// <param name = "displayList">display list</param>
     private static void ModifyDisplayList(SkillManager skillManager, ref Skill[] displayList)
     {
-        displayList = SkillLists.Insert(displayList, 12,
-            skillManager.UsecArsystems, skillManager.BearAksystems, skillManager.Lockpicking,
-            skillManager.ProneMovement, skillManager.SilentOps,
-            skillManager.UsecNegotiations, skillManager.BearRawpower);
+        displayList = SkillLists.Insert(
+            displayList,
+            12,
+            skillManager.UsecArsystems,
+            skillManager.BearAksystems,
+            skillManager.Lockpicking,
+            skillManager.ProneMovement,
+            skillManager.SilentOps,
+            skillManager.UsecNegotiations,
+            skillManager.BearRawpower
+        );
     }
 
     /// <summary>

@@ -22,7 +22,7 @@ Check(
     "Every shipped field passes shared validation"
 );
 ConfigRules.RequireStructure(shipped.Skills);
-Check(SkillCatalog.All.Count == 18, "All 18 skill pages are catalogued");
+Check(SkillCatalog.All.Count == 19, "All 19 skill pages are catalogued");
 Check(
     SkillCatalog.All.All(s => s.Fields.All(f => f.Label != f.Key)),
     "Every scalar has a readable label"

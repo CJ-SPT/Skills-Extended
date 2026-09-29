@@ -41,6 +41,7 @@ public static class ConfigRules
         try
         {
             config.Hacking?.Validate();
+            config.SignalsIntelligence?.Validate();
         }
         catch (ArgumentException ex)
         {

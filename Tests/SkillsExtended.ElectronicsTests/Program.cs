@@ -13,6 +13,8 @@ using SPTarkov.Server.Core.Models.Enums;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 using Path = System.IO.Path;
 
+SignalsChecks.Verify();
+
 var checks = 0;
 void Check(bool condition, string name)
 {
@@ -610,27 +612,43 @@ var profile = new PmcData
 };
 HackingProfile.Ensure(profile);
 HackingProfile.Ensure(profile);
-Check(profile.Skills.Common.Count() == 2, "profile initialized once");
+Check(
+    profile.Skills.Common.Count() == 3 && profile.Skills.Common.Count(s => (int)s.Id == 201) == 1,
+    "both custom skills initialized once"
+);
 var electronics = profile.Skills.Common.Single(s => (int)s.Id == 200);
 electronics.Progress = 321;
+var signals = profile.Skills.Common.Single(s => (int)s.Id == 201);
+signals.Progress = 417;
 HackingProfile.Ensure(profile);
 Check(electronics.Progress == 321, "existing progress preserved");
+Check(signals.Progress == 417, "existing Signals progress preserved");
 var roundtrip = JsonSerializer.Deserialize<PmcData>(Json(profile));
 Check(
     roundtrip.Skills.Common.Single(s => (int)s.Id == 200).Progress == 321
+        && roundtrip.Skills.Common.Single(s => (int)s.Id == 201).Progress == 417
         && roundtrip.Skills.Common.Single(s => s.Id == SkillTypes.Strength).Progress == 123,
     "actual server model roundtrip"
 );
 var oldConfig = JsonSerializer.Deserialize<SkillsConfig>("{}");
+oldConfig.SignalsIntelligence.Validate();
+Check(oldConfig.SignalsIntelligence.Placements.Count == 24, "old configs receive Signals defaults");
 Check(
     oldConfig.Hacking.Enabled && oldConfig.Hacking.Tiers.Count == 3,
     "old configs receive defaults"
 );
 oldConfig.Hacking.Enabled = false;
+oldConfig.SignalsIntelligence.Enabled = false;
 HackingProfile.Ensure(roundtrip);
 Check(
     roundtrip.Skills.Common.Single(s => (int)s.Id == 200).Progress == 321,
     "disable preserves saved progress"
+);
+oldConfig.SignalsIntelligence.Enabled = true;
+HackingProfile.Ensure(roundtrip);
+Check(
+    roundtrip.Skills.Common.Single(s => (int)s.Id == 201).Progress == 417,
+    "Signals disable and reenable preserve saved progress"
 );
 if (args.Contains("--write-config"))
 {

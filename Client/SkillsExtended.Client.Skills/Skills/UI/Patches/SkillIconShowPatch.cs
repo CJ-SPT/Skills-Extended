@@ -27,6 +27,11 @@ public class SkillIconShowPatch : ModulePatch
     [PatchPostfix]
     private static void Postfix(SkillIcon __instance, Skill skill, Image ____icon)
     {
+        if ((byte)skill.Id == SkillsExtended.Signals.SignalsIds.Skill)
+        {
+            ____icon.sprite = Signals.SignalsAssets.Icon();
+            return;
+        }
         if ((byte)skill.Id == SkillsExtended.Hacking.HackingIds.Skill)
         {
             var icon = LoadHackingIcon();
@@ -66,7 +71,9 @@ public class SkillIconShowPatch : ModulePatch
         try
         {
             var directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            var bytes = File.ReadAllBytes(Path.Combine(directory, "Images", "HackingSkillIcon.png"));
+            var bytes = File.ReadAllBytes(
+                Path.Combine(directory, "Images", "HackingSkillIcon.png")
+            );
             texture = new Texture2D(2, 2, TextureFormat.RGBA32, false)
             {
                 name = "Hacking skill icon",
@@ -75,8 +82,11 @@ public class SkillIconShowPatch : ModulePatch
             };
             if (!texture.LoadImage(bytes, true))
                 throw new InvalidDataException("Could not decode HackingSkillIcon.png");
-            _hackingSprite = Sprite.Create(texture,
-                new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
+            _hackingSprite = Sprite.Create(
+                texture,
+                new Rect(0, 0, texture.width, texture.height),
+                new Vector2(0.5f, 0.5f)
+            );
         }
         catch (Exception ex)
         {

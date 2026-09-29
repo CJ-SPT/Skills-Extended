@@ -27,6 +27,21 @@ public sealed class HackingView : MonoBehaviour
 
     private static readonly Dictionary<string, Sprite> Sprites = new();
 
+    // Asset access is independent of either skill being enabled or owning the screen.
+    internal static T PdaAsset<T>(string name)
+        where T : UnityEngine.Object
+    {
+        if (!_bundle)
+            _bundle = AssetBundle.LoadFromFile(
+                Path.Combine(
+                    Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
+                    "bundles",
+                    "electronics_ui.bundle"
+                )
+            );
+        return _bundle ? _bundle.LoadAsset<T>(name) : null;
+    }
+
     public static Sprite Icon(string name)
     {
         if (Sprites.TryGetValue(name, out var sprite) && sprite)
@@ -87,6 +102,8 @@ public sealed class HackingView : MonoBehaviour
 
     public static bool Prepare()
     {
+        if (Signals.SignalsView.Current)
+            return false;
         if (SkillsExtendedInfo.IsFikaHeadless)
         {
             return false;

@@ -31,12 +31,14 @@ public class FikaSyncPlugin : BaseUnityPlugin
         _patchManager.EnablePatches();
         SkillsExtendedInfo.SyncPluginPresent = true;
         ElectronicsFikaBridge.Initialize();
+        SignalsFikaBridge.Initialize();
         FikaEventDispatcher.SubscribeEvent<FikaNetworkManagerCreatedEvent>(OnNetworkManagerCreated);
     }
 
     private static void OnNetworkManagerCreated(FikaNetworkManagerCreatedEvent createdEvent)
     {
         ElectronicsFikaBridge.Connect(createdEvent.Manager);
+        SignalsFikaBridge.Connect(createdEvent.Manager);
         switch (createdEvent.Manager)
         {
             case FikaServer server:

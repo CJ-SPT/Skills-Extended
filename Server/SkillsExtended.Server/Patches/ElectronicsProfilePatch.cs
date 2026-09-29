@@ -23,8 +23,13 @@ public static class HackingProfile
         lock (profile.Skills)
         {
             var list = profile.Skills.Common.ToList();
+            if (!list.Any(s => (int)s.Id == Signals.SignalsIds.Skill))
+                list.Add(
+                    new CommonSkill { Id = (SkillTypes)Signals.SignalsIds.Skill, Progress = 0 }
+                );
             if (list.Any(s => (int)s.Id == HackingIds.Skill))
             {
+                profile.Skills.Common = list;
                 return;
             }
 
