@@ -163,5 +163,5 @@
     "200LevelingUpDescription": "Hack doors to improve Hacking.",
     "HackingCoherence": "Increases starting hacking coherence by [{0:0.#%}]",
     "HackingStrength": "Increases hacking attack strength by [{0:0.#%}]",
-    "HackingUtilitySlots": "Adds a fourth hacking utility slot at elite"
+    "HackingUtilitySlots": "Adds a fourth hacking utility slot"
 }
