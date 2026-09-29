@@ -37,11 +37,6 @@
         <PackageDirectory>BepInEx\plugins\SkillsExtended\Notices\</PackageDirectory>
       </SkillsExtendedPackageFile>
     </ItemGroup>
-    <ItemGroup Condition="'$(SkillsExtendedProjectType)' == 'Server' Or '$(MSBuildProjectName)' == 'SkillsExtended.Client.Fika'">
-      <SkillsExtendedPackageFile Include="$(MSBuildThisFileDirectory)ELECTRONICS.md">
-        <PackageDirectory>SkillsExtended-Docs\</PackageDirectory>
-      </SkillsExtendedPackageFile>
-    </ItemGroup>
     <ItemGroup Condition="'$(SkillsExtendedProjectType)' == 'Server'">
       <SkillsExtendedPackageFile Include="$(ProjectDir)Prepatch\EnumExtensions.json">
         <PackageDirectory>SPT_Runtime\user\patchers\com.cj.skillsextended\</PackageDirectory>

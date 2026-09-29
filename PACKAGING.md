@@ -45,7 +45,7 @@ stored under numeric ID 200 remains readable.
 
 The solution also produces `SkillsExtendedFika-<Version>-<Configuration>.zip`
 containing `BepInEx/plugins/SkillsExtended/SkillsExtendedFika.dll`, the matching
-Electronics UI bundle, asset notices, and Electronics instructions. Install it alongside
+Electronics UI bundle and asset notices. Install it alongside
 the core package when using Fika. Building the full solution requires a compatible
 Fika reference, either installed or supplied with `-p:FikaAssemblyPath=...`.
 
