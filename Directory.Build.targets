@@ -33,9 +33,6 @@
       <SkillsExtendedPackageFile Include="$(MSBuildThisFileDirectory)Client\SkillsExtended.Client.Skills\Resources\bundles\electronics_ui.bundle">
         <PackageDirectory>BepInEx\plugins\SkillsExtended\bundles\</PackageDirectory>
       </SkillsExtendedPackageFile>
-      <SkillsExtendedPackageFile Include="$(MSBuildThisFileDirectory)Client\SkillsExtended.Client.Skills\Resources\Notices\**\*">
-        <PackageDirectory>BepInEx\plugins\SkillsExtended\Notices\</PackageDirectory>
-      </SkillsExtendedPackageFile>
     </ItemGroup>
     <ItemGroup Condition="'$(SkillsExtendedProjectType)' == 'Server'">
       <SkillsExtendedPackageFile Include="$(ProjectDir)Prepatch\EnumExtensions.json">
@@ -56,6 +53,10 @@
     </ItemGroup>
     <ItemGroup>
       <SkillsExtendedPackageFile Remove="@(SkillsExtendedPackageFile)" Condition="'%(SkillsExtendedPackageFile.Filename)%(SkillsExtendedPackageFile.Extension)' == '.gitkeep'" />
+      <!-- Documentation and provenance stay in the repository, never in runtime distributions.
+           Apply this to every contributor, including JSON receipts inside Notices. -->
+      <SkillsExtendedPackageFile Remove="@(SkillsExtendedPackageFile)"
+        Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('%(SkillsExtendedPackageFile.Identity)', '(?i)(^|[\\/])(notices?|docs?|documentation)([\\/]|$)|\.(md|markdown|rst|txt|pdf|docx?|odt)$|(^|[\\/])(readme|license|copying|changelog)(\.[^\\/]*)?$'))" />
       <SkillsExtendedPackageFile Update="@(SkillsExtendedPackageFile)">
         <PackagePath>%(SkillsExtendedPackageFile.PackageDirectory)%(SkillsExtendedPackageFile.RecursiveDir)%(SkillsExtendedPackageFile.Filename)%(SkillsExtendedPackageFile.Extension)</PackagePath>
       </SkillsExtendedPackageFile>

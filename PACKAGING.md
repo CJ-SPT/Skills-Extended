@@ -45,12 +45,16 @@ stored under numeric ID 200 remains readable.
 
 The solution also produces `SkillsExtendedFika-<Version>-<Configuration>.zip`
 containing `BepInEx/plugins/SkillsExtended/SkillsExtendedFika.dll`, the matching
-Electronics UI bundle and asset notices. Install it alongside
+Electronics UI bundle. Install it alongside
 the core package when using Fika. Building the full solution requires a compatible
 Fika reference, either installed or supplied with `-p:FikaAssemblyPath=...`.
 
 Packaging runs for Debug, Release, and BETA builds. Archives contain only the mod's
 runtime files, without debug symbols, game assemblies, or third-party dependencies.
+Notices, provenance receipts, documentation folders and document files are excluded
+from both distributions, including `Resources/modpage.md`. Their source copies
+remain in the repository. Runtime configuration, locales, release-note data and
+web editor assets remain packaged.
 Each archive is assembled in a fresh staging directory to exclude removed files.
 The version comes from each mod project's build settings; the archive configuration
 label and output folder follow the solution configuration. BETA packages preserve
@@ -64,11 +68,11 @@ client build dependencies). Deployment remains independently controlled by
 The current Electronics bundle is Corey's local EVE texture/audio build. See
 [ELECTRONICS.md](ELECTRONICS.md) and [the asset builder](Tools/ElectronicsAssets/README.md)
 for provenance, reproduction, configuration and live acceptance. Both archives
-include the same validated bundle and notices; the Fika archive still requires
+include the same validated bundle; the Fika archive still requires
 the complete core package. No installation or application restart is performed
 by the offline build command above.
 
 Lock Picking 2.0 art is embedded in `SkillsExtended.Client.Skills.dll`; its
-provenance notice ships in `Notices/LockPicking-Art.txt`. The Mini Pack source
+provenance notice remains in the repository's `Resources/Notices/LockPicking-Art.txt`. The Mini Pack source
 archive, FBX files, and standalone texture atlases are not release-package inputs.
 See [LOCKPICKING.md](LOCKPICKING.md) for controls and live acceptance.
