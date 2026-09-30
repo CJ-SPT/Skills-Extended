@@ -9,7 +9,8 @@ if not font_path.exists(): font_path = Path('C:/Windows/Fonts/arial.ttf')
 scale = 2
 def rgba(c): return tuple(round(max(0, min(1, v))*255) for v in c)
 issues=[]
-for scenario in ('receiver','pairing','unlocked','practice'):
+scenarios=('receiver','bearing','pairing','unlocked','practice','hacking-frame')
+for scenario in scenarios:
     canvas=Image.new('RGBA',(1920*scale,1080*scale),(31,36,34,255))
     for node in json.loads((root/(scenario+'.json')).read_text()):
         x,y,w,h=[node[k]*scale for k in ('x','y','w','h')]
@@ -60,6 +61,6 @@ for scenario in ('receiver','pairing','unlocked','practice'):
         size=(round(1920*factor),round(1080*factor))
         image=Image.new('RGB',(width,height),(31,36,34)); image.paste(canvas.convert('RGB').resize(size,Image.Resampling.LANCZOS),((width-size[0])//2,(height-size[1])//2))
         image.save(root/f'{scenario}-{width}x{height}.png')
-(root/'layout-checks.json').write_text(json.dumps({'states':4,'resolutions':3,'textIssues':issues,'scope':'Offline production layout and mesh rendering; Unity interaction and presentation require live acceptance.'},indent=2))
-print('\n'.join(issues) if issues else 'All four states fit at 1080p, 1440p and ultrawide; text measurements passed.')
+(root/'layout-checks.json').write_text(json.dumps({'states':len(scenarios),'resolutions':3,'textIssues':issues,'scope':'Offline production layout and mesh rendering; hacking-frame shows the housing and existing panel bounds only. Unity interaction and presentation require live acceptance.'},indent=2))
+print('\n'.join(issues) if issues else f'All {len(scenarios)} layouts fit at 1080p, 1440p and ultrawide; text measurements passed.')
 if issues: sys.exit(1)

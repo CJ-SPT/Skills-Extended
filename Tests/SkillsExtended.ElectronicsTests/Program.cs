@@ -14,6 +14,7 @@ using JsonSerializer = System.Text.Json.JsonSerializer;
 using Path = System.IO.Path;
 
 SignalsChecks.Verify();
+SignalPlacementChecks.Verify();
 
 var checks = 0;
 void Check(bool condition, string name)

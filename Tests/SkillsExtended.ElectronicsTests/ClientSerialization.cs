@@ -54,6 +54,18 @@ internal static class ClientSerialization
         )
             throw new Exception("Signals loot initialization boundary changed.");
         var nativeWorld = original.MainModule.GetType("EFT.World");
+        var nativeCacheInteract = original
+            .MainModule.GetType("EFT.Interactive.LootableContainer")
+            .Methods.Single(m =>
+                m.Name == "Interact"
+                && m.Parameters.Count == 1
+                && m.Parameters[0].ParameterType.FullName == "EFT.Interactive.InteractionResult"
+            );
+        if (
+            !nativeCacheInteract.HasBody
+            || nativeCacheInteract.ReturnType.FullName != "System.Void"
+        )
+            throw new Exception("Signals cache lock patch target changed.");
         foreach (
             var name in new[]
             {

@@ -27,6 +27,20 @@ internal static class SignalsChecks
         }
         var c = new SignalsIntelligenceData();
         c.Validate();
+        foreach (var map in new[] { "woods", "Woods", "WOODS", "bigmap", "Bigmap", "BIGMAP" })
+        {
+            Check(SignalsMaps.IsSupported(map), "native and configured map casing: " + map);
+            Check(
+                SignalsMaps.Same(map, map.ToLowerInvariant()),
+                "host, peer and authoring map match: " + map
+            );
+        }
+        Check(
+            !SignalsMaps.IsSupported(null)
+                && !SignalsMaps.IsSupported("factory4_day")
+                && !SignalsMaps.Same(null, null),
+            "missing and unsupported map IDs stay excluded"
+        );
         Check(c.MinimumSeparation == 125, "default bearing separation is 125 metres");
         Check(
             c.Placements.Count == 24 && c.Placements.GroupBy(p => p.Map).All(g => g.Count() == 12),
@@ -68,6 +82,25 @@ internal static class SignalsChecks
             },
         };
         var at = new SignalPoint();
+        var observed = SignalsModel.ObservedBearing(a, at, 0);
+        Check(
+            SignalsModel
+                .ScanAlignmentHint(a, at, 0, a.Frequency + 1, observed)
+                .Contains("FREQUENCY"),
+            "frequency misalignment names the visible frequency control"
+        );
+        Check(
+            SignalsModel.ScanAlignmentHint(a, at, 0, a.Frequency, observed + 6).Contains("BEARING"),
+            "bearing misalignment names the visible bearing control instead of phase"
+        );
+        Check(
+            SignalsModel.ScanAlignmentHint(a, at, 0, a.Frequency, observed + 360) == null,
+            "aligned bearing wraps through north"
+        );
+        Check(
+            SignalsModel.ScanAlignmentHint(a, at, 0, a.Frequency, observed + 4.99f) == null,
+            "scan hint matches the authority's five degree hold tolerance"
+        );
         var zone = new SignalSnapshot
         {
             Ready = true,
@@ -78,6 +111,62 @@ internal static class SignalsChecks
         var edgeInterval = SignalsModel.ProximityInterval(a, zone, new() { X = 200, Z = 100 });
         var middleInterval = SignalsModel.ProximityInterval(a, zone, new() { X = 150, Z = 100 });
         var caseInterval = SignalsModel.ProximityInterval(a, zone, a.Placement.Position);
+        var listener = new SignalPoint { X = 100, Z = 90 };
+        var towardPitch = SignalsModel.ProximityPitch(listener, a.Placement.Position, 0);
+        var sidePitch = SignalsModel.ProximityPitch(listener, a.Placement.Position, 90);
+        var awayPitch = SignalsModel.ProximityPitch(listener, a.Placement.Position, 180);
+        Check(
+            Math.Abs(towardPitch - 1.6f) < .001f
+                && Math.Abs(sidePitch - 1.2f) < .001f
+                && Math.Abs(awayPitch - .8f) < .001f,
+            "pitch rises from behind through side to ahead"
+        );
+        Check(
+            SignalsModel.ProximityPitch(listener, a.Placement.Position, -90) == sidePitch
+                && SignalsModel.ProximityPitch(listener, a.Placement.Position, 360) == towardPitch,
+            "direction cue is symmetric and wraps north"
+        );
+        Check(
+            SignalsModel.ProximityPitch(new() { X = 90, Z = 100 }, a.Placement.Position, 90)
+                == towardPitch,
+            "east uses Unity player yaw convention"
+        );
+        Check(
+            SignalsModel.ProximityPitch(
+                new()
+                {
+                    X = 100,
+                    Y = 50,
+                    Z = 90,
+                },
+                a.Placement.Position,
+                0
+            ) == towardPitch,
+            "heading pitch ignores height differences"
+        );
+        Check(
+            SignalsModel.ProximityPitch(new() { X = 100, Z = 99.5f }, a.Placement.Position, 180)
+                > awayPitch
+                && SignalsModel.ProximityPitch(a.Placement.Position, a.Placement.Position, 180)
+                    == towardPitch,
+            "arrival tone stays stable when crossing the cache"
+        );
+        Check(
+            SignalsModel.ProximityPitch(null, a.Placement.Position, 0) == 1
+                && SignalsModel.ProximityPitch(listener, null, 0) == 1
+                && SignalsModel.ProximityPitch(listener, a.Placement.Position, float.NaN) == 1,
+            "invalid heading inputs return neutral pitch"
+        );
+        var lastPitch = towardPitch;
+        for (var yaw = 1; yaw <= 180; yaw++)
+        {
+            var pitch = SignalsModel.ProximityPitch(listener, a.Placement.Position, yaw);
+            Check(
+                pitch <= lastPitch && pitch >= .7999f && pitch <= 1.6001f,
+                "pitch changes smoothly with heading"
+            );
+            lastPitch = pitch;
+        }
         Check(
             Math.Abs(edgeInterval - 1.5f) < .001f
                 && Math.Abs(caseInterval - .18f) < .001f
@@ -408,8 +497,41 @@ internal static class SignalsChecks
             .GetField("_runtime", BindingFlags.Instance | BindingFlags.NonPublic)!
             .SetValue(config, snapshot);
         var service = new SignalsRaidService(config, templates, json);
+        foreach (var map in new[] { "Woods", "Bigmap" })
+        {
+            service.Start("case-fixture", map, map, true);
+            var mapManifest = service.Get("case-fixture");
+            Check(
+                mapManifest.Error == null
+                    && mapManifest.PlacementCandidates.Count == 12
+                    && mapManifest.PlacementCandidates.All(p => p.Map == map.ToLowerInvariant()),
+                "raid creation accepts native map ID " + map
+            );
+        }
         service.Start("snapshot", "frozen", "woods", true);
         var frozen = service.Get("snapshot");
+        Check(
+            frozen.Placement == null
+                && !frozen.PlacementResolved
+                && frozen.PlacementCandidates.Count == 12
+                && frozen.PlacementCandidates.All(p =>
+                    p.Map == "woods" && p.Enabled && p.SearchRadius == 10
+                ),
+            "server freezes all enabled map areas for host resolution"
+        );
+        var frozenLocation = frozen.PlacementCandidates[0];
+        var originalLocation = snapshot.Skills.SignalsIntelligence.Placements.Single(p =>
+            p.Id == frozenLocation.Id
+        );
+        var originalX = originalLocation.Position.X;
+        originalLocation.Position.X += 5;
+        originalLocation.SearchRadius = 0;
+        Check(
+            frozenLocation.Position.X == originalX && frozenLocation.SearchRadius == 10,
+            "raid placement catalog is isolated from edits"
+        );
+        originalLocation.Position.X = originalX;
+        originalLocation.SearchRadius = 10;
         snapshot.Skills.SignalsIntelligence.BearingXp = 9;
         service.Start("snapshot", "frozen", "woods", true);
         Check(
@@ -429,6 +551,31 @@ internal static class SignalsChecks
             service.Start("profile", raid, i % 2 == 0 ? "bigmap" : "woods", true);
             var manifest = service.Get("profile");
             Check(manifest.Error == null, "real database reward generation: " + manifest.Error);
+            Check(
+                manifest
+                    .PlacementCandidates.Select(p => p.Id)
+                    .SequenceEqual(
+                        SignalPlacementSearch
+                            .Order(manifest.PlacementCandidates, manifest.Seed)
+                            .Select(p => p.Id)
+                    ),
+                "server candidate order derives from frozen raid seed"
+            );
+            var rewardBeforePlacement = manifest.ItemsJson;
+            var idsBeforePlacement = (
+                manifest.ContainerId,
+                manifest.RootId,
+                manifest.Seed,
+                manifest.Frequency
+            );
+            manifest.Placement = SignalPlacementSearch.Copy(manifest.PlacementCandidates.Last());
+            manifest.PlacementResolved = true;
+            Check(
+                manifest.ItemsJson == rewardBeforePlacement
+                    && (manifest.ContainerId, manifest.RootId, manifest.Seed, manifest.Frequency)
+                        == idsBeforePlacement,
+                "choosing fallback placement does not regenerate rewards or identity"
+            );
             var items = JsonNode.Parse(manifest.ItemsJson)!.AsArray();
             var value = items.Skip(1).Sum(item => prices[item!["_tpl"]!.GetValue<string>()]);
             Check(value >= 250000 && value <= 500000, "reward value bounds");

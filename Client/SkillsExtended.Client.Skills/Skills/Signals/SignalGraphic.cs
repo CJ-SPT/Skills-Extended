@@ -85,7 +85,8 @@ public sealed class SignalGraphic : MaskableGraphic
             return;
         }
         var readings = SignalsModel.PlottedReadings(View.State, View.Level).ToArray();
-        var points = readings.Select(x => x.Position).Concat(new[] { View.Position }).ToList();
+        var position = View.Position;
+        var points = readings.Select(x => x.Position).Concat(new[] { position }).ToList();
         if (View.State.HasFix)
         {
             var e = View.State.Estimate;
@@ -93,16 +94,12 @@ public sealed class SignalGraphic : MaskableGraphic
             points.Add(new SignalPoint { X = e.X - radius, Z = e.Z - radius });
             points.Add(new SignalPoint { X = e.X + radius, Z = e.Z + radius });
         }
-        var minX = points.Min(p => p.X) - 100;
-        var maxX = points.Max(p => p.X) + 100;
-        var minZ = points.Min(p => p.Z) - 100;
-        var maxZ = points.Max(p => p.Z) + 100;
-        var scale = Math.Min(r.width / (maxX - minX), r.height / (maxZ - minZ));
+        // Follow the live player; fit stored readings and the search circle around them.
+        var halfWidth = points.Max(p => Math.Abs(p.X - position.X)) + 100;
+        var halfHeight = points.Max(p => Math.Abs(p.Z - position.Z)) + 100;
+        var scale = Math.Min(r.width / (2 * halfWidth), r.height / (2 * halfHeight));
         Vector2 Project(SignalPoint p) =>
-            new(
-                r.center.x + (p.X - (minX + maxX) / 2) * scale,
-                r.center.y + (p.Z - (minZ + maxZ) / 2) * scale
-            );
+            new(r.center.x + (p.X - position.X) * scale, r.center.y + (p.Z - position.Z) * scale);
         foreach (var reading in readings)
         {
             var origin = Project(reading.Position);
@@ -128,7 +125,18 @@ public sealed class SignalGraphic : MaskableGraphic
                 );
             }
         }
-        var player = Project(View.Position);
+        var player = Project(position);
+        if (!View.Pairing && !View.State.Unlocked)
+        {
+            var angle = View.Bearing * Math.PI / 180;
+            var direction = new Vector2((float)Math.Sin(angle), (float)Math.Cos(angle));
+            // This is the antenna setting, never the hidden cache's true direction.
+            var tip = player + direction * 60;
+            var side = new Vector2(-direction.y, direction.x) * 5;
+            Line(vh, player, tip, amber, 2);
+            Line(vh, tip, tip - direction * 10 + side, amber, 2);
+            Line(vh, tip, tip - direction * 10 - side, amber, 2);
+        }
         Line(vh, player - Vector2.one * 5, player + Vector2.one * 5, Color.white, 3);
         Line(vh, player + new Vector2(-5, 5), player + new Vector2(5, -5), Color.white, 3);
         if (View.State.HasFix)

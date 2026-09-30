@@ -35,6 +35,7 @@ public class SignalPlacement
     public string Name { get; set; } = "";
     public SignalPoint Position { get; set; } = new();
     public float Yaw { get; set; }
+    public float SearchRadius { get; set; } = 10;
     public bool Enabled { get; set; } = true;
 }
 
@@ -53,6 +54,8 @@ public class SignalManifest
     public string RootId { get; set; } = "";
     public string ContainerTemplate { get; set; } = "";
     public SignalPlacement Placement { get; set; }
+    public List<SignalPlacement> PlacementCandidates { get; set; } = new();
+    public bool PlacementResolved { get; set; }
     public uint Seed { get; set; }
     public float Frequency { get; set; }
 
@@ -60,6 +63,39 @@ public class SignalManifest
     public string ItemsJson { get; set; } = "[]";
     public SignalsIntelligenceData Config { get; set; }
     public string Error { get; set; }
+
+    public bool HasSamePlacement(SignalManifest other) =>
+        PlacementResolved
+        && other?.PlacementResolved == true
+        && Placement?.Position != null
+        && other.Placement?.Position != null
+        && ContainerId == other.ContainerId
+        && RootId == other.RootId
+        && InteractionNetId == other.InteractionNetId
+        && Placement.Id == other.Placement.Id
+        && Placement.Map == other.Placement.Map
+        && Placement.Yaw == other.Placement.Yaw
+        && Placement.Position.X == other.Placement.Position.X
+        && Placement.Position.Y == other.Placement.Position.Y
+        && Placement.Position.Z == other.Placement.Position.Z;
+
+    // Do not publish the authority's search catalog or its mutable working manifest.
+    public SignalManifest ForPeer() =>
+        new()
+        {
+            Raid = Raid,
+            ContainerId = ContainerId,
+            InteractionNetId = InteractionNetId,
+            RootId = RootId,
+            ContainerTemplate = ContainerTemplate,
+            Placement = PlacementResolved ? SignalPlacementSearch.Copy(Placement) : null,
+            PlacementResolved = PlacementResolved,
+            Seed = Seed,
+            Frequency = Frequency,
+            ItemsJson = ItemsJson,
+            Config = Config?.RulesOnly(),
+            Error = Error,
+        };
 }
 
 public class SignalReading
@@ -166,6 +202,21 @@ public static class SignalsModel
     public static float PairPhase(uint seed, double time) =>
         Wrap(seed % 360 + (float)Math.Sin(time * .7) * 35 + (float)Math.Sin(time * .23) * 20);
 
+    public static string ScanAlignmentHint(
+        SignalManifest manifest,
+        SignalPoint position,
+        int level,
+        float frequency,
+        float bearing
+    )
+    {
+        if (Math.Abs(frequency - manifest.Frequency) > Tolerance(manifest.Config, level))
+            return "Tune FREQUENCY to the peak (Left / Right).";
+        if (Math.Abs(Delta(bearing, ObservedBearing(manifest, position, level))) > 5)
+            return "Sweep BEARING for strongest reception (Up / Down).";
+        return null;
+    }
+
     // Zero means silent. Zone membership uses the same horizontal circle as the plot;
     // cadence uses distance to the physical cache, independently of tuning or direction.
     public static float ProximityInterval(
@@ -194,6 +245,21 @@ public static class SignalsModel
         var distance = (float)Math.Sqrt(horizontal * horizontal + vertical * vertical);
         var range = Math.Max(1, state.Radius + SignalPoint.Distance(state.Estimate, target));
         return .18f + 1.32f * Math.Min(1, distance / range);
+    }
+
+    // Pitch supplies heading while pulse cadence supplies distance. Call only when
+    // ProximityInterval is active, so this never reveals the cache before a fix.
+    public static float ProximityPitch(SignalPoint position, SignalPoint target, float facing)
+    {
+        if (position?.IsFinite != true || target?.IsFinite != true || !SignalPoint.Finite(facing))
+            return 1;
+        var distance = SignalPoint.Distance(position, target);
+        if (!SignalPoint.Finite(distance))
+            return 1;
+        var alignment = (float)Math.Cos(Delta(facing, Bearing(position, target)) * Math.PI / 180);
+        // Within one metre, settle toward the arrival tone instead of flipping
+        // high/low as the player walks across the case's horizontal position.
+        return 1.6f - .4f * (1 - alignment) * Math.Min(1, distance);
     }
 
     public static bool Intersect(
@@ -387,24 +453,20 @@ public sealed class SignalsAuthority
         }
         var dt = Math.Max(0, Math.Min(.35, now - op.Last));
         op.Last = now;
-        var aligned =
+        var alignmentHint =
             r.Operation == "scan"
-                ? Math.Abs(r.Frequency - Manifest.Frequency)
-                    <= SignalsModel.Tolerance(Manifest.Config, level)
-                    && Math.Abs(
-                        SignalsModel.Delta(
-                            r.Bearing,
-                            SignalsModel.ObservedBearing(Manifest, position, level)
-                        )
-                    ) <= 5
-                : Math.Abs(SignalsModel.Delta(r.Phase, SignalsModel.PairPhase(Manifest.Seed, now)))
-                    <= 12;
+                ? SignalsModel.ScanAlignmentHint(Manifest, position, level, r.Frequency, r.Bearing)
+            : Math.Abs(SignalsModel.Delta(r.Phase, SignalsModel.PairPhase(Manifest.Seed, now)))
+            <= 12
+                ? null
+            : "Match the waveforms with PHASE (Q / E), then hold steady.";
+        var aligned = alignmentHint == null;
         op.Stable = aligned ? op.Stable + dt : 0;
         if (r.Operation == "pair")
             State.PairingActor = r.Actor;
         State.Message = aligned
             ? $"{(r.Operation == "scan" ? "Recording" : "Pairing")}: {op.Stable:0.0}s"
-            : "Align the signal and hold steady.";
+            : alignmentHint;
         if (
             op.Stable
             < (
@@ -465,8 +527,10 @@ public sealed class SignalsAuthority
             Award(r.Actor, Manifest.Config.BearingXp);
             _awards[r.Actor] = count + 1;
         }
-        State.Message = State.HasFix
-            ? "Fix established. Access code recovered. Search the plotted area."
+        State.Message =
+            State.HasFix ? "Fix established. Access code recovered. Search the plotted area."
+            : State.Readings.Count >= 2
+                ? $"No crossing fix yet. Move sideways at least {Manifest.Config.MinimumSeparation:0.#} metres and record again."
             : $"Bearing recorded. Move {Manifest.Config.MinimumSeparation:0.#} metres or more and take a crossing bearing.";
     }
 

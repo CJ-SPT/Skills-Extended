@@ -22,6 +22,14 @@ public class SignalsIntelligenceData
     public List<SignalPlacement> Placements { get; set; } = SignalsDefaults.Placements();
     public List<SignalLootEntry> Loot { get; set; } = SignalsDefaults.Loot();
 
+    public SignalsIntelligenceData RulesOnly()
+    {
+        var rules = (SignalsIntelligenceData)MemberwiseClone();
+        rules.Placements = new();
+        rules.Loot = new();
+        return rules;
+    }
+
     public void Validate()
     {
         foreach (
@@ -61,12 +69,15 @@ public class SignalsIntelligenceData
                 || p.Position == null
                 || !p.Position.IsFinite
                 || !SignalPoint.Finite(p.Yaw)
+                || !SignalPoint.Finite(p.SearchRadius)
+                || p.SearchRadius < 0
+                || p.SearchRadius > 25
                 || (p.Map != "bigmap" && p.Map != "woods")
             )
             || Placements.Select(p => p.Id).Distinct().Count() != Placements.Count
         )
             throw new ArgumentException(
-                "Signals Intelligence: placements need unique IDs, a supported map, and finite coordinates."
+                "Signals Intelligence: placements need unique IDs, a supported map, finite coordinates, and a search radius from 0 to 25 metres."
             );
         if (
             Loot.Any(l =>

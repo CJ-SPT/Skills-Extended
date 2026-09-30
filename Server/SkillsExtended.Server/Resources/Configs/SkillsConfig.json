@@ -749,6 +749,7 @@
                     "Y": 1.49,
                     "Z": -53.462
                 },
+                "SearchRadius": 10,
                 "Yaw": 180.13,
                 "Enabled": true
             },
@@ -761,6 +762,7 @@
                     "Y": 1.16,
                     "Z": -233.567
                 },
+                "SearchRadius": 10,
                 "Yaw": 85.08,
                 "Enabled": true
             },
@@ -773,6 +775,7 @@
                     "Y": 1.238,
                     "Z": 15.374
                 },
+                "SearchRadius": 10,
                 "Yaw": 167.01,
                 "Enabled": true
             },
@@ -785,6 +788,7 @@
                     "Y": 11.478,
                     "Z": 153.143
                 },
+                "SearchRadius": 10,
                 "Yaw": 171.58,
                 "Enabled": true
             },
@@ -797,6 +801,7 @@
                     "Y": 1.868,
                     "Z": -203.043
                 },
+                "SearchRadius": 10,
                 "Yaw": 17.74,
                 "Enabled": true
             },
@@ -809,6 +814,7 @@
                     "Y": -1.282,
                     "Z": -1.739
                 },
+                "SearchRadius": 10,
                 "Yaw": 150.14,
                 "Enabled": true
             },
@@ -821,6 +827,7 @@
                     "Y": 9.79,
                     "Z": 152.291
                 },
+                "SearchRadius": 10,
                 "Yaw": 216.79,
                 "Enabled": true
             },
@@ -833,6 +840,7 @@
                     "Y": 1.258,
                     "Z": -127.796
                 },
+                "SearchRadius": 10,
                 "Yaw": 0,
                 "Enabled": true
             },
@@ -845,6 +853,7 @@
                     "Y": 1.608,
                     "Z": -150.29
                 },
+                "SearchRadius": 10,
                 "Yaw": 123.84,
                 "Enabled": true
             },
@@ -857,6 +866,7 @@
                     "Y": -7.742,
                     "Z": 120.946
                 },
+                "SearchRadius": 10,
                 "Yaw": 137.37,
                 "Enabled": true
             },
@@ -869,6 +879,7 @@
                     "Y": 1.418,
                     "Z": -86.287
                 },
+                "SearchRadius": 10,
                 "Yaw": 163.58,
                 "Enabled": true
             },
@@ -881,6 +892,7 @@
                     "Y": 0.94,
                     "Z": -88.66
                 },
+                "SearchRadius": 10,
                 "Yaw": 0,
                 "Enabled": true
             },
@@ -893,6 +905,7 @@
                     "Y": 17.26,
                     "Z": -587.673
                 },
+                "SearchRadius": 10,
                 "Yaw": 268.42,
                 "Enabled": true
             },
@@ -905,6 +918,7 @@
                     "Y": -1.057,
                     "Z": 289.183
                 },
+                "SearchRadius": 10,
                 "Yaw": 78.41,
                 "Enabled": true
             },
@@ -917,6 +931,7 @@
                     "Y": -20.525,
                     "Z": 373.601
                 },
+                "SearchRadius": 10,
                 "Yaw": 240.48,
                 "Enabled": true
             },
@@ -929,6 +944,7 @@
                     "Y": 12.174,
                     "Z": -511.584
                 },
+                "SearchRadius": 10,
                 "Yaw": 14.21,
                 "Enabled": true
             },
@@ -941,6 +957,7 @@
                     "Y": -1.44,
                     "Z": -54.814
                 },
+                "SearchRadius": 10,
                 "Yaw": 268.09,
                 "Enabled": true
             },
@@ -953,6 +970,7 @@
                     "Y": -0.5,
                     "Z": 382.949
                 },
+                "SearchRadius": 10,
                 "Yaw": 224.32,
                 "Enabled": true
             },
@@ -965,6 +983,7 @@
                     "Y": 23.098,
                     "Z": -309.826
                 },
+                "SearchRadius": 10,
                 "Yaw": 353.64,
                 "Enabled": true
             },
@@ -977,6 +996,7 @@
                     "Y": 12.141,
                     "Z": -151.806
                 },
+                "SearchRadius": 10,
                 "Yaw": 125.58,
                 "Enabled": true
             },
@@ -989,6 +1009,7 @@
                     "Y": 5.19,
                     "Z": 79.514
                 },
+                "SearchRadius": 10,
                 "Yaw": 112.03,
                 "Enabled": true
             },
@@ -1001,6 +1022,7 @@
                     "Y": 8.884,
                     "Z": -654.01
                 },
+                "SearchRadius": 10,
                 "Yaw": 316.58,
                 "Enabled": true
             },
@@ -1013,6 +1035,7 @@
                     "Y": -7.8,
                     "Z": 195.463
                 },
+                "SearchRadius": 10,
                 "Yaw": 139.58,
                 "Enabled": true
             },
@@ -1025,6 +1048,7 @@
                     "Y": 26.98,
                     "Z": -310.324
                 },
+                "SearchRadius": 10,
                 "Yaw": 287.12,
                 "Enabled": true
             }

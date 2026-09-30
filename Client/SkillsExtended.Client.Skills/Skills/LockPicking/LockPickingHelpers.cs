@@ -129,6 +129,13 @@ public static class LockPickingHelpers
         var gameObject = assetBundle.LoadAssetWithSubAssets("DoorLock").First();
         LockPickingGame = Object.Instantiate(gameObject as GameObject);
         Object.DontDestroyOnLoad(LockPickingGame);
+        var scaler = LockPickingGame.GetComponent<CanvasScaler>();
+        // Preserve the bundle's width-based size at 16:9, then fit both screen dimensions.
+        scaler.referenceResolution = new Vector2(
+            scaler.referenceResolution.x,
+            scaler.referenceResolution.x / LockPicking.LockPickingGame.ReferenceAspectRatio
+        );
+        scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.Expand;
         var lpComp = LockPickingGame.GetOrAddComponent<LockPickingGame>();
         var audioSources = LockPickingGame.GetComponents(typeof(AudioSource));
         foreach (var source in audioSources)

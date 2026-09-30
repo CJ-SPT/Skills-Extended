@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Comfort.Common;
 using EFT;
 using EFT.Console.Core;
@@ -13,97 +14,183 @@ namespace SkillsExtended.Skills.Signals;
 
 public class SignalsAuthoring
 {
+    private static bool _busy;
+
     [ConsoleCommand(
         "signals_capture",
         "",
-        "Capture a candidate cache placement at the PMC position to the plugin folder"
+        "Capture a disabled exact cache placement at the PMC position"
     )]
-    public static void Capture([ConsoleArgument("candidate")] string name)
-    {
-        var world = Singleton<GameWorld>.Instantiated ? Singleton<GameWorld>.Instance : null;
-        if (!world?.MainPlayer || (world.LocationId != "bigmap" && world.LocationId != "woods"))
-            return;
-        var p = new SignalPlacement
-        {
-            Id = world.LocationId + "-" + Guid.NewGuid().ToString("N").Substring(0, 8),
-            Map = world.LocationId,
-            Name = name,
-            Position = SignalsCase.Point(world.MainPlayer.Position),
-            Yaw = world.MainPlayer.Rotation.x,
-            Enabled = false,
-        };
-        var error = SignalsCase.ValidatePlacement(p, out var position);
-        if (error != null)
-        {
-            ElectronicsRuntime.Notify(error);
-            return;
-        }
-        p.Position = SignalsCase.Point(position);
-        var directory = Path.Combine(
-            Path.GetDirectoryName(typeof(SignalsAuthoring).Assembly.Location),
-            "SignalsPlacements"
+    public static void Capture([ConsoleArgument("candidate")] string name) =>
+        Run(
+            async (world, runtime) =>
+            {
+                if (!world.MainPlayer)
+                    return;
+                var p = new SignalPlacement
+                {
+                    Id =
+                        SignalsMaps.Normalize(world.LocationId)
+                        + "-"
+                        + Guid.NewGuid().ToString("N").Substring(0, 8),
+                    Map = SignalsMaps.Normalize(world.LocationId),
+                    Name = name,
+                    Position = SignalsCase.Point(world.MainPlayer.Position),
+                    Yaw = world.MainPlayer.Rotation.x,
+                    SearchRadius = 0,
+                    Enabled = false,
+                };
+                var report = await SignalsPlacement.Resolve(
+                    runtime,
+                    new[] { p },
+                    0,
+                    runtime.Lifetime
+                );
+                if (report.Placement == null)
+                {
+                    ElectronicsRuntime.Notify("Capture rejected. " + report);
+                    return;
+                }
+                // Store the ground anchor, not the prefab root offset; resolving a captured
+                // point again must not repeatedly add the case's pivot/ground clearance.
+                p.Yaw = report.Placement.Yaw;
+                p.Position = report.Placement.Position;
+                var body = SignalsPlacement.Geometry().Body;
+                p.Position.Y += body.Center.Y - body.Extents.Y - .02f;
+                var directory = Path.Combine(
+                    Path.GetDirectoryName(typeof(SignalsAuthoring).Assembly.Location),
+                    "SignalsPlacements"
+                );
+                Directory.CreateDirectory(directory);
+                File.WriteAllText(
+                    Path.Combine(directory, p.Id + ".json"),
+                    JsonConvert.SerializeObject(p, Formatting.Indented)
+                );
+                ElectronicsRuntime.Notify(
+                    "Captured " + p.Id + ". Review and add it in the Signals editor."
+                );
+            }
         );
-        Directory.CreateDirectory(directory);
-        File.WriteAllText(
-            Path.Combine(directory, p.Id + ".json"),
-            JsonConvert.SerializeObject(p, Formatting.Indented)
-        );
-        ElectronicsRuntime.Notify(
-            "Captured " + p.Id + ". Review and add it in the Signals editor."
-        );
-    }
 
     [ConsoleCommand(
         "signals_validate",
         "",
-        "Validate configured cache placement surfaces on the loaded map"
+        "Resolve configured cache areas on the loaded map and log rejection counts"
     )]
-    public static void Validate()
-    {
-        var world = Singleton<GameWorld>.Instantiated ? Singleton<GameWorld>.Instance : null;
-        if (!world)
-            return;
-        foreach (
-            var p in SkillsExtendedPlugin.SkillData.SignalsIntelligence.Placements.Where(p =>
-                p.Map == world.LocationId
-            )
-        )
-        {
-            var error = SignalsCase.ValidatePlacement(p, out _);
-            SkillsExtendedPlugin.Log.LogInfo(
-                $"Signals placement {p.Id}: {error ?? "surface checks passed; inspect access and surroundings"}"
-            );
-        }
-        ElectronicsRuntime.Notify("Signal placement results written to the game log.");
-    }
+    public static void Validate() =>
+        Run(
+            async (world, runtime) =>
+            {
+                foreach (
+                    var p in SkillsExtendedPlugin.SkillData.SignalsIntelligence.Placements.Where(
+                        p => SignalsMaps.Same(p.Map, world.LocationId)
+                    )
+                )
+                {
+                    var report = await SignalsPlacement.Resolve(
+                        runtime,
+                        new[] { SignalPlacementSearch.Copy(p) },
+                        0,
+                        runtime.Lifetime
+                    );
+                    SkillsExtendedPlugin.Log.LogInfo(
+                        $"Signals area {p.Id} (enabled={p.Enabled}): {report}"
+                    );
+                }
+                ElectronicsRuntime.Notify(
+                    "Signal placement results written to the game log; inspect access in-game."
+                );
+            }
+        );
 
     [ConsoleCommand(
         "signals_preview",
         "",
-        "Show an unlootable placement marker for 20 seconds; no rewards or XP"
+        "Show the resolved unlootable case for 20 seconds; no rewards or XP"
     )]
-    public static void Preview([ConsoleArgument("")] string id)
+    public static void Preview([ConsoleArgument("")] string id) =>
+        Run(
+            async (world, runtime) =>
+            {
+                var p =
+                    SkillsExtendedPlugin.SkillData.SignalsIntelligence.Placements.FirstOrDefault(
+                        p => p.Id == id && SignalsMaps.Same(p.Map, world.LocationId)
+                    );
+                if (p == null)
+                {
+                    ElectronicsRuntime.Notify("Unknown placement ID on this map.");
+                    return;
+                }
+                var report = await SignalsPlacement.Resolve(
+                    runtime,
+                    new[] { SignalPlacementSearch.Copy(p) },
+                    0,
+                    runtime.Lifetime
+                );
+                if (report.Placement == null)
+                {
+                    ElectronicsRuntime.Notify("Preview rejected. " + report);
+                    return;
+                }
+                var marker = new GameObject("Signal placement preview");
+                marker.SetActive(false);
+                try
+                {
+                    marker.transform.SetPositionAndRotation(
+                        SignalsCase.Vector(report.Placement.Position),
+                        Quaternion.Euler(0, report.Placement.Yaw, 0)
+                    );
+                    var clone = SignalsCase.InstantiateVisual(marker.transform);
+                    foreach (var behavior in clone.GetComponentsInChildren<MonoBehaviour>(true))
+                        behavior.enabled = false;
+                    foreach (var collider in clone.GetComponentsInChildren<Collider>(true))
+                        collider.enabled = false;
+                    marker.AddComponent<SignalsPlacementPreview>();
+                    clone.SetActive(true);
+                    marker.SetActive(true);
+                    UnityEngine.Object.Destroy(marker, 20);
+                }
+                catch
+                {
+                    UnityEngine.Object.Destroy(marker);
+                    throw;
+                }
+            }
+        );
+
+    private static async void Run(Func<GameWorld, SignalsRuntime, Task> operation)
     {
         var world = Singleton<GameWorld>.Instantiated ? Singleton<GameWorld>.Instance : null;
-        var p = SkillsExtendedPlugin.SkillData.SignalsIntelligence.Placements.FirstOrDefault(p =>
-            p.Id == id && p.Map == world?.LocationId
-        );
-        if (p == null)
+        var runtime = SignalsRuntime.Instance;
+        if (
+            !world
+            || !runtime
+            || runtime.World != world
+            || !SignalsMaps.IsSupported(world.LocationId)
+        )
         {
-            ElectronicsRuntime.Notify("Unknown placement ID on this map.");
+            ElectronicsRuntime.Notify("Load Customs or Woods to author signal placements.");
             return;
         }
-        var error = SignalsCase.ValidatePlacement(p, out var position);
-        if (error != null)
+        if (_busy)
         {
-            ElectronicsRuntime.Notify(error);
+            ElectronicsRuntime.Notify("A signal placement check is already running.");
             return;
         }
-        var marker = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        marker.name = "Signal placement preview";
-        marker.transform.position = position + Vector3.up * .2f;
-        marker.transform.localScale = new Vector3(.5f, .4f, .3f);
-        UnityEngine.Object.Destroy(marker.GetComponent<Collider>());
-        UnityEngine.Object.Destroy(marker, 20);
+        _busy = true;
+        try
+        {
+            await operation(world, runtime);
+        }
+        catch (OperationCanceledException) { }
+        catch (Exception e)
+        {
+            SkillsExtendedPlugin.Log.LogError("Signals authoring: " + e);
+            ElectronicsRuntime.Notify("Signal placement check failed: " + e.Message);
+        }
+        finally
+        {
+            _busy = false;
+        }
     }
 }

@@ -9,9 +9,16 @@ python Tools/SignalsAssets/Preview/render.py artifacts/signals-ui
 
 The renderer requires Pillow. It uses the CJ-SDK Liberation Sans font when present,
 otherwise Windows Arial. The export compiles the production receiver layout and
-graphic builders against a small Unity API shim. It exports receiver, pairing,
+graphic builders against a small Unity API shim. It exports receiver, three-bearing alignment, pairing,
 unlocked, and practice states; the renderer produces 1080p, 1440p, and ultrawide
-images plus text-fit measurements in `layout-checks.json`.
+images plus text-fit measurements in `layout-checks.json`. It also exports the
+production Hacking PDA frame around the original 1440x940 panel bounds at all
+three resolutions. The `hacking-frame` preview does not render the game's board
+or bundled HUD; its blank screen is only a layout placeholder.
+
+The export also checks 800 position/bearing/fix combinations across the five Signals
+states, verifying that the player stays centered and all plotted geometry remains
+inside the display while travelling up to 3 km in each direction.
 
 These are offline previews, not Unity screenshots. They do not validate native
 font rasterization, masking, pointer dispatch, keyboard capture, or live resizing.

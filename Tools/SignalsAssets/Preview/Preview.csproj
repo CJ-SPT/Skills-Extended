@@ -6,6 +6,10 @@
     <DeploySkillsExtended>false</DeploySkillsExtended>
   </PropertyGroup>
   <ItemGroup>
+    <Compile
+      Include="../../../Client/SkillsExtended.Client.Skills/Skills/Electronics/HackingPdaFrame.cs"
+      Link="Production/HackingPdaFrame.cs"
+    />
     <ProjectReference Include="../../../SkillsExtended.Common/SkillsExtended.Common.csproj" />
     <Compile
       Include="../../../Client/SkillsExtended.Client.Skills/Skills/Signals/SignalsView.Skin.cs"

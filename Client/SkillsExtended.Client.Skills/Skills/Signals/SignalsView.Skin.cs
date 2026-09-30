@@ -567,19 +567,29 @@ public sealed partial class SignalsView
             6
         );
         _values.text =
-            $"SKILL {Level:00}    PRECISION +/-{SignalsModel.Uncertainty(Manifest.Config, Level):0.#} deg\n{SignalsModel.PlottedReadings(State, Level).Count()} / {(Level >= 51 ? 6 : 4)} BEARINGS STORED";
+            $"SKILL {Level:00}    PRECISION +/-{SignalsModel.Uncertainty(Manifest.Config, Level):0.#} deg\nBEARINGS STORED: {SignalsModel.PlottedReadings(State, Level).Count()}    MEMORY: {(Level >= 51 ? 6 : 4)} SLOTS";
         _values.enableWordWrapping = true;
         _codeValue.text = State.HasFix ? State.AccessCode : "------";
         _plotStatus.text = State.HasFix
-            ? $"SEARCH AREA  /  +/-{State.Radius:0} m    ·    WHITE CROSS: YOUR POSITION"
-            : "WHITE CROSS: YOU    ·    TAKE TWO CROSSING BEARINGS TO ESTABLISH A FIX";
-        _status.text = offline
-            ? "Cache unlocked. Beacon offline. Loot the case normally."
+            ? Pairing || offline
+                ? $"SEARCH +/-{State.Radius:0} m  /  WHITE: YOU (CENTERED)"
+                : $"SEARCH +/-{State.Radius:0} m  /  WHITE: YOU  /  AMBER ARROW: ANTENNA"
+            : "WHITE: YOU (CENTERED)  /  AMBER: ANTENNA  /  GREEN: STORED";
+        var alignmentHint = Pairing
+            ? "Match the waveforms with PHASE (Q / E), then hold steady."
+            : SignalsModel.ScanAlignmentHint(Manifest, Position, Level, Frequency, Bearing);
+        _status.text =
+            offline ? "Cache unlocked. Beacon offline. Loot the case normally."
+            : _recording && !Pairing && alignmentHint != null ? alignmentHint
+            : State.Message == "Align the signal and hold steady."
+                ? alignmentHint ?? "Bearing aligned. Hold position to record."
             : State.Message
                 ?? (
-                    Pairing ? "Align the amber waveform with the green beacon, then hold steady."
+                    Pairing ? alignmentHint
                     : State.HasFix
                         ? "Access code recovered. Search the plotted area and pair with the case."
+                    : State.Readings.Count >= 2
+                        ? "No crossing fix yet. Move sideways, retune the bearing, and record."
                     : "Tune the peak, sweep for the strongest bearing, then record."
                 );
         _status.color =

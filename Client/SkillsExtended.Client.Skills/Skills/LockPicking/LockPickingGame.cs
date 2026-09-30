@@ -20,6 +20,8 @@ namespace SkillsExtended.Skills.LockPicking;
 /// </summary>
 public class LockPickingGame : MonoBehaviour
 {
+    internal const float ReferenceAspectRatio = 16f / 9f;
+
     #region FIELDS
 
     // Holds all pieces of the safe lock for quicker access
@@ -309,8 +311,13 @@ public class LockPickingGame : MonoBehaviour
 
     private void MoveLockPick()
     {
+        // Keep the mouse sweep inside the centered game area on ultrawide displays.
+        var inputWidth = Mathf.Min(Screen.width, Screen.height * ReferenceAspectRatio);
+        var inputLeft = (Screen.width - inputWidth) * 0.5f;
         lockpick.eulerAngles =
-            Mathf.Clamp(Input.mousePosition.x / Screen.width, 0.01f, 0.99f) * 180 * Vector3.forward;
+            Mathf.Clamp((Input.mousePosition.x - inputLeft) / inputWidth, 0.01f, 0.99f)
+            * 180
+            * Vector3.forward;
 
         lockpick.eulerAngles = Vector3.forward * Mathf.Clamp(lockpick.eulerAngles.z, 0, 180);
 

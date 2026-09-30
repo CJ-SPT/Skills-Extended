@@ -33,6 +33,21 @@ Check(
     "Lock sweet spot permits shipped 3.75 value"
 );
 var editor = new EditorSession(shipped);
+Check(
+    shipped.Skills.SignalsIntelligence.Placements.All(p => p.SearchRadius == 10),
+    "All shipped signal areas use a ten metre search radius"
+);
+editor.Skills.SignalsIntelligence.Placements[0].SearchRadius = 25;
+Check(
+    editor.Dirty && shipped.Skills.SignalsIntelligence.Placements[0].SearchRadius == 10,
+    "Signal radius edits remain in isolated draft"
+);
+Check(ConfigRules.Validate(editor.Skills).Count == 0, "Signal radius upper bound accepted");
+editor.Skills.SignalsIntelligence.Placements[0].SearchRadius = 25.1f;
+Check(ConfigRules.Validate(editor.Skills).Count > 0, "Invalid signal radius blocks saving");
+editor.Skills.SignalsIntelligence.Placements[0].SearchRadius = 0;
+Check(ConfigRules.Validate(editor.Skills).Count == 0, "Exact signal placement radius accepted");
+editor.Reset(shipped);
 editor.Skills.FirstAid.XpPerAction = 12.5f;
 editor.Skills.NatoWeapons.Weapons.Add("offline-test-weapon");
 editor.Skills.LockPicking.DoorPickLevels.Labyrinth.Add("test-door", 4);

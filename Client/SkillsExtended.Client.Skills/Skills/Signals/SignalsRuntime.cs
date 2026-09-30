@@ -45,6 +45,7 @@ public sealed class SignalsRuntime : MonoBehaviour
             : Time.realtimeSinceStartupAsDouble + _clockOffset;
     private double _clockOffset;
     private SignalsCase _case;
+    internal Transform CaseTransform => _case?.Transform;
     private float _nextSync;
     private SignalsAudio _proximityAudio;
     private float _appliedXp;
@@ -54,6 +55,7 @@ public sealed class SignalsRuntime : MonoBehaviour
     private bool _creating;
     private Task _preload;
     private readonly CancellationTokenSource _lifetime = new();
+    internal CancellationToken Lifetime => _lifetime.Token;
     private static readonly Dictionary<string, float> AppliedXp = new();
     private readonly Dictionary<
         string,
@@ -83,12 +85,15 @@ public sealed class SignalsRuntime : MonoBehaviour
     private async Task FinishLootInternal()
     {
         if (
-            (World.LocationId != "bigmap" && World.LocationId != "woods")
+            !SignalsMaps.IsSupported(World.LocationId)
             || (SkillsExtendedInfo.IsFikaPresent && Transport == null)
         )
             return;
         try
         {
+            SkillsExtendedPlugin.Log.LogInfo(
+                $"Signals initializing on {World.LocationId} ({SignalsMaps.Normalize(World.LocationId)}); authority={IsAuthority()}."
+            );
             if (IsAuthority())
             {
                 Manifest = Helpers.ConfigurationJson.Deserialize<SignalManifest>(
@@ -102,7 +107,12 @@ public sealed class SignalsRuntime : MonoBehaviour
                     Publish();
                     return;
                 }
-                if (Manifest.Placement?.Map != World.LocationId)
+                if (
+                    Manifest.PlacementCandidates.Count == 0
+                    || Manifest.PlacementCandidates.Any(p =>
+                        !SignalsMaps.Same(p.Map, World.LocationId)
+                    )
+                )
                     throw new InvalidOperationException("Signal manifest belongs to another map.");
                 Authority = new SignalsAuthority(Manifest);
                 State = Authority.State;
@@ -146,9 +156,12 @@ public sealed class SignalsRuntime : MonoBehaviour
 
     private void EnsureCase()
     {
-        if (!_lootReady || _case != null || Manifest?.Placement == null || Manifest.Error != null)
+        if (!_lootReady || _case != null || Manifest == null || Manifest.Error != null)
             return;
-        if (!IsAuthority() && (State?.Ready != true || _inventory == null))
+        if (
+            !IsAuthority()
+            && (State?.Ready != true || !Manifest.PlacementResolved || _inventory == null)
+        )
             return;
         if (_creating)
             return;
@@ -167,6 +180,8 @@ public sealed class SignalsRuntime : MonoBehaviour
         catch (Exception e)
         {
             Manifest.Error = "Signal interaction registration failed: " + e.Message;
+            if (State != null)
+                State.Ready = false;
             SkillsExtendedPlugin.Log.LogError(Manifest.Error);
             _case.Dispose();
             _case = null;
@@ -183,6 +198,20 @@ public sealed class SignalsRuntime : MonoBehaviour
             await Preload();
             if (_lifetime.IsCancellationRequested || !this || !World)
                 return;
+            if (IsAuthority() && !Manifest.PlacementResolved)
+            {
+                var report = await SignalsPlacement.Resolve(
+                    this,
+                    Manifest.PlacementCandidates,
+                    Manifest.Seed,
+                    _lifetime.Token
+                );
+                _lifetime.Token.ThrowIfCancellationRequested();
+                if (report.Placement == null)
+                    throw new InvalidOperationException(report.ToString());
+                Manifest.Placement = report.Placement;
+                Manifest.PlacementResolved = true;
+            }
             _case = SignalsCase.Create(World, Manifest, _inventory);
             if (IsAuthority())
             {
@@ -246,8 +275,12 @@ public sealed class SignalsRuntime : MonoBehaviour
             return "Carry a Modified PDA.";
         if (Manifest?.Error != null)
             return Manifest.Error;
+        if (!SignalsMaps.IsSupported(World.LocationId))
+            return "Signal hunts are available on Customs and Woods.";
         if (_case == null || State?.Ready != true)
-            return "Receiver connecting, or no signal cache on this map.";
+            return _creating
+                ? "Signal cache preparation is still in progress."
+                : "Signal cache has not initialized. Check the game log for Signals messages.";
         if (player.InputDirection.sqrMagnitude > .001f)
             return "Stop moving before using the receiver.";
         return null;
@@ -331,7 +364,7 @@ public sealed class SignalsRuntime : MonoBehaviour
         AuthorityReply?.Invoke(
             new SignalsEnvelope
             {
-                Manifest = Manifest,
+                Manifest = Manifest.ForPeer(),
                 State = State ?? new SignalSnapshot { Raid = Manifest.Raid },
                 HostTime = HostTime,
                 Inventory = _case?.Snapshot(),
@@ -346,10 +379,19 @@ public sealed class SignalsRuntime : MonoBehaviour
         if (
             envelope.Manifest.Error == null
             && (
-                envelope.Manifest.Placement == null
+                (envelope.State.Ready && !envelope.Manifest.PlacementResolved)
                 || (
-                    !string.IsNullOrEmpty(World.LocationId)
-                    && envelope.Manifest.Placement.Map != World.LocationId
+                    envelope.Manifest.PlacementResolved
+                    && envelope.Manifest.Placement?.Position?.IsFinite != true
+                )
+                || (
+                    envelope.Manifest.PlacementResolved
+                    && !SignalPoint.Finite(envelope.Manifest.Placement.Yaw)
+                )
+                || (
+                    envelope.Manifest.PlacementResolved
+                    && !string.IsNullOrEmpty(World.LocationId)
+                    && !SignalsMaps.Same(envelope.Manifest.Placement.Map, World.LocationId)
                 )
             )
         )
@@ -362,10 +404,25 @@ public sealed class SignalsRuntime : MonoBehaviour
             return;
         if (Manifest != null && Manifest.Raid != envelope.Manifest.Raid)
             return;
+        // Once resolved, repeated or stale snapshots cannot relocate an existing cache.
+        if (
+            Manifest?.PlacementResolved == true
+            && (
+                !envelope.Manifest.PlacementResolved
+                || !Manifest.HasSamePlacement(envelope.Manifest)
+            )
+        )
+            return;
         Manifest = envelope.Manifest;
         RefreshSkillRules();
         State = envelope.State;
         _inventory = envelope.Inventory;
+        if (Manifest.Error != null)
+        {
+            _case?.Dispose();
+            _case = null;
+            SignalsView.Current?.Close();
+        }
         if (Manifest.Error != null || (State.Ready && _inventory != null))
             _snapshotReady.TrySetResult(true);
         var actor = World.MainPlayer?.ProfileId;
@@ -477,7 +534,15 @@ public sealed class SignalsRuntime : MonoBehaviour
             return;
         }
         _proximityAudio ??= new SignalsAudio(gameObject);
-        _proximityAudio.Tick(interval, 1);
+        _proximityAudio.Tick(
+            interval,
+            1,
+            SignalsModel.ProximityPitch(
+                SignalsCase.Point(player.Position),
+                Manifest.Placement.Position,
+                player.Rotation.x
+            )
+        );
     }
 
     private void OnDestroy()
@@ -573,7 +638,11 @@ public class SignalsCaseInteractionPatch : ModulePatch
 public class SignalsCaseLockPatch : ModulePatch
 {
     protected override MethodBase GetTargetMethod() =>
-        AccessTools.Method(typeof(LootableContainer), nameof(LootableContainer.Interact));
+        AccessTools.Method(
+            typeof(LootableContainer),
+            nameof(LootableContainer.Interact),
+            new[] { typeof(InteractionResult) }
+        );
 
     [PatchPrefix]
     private static bool Prefix(LootableContainer __instance) =>

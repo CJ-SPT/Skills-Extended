@@ -1,5 +1,6 @@
 using System.Text.Json;
 using SkillsExtended.Signals;
+using SkillsExtended.Skills.Hacking;
 using SkillsExtended.Skills.Signals;
 using TMPro;
 using UnityEngine;
@@ -7,12 +8,49 @@ using UnityEngine.UI;
 
 var output = Path.GetFullPath(args.FirstOrDefault() ?? "artifacts/signals-ui");
 Directory.CreateDirectory(output);
-foreach (var scenario in new[] { "receiver", "pairing", "unlocked", "practice" })
+foreach (
+    var scenario in new[]
+    {
+        "receiver",
+        "bearing",
+        "pairing",
+        "unlocked",
+        "practice",
+        "hacking-frame",
+    }
+)
 {
     var root = new GameObject("Preview");
     root.transform.sizeDelta = new Vector2(1920, 1080);
-    var view = root.AddComponent<SignalsView>();
-    view.Preview(scenario);
+    var displayScale = 1f;
+    var displayOffset = Vector2.zero;
+    if (scenario == "hacking-frame")
+    {
+        root.transform.sizeDelta = HackingPdaFrame.ReferenceResolution;
+        displayScale = 1080 / HackingPdaFrame.ReferenceResolution.y;
+        displayOffset = new Vector2((1920 - root.transform.sizeDelta.x * displayScale) / 2, 0);
+        HackingPdaFrame.Build(
+            root.transform,
+            new Vector2(1440, 940),
+            new TMP_FontAsset(),
+            () => { }
+        );
+        var panel = new GameObject("Existing hacking panel bounds", typeof(Image));
+        panel.transform.SetParent(root.transform, false);
+        panel.transform.anchorMin =
+            panel.transform.anchorMax =
+            panel.transform.pivot =
+                new Vector2(.5f, .5f);
+        panel.transform.sizeDelta = new Vector2(1440, 940);
+        panel.transform.anchoredPosition = HackingPdaFrame.ScreenPosition;
+        panel.GetComponent<Image>().color = new Color(.008f, .011f, .012f, .98f);
+    }
+    else
+    {
+        var view = root.AddComponent<SignalsView>();
+        view.Preview(scenario);
+        view.VerifyNavigation();
+    }
     var nodes = new List<object>();
     void Visit(RectTransform rt)
     {
@@ -32,8 +70,8 @@ foreach (var scenario in new[] { "receiver", "pairing", "unlocked", "practice" }
                     vertices = mesh.Vertices.Select(v =>
                         new[]
                         {
-                            v.Point.x + size.x * rt.pivot.x,
-                            size.y * (1 - rt.pivot.y) - v.Point.y,
+                            (v.Point.x + size.x * rt.pivot.x) * displayScale,
+                            (size.y * (1 - rt.pivot.y) - v.Point.y) * displayScale,
                             v.Color.r,
                             v.Color.g,
                             v.Color.b,
@@ -48,7 +86,7 @@ foreach (var scenario in new[] { "receiver", "pairing", "unlocked", "practice" }
                 {
                     kind = "text",
                     value = text.text,
-                    size = text.fontSize,
+                    size = text.fontSize * displayScale,
                     color = new[] { text.color.r, text.color.g, text.color.b, text.color.a },
                     align = text.alignment.ToString(),
                     wrap = text.enableWordWrapping,
@@ -64,10 +102,10 @@ foreach (var scenario in new[] { "receiver", "pairing", "unlocked", "practice" }
                     new
                     {
                         name = rt.gameObject.name,
-                        x = p.x,
-                        y = p.y,
-                        w = size.x,
-                        h = size.y,
+                        x = p.x * displayScale + displayOffset.x,
+                        y = p.y * displayScale + displayOffset.y,
+                        w = size.x * displayScale,
+                        h = size.y * displayScale,
                         payload,
                     }
                 );
@@ -78,7 +116,9 @@ foreach (var scenario in new[] { "receiver", "pairing", "unlocked", "practice" }
     Visit(root.transform);
     File.WriteAllText(Path.Combine(output, scenario + ".json"), JsonSerializer.Serialize(nodes));
 }
-Console.WriteLine("Production PDA layout and graphic meshes exported for four states.");
+Console.WriteLine(
+    "Production PDA layouts and navigation checks passed for five Signals states and the Hacking frame (panel bounds only)."
+);
 
 namespace SkillsExtended.Skills.Signals
 {
@@ -151,9 +191,23 @@ namespace SkillsExtended.Skills.Signals
                     },
                 },
             };
+            if (scenario == "bearing")
+            {
+                State.HasFix = false;
+                State.Readings.Add(
+                    new()
+                    {
+                        Position = new() { X = 150, Z = -200 },
+                        Bearing = 20,
+                        Uncertainty = 8,
+                    }
+                );
+                State.Message = "Align the signal and hold steady.";
+                _recording = true;
+            }
             BuildScreen();
             _frequency.value = 96.45f;
-            _bearing.value = 47;
+            _bearing.value = scenario == "bearing" ? 150 : 47;
             _phase.value = 40;
             RenderScreen(.78f);
         }

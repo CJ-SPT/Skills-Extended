@@ -245,6 +245,7 @@ public sealed class HackingView : MonoBehaviour
         view._captured = true;
         view._uiInputState.Capture();
         view._header = view.Text("Header");
+        view.BuildPdaFrame();
         view._stats = view.Text("Stats");
         view._message = view.Text("Message");
         view._tooltip = view.Text("Tooltip");
@@ -263,6 +264,23 @@ public sealed class HackingView : MonoBehaviour
     }
 
     private TMP_Text Text(string name) => transform.Find("Panel/" + name).GetComponent<TMP_Text>();
+
+    private void BuildPdaFrame()
+    {
+        var panel = (RectTransform)transform.Find("Panel");
+        var frame = HackingPdaFrame.Build(transform, panel.sizeDelta, _header.font, Abort);
+        frame.SetSiblingIndex(panel.GetSiblingIndex());
+        panel.anchorMin = panel.anchorMax = panel.pivot = new Vector2(.5f, .5f);
+        panel.anchoredPosition = HackingPdaFrame.ScreenPosition;
+        var outline = panel.GetComponent<Outline>();
+        if (outline)
+            outline.enabled = false;
+        var scaler = GetComponent<CanvasScaler>();
+        scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+        scaler.referenceResolution = HackingPdaFrame.ReferenceResolution;
+        scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.Expand;
+        transform.Find("Backdrop").GetComponent<Image>().color = new Color(0, 0, 0, .66f);
+    }
 
     private void Sound(string name, bool terminal = false) => _audio.Play(name, terminal);
 

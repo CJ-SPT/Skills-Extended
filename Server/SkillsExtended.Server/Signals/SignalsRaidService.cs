@@ -30,6 +30,7 @@ public class SignalsRaidService(ConfigController config, TemplateTable templates
 
     public void Start(string session, string raid, string map, bool pmc)
     {
+        map = SignalsMaps.Normalize(map);
         lock (_gate)
         {
             if (_sessions.TryGetValue(session, out var old) && old.Raid == raid)
@@ -39,7 +40,7 @@ public class SignalsRaidService(ConfigController config, TemplateTable templates
             )!;
             var manifest = new SignalManifest { Raid = raid, Config = data };
             _sessions[session] = manifest;
-            if (!pmc || !data.Enabled || (map != "bigmap" && map != "woods"))
+            if (!pmc || !data.Enabled || !SignalsMaps.IsSupported(map))
             {
                 manifest.Error = "No signal hunt on this raid.";
                 return;
@@ -50,8 +51,8 @@ public class SignalsRaidService(ConfigController config, TemplateTable templates
                 var points = data.Placements.Where(p => p.Enabled && p.Map == map).ToArray();
                 if (points.Length == 0)
                     throw new InvalidDataException("No signal placements configured for this map.");
-                manifest.Placement = points[RandomNumberGenerator.GetInt32(points.Length)];
                 manifest.Seed = BitConverter.ToUInt32(RandomNumberGenerator.GetBytes(4));
+                manifest.PlacementCandidates = SignalPlacementSearch.Order(points, manifest.Seed);
                 manifest.Frequency = 88 + RandomNumberGenerator.GetInt32(2001) / 100f;
                 manifest.ContainerId = SignalsIds.Prefix + raid;
                 manifest.RootId = new MongoId().ToString();

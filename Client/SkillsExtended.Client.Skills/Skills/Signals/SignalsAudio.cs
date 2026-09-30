@@ -30,7 +30,7 @@ internal sealed class SignalsAudio : IDisposable
         _tone.SetData(samples, 0);
     }
 
-    public void Tick(float interval, float gain)
+    public void Tick(float interval, float gain, float pitch = 1)
     {
         _source.volume = Mathf.Clamp01(Config.ConfigManager.SignalsVolume.Value / 100f * gain);
         if (interval <= 0 || _source.volume <= .001f)
@@ -42,6 +42,9 @@ internal sealed class SignalsAudio : IDisposable
         if (Time.unscaledTime - _lastBeep >= interval)
         {
             _lastBeep = Time.unscaledTime;
+            // Hold the pitch for each pulse; turning between pulses must not bend
+            // an already playing tone or reset the distance cadence.
+            _source.pitch = Mathf.Clamp(pitch, .8f, 1.6f);
             _source.PlayOneShot(_tone);
         }
     }

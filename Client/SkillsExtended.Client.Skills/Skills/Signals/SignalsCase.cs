@@ -12,7 +12,6 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SkillsExtended.Signals;
 using UnityEngine;
-using UnityEngine.AI;
 
 namespace SkillsExtended.Skills.Signals;
 
@@ -36,63 +35,8 @@ public sealed class SignalsCase : IDisposable
             Z = p.z,
         };
 
-    public static string ValidatePlacement(SignalPlacement placement, out Vector3 position)
+    internal static GameObject InstantiateVisual(Transform parent)
     {
-        position = Vector(placement.Position);
-        if (!NavMesh.SamplePosition(position, out var nav, 4, NavMesh.AllAreas))
-            return "No accessible navigation surface at the signal placement.";
-        if (
-            !Physics.Raycast(
-                nav.position + Vector3.up * 2,
-                Vector3.down,
-                out var floor,
-                5,
-                LayerMask.GetMask("Terrain", "LowPolyCollider")
-            )
-        )
-            return "No solid ground at the signal placement.";
-        position = floor.point + Vector3.up * .02f;
-        if (Vector3.Angle(floor.normal, Vector3.up) > 25)
-            return "Signal placement is too steep.";
-        foreach (var c in Physics.OverlapSphere(position, .8f))
-        {
-            var name = c.GetType().Name + " " + c.name;
-            if (
-                c.GetComponentInParent<LootableContainer>()
-                || c.GetComponentInParent<Door>()
-                || c.GetComponentInParent<Minefield>()
-                || c.GetComponentInParent<ExfiltrationPoint>()
-                || name.IndexOf("mine", StringComparison.OrdinalIgnoreCase) >= 0
-                || name.IndexOf("exfil", StringComparison.OrdinalIgnoreCase) >= 0
-            )
-                return "Signal placement overlaps another interaction or hazardous area.";
-        }
-        if (
-            Physics.CheckBox(
-                position + Vector3.up * .2f,
-                new Vector3(.36f, .19f, .21f),
-                Quaternion.Euler(0, placement.Yaw, 0),
-                LayerMask.GetMask("LowPolyCollider"),
-                QueryTriggerInteraction.Ignore
-            )
-        )
-            return "Signal placement overlaps solid geometry.";
-        return null;
-    }
-
-    public static SignalsCase Create(
-        GameWorld world,
-        SignalManifest manifest,
-        string inventory = null
-    )
-    {
-        var error = ValidatePlacement(manifest.Placement, out var position);
-        if (error != null)
-            throw new InvalidOperationException(error);
-        if (SignalsRuntime.IsAuthority())
-            manifest.Placement.Position = Point(position);
-        else
-            position = Vector(manifest.Placement.Position);
         if (!_bundle)
             _bundle = AssetBundle.LoadFromFile(
                 Path.Combine(
@@ -104,6 +48,28 @@ public sealed class SignalsCase : IDisposable
         var prefab = _bundle ? _bundle.LoadAsset<GameObject>("signal-case.prefab") : null;
         if (!prefab)
             throw new InvalidOperationException("Signal case asset is missing.");
+        var clone = UnityEngine.Object.Instantiate(prefab, parent, false);
+        clone.transform.localRotation = Quaternion.Euler(-90, 0, 0);
+        return clone;
+    }
+
+    public Transform Transform => _root ? _root.transform : null;
+
+    public static SignalsCase Create(
+        GameWorld world,
+        SignalManifest manifest,
+        string inventory = null
+    )
+    {
+        if (
+            !manifest.PlacementResolved
+            || manifest.Placement?.Position?.IsFinite != true
+            || !SignalPoint.Finite(manifest.Placement.Yaw)
+        )
+            throw new InvalidOperationException(
+                "Signal placement has not been resolved by the authority."
+            );
+        var position = Vector(manifest.Placement.Position);
         var result = new SignalsCase { _world = world, _root = new GameObject("Signal cache") };
         try
         {
@@ -112,10 +78,7 @@ public sealed class SignalsCase : IDisposable
                 position,
                 Quaternion.Euler(0, manifest.Placement.Yaw, 0)
             );
-            var clone = UnityEngine.Object.Instantiate(prefab, result._root.transform, false);
-            // The native toolbox is authored Z-up. Rotate its entire hierarchy so
-            // the lid, interaction volume and ballistic colliders stay together.
-            clone.transform.localRotation = Quaternion.Euler(-90, 0, 0);
+            var clone = InstantiateVisual(result._root.transform);
             var container = result.Container = clone.GetComponentInChildren<LootableContainer>(
                 true
             );
