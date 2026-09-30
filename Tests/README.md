@@ -19,7 +19,7 @@ It also exercises the production client configuration reader with the installed
 Newtonsoft assembly: full, partial, legacy, customized and explicitly empty
 collections must load without appending built-in defaults. Add `-- --installed-config`
 to validate the installed configuration read-only.
-See [Electronics acceptance](../ELECTRONICS.md) for the remaining in-raid checks.
+Electronics still requires in-raid input, sound, outcome and multiplayer acceptance.
 
 The solution uses the installed game's managed and dumped assemblies. Fika defaults
 to `BepInEx/plugins/Fika/Fika.Core.dll`; use `FikaAssemblyPath` for a separate reference
@@ -65,5 +65,5 @@ movement at ordinary and elite levels. Recheck disabled settings after the requi
 client restart. Attempt lockpicking while moving without Old Tarkov Movement and
 confirm the normal warning appears. For Fika, verify plugin loading and synchronized
 door unlocking and pick consumption with another player and a headless host.
-See [Lock Picking 2.0 acceptance](../LOCKPICKING.md) for controls, the pin simulation
-suite, and the remaining artwork/input/Fika checks.
+Lock Picking 2.0 still requires live artwork, input, audio and Fika acceptance;
+its offline pin and cutaway suite is in `SkillsExtended.LockPickingTests`.

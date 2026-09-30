@@ -43,8 +43,6 @@ produces `cutaway-states.png` for 3–5 pins in active, unlocked and broken stat
 Full layouts cover 1080p, 1440p and ultrawide. Text rasterization and front-view
 lighting remain approximate; the cutaway's geometry comes from the runtime code.
 
-See [LOCKPICKING.md](../../LOCKPICKING.md) for controls, balancing and live acceptance.
-
 ## Mechanical audio
 
 `Build-Audio.py` cuts 18 natural-pitch excerpts from **Tiny metal/lockpicking** by
