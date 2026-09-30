@@ -91,7 +91,6 @@ public class HackingData
     {
         if (
             AttemptsPerDoor < 1
-            || AttemptsPerDoor > 10
             || BaseCoherence < 1
             || BaseCoherence > 1000
             || CoherencePerLevel < 0

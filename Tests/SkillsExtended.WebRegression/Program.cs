@@ -33,6 +33,80 @@ Check(
     "Lock sweet spot permits shipped 3.75 value"
 );
 var editor = new EditorSession(shipped);
+var hackingAttempts = SkillCatalog
+    .Fields["Hacking"]
+    .Single(field => field.Key == "AttemptsPerDoor");
+var lockpickingAttempts = SkillCatalog
+    .Fields["LockPicking"]
+    .Single(field => field.Key == "AttemptsBeforeBreak");
+foreach (var attempts in new[] { 11, 100, int.MaxValue })
+{
+    editor.Skills.Hacking.AttemptsPerDoor = attempts;
+    Check(
+        hackingAttempts.Parse(attempts.ToString(), out _) is null
+            && lockpickingAttempts.Parse(attempts.ToString(), out _) is null
+            && ConfigRules.Validate(editor.Skills).Count == 0,
+        $"Hacking accepts {attempts} attempts with the same upper range as lockpicking"
+    );
+}
+editor.Skills.Hacking.AttemptsPerDoor = 0;
+Check(ConfigRules.Validate(editor.Skills).Count > 0, "Hacking still requires at least one attempt");
+editor.Reset(shipped);
+var increasedAttempts = new SkillsExtended.Config.Skills.HackingData { AttemptsPerDoor = 25 };
+var hackingAuthority = new SkillsExtended.Hacking.HackingAuthority(increasedAttempts, 123);
+hackingAuthority.Failures["last-allowed"] = 24;
+hackingAuthority.Failures["exhausted"] = 25;
+var allowedAttempt = hackingAuthority.Process(
+    new SkillsExtended.Hacking.HackRequest
+    {
+        Raid = hackingAuthority.Raid,
+        Actor = "tester",
+        Door = "last-allowed",
+        Operation = "start",
+    },
+    0,
+    1,
+    ""
+);
+var blockedAttempt = hackingAuthority.Process(
+    new SkillsExtended.Hacking.HackRequest
+    {
+        Raid = hackingAuthority.Raid,
+        Actor = "tester",
+        Door = "exhausted",
+        Operation = "start",
+    },
+    0,
+    1,
+    ""
+);
+Check(
+    allowedAttempt.Board != null
+        && string.IsNullOrEmpty(allowedAttempt.Error)
+        && blockedAttempt.Board == null
+        && blockedAttempt.Error.Contains("locked out"),
+    "Hacking authority permits the configured 25th attempt and locks out the next one"
+);
+Check(
+    shipped
+        .Skills.SignalsIntelligence.Loot.Select(entry =>
+            (entry.Template, entry.Theme, entry.Weight)
+        )
+        .SequenceEqual(
+            SkillsExtended
+                .Config.Skills.SignalsDefaults.Loot()
+                .Select(entry => (entry.Template, entry.Theme, entry.Weight))
+        ),
+    "Shipped signal reward pools match the code defaults"
+);
+Check(
+    shipped
+        .Skills.SignalsIntelligence.Loot.GroupBy(entry => entry.Theme)
+        .All(group =>
+            group.Count() == 20 && group.Select(entry => entry.Template).Distinct().Count() == 20
+        ),
+    "Each signal theme has twenty distinct reward templates"
+);
 Check(
     shipped.Skills.SignalsIntelligence.Placements.All(p => p.SearchRadius == 10),
     "All shipped signal areas use a ten metre search radius"
@@ -370,6 +444,7 @@ Check(
 await AuthorizationChecks.Run(Check);
 await RenderingChecks.Run(Check);
 await ComponentChecks.Run(shipped, Check);
+RewardCatalogChecks.Run(Check);
 Console.WriteLine($"{checks} web editor regression checks passed.");
 
 sealed class MemoryFiles(string skills, string server) : IConfigFiles

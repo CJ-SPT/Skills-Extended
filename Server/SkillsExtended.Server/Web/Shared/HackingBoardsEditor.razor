@@ -1,0 +1,128 @@
+@using SkillsExtended.Config.Skills
+@using System.Reflection
+
+<section class="se-panel se-boards" aria-labelledby="boards-heading">
+    <div class="se-boards-heading">
+        <h2 id="boards-heading">Board difficulties <span class="se-badge">@Data.Tiers.Count tiers</span></h2>
+    </div>
+    <p>Compare and tune each difficulty. Board content is fixed when an attempt starts. Reserve at least eight nodes for the core and safe initial routes.</p>
+    <div class="se-board-grid">
+        @foreach (var tier in Data.Tiers.OrderBy(t => t.Level))
+        {
+            var reserved = Reserved(tier);
+            var invalidLayout = reserved < 8;
+            var hasInvalidInput = Session.InputErrors.Keys.Any(key => key.StartsWith(Prefix(tier) + ".", StringComparison.Ordinal));
+            <article class="se-board-card" @key="tier" aria-labelledby="@($"board-title-{tier.Level}")">
+                <header class="se-board-header">
+                    <span class="se-board-level">@tier.Level</span>
+                    <div><h3 id="@($"board-title-{tier.Level}")">@tier.Name</h3><small>@tier.Nodes nodes · @tier.SuccessXp.ToString("0.###") success XP</small></div>
+                    @if (Data.DefaultDifficulty == tier.Level)
+                    {
+                        <span class="se-badge se-board-default">Default</span>
+                    }
+                </header>
+                <div class="se-board-capacity">
+                    <div class="se-board-bar" role="img" aria-label="@($"{tier.Nodes} nodes: {tier.Defenses} defenses, {tier.Utilities} utilities, {tier.Caches} caches, 1 core, {Math.Max(0, reserved - 1)} empty")">
+                        <span class="se-board-defense" style="@Segment(tier.Defenses, tier.Nodes)"></span>
+                        <span class="se-board-utility" style="@Segment(tier.Utilities, tier.Nodes)"></span>
+                        <span class="se-board-cache" style="@Segment(tier.Caches, tier.Nodes)"></span>
+                        <span class="se-board-core" style="@Segment(1, tier.Nodes)"></span>
+                        <span class="se-board-empty" style="@Segment(Math.Max(0, reserved - 1), tier.Nodes)"></span>
+                    </div>
+                    <div class="se-board-legend">
+                        <span><i class="se-board-defense" aria-hidden="true"></i>@tier.Defenses defenses</span>
+                        <span><i class="se-board-utility" aria-hidden="true"></i>@tier.Utilities utilities</span>
+                        <span><i class="se-board-cache" aria-hidden="true"></i>@tier.Caches caches</span>
+                        <span><i class="se-board-core" aria-hidden="true"></i>1 core</span>
+                        <span><i class="se-board-empty" aria-hidden="true"></i>@Math.Max(0, reserved - 1) empty</span>
+                    </div>
+                    <p id="@($"board-capacity-{tier.Level}")" class="se-board-feedback @(invalidLayout ? "se-error" : "")" role="status">
+                        @(invalidLayout ? $"Over capacity: free up {8 - reserved} more nodes for the core and safe routes." : $"{reserved} nodes reserved · minimum 8")
+                    </p>
+                    @if (hasInvalidInput)
+                    {
+                        <small class="se-error">Fix the highlighted settings before saving. The breakdown uses the last valid numeric values.</small>
+                    }
+                </div>
+                @foreach (var group in Fields.GroupBy(field => field.Group))
+                {
+                    <fieldset class="se-board-fields">
+                        <legend>@group.Key</legend>
+                        @foreach (var field in group)
+                        {
+                            var id = Prefix(tier) + "." + field.Key;
+                            var error = Session.InputErrors.GetValueOrDefault(id);
+                            <div class="se-field">
+                                <label for="@id">@field.Label</label>
+                                <input id="@id" type="text" inputmode="@(field.Property.PropertyType == typeof(int) ? "numeric" : "decimal")"
+                                       value="@Text(tier, field)" @oninput="e => Edit(tier, field, e.Value?.ToString() ?? string.Empty)"
+                                       aria-invalid="@(error != null || (invalidLayout && field.Group == "Board layout") ? "true" : "false")" aria-describedby="@(id + "-help board-capacity-" + tier.Level)" />
+                                <small id="@(id + "-help")" class="@(error != null ? "se-error" : "")">@(error ?? field.Help)</small>
+                            </div>
+                        }
+                    </fieldset>
+                }
+            </article>
+        }
+    </div>
+</section>
+
+@code
+{
+    [CascadingParameter]
+    public EditorSession Session { get; set; } = null!;
+
+    private HackingData Data => Session.Skills.Hacking;
+    private static readonly BoardField[] Fields =
+    [
+        new("Nodes", "Total nodes", "Board layout", 15, 61, "15–61 nodes, including the core."),
+        new("Defenses", "Defenses", "Board layout", 0, 53, "Hostile nodes guarding the board."),
+        new("Utilities", "Utilities", "Board layout", 1, 53, "Helpful pickups. At least one."),
+        new("Caches", "Caches", "Board layout", 0, 53, "Hidden defense or utility rewards."),
+        new("CoreCoherence", "Coherence", "Core defenses", 1, 10000, "Core health. Higher takes more hits."),
+        new("CoreStrength", "Strength", "Core defenses", 0, 1000, "Damage dealt by core counterattacks."),
+        new("SuccessXp", "Success XP", "Completion reward", 0, 1000, "XP awarded for a successful hack."),
+    ];
+
+    private sealed record BoardField(string Key, string Label, string Group, int Minimum, int Maximum, string Help)
+    {
+        public PropertyInfo Property { get; } = typeof(HackingTier).GetProperty(Key)!;
+    }
+
+    private static string Prefix(HackingTier tier) => $"Hacking.Tiers.{tier.Level}";
+    private static long Reserved(HackingTier tier) => (long)tier.Nodes - tier.Defenses - tier.Utilities - tier.Caches;
+    private static string Segment(long count, int total) => $"width:{Math.Clamp(count * 100d / Math.Max(1, total), 0, 100).ToString("0.###", CultureInfo.InvariantCulture)}%";
+    private string Text(HackingTier tier, BoardField field) => Session.Inputs.GetValueOrDefault(
+        Prefix(tier) + "." + field.Key, Convert.ToString(field.Property.GetValue(tier), CultureInfo.CurrentCulture) ?? "");
+
+    private void Edit(HackingTier tier, BoardField field, string text)
+    {
+        var id = Prefix(tier) + "." + field.Key;
+        Session.Inputs[id] = text;
+        var definition = new SettingDefinition(field.Property, field.Label, "", field.Group, field.Maximum);
+        var error = definition.Parse(text, out var value);
+        if (error == null && Convert.ToDouble(value) < field.Minimum)
+        {
+            error = $"Enter a value from {field.Minimum} to {field.Maximum}.";
+        }
+        if (error != null)
+        {
+            Session.InputErrors[id] = error;
+        }
+        else
+        {
+            field.Property.SetValue(tier, value);
+            Session.InputErrors.Remove(id);
+        }
+        var layoutKey = Prefix(tier) + ".Layout";
+        if (Reserved(tier) < 8)
+        {
+            Session.InputErrors[layoutKey] = $"{tier.Name}: reserve at least eight nodes for the core and safe initial routes.";
+        }
+        else
+        {
+            Session.InputErrors.Remove(layoutKey);
+        }
+        Session.Notify();
+    }
+}

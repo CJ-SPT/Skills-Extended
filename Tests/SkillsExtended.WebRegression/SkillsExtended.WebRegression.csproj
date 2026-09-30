@@ -19,6 +19,11 @@
       CopyToOutputDirectory="PreserveNewest"
     />
     <None
+      Include="../../Server/SkillsExtended.Server/Resources/ReleaseNotes.json"
+      Link="Resources/ReleaseNotes.json"
+      CopyToOutputDirectory="PreserveNewest"
+    />
+    <None
       Include="../../Server/SkillsExtended.Server/wwwroot/icons/*.png"
       Link="icons/%(Filename)%(Extension)"
       CopyToOutputDirectory="PreserveNewest"

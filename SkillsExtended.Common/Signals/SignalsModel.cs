@@ -270,37 +270,7 @@ public static class SignalsModel
         out float radius
     )
     {
-        point = null;
-        radius = 0;
-        var angle = Math.Abs(Delta(a.Bearing, b.Bearing));
-        if (SignalPoint.Distance(a.Position, b.Position) < separation || angle < 15 || angle > 165)
-            return false;
-        var ax = Math.Sin(a.Bearing * Math.PI / 180);
-        var az = Math.Cos(a.Bearing * Math.PI / 180);
-        var bx = Math.Sin(b.Bearing * Math.PI / 180);
-        var bz = Math.Cos(b.Bearing * Math.PI / 180);
-        var dx = b.Position.X - a.Position.X;
-        var dz = b.Position.Z - a.Position.Z;
-        var cross = ax * bz - az * bx;
-        var t = (dx * bz - dz * bx) / cross;
-        var u = (dx * az - dz * ax) / cross;
-        if (t < 0 || u < 0 || t > 4000 || u > 4000)
-            return false;
-        point = new SignalPoint
-        {
-            X = a.Position.X + (float)(ax * t),
-            Z = a.Position.Z + (float)(az * t),
-        };
-        radius = Math.Max(
-            12,
-            (float)(
-                (
-                    t * Math.Tan(a.Uncertainty * Math.PI / 180)
-                    + u * Math.Tan(b.Uncertainty * Math.PI / 180)
-                ) / Math.Abs(cross)
-            )
-        );
-        return true;
+        return SignalTriangulation.TryFix(new[] { a, b }, separation, out point, out radius);
     }
 }
 
@@ -501,26 +471,24 @@ public sealed class SignalsAuthority
             Bearing = SignalsModel.ObservedBearing(Manifest, position, level),
             Uncertainty = SignalsModel.Uncertainty(Manifest.Config, level),
         };
-        foreach (var other in SignalsModel.PlottedReadings(State, level))
-            if (
-                SignalsModel.Intersect(
-                    other,
-                    reading,
-                    Manifest.Config.MinimumSeparation,
-                    out var estimate,
-                    out var radius
-                ) && (!State.HasFix || radius < State.Radius)
-            )
-            {
-                State.HasFix = true;
-                State.AccessCode = (Manifest.Seed % 1000000).ToString("D6");
-                State.Estimate = estimate;
-                State.Radius = radius;
-            }
         State.Readings.Add(reading);
         // Shared history retains six; each receiver plots its owner's allowance.
         while (State.Readings.Count > 6)
             State.Readings.RemoveAt(0);
+        if (
+            SignalTriangulation.TryFix(
+                State.Readings,
+                Manifest.Config.MinimumSeparation,
+                out var estimate,
+                out var radius
+            )
+        )
+        {
+            State.HasFix = true;
+            State.AccessCode = (Manifest.Seed % 1000000).ToString("D6");
+            State.Estimate = estimate;
+            State.Radius = radius;
+        }
         _awards.TryGetValue(r.Actor, out var count);
         if (count < 2)
         {

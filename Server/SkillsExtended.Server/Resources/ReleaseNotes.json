@@ -1,8 +1,35 @@
 [
   {
+    "Version": "3.1.0",
+    "ReleaseDate": "September 30, 2026",
+    "IsLatest": false,
+    "Features": [
+      "New Skill: Signals Intelligence"
+    ],
+    "Improvements": [
+      "Raised internal hard cap on hacking attempts to 99999, you can now set your max attempts up to this limit",
+      "Improved Hacking config page layout",
+      "Add doors from Manimal's Interchange and Vultify's Blackout mods into Lockpicking database - Thanks PRXPHET",
+      "Russian and English localization fixes - Thanks PRXPHET"
+    ],
+    "BugFixes": [
+      "Fix excessive lock-pick image dimensions on ultra wide monitors (maybe)"
+    ]
+  },
+  {
+    "Version": "3.0.3",
+    "ReleaseDate": "September 28, 2026",
+    "IsLatest": false,
+    "Features": [],
+    "Improvements": [],
+    "BugFixes": [
+      "Fix compatibility with mods like Give-Ui"
+    ]
+  },
+  {
     "Version": "3.0.2",
     "ReleaseDate": "September 28, 2026",
-    "IsLatest": true,
+    "IsLatest": false,
     "Features": [],
     "Improvements": [],
     "BugFixes": [

@@ -1,0 +1,98 @@
+<header class="se-page-heading">
+    <div>
+        <p class="se-eyebrow">Skills Extended</p>
+        <h1>Release notes</h1>
+        <p>New features, improvements, and fixes across each release.</p>
+    </div>
+    <span class="se-badge">@Notes.Count releases</span>
+</header>
+
+@if (LoadError is not null)
+{
+    <p class="se-notice se-error" role="alert">@LoadError</p>
+}
+else
+{
+    <section class="se-panel se-releases" aria-label="Release history">
+        <div class="se-release-filters" role="group" aria-label="Filter release notes">
+            @foreach (var filter in Filters)
+            {
+                <button id="@($"release-filter-{filter.Key}")" type="button"
+                        class="se-button @(_selectedFilter == filter.Key ? "se-primary" : "se-subtle")"
+                        aria-pressed="@(_selectedFilter == filter.Key)" @onclick="() => _selectedFilter = filter.Key">
+                    @filter.Label
+                </button>
+            }
+        </div>
+        <p class="se-release-count" role="status">@Filtered.Count() of @Notes.Count releases shown</p>
+        <div class="se-release-list">
+            @foreach (var release in Filtered)
+            {
+                var changeCount = Count(release);
+                <details class="se-release" @key="release" open="@(ReferenceEquals(release, Filtered.FirstOrDefault()))">
+                    <summary class="se-release-summary">
+                        <span class="se-release-chevron" aria-hidden="true">▸</span>
+                        <span class="se-release-version"><strong>Version @release.Version</strong>
+                            @if (release.IsLatest)
+                            {
+                                <span class="se-badge se-release-latest">Latest</span>
+                            }
+                        </span>
+                        <span class="se-release-date">@release.ReleaseDate</span>
+                        <span class="se-badge">@changeCount @(changeCount == 1 ? "change" : "changes")</span>
+                    </summary>
+                    <div class="se-release-body">
+                        @foreach (var category in Filters.Where(f => f.Key != "all" && (_selectedFilter == "all" || _selectedFilter == f.Key)))
+                        {
+                            var entries = Entries(release, category.Key);
+                            @if (entries.Count > 0)
+                            {
+                                <section class="se-release-category" aria-label="@category.Label">
+                                    <h2><span class="se-release-category-mark" aria-hidden="true">@(category.Key == "feature" ? "+" : category.Key == "improvement" ? "↑" : "✓")</span>@category.Label <span class="se-badge">@entries.Count</span></h2>
+                                    <ul>
+                                        @foreach (var entry in entries)
+                                        {
+                                            <li>@entry</li>
+                                        }
+                                    </ul>
+                                </section>
+                            }
+                        }
+                    </div>
+                </details>
+            }
+            @if (!Filtered.Any())
+            {
+                <p class="se-empty">@(Notes.Count == 0 ? "No release notes are available yet." : "No releases contain this type of change.")</p>
+            }
+        </div>
+    </section>
+}
+
+@code
+{
+    [Parameter]
+    public IReadOnlyList<ReleaseNote> Notes { get; set; } = [];
+
+    [Parameter]
+    public string? LoadError { get; set; }
+
+    private string _selectedFilter = "all";
+    private static readonly (string Key, string Label)[] Filters =
+    [
+        ("all", "All changes"), ("feature", "Features"),
+        ("improvement", "Improvements"), ("bugfix", "Bug fixes"),
+    ];
+    private IEnumerable<ReleaseNote> Filtered => Notes.Where(release => _selectedFilter == "all" || Entries(release, _selectedFilter).Count > 0);
+    private int Count(ReleaseNote release) => _selectedFilter == "all"
+        ? Entries(release, "feature").Count + Entries(release, "improvement").Count + Entries(release, "bugfix").Count
+        : Entries(release, _selectedFilter).Count;
+
+    private static IReadOnlyList<string> Entries(ReleaseNote release, string category) => category switch
+    {
+        "feature" => release.Features ?? [],
+        "improvement" => release.Improvements ?? [],
+        "bugfix" => release.BugFixes ?? [],
+        _ => [],
+    };
+}

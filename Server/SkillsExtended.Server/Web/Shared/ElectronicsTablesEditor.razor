@@ -1,43 +1,7 @@
 @using SkillsExtended.Config.Skills
 
-<section class="se-panel">
-    <h2>Board difficulties</h2>
-    <p>Board content is fixed when an attempt starts. Leave at least eight empty nodes for safe initial routes.</p>
-    @foreach (var tier in Data.Tiers)
-    {
-        <h3>@tier.Name</h3>
-        <div class="se-fields">
-            <label class="se-field">
-                Nodes
-                <input type="number" @bind="tier.Nodes" @bind:after="Session.Notify" />
-            </label>
-            <label class="se-field">
-                Defenses
-                <input type="number" @bind="tier.Defenses" @bind:after="Session.Notify" />
-            </label>
-            <label class="se-field">
-                Utilities
-                <input type="number" @bind="tier.Utilities" @bind:after="Session.Notify" />
-            </label>
-            <label class="se-field">
-                Caches
-                <input type="number" @bind="tier.Caches" @bind:after="Session.Notify" />
-            </label>
-            <label class="se-field">
-                Core coherence
-                <input type="number" @bind="tier.CoreCoherence" @bind:after="Session.Notify" />
-            </label>
-            <label class="se-field">
-                Core strength
-                <input type="number" @bind="tier.CoreStrength" @bind:after="Session.Notify" />
-            </label>
-            <label class="se-field">
-                Success XP
-                <input type="number" step="0.1" @bind="tier.SuccessXp" @bind:after="Session.Notify" />
-            </label>
-        </div>
-    }
-</section>
+<HackingBoardsEditor />
+
 <section class="se-panel">
     <h2>Door rules</h2>
     <p>Difficulty: 1 Standard, 2 Secure, 3 Hardened. Enter one rule per line. Exclusions always win.</p>

@@ -49,7 +49,8 @@ public sealed class SignalsCase : IDisposable
         if (!prefab)
             throw new InvalidOperationException("Signal case asset is missing.");
         var clone = UnityEngine.Object.Instantiate(prefab, parent, false);
-        clone.transform.localRotation = Quaternion.Euler(-90, 0, 0);
+        // The olive case is authored in Unity's Y-up axes.
+        clone.transform.localRotation = Quaternion.identity;
         return clone;
     }
 
@@ -124,7 +125,12 @@ public sealed class SignalsCase : IDisposable
             var beacon = new GameObject("Signal cache arrow");
             beacon.transform.SetParent(result._root.transform, false);
             // The arrow's origin is its downward tip, just above the closed lid.
-            beacon.transform.localPosition = new Vector3(0, .5f, 0);
+            var bounds = SignalsPlacement.Geometry().Body;
+            beacon.transform.localPosition = new Vector3(
+                bounds.Center.X,
+                bounds.Center.Y + bounds.Extents.Y + .12f,
+                bounds.Center.Z
+            );
             result._beaconMesh = CreateArrowMesh();
             beacon.AddComponent<MeshFilter>().sharedMesh = result._beaconMesh;
             var renderer = beacon.AddComponent<MeshRenderer>();

@@ -11,9 +11,6 @@ using SkillsExtended.Web.Layouts;
 using SkillsExtended.Web.Pages;
 using SkillsExtended.Web.Shared;
 using SPTarkov.Common.Models.Logging;
-using SPTarkov.Server.Core.Models.Spt.Config;
-using SPTarkov.Server.Core.Models.Spt.Tables;
-using SPTarkov.Server.Core.Services.Locales;
 
 public static class RenderingChecks
 {
@@ -30,24 +27,8 @@ public static class RenderingChecks
                 []
             )
         );
-        services.AddSingleton(
-            new LocaleService(
-                DispatchProxy.Create<ISptLogger<LocaleService>, SilentLogger>(),
-                new LocaleTable
-                {
-                    Global = [],
-                    Menu = [],
-                    Languages = [],
-                },
-                new LocaleConfig
-                {
-                    GameLocale = "en",
-                    ServerLocale = "en",
-                    ServerSupportedLocales = ["en"],
-                    Fallbacks = [],
-                }
-            )
-        );
+        services.AddSingleton(RewardCatalogChecks.Locales());
+        services.AddSingleton(RewardCatalogChecks.Templates());
         var output = Path.Combine(AppContext.BaseDirectory, "rendered");
         Directory.CreateDirectory(output);
         foreach (var skill in SkillCatalog.All)
@@ -103,6 +84,37 @@ public static class RenderingChecks
             "Render actual overview with all skill cards"
         );
         await Write(output, "overview", home);
+        var releaseNotes = System.Text.Json.JsonSerializer.Deserialize<
+            List<SkillsExtended.Models.ReleaseNote>
+        >(
+            await File.ReadAllTextAsync(
+                Path.Combine(AppContext.BaseDirectory, "Resources", "ReleaseNotes.json")
+            )
+        )!;
+        await using var releaseProvider = services.BuildServiceProvider();
+        await using var releaseRenderer = new HtmlRenderer(
+            releaseProvider,
+            releaseProvider.GetRequiredService<ILoggerFactory>()
+        );
+        var releases = await releaseRenderer.Dispatcher.InvokeAsync(async () =>
+        {
+            RenderFragment body = builder =>
+            {
+                builder.OpenComponent<ReleaseNotesContent>(0);
+                builder.AddAttribute(1, "Notes", releaseNotes);
+                builder.CloseComponent();
+            };
+            var root = await releaseRenderer.RenderComponentAsync<BaseLayout>(
+                ParameterView.FromDictionary(new Dictionary<string, object?> { ["Body"] = body })
+            );
+            return root.ToHtmlString();
+        });
+        check(
+            releases.Contains("Release history")
+                && releaseNotes.All(note => releases.Contains("Version " + note.Version)),
+            "Render the themed release history with every existing version"
+        );
+        await Write(output, "release-notes", releases);
         Console.WriteLine($"Rendered offline HTML fixtures: {output}");
     }
 

@@ -25,6 +25,12 @@ Exit button or Escape closes the receiver. Controls disable once the cache unloc
    the amber arrow is your current antenna setting, and the amber circle is the
    estimated search area. Alignment prompts name FREQUENCY or BEARING and its keys;
    waveform/PHASE alignment is only used when pairing at the case.
+   Each green centre line is an approximate direction; its dim outer lines show
+   the uncertainty band. Centre lines need not meet at a single point. The fix
+   combines all retained shared bearings and encloses their overlapping bands,
+   with three metres of approach room. Broad or unbounded overlap needs a better
+   crossing bearing rather than implying a precise location. Later readings
+   refine the shared fix instead of selecting an unrelated pair of lines.
 5. Approach the physical signal case. Once a fix recovers its code, **Pair PDA**
    becomes available within three metres. Adjust the phase slider or Q/E until the
    two waveforms overlap, then hold alignment for five seconds with recording active.
@@ -84,7 +90,7 @@ three quarter-turn alternatives. The first valid placement wins; a failed area
 falls back to the next without rerolling loot, frequency, or cache identity.
 
 Validation derives the footprint, interaction bounds and lid sweep from the
-bundled case with its native axis correction. It checks centre/corner support,
+bundled olive military hard case, authored in Unity's Y-up axes. It checks centre/corner support,
 a maximum 5 cm support-height difference, slopes no steeper than 25 degrees,
 and 2 cm clearance above the highest support. Navigation snapping is limited to
 one metre horizontally and vertically and cannot escape the area. A usable

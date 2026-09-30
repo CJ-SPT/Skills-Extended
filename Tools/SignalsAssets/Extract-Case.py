@@ -26,12 +26,15 @@ def build(source, destination):
     stream = bytearray()
     def relocate(node):
         if isinstance(node, dict):
-            if 'offset' in node and 'size' in node and 'path' in node and node['size']:
-                resource = next(v for k,v in bundle.files.items() if k.endswith(Path(node['path']).name))
-                resource.Position = node['offset']
-                data = resource.read_bytes(node['size'])
-                node['offset'] = len(stream); node['path'] = 'archive:/'+cab+'/'+cab+'.resS'
-                stream.extend(data)
+            # Texture/mesh StreamingInfo and AudioClip StreamedResource use different keys.
+            for offset, size, path in [('offset', 'size', 'path'), ('m_Offset', 'm_Size', 'm_Source')]:
+                if offset in node and size in node and path in node and node[size]:
+                    resource = next(v for k,v in bundle.files.items() if k.endswith(Path(node[path]).name))
+                    resource.Position = node[offset]
+                    data = resource.read_bytes(node[size])
+                    assert len(data) == node[size]
+                    node[offset] = len(stream); node[path] = 'archive:/'+cab+'/'+cab+'.resS'
+                    stream.extend(data)
             for v in node.values(): relocate(v)
         elif isinstance(node, list):
             for v in node: relocate(v)

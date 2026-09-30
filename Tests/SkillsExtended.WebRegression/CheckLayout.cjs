@@ -39,6 +39,50 @@ const { chromium } = require(process.env.PLAYWRIGHT_MODULE_PATH || "playwright")
                 if (["overview.html", "endurance.html", "lock-picking.html"].includes(file)) {
                     await page.screenshot({ path: path.join(directory, `${file.slice(0, -5)}-${width}.png`), fullPage: false });
                 }
+                if (file === "release-notes.html") {
+                    const releases = page.getByRole("region", { name: "Release history" });
+                    await releases.evaluate(element => window.scrollTo(0, element.getBoundingClientRect().top + window.scrollY - 210));
+                    await page.locator(":focus").evaluate(element => element.blur());
+                    await page.screenshot({ path: path.join(directory, `release-notes-${width}.png`) });
+                }
+                if (file === "hacking.html") {
+                    const boards = page.getByRole("region", { name: /^Board difficulties/ });
+                    assert.equal(await boards.locator(".se-board-card").count(), 3);
+                    assert.equal(await boards.locator("input").count(), 21);
+                    assert.equal(await boards.locator(".se-board-default").count(), 1);
+                    assert.equal(await boards.getByRole("article", { name: "Secure", exact: true }).getByText("Default", { exact: true }).count(), 1);
+                    assert.equal(await boards.locator(".se-board-card").evaluateAll(elements => elements.some(element => element.scrollWidth > element.clientWidth + 1)), false, `Board cards fit at ${width}`);
+                    await boards.evaluate(element => window.scrollTo(0, element.getBoundingClientRect().top + window.scrollY - 88));
+                    await page.locator(":focus").evaluate(element => element.blur());
+                    await page.screenshot({ path: path.join(directory, `boards-${width}.png`) });
+                }
+                if (file === "signals-intelligence.html") {
+                    const locations = page.getByRole("region", { name: /^Cache locations/ });
+                    assert.equal(await locations.locator(".se-location-map").count(), 2);
+                    assert.equal(await locations.locator(".se-location-row").count(), 24);
+                    assert.equal(await locations.getByRole("region", { name: "Customs cache locations", exact: true }).locator(".se-location-row").count(), 12);
+                    assert.equal(await locations.getByRole("region", { name: "Woods cache locations", exact: true }).locator(".se-location-row").count(), 12);
+                    await locations.evaluate(element => window.scrollTo(0, element.getBoundingClientRect().top + window.scrollY - 88));
+                    await page.locator(":focus").evaluate(element => element.blur());
+                    await page.screenshot({ path: path.join(directory, `locations-${width}.png`) });
+                    // Static fixtures have no circuit; reveal a real editor for layout checks only.
+                    const locationEditor = locations.locator(".se-location-editor").first();
+                    await locationEditor.evaluate(element => element.hidden = false);
+                    await locationEditor.scrollIntoViewIfNeeded();
+                    assert.equal(await locationEditor.evaluate(element => element.scrollWidth > element.clientWidth + 1), false, `Location fields fit at ${width}`);
+                    assert.ok(await locationEditor.getByRole("spinbutton", { name: "X", exact: true }).isVisible());
+                    await page.screenshot({ path: path.join(directory, `location-editor-${width}.png`) });
+                    await locationEditor.evaluate(element => element.hidden = true);
+                    const treasure = page.getByRole("region", { name: /Treasure tables/ });
+                    await treasure.evaluate(element => window.scrollTo(0, element.getBoundingClientRect().top + window.scrollY - 88));
+                    assert.equal(await treasure.locator(".se-reward-row").count(), 60);
+                    assert.ok(await treasure.getByText("Graphics card", { exact: true }).isVisible());
+                    assert.ok(await treasure.getByRole("searchbox", { name: "Search server items" }).isVisible());
+                    const overflow = await treasure.locator(".se-reward-row, .se-reward-picker").evaluateAll(elements =>
+                        elements.some(element => element.scrollWidth > element.clientWidth + 1));
+                    assert.equal(overflow, false, `Treasure controls fit at ${width}`);
+                    await page.screenshot({ path: path.join(directory, `treasure-${width}.png`), fullPage: false });
+                }
                 checks++;
             }
 

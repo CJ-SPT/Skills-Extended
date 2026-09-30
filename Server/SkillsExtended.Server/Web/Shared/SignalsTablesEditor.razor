@@ -1,47 +1,198 @@
 @using SkillsExtended.Signals
+@using SPTarkov.Server.Core.Models.Spt.Tables
+@using SPTarkov.Server.Core.Services.Locales
+@inject TemplateTable Templates
+@inject LocaleService Locales
 
-<section class="se-panel">
-    <h2>Cache locations</h2>
-    <p>Coordinates are area anchors in game world space. The host searches nearby ground and falls back to another enabled area when needed. Search radius 0 keeps the authored X/Z position. Validate and preview areas in-game before enabling them.</p>
-    @foreach (var p in Session.Skills.SignalsIntelligence.Placements.ToArray())
-    {
-        <details class="se-panel">
-            <summary>@p.Map · @p.Name</summary>
-            <div class="se-fields">
-                <label class="se-field">Enabled <input type="checkbox" @bind="p.Enabled" @bind:after="Session.Notify" /></label>
-                <label class="se-field">ID <input @bind="p.Id" @bind:after="Session.Notify" /></label>
-                <label class="se-field">Name <input @bind="p.Name" @bind:after="Session.Notify" /></label>
-                <label class="se-field">Map <select @bind="p.Map" @bind:after="Session.Notify"><option value="bigmap">Customs</option><option value="woods">Woods</option></select></label>
-                <label class="se-field">X <input type="number" step="0.01" @bind="p.Position.X" @bind:after="Session.Notify" /></label>
-                <label class="se-field">Y <input type="number" step="0.01" @bind="p.Position.Y" @bind:after="Session.Notify" /></label>
-                <label class="se-field">Z <input type="number" step="0.01" @bind="p.Position.Z" @bind:after="Session.Notify" /></label>
-                <label class="se-field">Search radius (metres) <input type="number" min="0" max="25" step="0.5" @bind="p.SearchRadius" @bind:after="Session.Notify" /></label>
-                <label class="se-field">Rotation <input type="number" step="1" @bind="p.Yaw" @bind:after="Session.Notify" /></label>
-            </div>
-            <button @onclick="() => Remove(p)">Remove location</button>
-        </details>
-    }
-    <button @onclick="AddPlacement">Add location</button>
-</section>
-<section class="se-panel">
-    <h2>Treasure tables</h2>
-    <p>Each cache uses one theme. Relative weights control selection. Rewards must fit the case and meet its configured handbook value range; invalid tables suppress the hunt.</p>
-    @foreach (var entry in Session.Skills.SignalsIntelligence.Loot.ToArray())
-    {
-        <div class="se-fields">
-            <label class="se-field">Item template ID <input @bind="entry.Template" @bind:after="Session.Notify" /></label>
-            <label class="se-field">Theme <input @bind="entry.Theme" @bind:after="Session.Notify" /></label>
-            <label class="se-field">Weight <input type="number" min="1" @bind="entry.Weight" @bind:after="Session.Notify" /></label>
-            <button @onclick="() => Remove(entry)">Remove item</button>
+<SignalLocationsEditor />
+
+<section class="se-panel se-treasure" aria-labelledby="treasure-heading">
+    <div class="se-treasure-heading">
+        <h2 id="treasure-heading">Treasure tables <span class="se-badge">@Loot.Count rewards · @Themes.Count() themes</span></h2>
+    </div>
+    <p>Each cache draws from one theme. Higher weights make an item more likely within that theme. Rewards must fit the case and reach the configured total value; invalid tables suppress the hunt.</p>
+
+    <div class="se-reward-picker">
+        <h3>Add rewards</h3>
+        <div class="se-reward-search-fields">
+            <label class="se-field">Search server items
+                <input id="reward-search" type="search" placeholder="Item name, short name, or template ID"
+                       @bind="_search" @bind:event="oninput" aria-describedby="reward-search-help" />
+            </label>
+            <label class="se-field">Add to theme
+                <input id="reward-new-theme" list="reward-themes" @bind="_newTheme" @bind:event="oninput" maxlength="100" />
+            </label>
+            <label class="se-field">Weight
+                <input id="reward-new-weight" type="number" min="1" max="1000" @bind="_newWeight" />
+            </label>
         </div>
-    }
-    <button @onclick="AddLoot">Add reward item</button>
+        <label class="se-toggle se-reward-eligible">
+            <input id="reward-eligible" type="checkbox" @bind="_eligibleOnly" /> Show eligible rewards only
+        </label>
+        <p id="reward-search-help"><small>Searches the server’s loaded item catalog, including modded items. Choose Add to fill in the ID. Values are handbook prices.</small></p>
+        @if (!string.IsNullOrWhiteSpace(_search))
+        {
+            var matches = _catalog.Search(_search, _eligibleOnly);
+            <div class="se-reward-results" aria-label="Item search results">
+                @foreach (var item in matches)
+                {
+                    var reason = ItemWarning(item);
+                    var added = Loot.Any(entry => entry.Template == item.Id && entry.Theme == _newTheme.Trim());
+                    <div class="se-reward-result" @key="item.Id">
+                        <div class="se-reward-identity">
+                            <strong>@item.Name</strong>
+                            <code>@item.Id</code>
+                            <small>@ItemDetails(item)</small>
+                            @if (reason.Length > 0)
+                            {
+                                <small class="se-warning">@reason</small>
+                            }
+                        </div>
+                        <button id="@($"reward-add-{item.Id}")" type="button" class="se-button se-primary"
+                                disabled="@(added || reason.Length > 0 || !CanAdd)"
+                                aria-label="@($"Add {item.Name} to {_newTheme}")" @onclick="() => AddLoot(item)">
+                            @(added ? "Added" : "Add")
+                        </button>
+                    </div>
+                }
+                @if (matches.Count == 0)
+                {
+                    <p class="se-empty">No matching items. Try a shorter name or clear the eligible-only filter.</p>
+                }
+            </div>
+            @if (matches.Count == 30)
+            {
+                <small>Showing the first 30 matches. Refine your search to find more specific items.</small>
+            }
+        }
+        @if (!CanAdd)
+        {
+            <p class="se-warning">Enter a theme and a weight from 1 to 1,000. Tables support up to 500 rewards.</p>
+        }
+        <p class="se-reward-status" role="status">@_status</p>
+    </div>
+
+    <div class="se-toolbar">
+        <label class="se-field">Filter configured rewards
+            <input type="search" placeholder="Name or ID" @bind="_filter" @bind:event="oninput" />
+        </label>
+        <label class="se-field">Show theme
+            <select @bind="_themeFilter">
+                <option value="">All themes</option>
+                @foreach (var theme in Themes)
+                {
+                    <option value="@theme">@theme</option>
+                }
+            </select>
+        </label>
+    </div>
+    <datalist id="reward-themes">
+        @foreach (var theme in Themes)
+        {
+            <option value="@theme"></option>
+        }
+    </datalist>
+    <div class="se-reward-list">
+        @foreach (var entry in FilteredLoot)
+        {
+            var item = _catalog.Find(entry.Template);
+            var warning = item == null ? "ID not found in the server catalog. Check the ID or required mod." : ItemWarning(item);
+            <div class="se-reward-row" @key="entry">
+                <div class="se-reward-identity">
+                    <strong>@(item?.Name ?? "Unknown item")</strong>
+                    @if (item != null)
+                    {
+                        <small>@ItemDetails(item)</small>
+                    }
+                    <details class="se-reward-id">
+                        <summary aria-label="@($"Edit template ID for {item?.Name ?? entry.Template}")"><code>@entry.Template</code> <span>Edit ID</span></summary>
+                        <label class="se-field">Item template ID
+                            <input aria-label="@($"Item template ID for {item?.Name ?? entry.Template}")" @bind="entry.Template" @bind:after="Session.Notify" />
+                        </label>
+                    </details>
+                    @if (warning.Length > 0)
+                    {
+                        <small class="se-warning">@warning</small>
+                    }
+                </div>
+                <label class="se-field">Theme <input list="reward-themes" @bind="entry.Theme" @bind:after="Session.Notify" /></label>
+                <label class="se-field">Weight <input type="number" min="1" max="1000" @bind="entry.Weight" @bind:after="Session.Notify" /></label>
+                <button type="button" class="se-button se-subtle se-remove-reward" aria-label="@($"Remove {item?.Name ?? entry.Template} from {entry.Theme}")" @onclick="() => Remove(entry)">Remove</button>
+            </div>
+        }
+        @if (!FilteredLoot.Any())
+        {
+            <p class="se-empty">@(Loot.Count == 0 ? "No rewards yet. Search the server catalog above to add your first item." : "No configured rewards match these filters.")</p>
+        }
+    </div>
 </section>
 
-@code {
-    [CascadingParameter] public EditorSession Session { get; set; } = null!;
-    private void AddPlacement() { Session.Skills.SignalsIntelligence.Placements.Add(new SignalPlacement { Id=Guid.NewGuid().ToString("N"),Name="New location",Map="bigmap",Enabled=false }); Session.Notify(); }
-    private void AddLoot() { Session.Skills.SignalsIntelligence.Loot.Add(new SignalLootEntry()); Session.Notify(); }
-    private void Remove(SignalPlacement p) { Session.Skills.SignalsIntelligence.Placements.Remove(p); Session.Notify(); }
-    private void Remove(SignalLootEntry p) { Session.Skills.SignalsIntelligence.Loot.Remove(p); Session.Notify(); }
+@code
+{
+    [CascadingParameter]
+    public EditorSession Session { get; set; } = null!;
+
+    private RewardItemCatalog _catalog = null!;
+    private string _search = "", _filter = "", _themeFilter = "", _newTheme = "Technical", _status = "";
+    private int _newWeight = 1;
+    private bool _eligibleOnly = true;
+    private List<SignalLootEntry>? _previousLoot;
+    private List<SignalLootEntry> Loot => Session.Skills.SignalsIntelligence.Loot;
+    private IEnumerable<string> Themes => Loot.Select(entry => entry.Theme).Distinct().OrderBy(theme => theme);
+    private bool CanAdd => !string.IsNullOrWhiteSpace(_newTheme) && _newWeight is >= 1 and <= 1000 && Loot.Count < 500;
+    private IEnumerable<SignalLootEntry> FilteredLoot => Loot.Where(entry =>
+        (_themeFilter.Length == 0 || entry.Theme == _themeFilter)
+        && (entry.Template.Contains(_filter, StringComparison.OrdinalIgnoreCase)
+            || (_catalog.Find(entry.Template)?.Name.Contains(_filter, StringComparison.OrdinalIgnoreCase) ?? false)));
+
+    protected override void OnInitialized()
+    {
+        _catalog = new RewardItemCatalog(Templates, Locales.GetLocaleDb().ToDictionary(pair => pair.Key, pair => pair.Value));
+    }
+
+    protected override void OnParametersSet()
+    {
+        if (!ReferenceEquals(_previousLoot, Loot))
+        {
+            _previousLoot = Loot;
+            _status = "";
+        }
+        if (_themeFilter.Length > 0 && !Themes.Contains(_themeFilter))
+        {
+            _themeFilter = "";
+        }
+    }
+
+    private static string ItemDetails(RewardItem item) => $"{item.Price:N0} ₽ · {item.Width} × {item.Height} slots";
+
+    private string ItemWarning(RewardItem item) => item.UnavailableReason.Length > 0
+        ? item.UnavailableReason
+        : item.Price > Session.Skills.SignalsIntelligence.MaximumLootValue
+            ? "Above the configured maximum cache value."
+            : "";
+
+    private void AddLoot(RewardItem item)
+    {
+        var theme = _newTheme.Trim();
+        if (!CanAdd || ItemWarning(item).Length > 0 || Loot.Any(entry => entry.Template == item.Id && entry.Theme == theme))
+        {
+            return;
+        }
+        Loot.Add(new SignalLootEntry { Template = item.Id, Theme = theme, Weight = _newWeight });
+        _filter = "";
+        _themeFilter = "";
+        _status = $"Added {item.Name} to {theme}. Save changes to apply.";
+        Session.Notify();
+    }
+
+    private void Remove(SignalLootEntry entry)
+    {
+        Loot.Remove(entry);
+        if (!Themes.Contains(_themeFilter))
+        {
+            _themeFilter = "";
+        }
+        _status = $"Removed {_catalog.Find(entry.Template)?.Name ?? entry.Template}. Save changes to apply.";
+        Session.Notify();
+    }
 }

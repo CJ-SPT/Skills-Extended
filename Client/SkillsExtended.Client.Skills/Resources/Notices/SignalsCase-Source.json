@@ -1,0 +1,22 @@
+{
+  "listing": "https://www.fab.com/listings/76f33491-c282-487d-9b70-407ea18eb425",
+  "author": "Alpen wolf",
+  "license": "Fab Standard License",
+  "licenseUrl": "https://www.fab.com/eula",
+  "variant": "ammo_box_01 (olive)",
+  "packageSha256": "6b3852a2297004e0e75ed0a78e181d49fe09e0744859de21d625318b5574dd41",
+  "files": {
+    "materials/ammo_box_01.mat": "7ef2ffe202bb0c2b04d387ec8f3fa3efaa27937033333c770e1e40d2f41ea6a9",
+    "materials/ammo_box_01.mat.meta": "2e09ae903fdf5f5dbfdd9190e887cfcda05e159f4f5ffe6cbea716363f6d5af5",
+    "meshes/ammo_box.FBX": "7d469995a703ea9c383f39e83e5580d26af811917fac3a3f009dea9f864d5f2a",
+    "meshes/ammo_box.FBX.meta": "531e1aed25ae4edaeb7487abaaf7e25fda41627406a2056a9619e0838037d1aa",
+    "prefabs/ammo_box_01.prefab": "ff08397613f119e61a8c17d10513c0e752696b033b9c81e1ac738b521a329c7f",
+    "prefabs/ammo_box_01.prefab.meta": "2cc87123e6527e0a5e6f4fced4eb167c8f78f1c3889bfbd0de6c74d42995b639",
+    "textures/ammo_box_01_albedo.tga": "006f19097de5560ad45c4773d12365d974a96d4c5f76ee05dfaf955371808d37",
+    "textures/ammo_box_01_albedo.tga.meta": "f9dc84817b24682119c5c5d35ac3622ae5ebe543043bb7ee2afa51ccf0dba11f",
+    "textures/ammo_box_MetallicOcclusionSmoothness.tga": "e5251c4f8b61c34b75985e5c4267086a33148e59117f4cb1639afcecc0d18435",
+    "textures/ammo_box_MetallicOcclusionSmoothness.tga.meta": "fe9e96f00900da7d20248f702491101ef4f2a7839ffabad303f1275c2b62441a",
+    "textures/ammo_box_normal.tga": "2a8bcd5d41330a849890bfa1ae8be7ec1eac893956d337690e23d59bcc697213",
+    "textures/ammo_box_normal.tga.meta": "aed7dfe6e700d41632a1605fc4874ed6508451905d00a2b3ca36664e59fabe03"
+  }
+}

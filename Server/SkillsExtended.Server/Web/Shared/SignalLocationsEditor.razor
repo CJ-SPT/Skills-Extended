@@ -1,0 +1,201 @@
+@using SkillsExtended.Signals
+
+<section class="se-panel se-locations" aria-labelledby="locations-heading">
+    <div class="se-locations-heading">
+        <h2 id="locations-heading">Cache locations <span class="se-badge">@Placements.Count locations · @Placements.Count(p => p.Enabled) enabled</span></h2>
+    </div>
+    <p>Organize cache areas by map. The host searches nearby ground and falls back to another enabled area when needed. Preview new locations in-game before enabling them.</p>
+
+    <div class="se-toolbar">
+        <label class="se-field">Search locations
+            <input id="location-search" type="search" placeholder="Name, location ID, or map" @bind="_search" @bind:event="oninput" @bind:after="() => _collapsedMaps.Clear()" />
+        </label>
+        <label class="se-field">Location status
+            <select id="location-status" @bind="_statusFilter" @bind:after="() => _collapsedMaps.Clear()">
+                <option value="">All locations</option>
+                <option value="enabled">Enabled only</option>
+                <option value="disabled">Disabled only</option>
+            </select>
+        </label>
+    </div>
+    <div class="se-location-tools">
+        <small role="status">@Filtered.Count() of @Placements.Count locations shown</small>
+        <button id="locations-expand" type="button" class="se-button se-subtle" @onclick="ExpandVisible">Expand shown</button>
+        <button id="locations-collapse" type="button" class="se-button se-subtle" @onclick="() => _expanded.Clear()">Collapse locations</button>
+    </div>
+
+    @foreach (var map in Maps)
+    {
+        var all = Placements.Where(p => p.Map == map).ToArray();
+        var shown = Filtered.Where(p => p.Map == map).ToArray();
+        var open = !_collapsedMaps.Contains(map);
+        var groupId = $"location-map-{Array.IndexOf(Maps, map)}";
+        <section class="se-location-map" @key="map" aria-label="@($"{MapName(map)} cache locations")">
+            <div class="se-location-map-heading">
+                <button type="button" class="se-location-map-toggle" aria-expanded="@open" aria-controls="@groupId" @onclick="() => ToggleMap(map)">
+                    <span aria-hidden="true">@(open ? "▾" : "▸")</span>
+                    <span><strong>@MapName(map)</strong><small>@all.Length locations · @all.Count(p => p.Enabled) enabled</small></span>
+                </button>
+                @if (map is "bigmap" or "woods")
+                {
+                    <button id="@($"location-add-{map}")" type="button" class="se-button" disabled="@(Placements.Count >= 500)"
+                            aria-label="@($"Add location to {MapName(map)}")" @onclick="() => Add(map)">+ Add location</button>
+                }
+            </div>
+            <div id="@groupId" hidden="@(!open)">
+                @if (all.Length > 0 && all.All(p => !p.Enabled))
+                {
+                    <p class="se-location-map-note">No enabled locations. This map cannot host a signal hunt until a validated location is enabled.</p>
+                }
+                @foreach (var placement in shown)
+                {
+                    var index = Placements.IndexOf(placement);
+                    var expanded = _expanded.Contains(placement);
+                    var editorId = $"location-fields-{index}";
+                    <article class="se-location-row" @key="placement">
+                        <button id="@($"location-toggle-{index}")" type="button" class="se-location-summary" aria-expanded="@expanded"
+                                aria-controls="@editorId" @onclick="() => Toggle(placement)">
+                            <span class="se-location-chevron" aria-hidden="true">@(expanded ? "▾" : "▸")</span>
+                            <span class="se-location-identity">
+                                <strong>@(string.IsNullOrWhiteSpace(placement.Name) ? "Unnamed location" : placement.Name)</strong>
+                                <small>X @Number(placement.Position.X) · Y @Number(placement.Position.Y) · Z @Number(placement.Position.Z) <span class="se-location-radius">@(placement.SearchRadius == 0 ? "Exact position" : $"Search {Number(placement.SearchRadius)} m")</span></small>
+                            </span>
+                            <span class="se-badge @(placement.Enabled ? "se-location-enabled" : "")">@(placement.Enabled ? "Enabled" : "Disabled")</span>
+                        </button>
+                        <div id="@editorId" class="se-location-editor" hidden="@(!expanded)">
+                            <div class="se-fields">
+                                <label class="se-field">Location name <input id="@($"location-name-{index}")" @bind="placement.Name" @bind:after="Session.Notify" /></label>
+                                <label class="se-field">Map
+                                    <select id="@($"location-map-select-{index}")" @bind="placement.Map" @bind:after="() => Moved(placement)">
+                                        @if (placement.Map is not ("bigmap" or "woods"))
+                                        {
+                                            <option value="@placement.Map">Unsupported: @placement.Map</option>
+                                        }
+                                        <option value="bigmap">Customs</option><option value="woods">Woods</option>
+                                    </select>
+                                </label>
+                            </div>
+                            <fieldset class="se-location-coordinates">
+                                <legend>World position</legend>
+                                <label class="se-field">X <input id="@($"location-x-{index}")" type="number" step="any" @bind="placement.Position.X" @bind:after="Session.Notify" /></label>
+                                <label class="se-field">Y <input type="number" step="any" @bind="placement.Position.Y" @bind:after="Session.Notify" /></label>
+                                <label class="se-field">Z <input type="number" step="any" @bind="placement.Position.Z" @bind:after="Session.Notify" /></label>
+                            </fieldset>
+                            <div class="se-fields">
+                                <label class="se-field">Search radius (metres)
+                                    <input type="number" min="0" max="25" step="any" @bind="placement.SearchRadius" @bind:after="Session.Notify" />
+                                    <small>0 keeps the authored X/Z position. Up to 25 m allows nearby ground searches.</small>
+                                </label>
+                                <label class="se-field">Rotation (degrees) <input type="number" step="any" @bind="placement.Yaw" @bind:after="Session.Notify" /></label>
+                            </div>
+                            <details class="se-location-id">
+                                <summary>Location ID · <code>@placement.Id</code></summary>
+                                <label class="se-field">Unique location ID <input @bind="placement.Id" @bind:after="Session.Notify" /></label>
+                            </details>
+                            <div class="se-location-actions">
+                                <label class="se-toggle"><input id="@($"location-enabled-{index}")" type="checkbox" @bind="placement.Enabled" @bind:after="Session.Notify" /><span>Enabled<small>Enable after previewing this area in-game.</small></span></label>
+                                <button id="@($"location-remove-{index}")" type="button" class="se-button se-subtle se-location-remove"
+                                        aria-label="@($"Remove {placement.Name} from {MapName(placement.Map)}")" @onclick="() => Remove(placement)">Remove location</button>
+                            </div>
+                        </div>
+                    </article>
+                }
+                @if (shown.Length == 0)
+                {
+                    <p class="se-empty">@(all.Length == 0 ? "No cache locations yet. Add an area for this map to get started." : "No locations match your search and status filter.")</p>
+                }
+            </div>
+        </section>
+    }
+    @if (Placements.Count >= 500)
+    {
+        <p class="se-warning">The 500-location limit has been reached.</p>
+    }
+</section>
+
+@code
+{
+    [CascadingParameter]
+    public EditorSession Session { get; set; } = null!;
+
+    private string _search = "", _statusFilter = "";
+    private readonly HashSet<SignalPlacement> _expanded = [];
+    private readonly HashSet<string> _collapsedMaps = [];
+    private List<SignalPlacement> Placements => Session.Skills.SignalsIntelligence.Placements;
+    private string[] Maps => new[] { "bigmap", "woods" }.Concat(Placements.Select(p => p.Map)).Distinct().ToArray();
+    private IEnumerable<SignalPlacement> Filtered => Placements.Where(p =>
+        (_statusFilter.Length == 0 || p.Enabled == (_statusFilter == "enabled"))
+        && ($"{p.Name} {p.Id} {p.Map} {MapName(p.Map)}").Contains(_search.Trim(), StringComparison.OrdinalIgnoreCase));
+
+    private static string MapName(string map) => map switch
+    {
+        "bigmap" => "Customs",
+        "woods" => "Woods",
+        _ => $"Unsupported map ({map})",
+    };
+
+    private static string Number(float value) => value.ToString("0.###", CultureInfo.CurrentCulture);
+
+    protected override void OnParametersSet()
+    {
+        _expanded.RemoveWhere(p => !Placements.Contains(p));
+    }
+
+    private void ToggleMap(string map)
+    {
+        if (!_collapsedMaps.Add(map))
+        {
+            _collapsedMaps.Remove(map);
+        }
+    }
+
+    private void Toggle(SignalPlacement placement)
+    {
+        if (!_expanded.Add(placement))
+        {
+            _expanded.Remove(placement);
+        }
+    }
+
+    private void ExpandVisible()
+    {
+        foreach (var placement in Filtered)
+        {
+            _expanded.Add(placement);
+            _collapsedMaps.Remove(placement.Map);
+        }
+    }
+
+    private void Add(string map)
+    {
+        if (Placements.Count >= 500)
+        {
+            return;
+        }
+        var placement = new SignalPlacement
+        {
+            Id = Guid.NewGuid().ToString("N"), Name = "New location", Map = map, Enabled = false,
+        };
+        var index = Placements.FindIndex(p => p.Map == map);
+        Placements.Insert(index < 0 ? Placements.Count : index, placement);
+        _search = "";
+        _statusFilter = "";
+        _expanded.Add(placement);
+        _collapsedMaps.Remove(map);
+        Session.Notify();
+    }
+
+    private void Moved(SignalPlacement placement)
+    {
+        _search = "";
+        _collapsedMaps.Remove(placement.Map);
+        Session.Notify();
+    }
+
+    private void Remove(SignalPlacement placement)
+    {
+        Placements.Remove(placement);
+        _expanded.Remove(placement);
+        Session.Notify();
+    }
+}

@@ -1,0 +1,15 @@
+Signals cache appearance: Military Hard Case, olive ammo_box_01 variant
+Creator: Alpen wolf
+Source: https://www.fab.com/listings/76f33491-c282-487d-9b70-407ea18eb425
+License: Fab Standard License, https://www.fab.com/eula
+
+The case meshes and textures are third-party content, not covered by the
+Skills Extended repository's Creative Commons license. They are incorporated
+into the compiled Signals cache bundle for use within Skills Extended only.
+Do not extract, redistribute, or use these assets outside this mod. Obtain
+your own asset license from Fab for independent use or authoring.
+
+The olive textures and model retain their original detail. Skills Extended
+adds collision and native container interaction, hinge settings, and packaging.
+Native EFT scripts and container sounds are separate from the Fab model.
+Loose Fab source files and alternate color variants are not included.

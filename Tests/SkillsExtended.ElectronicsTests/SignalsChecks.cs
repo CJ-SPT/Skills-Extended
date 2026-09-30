@@ -18,6 +18,7 @@ internal static class SignalsChecks
 {
     public static void Verify()
     {
+        SignalsGeometryChecks.Verify();
         var checks = 0;
         void Check(bool condition, string label)
         {
@@ -314,6 +315,20 @@ internal static class SignalsChecks
                     96,
                     SignalsModel.ObservedBearing(a, position, 25),
                     0
+                );
+            if (
+                SignalTriangulation.TryFix(
+                    authority.State.Readings,
+                    c.MinimumSeparation,
+                    out var estimate,
+                    out var radius
+                )
+            )
+                Check(
+                    authority.State.HasFix
+                        && SignalPoint.Distance(authority.State.Estimate, estimate) < .001f
+                        && Math.Abs(authority.State.Radius - radius) < .001f,
+                    "authority uses all retained bearings for the shared fix"
                 );
         }
         Scan("a", at);

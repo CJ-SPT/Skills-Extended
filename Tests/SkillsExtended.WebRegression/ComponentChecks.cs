@@ -11,7 +11,11 @@ public static class ComponentChecks
 {
     public static async Task Run(ConfigSnapshot snapshot, Action<bool, string> check)
     {
-        var services = new ServiceCollection().AddLogging().BuildServiceProvider();
+        var services = new ServiceCollection()
+            .AddLogging()
+            .AddSingleton(RewardCatalogChecks.Templates())
+            .AddSingleton(RewardCatalogChecks.Locales())
+            .BuildServiceProvider();
         await using var renderer = new EventRenderer(
             services,
             services.GetRequiredService<ILoggerFactory>()
@@ -47,6 +51,173 @@ public static class ComponentChecks
             check(
                 !session.Dirty && session.Skills.FirstAid.XpPerAction == before,
                 "Rendered fields follow discarded session data"
+            );
+
+            var rewards = await renderer.Mount(
+                new TablesHost(session, typeof(SignalsTablesEditor))
+            );
+            var originalCount = session.Skills.SignalsIntelligence.Loot.Count;
+            await renderer.Input(rewards, "reward-search", "oninput", "precision circuit");
+            check(!session.Dirty, "Searching server items does not change the draft");
+            await renderer.Input(rewards, "reward-new-theme", "oninput", "Custom treasures");
+            await renderer.Input(rewards, "reward-new-weight", "onchange", "3");
+            await renderer.Click(rewards, "reward-add-" + RewardCatalogChecks.ModItem);
+            var added = session.Skills.SignalsIntelligence.Loot.Last();
+            check(
+                added.Template == RewardCatalogChecks.ModItem
+                    && added.Theme == "Custom treasures"
+                    && added.Weight == 3
+                    && session.Dirty
+                    && snapshot.Skills.SignalsIntelligence.Loot.Count == originalCount,
+                "Real picker fills the template ID, theme, and weight in the isolated draft"
+            );
+            await renderer.Click(rewards, "reward-add-" + RewardCatalogChecks.ModItem);
+            check(
+                session.Skills.SignalsIntelligence.Loot.Count == originalCount + 1,
+                "Duplicate clicks cannot add the same item to a theme twice"
+            );
+            await renderer.Input(rewards, "reward-new-theme", "oninput", "Second theme");
+            await renderer.Click(rewards, "reward-add-" + RewardCatalogChecks.ModItem);
+            check(
+                session.Skills.SignalsIntelligence.Loot.Count == originalCount + 2,
+                "The same item can be added to a different theme"
+            );
+            await renderer.Input(rewards, "reward-search", "oninput", "quest circuit");
+            await renderer.Input(rewards, "reward-eligible", "onchange", false);
+            await renderer.Click(rewards, "reward-add-" + RewardCatalogChecks.QuestItem);
+            check(
+                session.Skills.SignalsIntelligence.Loot.Count == originalCount + 2,
+                "Ineligible search results cannot be added even when their handler is invoked"
+            );
+            session.Reset(snapshot);
+            await renderer.Refresh(rewards);
+            check(
+                !session.Dirty && session.Skills.SignalsIntelligence.Loot.Count == originalCount,
+                "Discard restores configured rewards after picker additions"
+            );
+
+            var originalLocations = session.Skills.SignalsIntelligence.Placements.Count;
+            var woodsIndex = session.Skills.SignalsIntelligence.Placements.FindIndex(p =>
+                p.Map == "woods"
+            );
+            await renderer.Input(rewards, "location-search", "oninput", "Customs");
+            check(
+                !session.Dirty
+                    && renderer.HasHandler(rewards, "location-toggle-0", "onclick")
+                    && !renderer.HasHandler(rewards, $"location-toggle-{woodsIndex}", "onclick"),
+                "Friendly map-name search filters locations without editing the draft"
+            );
+            await renderer.Input(rewards, "location-search", "oninput", "");
+            await renderer.Input(rewards, "location-status", "onchange", "disabled");
+            check(
+                !renderer.HasHandler(rewards, "location-toggle-0", "onclick") && !session.Dirty,
+                "Disabled-only filter hides enabled locations without changing their status"
+            );
+            await renderer.Click(rewards, "location-add-woods");
+            var location = session.Skills.SignalsIntelligence.Placements[woodsIndex];
+            var locationId = location.Id;
+            check(
+                location.Map == "woods"
+                    && !location.Enabled
+                    && location.SearchRadius == 10
+                    && renderer.HasHandler(rewards, $"location-toggle-{woodsIndex}", "onclick")
+                    && session
+                        .Skills.SignalsIntelligence.Placements.Select(p => p.Id)
+                        .Distinct()
+                        .Count()
+                        == originalLocations + 1
+                    && snapshot.Skills.SignalsIntelligence.Placements.Count == originalLocations,
+                "Map-specific add creates a visible disabled draft location with a unique ID"
+            );
+            await renderer.Input(rewards, $"location-name-{woodsIndex}", "onchange", "Test ridge");
+            await renderer.Input(rewards, $"location-x-{woodsIndex}", "onchange", "123.456");
+            await renderer.Input(rewards, $"location-enabled-{woodsIndex}", "onchange", true);
+            await renderer.Input(
+                rewards,
+                $"location-map-select-{woodsIndex}",
+                "onchange",
+                "bigmap"
+            );
+            check(
+                location.Map == "bigmap"
+                    && location.Name == "Test ridge"
+                    && location.Id == locationId
+                    && location.Position.X == 123.456f
+                    && location.Enabled,
+                "Moving a location between map groups preserves its ID and precise edited coordinates"
+            );
+            await renderer.Click(rewards, "locations-expand");
+            await renderer.Click(rewards, "locations-collapse");
+            await renderer.Click(rewards, $"location-remove-{woodsIndex}");
+            check(
+                session.Skills.SignalsIntelligence.Placements.Count == originalLocations
+                    && !session.Dirty,
+                "Removing the added location restores the original draft content"
+            );
+            await renderer.Click(rewards, "location-add-bigmap");
+            session.Reset(snapshot);
+            await renderer.Refresh(rewards);
+            check(
+                !session.Dirty
+                    && session.Skills.SignalsIntelligence.Placements.Count == originalLocations,
+                "Discard resets grouped locations and removes newly added entries"
+            );
+        });
+        await renderer.Dispatcher.InvokeAsync(async () =>
+        {
+            var boards = await renderer.Mount(new TablesHost(session, typeof(HackingBoardsEditor)));
+            var standard = session.Skills.Hacking.Tier(1);
+            var originalNodes = standard.Nodes;
+            await renderer.Input(boards, "Hacking.Tiers.1.Nodes", "oninput", "");
+            check(
+                standard.Nodes == originalNodes
+                    && session.InputErrors.ContainsKey("Hacking.Tiers.1.Nodes"),
+                "Empty board input blocks saving without replacing the last valid node count"
+            );
+            await renderer.Input(boards, "Hacking.Tiers.1.Nodes", "oninput", "62");
+            check(
+                standard.Nodes == originalNodes
+                    && session.InputErrors.ContainsKey("Hacking.Tiers.1.Nodes"),
+                "Board node limits reject oversized boards"
+            );
+            await renderer.Input(boards, "Hacking.Tiers.1.Nodes", "oninput", "15");
+            await renderer.Input(boards, "Hacking.Tiers.1.Defenses", "oninput", "7");
+            check(
+                session.InputErrors.ContainsKey("Hacking.Tiers.1.Layout")
+                    && ConfigRules.Validate(session.Skills).Count > 0,
+                "Board composition detects insufficient reserved nodes and matches backend validation"
+            );
+            await renderer.Input(boards, "Hacking.Tiers.1.Defenses", "oninput", "4");
+            check(
+                session.InputErrors.Count == 0 && ConfigRules.Validate(session.Skills).Count == 0,
+                "Exactly eight reserved nodes is accepted without changing the gameplay rule"
+            );
+            await renderer.Input(boards, "Hacking.Tiers.1.Defenses", "oninput", "3.5");
+            check(
+                standard.Defenses == 4
+                    && session.InputErrors.ContainsKey("Hacking.Tiers.1.Defenses"),
+                "Board content counts reject fractional numbers"
+            );
+            await renderer.Input(boards, "Hacking.Tiers.1.Defenses", "oninput", "4");
+            await renderer.Input(boards, "Hacking.Tiers.1.SuccessXp", "oninput", "0.125");
+            check(
+                standard.SuccessXp == .125f && snapshot.Skills.Hacking.Tier(1).SuccessXp != .125f,
+                "Board reward input preserves fractional XP in the isolated draft"
+            );
+            await renderer.Input(boards, "Hacking.Tiers.1.CoreCoherence", "oninput", "0");
+            check(
+                standard.CoreCoherence > 0
+                    && session.InputErrors.ContainsKey("Hacking.Tiers.1.CoreCoherence"),
+                "Core health cannot be set below its supported minimum"
+            );
+            session.Reset(snapshot);
+            await renderer.Refresh(boards);
+            check(
+                !session.Dirty
+                    && session.InputErrors.Count == 0
+                    && session.Inputs.Count == 0
+                    && session.Skills.Hacking.Tier(1).Nodes == originalNodes,
+                "Discard restores all difficulty settings and clears board input errors"
             );
         });
         services.Dispose();
@@ -84,6 +255,29 @@ public static class ComponentChecks
         }
     }
 
+    private sealed class TablesHost(EditorSession session, Type editorType) : ComponentBase
+    {
+        protected override void BuildRenderTree(
+            Microsoft.AspNetCore.Components.Rendering.RenderTreeBuilder builder
+        )
+        {
+            builder.OpenComponent<CascadingValue<EditorSession>>(0);
+            builder.AddAttribute(1, "Value", session);
+            builder.AddAttribute(
+                2,
+                "ChildContent",
+                (RenderFragment)(
+                    content =>
+                    {
+                        content.OpenComponent(0, editorType);
+                        content.CloseComponent();
+                    }
+                )
+            );
+            builder.CloseComponent();
+        }
+    }
+
     private sealed class EventRenderer(IServiceProvider services, ILoggerFactory logger)
         : Renderer(services, logger)
     {
@@ -102,6 +296,23 @@ public static class ComponentChecks
         }
 
         public Task Refresh(int root) => RenderRootComponentAsync(root);
+
+        public bool HasHandler(int root, string elementId, string eventName) =>
+            FindHandler(root, elementId, eventName) != 0;
+
+        public Task Click(int root, string elementId)
+        {
+            var handler = FindHandler(root, elementId, "onclick");
+            if (handler == 0)
+            {
+                throw new InvalidOperationException($"Missing click handler {elementId}");
+            }
+            return DispatchEventAsync(
+                handler,
+                null,
+                new Microsoft.AspNetCore.Components.Web.MouseEventArgs()
+            );
+        }
 
         public Task Input(int root, string elementId, string eventName, object value)
         {
