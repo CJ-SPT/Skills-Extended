@@ -4,8 +4,7 @@
     "ReleaseDate": "September 30, 2026",
     "IsLatest": true,
     "Features": [
-      "Lock Picking 2.0: hidden pins, binding order, tension control.",
-      "Five configurable lock tiers and a lockpicking practice console command.",
+      "Skill: Lock Picking 2.0",
       "New Skill: Signals Intelligence"
     ],
     "Improvements": [
@@ -21,7 +20,7 @@
     "BugFixes": [
       "Removed the old permanent lock-break behavior and unbreakable elite bonus.",
       "Restore prior player input and cursor state after leaving or interrupting the minigame.",
-      "Fix excessive lock-pick image dimensions on ultra wide monitors (maybe)"
+      "Fix scaling issues on ultra wide monitors (maybe)"
     ]
   },
   {
