@@ -9,6 +9,8 @@ namespace SkillsExtended.Skills.FirstAid.Patches;
 
 internal class HealthEffectUseTimePatch : ModulePatch
 {
+    private static bool _loggedMessage;
+    
     protected override MethodBase GetTargetMethod()
     {
         return AccessTools.PropertyGetter(
@@ -28,9 +30,10 @@ internal class HealthEffectUseTimePatch : ModulePatch
         }
 
         var skillManager = GameUtils.GetSkillManager();
-        if (skillManager == null)
+        if (skillManager == null && !_loggedMessage)
         {
             Logger.LogError("Skill Manager is null");
+            _loggedMessage = true;
             return;
         }
 
@@ -40,6 +43,8 @@ internal class HealthEffectUseTimePatch : ModulePatch
 
 internal class SpawnPatch : ModulePatch
 {
+    private static bool _loggedMessage;
+    
     protected override MethodBase GetTargetMethod()
     {
         return AccessTools.Method(
@@ -59,9 +64,10 @@ internal class SpawnPatch : ModulePatch
         }
 
         var skillManager = GameUtils.GetSkillManager();
-        if (skillManager == null)
+        if (skillManager == null && !_loggedMessage)
         {
             Logger.LogError("Skill Manager is null");
+            _loggedMessage = true;
             return;
         }
 

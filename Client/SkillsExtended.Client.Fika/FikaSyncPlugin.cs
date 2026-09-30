@@ -5,7 +5,6 @@ using Fika.Core.Modding;
 using Fika.Core.Modding.Events;
 using Fika.Core.Networking;
 using SkillsExtended;
-using SPT.Reflection.Patching;
 
 namespace SkillsExtendedFika;
 
@@ -15,7 +14,6 @@ namespace SkillsExtendedFika;
 public class FikaSyncPlugin : BaseUnityPlugin
 {
     internal static new ManualLogSource? Logger;
-    private static PatchManager? _patchManager;
 
     private void Awake()
     {
@@ -25,8 +23,6 @@ public class FikaSyncPlugin : BaseUnityPlugin
             throw new Exception("Invalid EFT Version");
         }
 
-        _patchManager = new PatchManager(this, true);
-        _patchManager.EnablePatches();
         SkillsExtendedInfo.SyncPluginPresent = true;
         ElectronicsFikaBridge.Initialize();
         SignalsFikaBridge.Initialize();
