@@ -295,6 +295,7 @@
                 "door_Shopping_Mall_OLI_00037": 3,
                 "door_Shopping_Mall_OLI_00039": 3,
                 "door_Shopping_Mall_OLI_00043": 3,
+				"door_Shopping_Mall_DesignMain_00000" : 3,
                 "Shopping_Mall_DesignStuff_00049": 3,
                 "Shopping_Mall_DesignStuff_00050": 3,
                 "Shopping_Mall_DesignStuff_00051": 3,
@@ -464,7 +465,8 @@
                 "door_Laboratory_Security_block_00005": 3,
                 "door_Laboratory_Security_block_00007": 3,
                 "door_Laboratory_Medical_corridor_floor_1_00038": 3,
-                "door_Factory_Rework_Basement_00031": 3
+                "door_Factory_Rework_Basement_00031": 3,
+				"door_Laboratory_Medical_corridor_floor_1_00006" : 4
             },
             "Lighthouse": {
                 "door_Lighthouse_Bus_Stop_00003": 1,
