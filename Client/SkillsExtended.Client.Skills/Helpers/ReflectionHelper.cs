@@ -15,8 +15,6 @@ public static class ReflectionHelper
     internal static Type MedEffectType;
     internal static Type StimulatorType;
 
-    internal static Type OldMovementIdleState;
-    
     static ReflectionHelper()
     {
         BleedType = AccessTools.Inner(typeof(ActiveHealthController), "LightBleeding");
@@ -26,20 +24,10 @@ public static class ReflectionHelper
         PainType = AccessTools.Inner(typeof(ActiveHealthController), "Pain");
         MedEffectType = AccessTools.Inner(typeof(ActiveHealthController), "MedEffect");
         StimulatorType = AccessTools.Inner(typeof(ActiveHealthController), "MedEffect");
-        
+
         if (BleedType is null)
         {
             throw new SkillsExtendedException("Could not find HealthController nested types");
-        }
-    }
-
-    public static void GetOldMovementTypes()
-    {
-        OldMovementIdleState = AccessTools.TypeByName("OldIdleState");
-
-        if (OldMovementIdleState is null)
-        {
-            throw new SkillsExtendedException("Could not find OldIdleState or OldStationaryState");
         }
     }
 }

@@ -7,6 +7,7 @@ Run from the repository root:
 
 ```powershell
 dotnet run --project Tests/SkillsExtended.ElectronicsTests -c Release -p:DeploySkillsExtended=false -p:PackageSkillsExtended=false
+dotnet run --project Tests/SkillsExtended.LockPickingTests -c Release -p:DeploySkillsExtended=false -p:PackageSkillsExtended=false
 dotnet run --project Tests/SkillsExtended.Regression -c Release -p:DeploySkillsExtended=false
 dotnet build 'Skills Extended.sln' -c Release -p:DeploySkillsExtended=false -p:FikaAssemblyPath='C:\path\to\Fika.Core.dll'
 ```
@@ -63,4 +64,6 @@ displays; medkit consumption and injector effects; prone/door audio; and bush/sw
 movement at ordinary and elite levels. Recheck disabled settings after the required
 client restart. Attempt lockpicking while moving without Old Tarkov Movement and
 confirm the normal warning appears. For Fika, verify plugin loading and synchronized
-door unlocking/breaking with another player and a headless host.
+door unlocking and pick consumption with another player and a headless host.
+See [Lock Picking 2.0 acceptance](../LOCKPICKING.md) for controls, the pin simulation
+suite, and the remaining artwork/input/Fika checks.

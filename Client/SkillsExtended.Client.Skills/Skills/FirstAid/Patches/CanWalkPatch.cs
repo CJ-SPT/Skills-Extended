@@ -19,7 +19,7 @@ internal class CanWalkPatch : ModulePatch
         if (!____player.IsYourPlayer)
             return;
 
-        if (LockPickingHelpers.LockPickingGame.activeSelf)
+        if (LockPickingGame.Current && LockPickingGame.Current.InRaid)
         {
             __result = false;
             return;

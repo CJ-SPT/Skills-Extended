@@ -40,7 +40,7 @@ This skill applies to all weapons that would be considered Eastern(Russian) weap
 
 ### Lock Picking
 
-This skill allows for lock picking doors found throughout the game world without needing the key. It is a context menu action when you look at a door if you have lock picks in your inventory. In order to get lock picks you must craft them at the work bench, the craft is unlocked at level 1. It is leveled by inspecting and picking locks, even failures give experience. Careful, you might break a lock if you're not careful rendering it unusable for the remainder of the raid!
+Lock Picking 2.0 lets you open supported mechanical doors using a hidden-pin minigame. Move the mouse sideways to change depth, move it vertically to lift the pick, and hold the configured tension key. Feel for binding pins, lower the pick before moving, and release tension to reset. Craft a five-use lockpick set at Workbench level 1. Every configured tier can be attempted at any skill level; skill improves control and resilience. Excess force breaks one pick and consumes one use, while the door and its key remain usable. Inspection and successful picks award experience; failures award limited experience only after setting a pin. Cancelling costs no use, but accumulated pick wear remains for the raid.
 
 - Increases pick strength by 2.5% per level, this increases the time before the pick breaks when not in the correct position
 - Increases the "sweet spot" range by 1.5% per level, making it easier to find the position the lock will turn

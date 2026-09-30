@@ -1,0 +1,19 @@
+Tiny metal/lockpicking
+Creator: cappellacciocrew
+Source: https://freesound.org/people/cappellacciocrew/sounds/639086/
+License: Creative Commons CC0 1.0 Universal
+https://creativecommons.org/publicdomain/zero/1.0/
+
+Built from the original 44.1 kHz stereo 16-bit PCM WAV downloaded by Corey:
+639086__cappellacciocrew__tiny-metallockpicking.wav
+
+Edits: 18 separate excerpts, stereo-to-mono downmix, DC offset removal, bounded
+linear gain, 4 ms fade-in and 18 ms fade-out, 44.1 kHz 16-bit PCM encoding.
+No pitch shifting, synthesized layers, saturation or time stretching.
+The converted excerpts are embedded in the Skills Extended client DLL.
+See Tools/LockPickingAssets/Audio-Segments.json for exact source times.
+
+Source WAV SHA-256:
+b4417024a7d39363224f32df9652256be929584730e0133bf3c4a23cee042e4d
+Embedded audio resource SHA-256:
+8f07f2ff2af6e47f789fa281636568c44a9dbab36a558c54c006852432cd28e4

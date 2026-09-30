@@ -231,10 +231,10 @@ public class SkillsExtendedManager(SkillManager skillManager, SkillsConfig skill
         return
         [
             LockPickingTimeBuff.PerLevel(
-                skillData.LockPicking.PickStrengthPerLevel.NormalizeToPercentage()
+                skillData.LockPicking.PickResiliencePerLevel.NormalizeToPercentage()
             ),
             LockPickingForgiveness.PerLevel(
-                skillData.LockPicking.SweetSpotRangePerLevel.NormalizeToPercentage()
+                skillData.LockPicking.PinTolerancePerLevel.NormalizeToPercentage()
             ),
             LockPickingUseBuffElite,
         ];

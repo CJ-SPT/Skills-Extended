@@ -9,11 +9,38 @@ public static class ConfigManager
     public static ConfigEntry<KeyCode> LpMiniGameTurnKey;
     public static ConfigEntry<bool> LpMiniEnableHealthBar;
     public static ConfigEntry<int> HackingVolume;
+    public static ConfigEntry<int> LockPickingVolume;
+    public static ConfigEntry<float> LockPickingSensitivity;
+    public static ConfigEntry<bool> LockPickingReducedMotion;
     public static ConfigEntry<int> SignalsVolume;
     public static ConfigEntry<KeyboardShortcut> SignalsShortcut;
 
     public static void RegisterConfig(ConfigFile config)
     {
+        LockPickingVolume = config.Bind(
+            "Lock Picking",
+            "Volume (%)",
+            80,
+            new ConfigDescription(
+                "Mechanical picking feedback volume.",
+                new AcceptableValueRange<int>(0, 100)
+            )
+        );
+        LockPickingSensitivity = config.Bind(
+            "Lock Picking",
+            "Mouse sensitivity",
+            1f,
+            new ConfigDescription(
+                "Pick depth and lift sensitivity.",
+                new AcceptableValueRange<float>(.2f, 3f)
+            )
+        );
+        LockPickingReducedMotion = config.Bind(
+            "Lock Picking",
+            "Reduced motion",
+            false,
+            "Disable strain vibration; all mechanical feedback remains visible."
+        );
         SignalsVolume = config.Bind(
             "Signals Intelligence",
             "Receiver volume (%)",
@@ -51,9 +78,14 @@ public static class ConfigManager
             "Turn Cylinder Key bind",
             KeyCode.A,
             new ConfigDescription(
-                "Key to turn the cylinder",
+                "Hold to apply tension while working pins. Release to reset the pins.",
                 null,
-                new ConfigurationManagerAttributes { Order = _lpOrder-- }
+                new ConfigurationManagerAttributes
+                {
+                    Order = _lpOrder--,
+                    Category = "Lock Picking",
+                    DispName = "Tension key",
+                }
             )
         );
         /*

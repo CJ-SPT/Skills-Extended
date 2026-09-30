@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using Comfort.Common;
 using EFT;
 using EFT.Ballistics;
@@ -22,7 +22,6 @@ internal static class ConsoleCommands
         ConsoleScreen.Processor.RegisterCommand("damage", DoDamage);
         ConsoleScreen.Processor.RegisterCommand("die", DoDie);
         ConsoleScreen.Processor.RegisterCommand("fracture", DoFracture);
-        ConsoleScreen.Processor.RegisterCommand("reset_locks", ResetDoorLocks);
 
         ConsoleScreen.Processor.RegisterCommandGroup<Commands>();
     }
@@ -32,11 +31,7 @@ internal static class ConsoleCommands
         [ConsoleCommand("minigame", "", "Mini game practice")]
         public static void StartMiniGame([ConsoleArgument(50)] int chance)
         {
-            LockPickingHelpers.LockPickingGame.SetActive(true);
-
-            LockPickingHelpers
-                .LockPickingGame.GetComponent<LockPickingGame>()
-                .ActivatePractice(chance);
+            LockPickingGame.Practice(System.Math.Clamp(chance, 1, 5), 0, 1);
         }
     }
 
@@ -53,15 +48,6 @@ internal static class ConsoleCommands
                 $"Template ID: {weapon.TemplateId}, locale name: {weapon.LocalizedName()}"
             );
         }
-    }
-
-    private static void ResetDoorLocks()
-    {
-        if (!Singleton<GameWorld>.Instantiated)
-            return;
-
-        var gameWorld = Singleton<GameWorld>.Instance;
-        LockPickingHelpers.InitializeLockpickingForLocation(gameWorld.LocationId);
     }
 
     #region HEALTH

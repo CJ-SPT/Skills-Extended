@@ -1,0 +1,15 @@
+Mini Pack: Lockpick Kit
+Artist: Warren Marshall
+Product: https://www.artstation.com/marketplace/p/kxl/mini-pack-lockpick-kit
+
+Purchased source supplied by Corey for the Skills Extended lock-picking minigame.
+The plugin embeds converted runtime meshes and the Unity texture atlas from this
+pack. The artist retains ownership; these assets are not covered by the source
+repository's software license. Obtain your own license from the artist to reuse
+the assets. No source FBX, Unity project, or standalone texture files are included
+in the mod archives.
+
+Source ZIP SHA-256:
+f37ffee48969e0acc4ddab89228a0b107c6bba8e9e2982d94ae2e1b85687bcd7
+Embedded runtime resource SHA-256:
+890a0c71d603d22b38b16ea90c10dd80e50e16f727a7c0695ed694cc5b3a5927

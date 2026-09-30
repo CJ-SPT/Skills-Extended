@@ -53,6 +53,45 @@ public static class ComponentChecks
                 "Rendered fields follow discarded session data"
             );
 
+            var pins = await renderer.Mount(new TablesHost(session, typeof(LockPinTiersEditor)));
+            foreach (var invalid in new[] { "", "NaN", "2", "6", "3.5" })
+            {
+                await renderer.Input(pins, "LockPicking.Tiers.1.Pins", "oninput", invalid);
+                check(
+                    session.InputErrors.ContainsKey("LockPicking.Tiers.1.Pins")
+                        && session.Skills.LockPicking.Tiers[0].Pins == 3,
+                    "Invalid pin counts remain visible without modifying the tier"
+                );
+            }
+            await renderer.Input(pins, "LockPicking.Tiers.1.Pins", "oninput", "4");
+            await renderer.Input(pins, "LockPicking.Tiers.1.Tolerance", "oninput", "0.075");
+            await renderer.Input(
+                pins,
+                "LockPicking.Tiers.1.StrainWarningSeconds",
+                "oninput",
+                "0.8"
+            );
+            check(
+                session.InputErrors.Count == 0
+                    && session.Skills.LockPicking.Tiers[0].Pins == 4
+                    && session.Skills.LockPicking.Tiers[0].Tolerance == .075f
+                    && session.Skills.LockPicking.Tiers[0].StrainWarningSeconds == .8f
+                    && snapshot.Skills.LockPicking.Tiers[0].Pins == 3
+                    && session.Dirty,
+                "Real pin handlers edit an isolated draft and retain fractional settings"
+            );
+            await renderer.Input(pins, "LockPicking.Tiers.1.Tolerance", "oninput", "0.01");
+            check(
+                session.InputErrors.ContainsKey("LockPicking.Tiers.1.Tolerance"),
+                "Pin tolerance lower bound blocks invalid saves"
+            );
+            session.Reset(snapshot);
+            await renderer.Refresh(pins);
+            check(
+                !session.Dirty && session.Skills.LockPicking.Tiers[0].Pins == 3,
+                "Discard restores pin settings and clears invalid input"
+            );
+
             var rewards = await renderer.Mount(
                 new TablesHost(session, typeof(SignalsTablesEditor))
             );

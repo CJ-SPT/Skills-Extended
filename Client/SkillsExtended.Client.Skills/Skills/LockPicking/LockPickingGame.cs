@@ -1,510 +1,503 @@
-﻿using System;
+using System;
 using Comfort.Common;
 using EFT;
-using EFT.Interactive;
+using EFT.Console.Core;
 using EFT.UI;
-using JetBrains.Annotations;
 using SkillsExtended.Config;
-using SkillsExtended.Helpers;
-using SkillsExtended.Utils;
+using SkillsExtended.LockPicking;
+using SkillsExtended.Skills.Hacking;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using Random = UnityEngine.Random;
 
 namespace SkillsExtended.Skills.LockPicking;
 
-/// <summary>
-/// This class defines a lockpicking system that behaves similar to games such as Skyrim, Fallout, and Dying Light.
-/// Here you must rotate the lockpick until you find the sweetspot, and then press a button to rotate the cylinder and unlock it
-/// </summary>
-public class LockPickingGame : MonoBehaviour
+public sealed class LockPickingGame : MonoBehaviour
 {
-    internal const float ReferenceAspectRatio = 16f / 9f;
+    public static LockPickingGame Current { get; private set; }
+    public bool InRaid => _player;
+    private PickingRuntime _runtime;
+    private Player _player;
+    private PickReply _reply;
+    private PickSnapshot _state;
+    private PinLockEngine _practice;
+    private PinLockDefinition _practiceLock;
+    private int _difficulty,
+        _level,
+        _sequence;
+    private float _depth,
+        _lift,
+        _sendAt,
+        _finishAt = -1,
+        _receivedAt;
+    private bool _closed;
+    private readonly HackingInputState _input = new();
+    private readonly HackingUiInputState _ui = new();
+    private LockPickingArtwork _art;
+    private LockPickingCutaway _cutaway;
+    private Text _tensionLabel;
+    private Text _status,
+        _detail,
+        _help;
+    private Image _wear,
+        _strain;
+    private LockPickingAudio _audio;
 
-    #region FIELDS
-
-    // Holds all pieces of the safe lock for quicker access
-    public RectTransform cylinder;
-    public RectTransform lockpick;
-
-    private static SkillManager SkillManager => GameUtils.GetSkillManager();
-
-    /// <summary>
-    /// How accurately close we need to be to the sweet spot.
-    /// If set to 1, we need to be exactly at the sweet spot position,
-    /// but if set to a higher number we can be farther from the center position of the sweet spot.
-    /// </summary>
-    private float _sweetSpotRange = 0f;
-
-    /// <summary>
-    /// The button that rotates the cylinder. The cylinder will only rotate if we are in the sweet spot.
-    /// </summary>
-    private KeyCode _rotateButton => ConfigManager.LpMiniGameTurnKey.Value;
-
-    /// <summary>
-    /// How fast the cylinder rotates
-    /// </summary>
-    public float rotateSpeed = 75;
-
-    /// <summary>
-    /// How much we need to rotate the cylinder in order to win
-    /// </summary>
-    public float rotateToWin = 95;
-
-    /// <summary>
-    /// The sound that plays when we rotate the cylinder
-    /// </summary>
-    public AudioClip rotateSound;
-
-    /// <summary>
-    /// The sound that plays when we reach a correct spot in one direction
-    /// </summary>
-    public AudioClip clickSound;
-
-    /// <summary>
-    /// The sound that plays when the sequence resets
-    /// </summary>
-    public AudioClip resetSound;
-
-    /// <summary>
-    /// The sound that plays when we win the lock game
-    /// </summary>
-    public AudioClip winSound;
-
-    public Text levelText;
-
-    public Text keyText;
-
-    public Image pickStrengthRemainingLower;
-    public Image pickStrengthRemainingUpper;
-
-    public AudioSource audioSource;
-
-    public Animator animator;
-    private static Player Player => Singleton<GameWorld>.Instance?.MainPlayer;
-
-    // Callback action
-    [CanBeNull]
-    private Action<bool> _onUnlocked;
-
-    // Is the cylinder rotating
-    private static bool _isRotating;
-
-    // If in the sweet spot, the cylinder can be rotated. If not, the cylinder will return to its original angle
-    private static bool _inSweetSpot;
-
-    // If the lock is unlocked, we win
-    private static bool _isUnlocked = false;
-
-    // The sweet spot angle that we must reach with the lock pick
-    private static float _lockPickSetAngle = 0;
-
-    // Time fields to measure when a pick should break
-    private static float _wiggleTimeLimit = 1f;
-    private static float _timeSpentWiggling = 0;
-
-    private static bool _disabled = true;
-
-    #endregion
-
-#if DEBUG
-    public GameObject sweetSpotIndicator;
-    private Image sweetSpotImage;
-    public float indicatorRadius = 150f; // Distance from center
-    public Color sweetSpotColor = new Color(0, 1, 0, 0.5f); // Semi-transparent green
-#endif
-
-    public void OnEnable()
+    public static bool Prepare()
     {
-        _disabled = false;
-
-        if (Player is null || !Player.IsYourPlayer)
+        if (SkillsExtendedInfo.IsFikaHeadless)
+            return false;
+        try
         {
-            return;
+            LockPickingArtwork.Prepare();
+            return true;
         }
-
-        Player.MovementContext.ToggleBlockInputPlayerRotation(true);
-        Player.CurrentManagedState.ChangePose(-1f);
+        catch (Exception e)
+        {
+            SkillsExtendedPlugin.Log.LogError(e);
+            return false;
+        }
     }
 
-    public void OnDisable()
+    public static void Show(PickingRuntime runtime, Player player, PickReply reply)
     {
-        _disabled = true;
-
-        if (Player is null || !Player.IsYourPlayer)
-        {
-            return;
-        }
-
-        Player.MovementContext.ToggleBlockInputPlayerRotation(false);
-        Player.CurrentManagedState.ChangePose(1f);
-
-        CursorSettings.SetCursor(ECursorType.Invisible);
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
-
-        if (GamePlayerOwner.MyPlayer is not null)
-        {
-            GamePlayerOwner.IgnoreInputWithKeepResetLook = false;
-            GamePlayerOwner.IgnoreInputInNPCDialog = false;
-        }
-
-        Singleton<GUISounds>.Instance.PlayUISound(EUISoundType.MenuDropdown);
+        var view = Create(reply.Difficulty, player);
+        view._runtime = runtime;
+        view._reply = reply;
+        view.Receive(reply);
     }
 
-    private void Awake()
+    public static void Practice(int difficulty, int level, uint seed)
     {
-        audioSource = GetComponent<AudioSource>();
-        audioSource.playOnAwake = false;
+        if (Current || HackingView.IsOpen || Signals.SignalsView.Current || !Prepare())
+            return;
+        var view = Create(Mathf.Clamp(difficulty, 1, 5), Singleton<GameWorld>.Instance?.MainPlayer);
+        view._level = Mathf.Clamp(level, 0, 51);
+        view._practiceLock = PinLockDefinition.Create(
+            PickingRuntime.Config.Tier(view._difficulty).Pins,
+            seed
+        );
+        view.RetryPractice();
     }
 
-    private void Start()
+    private static LockPickingGame Create(int difficulty, Player player)
     {
-        animator = GetComponent<Animator>();
-
-        _lockPickSetAngle = Random.Range(0, 180);
-
-#if DEBUG
-        SetupSweetSpotIndicator();
-#endif
+        FindObjectOfType<ConsoleScreen>()?.SetVisible(false);
+        var go = new GameObject("Lock-picking 2.0");
+        var view = go.AddComponent<LockPickingGame>();
+        Current = view;
+        view._player = player;
+        view._difficulty = difficulty;
+        try
+        {
+            view.Build();
+            view._input.Capture(player);
+            view._ui.Capture();
+            return view;
+        }
+        catch
+        {
+            view.Close();
+            throw;
+        }
     }
 
-    public void Update()
+    private void Build()
     {
-        if (_isUnlocked || _disabled)
-            return;
-
-        if (ShouldClose())
-        {
-            HandleWin(false);
-            return;
-        }
-
-        //AdjustPickStrengthImage();
-
-        MoveLockPick();
-
-        CursorSettings.SetCursor(ECursorType.Idle);
-        Cursor.lockState = CursorLockMode.None;
-
-        if (GamePlayerOwner.MyPlayer is not null)
-        {
-            GamePlayerOwner.IgnoreInputWithKeepResetLook = true;
-            GamePlayerOwner.IgnoreInputInNPCDialog = true;
-        }
-
-        _isRotating = Input.GetKey(_rotateButton);
-
-        if (_isRotating)
-        {
-            // Rotate the cylinder object in the direction we chose
-            cylinder?.Rotate(Time.deltaTime * rotateSpeed * Vector3.forward, Space.World);
-
-            MoveCylinder();
-            ResetCylinder(true);
-            return;
-        }
-
-#if DEBUG
-        UpdateSweetSpotPosition();
-#endif
-        ResetCylinder();
+        var canvas = gameObject.AddComponent<Canvas>();
+        canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+        canvas.sortingOrder = 31000;
+        var scaler = gameObject.AddComponent<CanvasScaler>();
+        scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+        scaler.referenceResolution = new Vector2(1920, 1080);
+        scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.Expand;
+        var backdrop = Box(
+            "Backdrop",
+            transform,
+            new Vector2(8000, 8000),
+            Vector2.zero,
+            new Color(0, 0, 0, .7f)
+        );
+        var panel = Box(
+            "Panel",
+            transform,
+            new Vector2(1080, 820),
+            Vector2.zero,
+            new Color(.042f, .049f, .052f, .99f)
+        );
+        Label(
+            panel.transform,
+            "LOCK PICKING",
+            25,
+            new Vector2(-350, 361),
+            new Vector2(340, 50),
+            TextAnchor.MiddleLeft
+        );
+        Label(
+            panel.transform,
+            "TIER " + _difficulty + " / " + PickingRuntime.Config.Tier(_difficulty).Pins + " PINS",
+            19,
+            new Vector2(405, 361),
+            new Vector2(220, 50),
+            TextAnchor.MiddleRight
+        );
+        Box(
+            "Header rule",
+            panel.transform,
+            new Vector2(1000, 1),
+            new Vector2(0, 325),
+            new Color(.29f, .31f, .28f)
+        );
+        Box(
+            "Controls rule",
+            panel.transform,
+            new Vector2(1000, 1),
+            new Vector2(0, -332),
+            new Color(.20f, .23f, .23f)
+        );
+        var artObject = new GameObject("Keyhole", typeof(RectTransform), typeof(RawImage));
+        artObject.transform.SetParent(panel.transform, false);
+        var rect = artObject.GetComponent<RectTransform>();
+        rect.sizeDelta = new Vector2(1000, 310);
+        rect.anchoredPosition = new Vector2(0, 150);
+        artObject.GetComponent<RawImage>().raycastTarget = false;
+        _art = new LockPickingArtwork(artObject.GetComponent<RawImage>(), _difficulty);
+        var cutawayObject = new GameObject(
+            "Side cutaway",
+            typeof(RectTransform),
+            typeof(LockPickingCutaway)
+        );
+        cutawayObject.transform.SetParent(panel.transform, false);
+        _cutaway = cutawayObject.GetComponent<LockPickingCutaway>();
+        _cutaway.rectTransform.sizeDelta = new Vector2(1000, 190);
+        _cutaway.rectTransform.anchoredPosition = new Vector2(0, -120);
+        _cutaway.raycastTarget = false;
+        Label(
+            cutawayObject.transform,
+            "SIDE VIEW",
+            13,
+            new Vector2(-390, 73),
+            new Vector2(170, 22),
+            TextAnchor.MiddleLeft
+        );
+        _tensionLabel = Label(
+            cutawayObject.transform,
+            "TENSION OFF",
+            13,
+            new Vector2(360, 73),
+            new Vector2(230, 22),
+            TextAnchor.MiddleRight
+        );
+        var pins = PickingRuntime.Config.Tier(_difficulty).Pins;
+        for (var pin = 0; pin < pins; pin++)
+            Label(
+                cutawayObject.transform,
+                (pin + 1).ToString(),
+                12,
+                new Vector2(LockPickingCutaway.PinX(pin, pins), -84),
+                new Vector2(30, 18),
+                TextAnchor.MiddleCenter
+            );
+        _status = Label(
+            panel.transform,
+            "Feel for the binding pin",
+            24,
+            new Vector2(0, -247),
+            new Vector2(950, 45),
+            TextAnchor.MiddleCenter
+        );
+        _detail = Label(
+            panel.transform,
+            "",
+            17,
+            new Vector2(0, -279),
+            new Vector2(950, 35),
+            TextAnchor.MiddleCenter
+        );
+        _strain = Bar(panel.transform, "STRAIN", -300, -308, new Color(.85f, .6f, .28f));
+        _wear = Bar(panel.transform, "PICK", 220, -308, new Color(.65f, .72f, .65f));
+        _help = Label(
+            panel.transform,
+            "",
+            17,
+            new Vector2(0, -361),
+            new Vector2(1000, 76),
+            TextAnchor.MiddleCenter
+        );
+        _audio = new LockPickingAudio(gameObject);
     }
 
-    /// <summary>
-    /// Activates the lock and starts the lock game
-    /// </summary>
-    public void Activate(
-        GamePlayerOwner owner,
-        WorldInteractiveObject interactiveObject,
-        Action<bool> action,
-        float sweetSpotRange
+    private static Image Box(
+        string name,
+        Transform parent,
+        Vector2 size,
+        Vector2 position,
+        Color color
     )
     {
-        _lockPickSetAngle = Random.Range(0, 180);
-        _isUnlocked = false;
-        _timeSpentWiggling = 0f;
-
-        pickStrengthRemainingLower.enabled = false;
-        pickStrengthRemainingUpper.enabled = false;
-
-        _onUnlocked = action;
-
-        var doorLevel = LockPickingHelpers.GetLevelForDoor(
-            owner.Player.Location,
-            interactiveObject.Id
-        );
-
-        levelText.text = $"DOOR LEVEL: {doorLevel.ToString()}";
-        keyText.text = $"DOOR KEY: {SkillsExtendedPlugin.Keys.KeyLocale[interactiveObject.KeyId]}";
-
-        _sweetSpotRange = sweetSpotRange;
-        SetTimeLimit(doorLevel);
-
-#if DEBUG
-        SkillsExtendedPlugin.Log.LogDebug(
-            "========================================================"
-        );
-        SkillsExtendedPlugin.Log.LogDebug($"LEVEL:                          {doorLevel}");
-        SkillsExtendedPlugin.Log.LogDebug($"FORGIVENESS RANGE DEG:          {_sweetSpotRange}");
-        SkillsExtendedPlugin.Log.LogDebug($"ROTATE SPEED:                   {rotateSpeed}");
-        SkillsExtendedPlugin.Log.LogDebug($"TIME LIMIT:                     {_wiggleTimeLimit}");
-        SkillsExtendedPlugin.Log.LogDebug($"CYLINDER ROTATE DEG:            {rotateToWin}");
-        SkillsExtendedPlugin.Log.LogDebug($"CYLINDER POSITION WIN ANGLE:    {_lockPickSetAngle}");
-        SkillsExtendedPlugin.Log.LogDebug(
-            "========================================================"
-        );
-#endif
+        var go = new GameObject(name, typeof(RectTransform), typeof(Image));
+        go.transform.SetParent(parent, false);
+        var image = go.GetComponent<Image>();
+        image.color = color;
+        image.raycastTarget = false;
+        image.rectTransform.sizeDelta = size;
+        image.rectTransform.anchoredPosition = position;
+        return image;
     }
 
-    public void ActivatePractice(int doorLevel)
+    private static Text Label(
+        Transform parent,
+        string text,
+        int size,
+        Vector2 position,
+        Vector2 dimensions,
+        TextAnchor alignment
+    )
     {
-        _lockPickSetAngle = Random.Range(0, 180);
-        _isUnlocked = false;
-        _timeSpentWiggling = 0f;
+        var go = new GameObject(text, typeof(RectTransform), typeof(Text));
+        go.transform.SetParent(parent, false);
+        var label = go.GetComponent<Text>();
+        label.font = Resources.GetBuiltinResource<Font>("Arial.ttf");
+        label.text = text;
+        label.fontSize = size;
+        label.alignment = alignment;
+        label.color = new Color(.83f, .84f, .8f);
+        label.raycastTarget = false;
+        label.rectTransform.sizeDelta = dimensions;
+        label.rectTransform.anchoredPosition = position;
+        return label;
+    }
 
-        pickStrengthRemainingLower.enabled = false;
-        pickStrengthRemainingUpper.enabled = false;
-
-        levelText.text = $"DOOR LEVEL: {doorLevel.ToString()}";
-
-        SetSweetSpotRange(doorLevel);
-        SetTimeLimit(doorLevel);
-
-        SkillsExtendedPlugin.Log.LogDebug(
-            "========================================================"
+    private static Image Bar(Transform parent, string text, float x, float y, Color color)
+    {
+        Label(
+            parent,
+            text,
+            13,
+            new Vector2(x - 120, y),
+            new Vector2(80, 24),
+            TextAnchor.MiddleLeft
         );
-        SkillsExtendedPlugin.Log.LogDebug($"LEVEL:                          {doorLevel}");
-        SkillsExtendedPlugin.Log.LogDebug($"FORGIVENESS RANGE DEG:          {_sweetSpotRange}");
-        SkillsExtendedPlugin.Log.LogDebug($"ROTATE SPEED:                   {rotateSpeed}");
-        SkillsExtendedPlugin.Log.LogDebug($"TIME LIMIT:                     {_wiggleTimeLimit}");
-        SkillsExtendedPlugin.Log.LogDebug($"CYLINDER ROTATE DEG:            {rotateToWin}");
-        SkillsExtendedPlugin.Log.LogDebug($"CYLINDER POSITION WIN ANGLE:    {_lockPickSetAngle}");
-        SkillsExtendedPlugin.Log.LogDebug(
-            "========================================================"
+        var back = Box(
+            text,
+            parent,
+            new Vector2(280, 5),
+            new Vector2(x + 45, y),
+            new Color(.15f, .16f, .17f)
         );
+        var fill = Box("Fill", back.transform, new Vector2(280, 5), Vector2.zero, color);
+        fill.rectTransform.pivot = new Vector2(0, .5f);
+        fill.rectTransform.anchoredPosition = new Vector2(-140, 0);
+        return fill;
     }
 
-    private bool ShouldClose()
+    private void RetryPractice()
     {
-        return Input.GetMouseButtonDown(0)
-            || Input.GetMouseButtonDown(1)
-            || Input.GetKey(KeyCode.Escape);
+        _practice = new PinLockEngine(_practiceLock, PickingRuntime.Config, _difficulty, _level);
+        _state = _practice.Snapshot();
+        _depth = _lift = 0;
+        _cutaway.ResetAnimation();
     }
 
-    private void AdjustPickStrengthImage()
+    public void Receive(PickReply reply)
     {
-        var rectTransform = pickStrengthRemainingUpper.gameObject.RectTransform();
-
-        // Calculate the ratio of time spent wiggling to the time limit
-        var ratio = Mathf.Clamp(_timeSpentWiggling / _wiggleTimeLimit, 0f, 1f);
-
-        var scaleFactor = 1f - ratio;
-
-        rectTransform.localScale = new Vector3(
-            1f,
-            Mathf.Min(scaleFactor, rectTransform.rect.height),
-            0f
-        );
-    }
-
-    private void MoveLockPick()
-    {
-        // Keep the mouse sweep inside the centered game area on ultrawide displays.
-        var inputWidth = Mathf.Min(Screen.width, Screen.height * ReferenceAspectRatio);
-        var inputLeft = (Screen.width - inputWidth) * 0.5f;
-        lockpick.eulerAngles =
-            Mathf.Clamp((Input.mousePosition.x - inputLeft) / inputWidth, 0.01f, 0.99f)
-            * 180
-            * Vector3.forward;
-
-        lockpick.eulerAngles = Vector3.forward * Mathf.Clamp(lockpick.eulerAngles.z, 0, 180);
-
-        _inSweetSpot = Mathf.Abs(_lockPickSetAngle - lockpick.eulerAngles.z) < _sweetSpotRange;
-    }
-
-    private void MoveCylinder()
-    {
-        // If the lock pick is in the sweet spot, the cylinder can rotate
-        if (!_inSweetSpot)
+        if (_closed || reply.State == null || (_reply != null && _reply.Attempt != reply.Attempt))
+            return;
+        _reply = reply;
+        _state = reply.State;
+        _receivedAt = Time.unscaledTime;
+        if (_state.Outcome == PickOutcome.Cancelled || _state.Outcome == PickOutcome.Interrupted)
         {
+            Close();
             return;
         }
-
-        // Play the cylinder sound
-        if (!audioSource.isPlaying)
-        {
-            audioSource.PlayOneShot(rotateSound);
-        }
-
-        // If the cylinder rotates beyond this angle, we win
-        if (cylinder!.eulerAngles.z < rotateToWin)
-        {
-            return;
-        }
-
-        HandleWin();
+        if (_state.Outcome != PickOutcome.Active)
+            _finishAt = Time.unscaledTime + 1.2f;
     }
 
-    private void ResetCylinder(bool wiggle = false)
+    private void Update()
     {
-        if (_inSweetSpot)
+        if (_closed || _state == null)
+            return;
+        if (_player && !_player.HealthController.IsAlive)
         {
+            Abort();
             return;
         }
-
-        // Return to original rotation
-        cylinder!.eulerAngles = Vector3.Slerp(
-            cylinder.eulerAngles,
-            Vector3.zero,
-            Time.deltaTime * 10
-        );
-
-        if (wiggle)
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
-            lockpick!.localPosition = new Vector3(Random.Range(-3, 3), Random.Range(-3, 3), 0);
-
-            _timeSpentWiggling += Time.deltaTime;
-
-            if (_timeSpentWiggling > _wiggleTimeLimit)
+            Abort();
+            return;
+        }
+        if (
+            _practice != null
+            && _state.Outcome != PickOutcome.Active
+            && Input.GetKeyDown(KeyCode.R)
+        )
+            RetryPractice();
+        if (_finishAt >= 0 && Time.unscaledTime >= _finishAt)
+        {
+            Close();
+            return;
+        }
+        if (_runtime && Time.unscaledTime - _receivedAt > 4)
+        {
+            Abort();
+            PickingRuntime.Notify("Lock-picking connection lost.");
+            return;
+        }
+        var tension = Input.GetKey(ConfigManager.LpMiniGameTurnKey.Value);
+        if (_state.Outcome == PickOutcome.Active)
+        {
+            var sensitivity = ConfigManager.LockPickingSensitivity.Value;
+            if (_state.Lift < .08f)
+                _depth = Mathf.Clamp01(_depth + Input.GetAxisRaw("Mouse X") * .035f * sensitivity);
+            _lift = Mathf.Clamp01(_lift + Input.GetAxisRaw("Mouse Y") * .035f * sensitivity);
+            if (_practice != null)
             {
-#if DEBUG
-                SkillsExtendedPlugin.Log.LogDebug("Time limit reached");
-#endif
-                HandleWin(false);
+                _practice.Advance(Time.unscaledDeltaTime, _depth, _lift, tension);
+                _state = _practice.Snapshot();
             }
-
-            // Play the lock pick wiggle sound
-            if (!audioSource.isPlaying)
+            else if (_runtime && Time.unscaledTime >= _sendAt)
             {
-                audioSource.PlayOneShot(clickSound);
+                _sendAt = Time.unscaledTime + .05f;
+                _runtime.Send(
+                    new PickRequest
+                    {
+                        Raid = _reply.Raid,
+                        Actor = _reply.Actor,
+                        Door = _reply.Door,
+                        Attempt = _reply.Attempt,
+                        Operation = "input",
+                        Sequence = ++_sequence,
+                        Depth = _depth,
+                        Lift = _lift,
+                        Tension = tension,
+                    }
+                );
             }
+        }
+        Render(tension);
+    }
 
+    private void Render(bool tension)
+    {
+        _status.text = _state.Outcome switch
+        {
+            PickOutcome.Unlocked => "Lock released",
+            PickOutcome.PickBroken => "Pick broken — the key still works",
+            _ => _state.Feedback switch
+            {
+                PickFeedback.Binding => "Binding — lift gently",
+                PickFeedback.Ready => "Hold steady",
+                PickFeedback.Set => "Pin set — lower the pick before moving",
+                PickFeedback.Overset => "Overset — release tension to reset",
+                PickFeedback.Strain => "Too much force — ease off",
+                PickFeedback.Springy => "Probe gently for resistance",
+                _ => "Apply tension and feel for the binding pin",
+            },
+        };
+        _detail.text =
+            $"DEPTH {_state.Selected + 1}/{_state.Pins}    ·    {_state.SetPins} SET"
+            + (_state.Lift >= .08f ? "    ·    Lower pick to change depth" : "");
+        _help.text =
+            $"MOUSE ← →  Depth     MOUSE ↑ ↓  Lift     HOLD {ConfigManager.LpMiniGameTurnKey.Value}  Tension     ESC  Leave"
+            + "\nRelease tension to drop all pins. Forcing the pick causes lasting wear."
+            + (
+                _practice != null
+                    ? "\nPRACTICE — no items or XP affected. Press R after completion to retry."
+                    : ""
+            );
+        _strain.rectTransform.sizeDelta = new Vector2(280 * _state.Strain, 5);
+        _wear.rectTransform.sizeDelta = new Vector2(280 * (1 - _state.Wear), 5);
+        _cutaway.Render(
+            _state,
+            Time.unscaledDeltaTime,
+            ConfigManager.LockPickingReducedMotion.Value
+        );
+        _tensionLabel.text =
+            _state.Outcome == PickOutcome.Unlocked ? "RELEASED"
+            : _state.Outcome == PickOutcome.PickBroken ? "PICK BROKEN"
+            : _state.Tension ? "TENSION ON"
+            : "TENSION OFF";
+        _art.Render(
+            _state.Lift,
+            _depth,
+            _state.Strain,
+            tension,
+            _state.Outcome == PickOutcome.Unlocked,
+            _state.Outcome == PickOutcome.PickBroken,
+            ConfigManager.LockPickingReducedMotion.Value
+        );
+        _audio.Tick(_state);
+    }
+
+    private void LateUpdate()
+    {
+        if (_closed)
             return;
-        }
-
-        // Reset the lock pick position
-        lockpick!.localPosition = Vector3.zero;
-
-        // Play the reset sound
-        audioSource.Stop();
-        //audioSource.PlayOneShot(resetSound);
+        // Relative mouse controls must keep working when the pointer would reach a screen edge.
+        _ui.Maintain(lockCursor: true);
     }
 
-    private void HandleWin(bool won = true)
+    public void Abort()
     {
-        _isUnlocked = true;
-
-        if (won)
-        {
-            animator.Play("Win");
-            audioSource.PlayOneShot(winSound);
-        }
-
-        // Unselect any buttons on the cylinder, so we don't press them when pressing 'SPACE' after closing the lock
-        if (EventSystem.current)
-        {
-            EventSystem.current.SetSelectedGameObject(null);
-        }
-
-        cylinder!.eulerAngles = Vector3.zero;
-
-        if (Player)
-        {
-            GamePlayerOwner.SetIgnoreInputWithKeepResetLook(false);
-            Player.MovementContext.ToggleBlockInputPlayerRotation(false);
-
-            Cursor.visible = false;
-            CursorSettings.SetCursor(ECursorType.Invisible);
-            Cursor.lockState = CursorLockMode.Locked;
-
-            _onUnlocked?.Invoke(won);
-        }
-
-        gameObject.SetActive(false);
-    }
-
-    /// <summary>
-    ///     This method is to only be used for practice mode.
-    /// </summary>
-    private void SetSweetSpotRange(int doorLevel)
-    {
-        var skillMod = 1 + SkillManager.SkillsExtendedManager.LockPickingForgiveness;
-        var doorMod = Mathf.Clamp(doorLevel / 35f, 0.05f, 1.5f);
-
-#if DEBUG
-        SkillsExtendedPlugin.Log.LogDebug($"SKILL: {skillMod}");
-        SkillsExtendedPlugin.Log.LogDebug($"DOOR: {doorMod}");
-#endif
-        var configVal = SkillsExtendedPlugin.SkillData.LockPicking.SweetSpotRangeBase;
-
-        _sweetSpotRange = Mathf.Clamp((configVal - doorMod) * skillMod, 0f, 20f);
-#if DEBUG
-        SkillsExtendedPlugin.Log.LogDebug($"SWEET SPOT RANGE: {_sweetSpotRange}");
-#endif
-    }
-
-    private void SetTimeLimit(int doorLevel)
-    {
-        var skillMod = 1 + SkillManager.SkillsExtendedManager.LockPickingTimeBuff;
-        var doorMod = Mathf.Clamp(doorLevel / 50f, 0.05f, 1f);
-
-        var configVal = SkillsExtendedPlugin.SkillData.LockPicking.PickStrengthBase;
-
-        var originalLimit = Mathf.Clamp((configVal - doorMod) * skillMod, 1f, 20f);
-
-        _wiggleTimeLimit = MathUtils.RandomizePercentage(originalLimit, 0.10f);
-    }
-
-#if DEBUG
-    // Call this in your Activate() or Start() method
-    private void SetupSweetSpotIndicator()
-    {
-        if (sweetSpotIndicator == null)
-        {
-            // Create the indicator as a child of the cylinder
-            sweetSpotIndicator = new GameObject("SweetSpotIndicator");
-            sweetSpotIndicator.transform.SetParent(cylinder.parent); // Use same parent as cylinder
-
-            var rectTransform = sweetSpotIndicator.AddComponent<RectTransform>();
-            rectTransform.anchoredPosition = Vector2.zero;
-            rectTransform.sizeDelta = new Vector2(10f, indicatorRadius * 2f); // Thin vertical bar
-            rectTransform.pivot = new Vector2(0.5f, 0.5f);
-
-            sweetSpotImage = sweetSpotIndicator.AddComponent<Image>();
-            sweetSpotImage.color = sweetSpotColor;
-            sweetSpotImage.raycastTarget = false;
-        }
-
-        UpdateSweetSpotPosition();
-    }
-
-    // Update the indicator position to show the sweet spot
-    private void UpdateSweetSpotPosition()
-    {
-        if (sweetSpotIndicator == null)
+        if (_closed)
             return;
-
-        var rectTransform = sweetSpotIndicator.GetComponent<RectTransform>();
-
-        // Position it at the sweet spot angle
-        rectTransform.localRotation = Quaternion.Euler(0, 0, _lockPickSetAngle - 90f);
-
-        // Optional: Scale based on sweet spot range
-        var scaleX = Mathf.Clamp(_sweetSpotRange / 5f, 0.5f, 3f);
-        rectTransform.localScale = new Vector3(scaleX, 1f, 1f);
-
-        // Change color based on proximity
-        if (lockpick != null)
-        {
-            var proximity = Mathf.Abs(_lockPickSetAngle - lockpick.eulerAngles.z);
-
-            sweetSpotImage.color =
-                proximity < _sweetSpotRange
-                    ? new Color(0, 1, 0, 0.7f) // Brighter green
-                    : new Color(1, 1, 0, 0.3f); // Dim yellow
-        }
+        var runtime = _runtime;
+        var reply = _reply;
+        Close();
+        if (runtime && reply?.State.Outcome == PickOutcome.Active)
+            runtime.Cancel(reply);
     }
-#endif
+
+    public void Close()
+    {
+        if (_closed)
+            return;
+        _closed = true;
+        _input.Restore();
+        _ui.Restore();
+        _art?.Dispose();
+        _art = null;
+        _cutaway = null; // Its UI mesh and labels are owned by this GameObject hierarchy.
+        _audio?.Dispose();
+        _audio = null;
+        if (Current == this)
+            Current = null;
+        Destroy(gameObject);
+    }
+
+    private void OnDisable()
+    {
+        if (!_closed)
+            Abort();
+    }
+
+    private void OnDestroy()
+    {
+        if (!_closed)
+            Close();
+    }
+
+    private void OnApplicationFocus(bool focused)
+    {
+        if (!focused)
+            Abort();
+    }
+
+    private void OnApplicationPause(bool paused)
+    {
+        if (paused)
+            Abort();
+    }
+}
+
+public class LockPickingConsoleCommands
+{
+    [ConsoleCommand("lockpicking", "", "Lock-picking practice: tier (1-5), skill (0-51), seed")]
+    public static void Practice(
+        [ConsoleArgument(2)] int tier,
+        [ConsoleArgument(0)] int skill,
+        [ConsoleArgument(1)] int seed
+    ) => LockPickingGame.Practice(tier, skill, (uint)seed);
 }

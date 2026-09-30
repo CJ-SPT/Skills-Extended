@@ -32,7 +32,7 @@
   "LockpickingLevelingUpDescription": "잠금 장치 검사 및 자물쇠 따기로 기술이 향상됩니다.",
   "LockpickingTimeIncrease": "자물쇠 따개의 강도가 [{0:0.#%}] 증가합니다.",
   "LockpickingForgivenessAngle": "자물쇠의 난이도가 [{0:0.#%}] 감소합니다.",
-  "LockpickingUseElite": "자물쇠 따개가 더 이상 소모되지 않습니다.",
+  "LockpickingUseElite": "숙련된 제어로 핀 설정 허용 오차와 자물쇠 따개의 내구성이 증가합니다. 따개는 여전히 부러질 수 있습니다.",
   "SilentOpsLevelingUpDescription": "암살을 수행하면 향상됩니다.",
   "SilentOpsIncMeleeSpeed": "근접 공격 속도가 [{0:0.#%}] 증가합니다.",
   "SilentOpsRedVolume": "문 열기 및 루팅 행동의 소음이 [{0:0.#%}] 감소합니다.",

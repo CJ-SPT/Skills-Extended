@@ -41,7 +41,7 @@ public sealed class HackingUiInputState
         Maintain();
     }
 
-    public void Maintain()
+    public void Maintain(bool lockCursor = false)
     {
         if (!_captured)
             return;
@@ -56,8 +56,8 @@ public sealed class HackingUiInputState
             EventSystem.current = _events;
         }
         CursorSettings.SetCursor(ECursorType.Idle);
-        CursorSettings.SetCursorLockMode(true, Screen.fullScreenMode);
-        Cursor.visible = true;
+        CursorSettings.SetCursorLockMode(!lockCursor, Screen.fullScreenMode);
+        Cursor.visible = !lockCursor;
     }
 
     public void Restore()

@@ -50,7 +50,6 @@ internal class OnGameStartedPatch : ModulePatch
             return;
         }
 
-        LockPickingHelpers.InitializeLockpickingForLocation(__instance.LocationId);
         Player = __instance.MainPlayer;
 
 #if DEBUG

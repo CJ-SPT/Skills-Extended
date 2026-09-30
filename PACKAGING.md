@@ -67,3 +67,8 @@ for provenance, reproduction, configuration and live acceptance. Both archives
 include the same validated bundle and notices; the Fika archive still requires
 the complete core package. No installation or application restart is performed
 by the offline build command above.
+
+Lock Picking 2.0 art is embedded in `SkillsExtended.Client.Skills.dll`; its
+provenance notice ships in `Notices/LockPicking-Art.txt`. The Mini Pack source
+archive, FBX files, and standalone texture atlases are not release-package inputs.
+See [LOCKPICKING.md](LOCKPICKING.md) for controls and live acceptance.

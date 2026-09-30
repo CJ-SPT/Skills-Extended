@@ -52,7 +52,12 @@ public sealed partial class SignalsView : MonoBehaviour
 
     public static void Open(SignalsRuntime runtime, bool pairing)
     {
-        if (Current || HackingView.IsOpen || SkillsExtendedInfo.IsFikaHeadless)
+        if (
+            Current
+            || LockPicking.LockPickingGame.Current
+            || HackingView.IsOpen
+            || SkillsExtendedInfo.IsFikaHeadless
+        )
             return;
         var view = new GameObject("Signals receiver").AddComponent<SignalsView>();
         view._runtime = runtime;
@@ -71,7 +76,12 @@ public sealed partial class SignalsView : MonoBehaviour
 
     public static void Practice(int level, int seed)
     {
-        if (Current || HackingView.IsOpen || SkillsExtendedInfo.IsFikaHeadless)
+        if (
+            Current
+            || LockPicking.LockPickingGame.Current
+            || HackingView.IsOpen
+            || SkillsExtendedInfo.IsFikaHeadless
+        )
             return;
         if (Singleton<GameWorld>.Instantiated && Singleton<GameWorld>.Instance.MainPlayer)
         {

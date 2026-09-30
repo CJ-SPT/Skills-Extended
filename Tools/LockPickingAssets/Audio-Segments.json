@@ -1,0 +1,122 @@
+{
+  "source": {
+    "title": "Tiny metal/lockpicking",
+    "author": "cappellacciocrew",
+    "page": "https://freesound.org/people/cappellacciocrew/sounds/639086/",
+    "license": "CC0-1.0",
+    "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "download": "https://freesound.org/people/cappellacciocrew/sounds/639086/download/639086__cappellacciocrew__tiny-metallockpicking.wav",
+    "quality": "Original 44.1 kHz stereo 16-bit PCM WAV supplied by Corey.",
+    "sha256": "b4417024a7d39363224f32df9652256be929584730e0133bf3c4a23cee042e4d"
+  },
+  "segments": [
+    {
+      "name": "Probe01",
+      "start": 6.68,
+      "end": 6.93,
+      "peak": 0.3
+    },
+    {
+      "name": "Probe02",
+      "start": 7.72,
+      "end": 8.02,
+      "peak": 0.3
+    },
+    {
+      "name": "Probe03",
+      "start": 8.9,
+      "end": 9.1,
+      "peak": 0.3
+    },
+    {
+      "name": "Probe04",
+      "start": 9.4,
+      "end": 9.72,
+      "peak": 0.3
+    },
+    {
+      "name": "Probe05",
+      "start": 28.78,
+      "end": 29.09,
+      "peak": 0.3
+    },
+    {
+      "name": "Probe06",
+      "start": 53.28,
+      "end": 53.63,
+      "peak": 0.3
+    },
+    {
+      "name": "Pin01",
+      "start": 41.52,
+      "end": 41.85,
+      "peak": 0.45
+    },
+    {
+      "name": "Pin02",
+      "start": 42.11,
+      "end": 42.38,
+      "peak": 0.45
+    },
+    {
+      "name": "Pin03",
+      "start": 43.55,
+      "end": 43.81,
+      "peak": 0.45
+    },
+    {
+      "name": "Tension01",
+      "start": 3.12,
+      "end": 3.6,
+      "peak": 0.3
+    },
+    {
+      "name": "Tension02",
+      "start": 4.46,
+      "end": 5.45,
+      "peak": 0.3
+    },
+    {
+      "name": "Release01",
+      "start": 49.65,
+      "end": 50.11,
+      "peak": 0.4
+    },
+    {
+      "name": "Release02",
+      "start": 50.69,
+      "end": 51.18,
+      "peak": 0.4
+    },
+    {
+      "name": "Strain01",
+      "start": 48.24,
+      "end": 49.07,
+      "peak": 0.25
+    },
+    {
+      "name": "Strain02",
+      "start": 74.14,
+      "end": 74.6,
+      "peak": 0.25
+    },
+    {
+      "name": "Unlock01",
+      "start": 24.36,
+      "end": 25.47,
+      "peak": 0.55
+    },
+    {
+      "name": "Unlock02",
+      "start": 75.04,
+      "end": 76.2,
+      "peak": 0.55
+    },
+    {
+      "name": "Break01",
+      "start": 23.51,
+      "end": 23.93,
+      "peak": 0.5
+    }
+  ]
+}

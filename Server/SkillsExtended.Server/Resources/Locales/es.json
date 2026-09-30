@@ -37,7 +37,7 @@
   "LockpickingLevelingUpDescription": "Mejora al abrir cerraduras.",
   "LockpickingTimeIncrease": "Aumenta la resistencia de las ganzúas en [{0:0.#%}]",
   "LockpickingForgivenessAngle": "Reduce la dificultad de las cerraduras en [{0:0.#%}]",
-  "LockpickingUseElite": "Ya no rompes las ganzúas.",
+  "LockpickingUseElite": "El control experto mejora la tolerancia de los pernos y la resistencia de las ganzúas. Las ganzúas aún pueden romperse.",
 
   "SilentOpsLevelingUpDescription": "Mejora al realizar asesinatos sigilosos.",
   "SilentOpsIncMeleeSpeed": "Aumenta la velocidad de los ataques cuerpo a cuerpo en [{0:0.#%}]",

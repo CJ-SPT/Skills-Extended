@@ -16,8 +16,6 @@ using UnityEngine;
 namespace SkillsExtended;
 
 [BepInPlugin(SkillsExtendedInfo.MOD_GUID, "Skills Extended", SkillsExtendedInfo.VERSION)]
-// Because I need the idle state type from it for lockpicking
-[BepInDependency("com.boogle.oldtarkovmovement", BepInDependency.DependencyFlags.SoftDependency)]
 [BepInDependency("com.fika.core", BepInDependency.DependencyFlags.SoftDependency)]
 [BepInDependency("com.fika.headless", BepInDependency.DependencyFlags.SoftDependency)]
 public class SkillsExtendedPlugin : BaseUnityPlugin
@@ -36,11 +34,6 @@ public class SkillsExtendedPlugin : BaseUnityPlugin
     ///     Logger
     /// </summary>
     internal static ManualLogSource Log { get; private set; }
-
-    /// <summary>
-    ///     Is old tarkov movement present
-    /// </summary>
-    internal static bool IsOldTarkovMovementDetected { get; private set; }
 
     private static PatchManager _patchManager;
 
@@ -64,7 +57,6 @@ public class SkillsExtendedPlugin : BaseUnityPlugin
         Logger.LogWarning("DEBUG BUILD FEATURES ENABLED");
         ConsoleCommands.RegisterCommands();
 #endif
-        DetectSoftDependencies();
     }
 
     private void Start()
@@ -72,15 +64,15 @@ public class SkillsExtendedPlugin : BaseUnityPlugin
         Keys = Get<KeysData>("/skills-extended/get-keys");
         SkillData = Get<SkillsConfig>("/skills-extended/get-skills-config");
         SkillData.Hacking.Validate();
+        SkillData.LockPicking.Validate();
         SkillData.SignalsIntelligence.Validate();
         if (!SkillsExtendedInfo.IsFikaHeadless)
         {
             EFT.UI.ConsoleScreen.Processor.RegisterCommandGroup<Skills.Hacking.ElectronicsConsoleCommands>();
+            EFT.UI.ConsoleScreen.Processor.RegisterCommandGroup<Skills.LockPicking.LockPickingConsoleCommands>();
             EFT.UI.ConsoleScreen.Processor.RegisterCommandGroup<Skills.Signals.SignalsConsoleCommands>();
             EFT.UI.ConsoleScreen.Processor.RegisterCommandGroup<Skills.Signals.SignalsAuthoring>();
         }
-
-        LockPickingHelpers.LoadMiniGame();
     }
 
     /// <summary>
@@ -100,17 +92,6 @@ public class SkillsExtendedPlugin : BaseUnityPlugin
         }
 
         return ConfigurationJson.Deserialize<T>(req);
-    }
-
-    private static void DetectSoftDependencies()
-    {
-        // Compatibility for lockpicking
-        if (Chainloader.PluginInfos.Keys.Contains("com.boogle.oldtarkovmovement"))
-        {
-            ReflectionHelper.GetOldMovementTypes();
-            IsOldTarkovMovementDetected = true;
-            Log.LogInfo("Enabling compatibility for old tarkov movement");
-        }
     }
 
     [AttributeUsage(AttributeTargets.Assembly)]

@@ -22,7 +22,9 @@
     "LockpickingDescription": "Pick mechanical locks without a key. Electronic doors require Hacking and a Modified PDA.",
     "LockpickingLevelingUpDescription": "Aprimorada ao inspecionar e arrombar fechaduras.",
     "LockpickingTimeReduction": "Reduz o tempo necessário para inspecionar e arrombar fechaduras em [{0:0.#%}]",
-    "LockpickingUseElite": "Você não quebra mais gazuas.",
+    "LockpickingTimeIncrease": "Aumenta a resistência das gazuas em [{0:0.#%}]",
+    "LockpickingForgivenessAngle": "Aumenta a tolerância ao posicionar os pinos em [{0:0.#%}]",
+    "LockpickingUseElite": "O controle especializado melhora a tolerância dos pinos e a resistência das gazuas. As gazuas ainda podem quebrar.",
     "662400eb756ca8948fe64fe8 Name": "Modified PDA",
     "662400eb756ca8948fe64fe8 ShortName": "PDA",
     "662400eb756ca8948fe64fe8 Description": "A modified handheld computer for bypassing electronic door security. Reusable; craft at Workbench level 2."

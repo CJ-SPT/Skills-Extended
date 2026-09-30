@@ -32,7 +32,7 @@
 "LockpickingLevelingUpDescription": "S'améliore en forçant des serrures.",
 "LockpickingTimeIncrease": "Augmente la résistance des crochets de [{0:0.#%}]",
 "LockpickingForgivenessAngle": "Réduit la difficulté des serrures de [{0:0.#%}]",
-"LockpickingUseElite": "Les crochets ne se cassent plus.",
+"LockpickingUseElite": "La maîtrise améliore la tolérance des goupilles et la résistance des crochets. Les crochets peuvent toujours se casser.",
 "SilentOpsLevelingUpDescription": "S'améliore en réalisant des éliminations silencieuses.",
 "SilentOpsIncMeleeSpeed": "Augmente la vitesse des attaques au corps à corps de [{0:0.#%}]",
 "SilentOpsRedVolume": "Réduit le bruit des actions sur les portes et le pillage de [{0:0.#%}]",

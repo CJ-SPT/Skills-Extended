@@ -207,6 +207,42 @@
     },
     "LockPicking": {
         "Enabled": true,
+        "PinTolerancePerLevel": 0.5,
+        "PickResiliencePerLevel": 0.75,
+        "ExpertControlElite": 10,
+        "PickWearSeconds": 3,
+        "Tiers": [
+            {
+                "Level": 1,
+                "Pins": 3,
+                "Tolerance": 0.096,
+                "StrainWarningSeconds": 0.65
+            },
+            {
+                "Level": 2,
+                "Pins": 3,
+                "Tolerance": 0.08,
+                "StrainWarningSeconds": 0.55
+            },
+            {
+                "Level": 3,
+                "Pins": 4,
+                "Tolerance": 0.068,
+                "StrainWarningSeconds": 0.45
+            },
+            {
+                "Level": 4,
+                "Pins": 4,
+                "Tolerance": 0.056,
+                "StrainWarningSeconds": 0.35
+            },
+            {
+                "Level": 5,
+                "Pins": 5,
+                "Tolerance": 0.044,
+                "StrainWarningSeconds": 0.3
+            }
+        ],
         "PickStrengthBase": 1.50,
         "PickStrengthPerLevel": 2.5,
         "SweetSpotRangeBase": 3.75,

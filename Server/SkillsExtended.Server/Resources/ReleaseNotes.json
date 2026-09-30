@@ -1,5 +1,24 @@
 [
   {
+    "Version": "3.2.0",
+    "ReleaseDate": "September 30, 2026",
+    "IsLatest": true,
+    "Features": [
+      "Lock Picking 2.0: hidden pins, binding order, tension control, and the Mini Pack Lockpick Kit artwork by Warren Marshall.",
+      "Five configurable lock tiers and a lockpicking practice console command."
+    ],
+    "Improvements": [
+      "All supported mechanical tiers can be attempted at any skill level. Skill and elite bonuses improve control and resilience.",
+      "Pick wear follows the tool during the raid. A broken pick consumes one use; cancellation is free and keys always remain usable.",
+      "Fika hosts control lock solutions, wear, results, reservations, and experience awards. Install core 3.2.0 with Fika integration 1.3.0 on every peer.",
+      "Added pin difficulty settings to the web editor and volume, sensitivity, and reduced-motion settings to the in-game configuration menu."
+    ],
+    "BugFixes": [
+      "Removed the old permanent lock-break behavior and unbreakable elite bonus.",
+      "Restore prior player input and cursor state after leaving or interrupting the minigame."
+    ]
+  },
+  {
     "Version": "3.1.0",
     "ReleaseDate": "September 30, 2026",
     "IsLatest": false,

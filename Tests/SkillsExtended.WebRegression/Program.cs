@@ -29,24 +29,22 @@ Check(
 );
 Check(!ConfigRules.Warnings(shipped.Skills).Any(), "Every shipped door level has an XP entry");
 Check(
-    SkillCatalog.Fields["LockPicking"].Single(f => f.Key == "SweetSpotRangeBase").Maximum is null,
-    "Lock sweet spot permits shipped 3.75 value"
+    SkillCatalog
+        .Fields["LockPicking"]
+        .All(f => f.Key != "SweetSpotRangeBase" && f.Key != "AttemptsBeforeBreak"),
+    "Obsolete angle and door-breaking controls are hidden"
 );
 var editor = new EditorSession(shipped);
 var hackingAttempts = SkillCatalog
     .Fields["Hacking"]
     .Single(field => field.Key == "AttemptsPerDoor");
-var lockpickingAttempts = SkillCatalog
-    .Fields["LockPicking"]
-    .Single(field => field.Key == "AttemptsBeforeBreak");
 foreach (var attempts in new[] { 11, 100, int.MaxValue })
 {
     editor.Skills.Hacking.AttemptsPerDoor = attempts;
     Check(
         hackingAttempts.Parse(attempts.ToString(), out _) is null
-            && lockpickingAttempts.Parse(attempts.ToString(), out _) is null
             && ConfigRules.Validate(editor.Skills).Count == 0,
-        $"Hacking accepts {attempts} attempts with the same upper range as lockpicking"
+        $"Hacking accepts {attempts} attempts without an arbitrary upper limit"
     );
 }
 editor.Skills.Hacking.AttemptsPerDoor = 0;
@@ -234,7 +232,7 @@ Check(
     "External file edits are detected"
 );
 fresh = await transactional.ReadSnapshotAsync();
-fresh.Skills.LockPicking.SweetSpotRangeBase = -1;
+fresh.Skills.LockPicking.PickWearSeconds = -1;
 Check(
     (await transactional.SaveAsync(fresh.Skills, fresh.Server, fresh.Revision, _ => { })).Status
         == EditStatus.Validation,
@@ -315,7 +313,8 @@ try
     File.Copy(Path.Combine(source, "ServerConfig.json"), Path.Combine(temp, "ServerConfig.json"));
     var diskStore = new ConfigStore(temp, new ConfigFiles());
     var diskDraft = await diskStore.ReadSnapshotAsync();
-    diskDraft.Skills.LockPicking.SweetSpotRangeBase = 3.8f;
+    diskDraft.Skills.LockPicking.PickWearSeconds = 3.8f;
+    diskDraft.Skills.LockPicking.Tiers[0].Tolerance = .075f;
     Check(
         (
             await diskStore.SaveAsync(
@@ -325,7 +324,8 @@ try
                 _ => { }
             )
         ).Success
-            && (await diskStore.ReadSnapshotAsync()).Skills.LockPicking.SweetSpotRangeBase == 3.8f,
+            && (await diskStore.ReadSnapshotAsync()).Skills.LockPicking.PickWearSeconds == 3.8f
+            && (await diskStore.ReadSnapshotAsync()).Skills.LockPicking.Tiers[0].Tolerance == .075f,
         "Real filesystem staged replacement round-trip"
     );
 }

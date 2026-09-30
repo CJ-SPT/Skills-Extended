@@ -33,11 +33,11 @@
     "BearAkSystemsRecoil": "Reduces the recoil of Eastern weapons by [{0:0.#%}]",
     
     "Lockpicking": "Lockpicking",
-    "LockpickingDescription": "Pick locks and gain access to rooms even if you don't have the key. Craft lockpicks at the workbench.",
-    "LockpickingLevelingUpDescription": "Improved by picking locks.",
-    "LockpickingTimeIncrease": "Increases the strength of lockpicks by [{0:0.#%}]",
-    "LockpickingForgivenessAngle": "Reduces the difficulty of locks by [{0:0.#%}]",
-    "LockpickingUseElite": "You no longer break lockpicks.",
+    "LockpickingDescription": "Feel for hidden pins to open mechanical locks. Craft lockpicks at the workbench. Excess force breaks a pick; keys always remain usable.",
+    "LockpickingLevelingUpDescription": "Improved by inspecting and picking locks. Failed attempts award limited experience after setting a pin.",
+    "LockpickingTimeIncrease": "Increases pick resilience by [{0:0.#%}]",
+    "LockpickingForgivenessAngle": "Increases pin setting tolerance by [{0:0.#%}]",
+    "LockpickingUseElite": "Expert control improves pin tolerance and pick resilience. Picks can still break.",
     
     "SilentOpsLevelingUpDescription": "Improved by performing silent kills.",
     "SilentOpsIncMeleeSpeed": "Increases the speed of melee attacks by [{0:0.#%}]",

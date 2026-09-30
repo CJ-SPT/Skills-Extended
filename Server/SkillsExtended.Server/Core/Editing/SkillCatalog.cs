@@ -140,7 +140,7 @@ public static class SkillCatalog
             "lock-picking",
             "Lock Picking",
             "Skill_Lockpicking",
-            "Configure pick time, forgiveness, XP, and per-map lock difficulty.",
+            "Configure pin difficulty, pick resilience, progression, and per-map locks.",
             "Extended skills"
         ),
         new(
@@ -242,6 +242,10 @@ public static class SkillCatalog
     ];
     private static readonly Dictionary<string, string> Labels = new()
     {
+        ["PinTolerancePerLevel"] = "Pin control bonus per level",
+        ["PickResiliencePerLevel"] = "Pick resilience bonus per level",
+        ["ExpertControlElite"] = "Expert control and resilience at elite",
+        ["PickWearSeconds"] = "Damaging force before a pick breaks",
         ["AttemptsPerDoor"] = "Failed attempts allowed per door",
         ["BaseCoherence"] = "Starting coherence at level zero",
         ["CoherencePerLevel"] = "Extra coherence per level",
@@ -327,6 +331,19 @@ public static class SkillCatalog
                         .GetProperty(s.Key)!
                         .PropertyType.GetProperties()
                         .Where(p =>
+                            p.DeclaringType != typeof(SkillsExtended.Config.Skills.LockPickingData)
+                            || !(
+                                new[]
+                                {
+                                    "PickStrengthBase",
+                                    "PickStrengthPerLevel",
+                                    "SweetSpotRangeBase",
+                                    "SweetSpotRangePerLevel",
+                                    "AttemptsBeforeBreak",
+                                }
+                            ).Contains(p.Name)
+                        )
+                        .Where(p =>
                             p.PropertyType == typeof(bool)
                             || p.PropertyType == typeof(float)
                             || p.PropertyType == typeof(int)
@@ -369,7 +386,7 @@ public static class SkillCatalog
         var unit =
             ratio ? "ratio"
             : key == "XpPerAction" ? "XP"
-            : key == "PickStrengthBase" ? "seconds"
+            : key == "PickStrengthBase" || key == "PickWearSeconds" ? "seconds"
             : key == "SweetSpotRangeBase" ? "degrees"
             : p.PropertyType == typeof(bool) || p.PropertyType == typeof(int) ? ""
             : "%";

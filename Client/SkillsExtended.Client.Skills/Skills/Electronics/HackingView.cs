@@ -102,7 +102,7 @@ public sealed class HackingView : MonoBehaviour
 
     public static bool Prepare()
     {
-        if (Signals.SignalsView.Current)
+        if (Signals.SignalsView.Current || LockPicking.LockPickingGame.Current)
             return false;
         if (SkillsExtendedInfo.IsFikaHeadless)
         {

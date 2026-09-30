@@ -1,0 +1,46 @@
+@using SkillsExtended.Config.Skills
+@using System.Reflection
+
+<section class="se-panel">
+    <h2>Pin difficulty</h2>
+    <p>Every mechanical tier can be attempted at any skill level. Releasing tension resets pins; broken picks cost one use. Keys always remain usable.</p>
+    <div class="se-table-wrap">
+        <table class="se-table">
+            <thead><tr><th>Tier</th><th>Pins</th><th>Setting tolerance</th><th>Strain warning (seconds)</th></tr></thead>
+            <tbody>
+            @foreach (var tier in Session.Skills.LockPicking.Tiers.OrderBy(t => t.Level))
+            {
+                <tr @key="tier.Level"><td>@tier.Level</td>
+                @foreach (var field in Fields)
+                {
+                    var path = $"LockPicking.Tiers.{tier.Level}.{field.Key}";
+                    <td><input id="@path" type="text" inputmode="decimal" aria-label="@($"Tier {tier.Level} {field.Label}")"
+                        value="@Session.Inputs.GetValueOrDefault(path, Convert.ToString(field.Property.GetValue(tier), CultureInfo.CurrentCulture) ?? "")"
+                        aria-invalid="@(Session.InputErrors.ContainsKey(path) ? "true" : "false")"
+                        @oninput="e => Edit(tier, field, e.Value?.ToString() ?? string.Empty)" />
+                        <small class="se-error">@Session.InputErrors.GetValueOrDefault(path)</small></td>
+                }
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+    <p>3–5 pins; tolerance 0.02–0.20 of pin travel; warning 0.1–2 seconds. Higher tolerance and longer warnings are easier. Door levels outside 1–5 use the nearest tier while retaining their own XP entry.</p>
+</section>
+@code {
+    [CascadingParameter] public EditorSession Session { get; set; } = null!;
+    private sealed record Field(string Key, string Label, float Min, float Max)
+    { public PropertyInfo Property { get; } = typeof(LockPickingTier).GetProperty(Key)!; }
+    private static readonly Field[] Fields = [new("Pins", "pins", 3, 5), new("Tolerance", "tolerance", .02f, .2f), new("StrainWarningSeconds", "warning", .1f, 2)];
+    private void Edit(LockPickingTier tier, Field field, string input)
+    {
+        var path = $"LockPicking.Tiers.{tier.Level}.{field.Key}";
+        Session.Inputs[path] = input;
+        var definition = new SettingDefinition(field.Property, field.Label, "", "Pins", field.Max);
+        var error = definition.Parse(input, out var value);
+        if (error == null && Convert.ToSingle(value) < field.Min) error = $"Enter a value from {field.Min} to {field.Max}.";
+        if (error != null) Session.InputErrors[path] = error;
+        else { field.Property.SetValue(tier, value); Session.InputErrors.Remove(path); }
+        Session.Notify();
+    }
+}

@@ -5,8 +5,6 @@ using Fika.Core.Modding;
 using Fika.Core.Modding.Events;
 using Fika.Core.Networking;
 using SkillsExtended;
-using SkillsExtendedFika.Controllers;
-using SkillsExtendedFika.Packets;
 using SPT.Reflection.Patching;
 
 namespace SkillsExtendedFika;
@@ -32,6 +30,7 @@ public class FikaSyncPlugin : BaseUnityPlugin
         SkillsExtendedInfo.SyncPluginPresent = true;
         ElectronicsFikaBridge.Initialize();
         SignalsFikaBridge.Initialize();
+        LockPickingFikaBridge.Initialize();
         FikaEventDispatcher.SubscribeEvent<FikaNetworkManagerCreatedEvent>(OnNetworkManagerCreated);
     }
 
@@ -39,22 +38,6 @@ public class FikaSyncPlugin : BaseUnityPlugin
     {
         ElectronicsFikaBridge.Connect(createdEvent.Manager);
         SignalsFikaBridge.Connect(createdEvent.Manager);
-        switch (createdEvent.Manager)
-        {
-            case FikaServer server:
-                server.RegisterPacket<LockPickingSyncPacket>(OnLockPickingSyncPacketReceived);
-                break;
-            case FikaClient client:
-                client.RegisterPacket<LockPickingSyncPacket>(OnLockPickingSyncPacketReceived);
-                break;
-        }
-    }
-
-    private static void OnLockPickingSyncPacketReceived(LockPickingSyncPacket packet)
-    {
-#if DEBUG
-        Logger?.LogDebug("Received LockPickingSyncPacket");
-#endif
-        LockPickingFikaController.HandlePacket(packet);
+        LockPickingFikaBridge.Connect(createdEvent.Manager);
     }
 }

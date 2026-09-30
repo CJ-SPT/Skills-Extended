@@ -31,7 +31,7 @@
     "LockpickingLevelingUpDescription": "Verbessert sich durch das Knacken von Schlössern.",
     "LockpickingTimeIncrease": "Erhöht die Stärke von Dietrichen um [{0:0.#%}].",
     "LockpickingForgivenessAngle": "Verringert die Schwierigkeit von Schlössern um [{0:0.#%}].",
-    "LockpickingUseElite": "Dietriche brechen dir nicht mehr ab.",
+    "LockpickingUseElite": "Expertenkontrolle erhöht die Toleranz beim Setzen der Stifte und die Belastbarkeit der Dietriche. Dietriche können weiterhin brechen.",
     "SilentOpsLevelingUpDescription": "Verbessert sich durch das heimliche Töten von Gegnern.",
     "SilentOpsIncMeleeSpeed": "Erhöht die Geschwindigkeit von Nahkampfangriffen um [{0:0.#%}].",
     "SilentOpsRedVolume": "Reduziert die Lautstärke von Türen- und Plünderaktionen um [{0:0.#%}].",
