@@ -1,0 +1,10 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <Style src="Editor.uss" />
+<ui:VisualElement class="editor-popup-shield">
+  <ui:VisualElement name="ChoicePanel" class="editor-choice-panel">
+    <ui:TextField name="ChoiceSearch" label="Find" class="editor-choice-search" />
+    <ui:ListView name="Choices" class="editor-choice-list" />
+    <ui:Label name="ChoiceEmpty" text="No matching options" class="editor-label" />
+  </ui:VisualElement>
+</ui:VisualElement>
+</ui:UXML>

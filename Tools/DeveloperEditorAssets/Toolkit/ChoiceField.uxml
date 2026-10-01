@@ -1,0 +1,8 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <Style src="Editor.uss" />
+    <ui:VisualElement>
+        <ui:Label name="Caption" class="editor-choice-caption" picking-mode="Ignore" enable-rich-text="false" />
+        <ui:Label name="Value" class="editor-choice-value" picking-mode="Ignore" enable-rich-text="false" />
+        <ui:Label text="▾" class="editor-choice-arrow" picking-mode="Ignore" />
+    </ui:VisualElement>
+</ui:UXML>

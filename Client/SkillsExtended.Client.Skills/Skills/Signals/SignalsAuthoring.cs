@@ -14,6 +14,8 @@ namespace SkillsExtended.Skills.Signals;
 
 public class SignalsAuthoring
 {
+    [ConsoleCommand("signals_editor", "", "Toggle the developer cache placement editor (enable it in settings first)")]
+    public static void Editor() => SkillsExtended.DeveloperTools.SkillsDeveloperEditor.ToggleCurrent();
     private static bool _busy;
 
     [ConsoleCommand(
@@ -54,9 +56,7 @@ public class SignalsAuthoring
                 // Store the ground anchor, not the prefab root offset; resolving a captured
                 // point again must not repeatedly add the case's pivot/ground clearance.
                 p.Yaw = report.Placement.Yaw;
-                p.Position = report.Placement.Position;
-                var body = SignalsPlacement.Geometry().Body;
-                p.Position.Y += body.Center.Y - body.Extents.Y - .02f;
+                p.Position = SignalPlacementSearch.GroundAnchor(report.Placement.Position, SignalsPlacement.Geometry());
                 var directory = Path.Combine(
                     Path.GetDirectoryName(typeof(SignalsAuthoring).Assembly.Location),
                     "SignalsPlacements"
@@ -169,7 +169,7 @@ public class SignalsAuthoring
             || !SignalsMaps.IsSupported(world.LocationId)
         )
         {
-            ElectronicsRuntime.Notify("Load Customs or Woods to author signal placements.");
+            ElectronicsRuntime.Notify("Load a raid on any map except Factory to author signal placements.");
             return;
         }
         if (_busy)

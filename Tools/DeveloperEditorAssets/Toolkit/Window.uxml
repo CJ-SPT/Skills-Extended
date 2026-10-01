@@ -1,0 +1,12 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <Style src="Editor.uss" />
+    <ui:VisualElement class="editor-window editor-surface">
+        <ui:VisualElement name="TitleBar" class="editor-window-title">
+            <ui:Label name="Heading" picking-mode="Ignore" />
+            <ui:Button name="Close" text="×" tooltip="Hide window" />
+        </ui:VisualElement>
+        <ui:VisualElement name="Resize" class="editor-resize">
+            <ui:Label text="◢" picking-mode="Ignore" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

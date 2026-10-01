@@ -56,13 +56,15 @@ internal sealed class SignalsPlacement : ISignalPlacementScene
         MonoBehaviour runner,
         IEnumerable<SignalPlacement> orderedLocations,
         uint seed,
-        CancellationToken cancellation
+        CancellationToken cancellation,
+        bool authoring = false
     )
     {
         var completion = new TaskCompletionSource<SignalPlacementReport>();
         var scene = new SignalsPlacement();
         var attempts = SignalPlacementSearch
-            .Search(orderedLocations, seed, Geometry(), scene, cancellation)
+            .Search(orderedLocations, seed, Geometry(), scene, cancellation,
+                exactYaw: authoring && orderedLocations.All(p => p.SearchRadius == 0))
             .GetEnumerator();
         var registration = cancellation.Register(() => completion.TrySetCanceled());
         runner.StartCoroutine(Run());

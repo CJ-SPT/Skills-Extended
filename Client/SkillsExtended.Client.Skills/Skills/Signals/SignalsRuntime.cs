@@ -276,7 +276,7 @@ public sealed class SignalsRuntime : MonoBehaviour
         if (Manifest?.Error != null)
             return Manifest.Error;
         if (!SignalsMaps.IsSupported(World.LocationId))
-            return "Signal hunts are available on Customs and Woods.";
+            return "Signal hunts are unavailable on Factory.";
         if (_case == null || State?.Ready != true)
             return _creating
                 ? "Signal cache preparation is still in progress."

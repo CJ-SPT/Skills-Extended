@@ -1,0 +1,7 @@
+{
+  "origin": "WTT-Campaigns Unity UI Toolkit editor assets (local author-owned source)",
+  "source_sha256": "40b52f0423366374b7e19d0973a011ec24f216aa306b868b6b23a8304de13544",
+  "output_sha256": "6522700576e76980e303d741e3488c05e310f7e5efba3ae8c4e83793c3eb6c47",
+  "bundle": "skills_editor_toolkit.bundle",
+  "note": "Independent bundle/file identities; no Campaigns DLL dependency. Runtime uses the shared theme, panel, font and control templates."
+}

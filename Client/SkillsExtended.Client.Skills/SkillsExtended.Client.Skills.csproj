@@ -4,6 +4,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Reference Include="UnityEngine.UIElementsModule" HintPath="$(TarkovManagedDir)UnityEngine.UIElementsModule.dll" Private="false" />
     <EmbeddedResource Include="Assets/LockPicking.assets" LogicalName="SkillsExtended.LockPicking.assets" />
     <EmbeddedResource Include="Assets/LockPicking.audio" LogicalName="SkillsExtended.LockPicking.audio" />
     <ProjectReference Include="..\SkillsExtended.Client.API\SkillsExtended.Client.API.csproj" />

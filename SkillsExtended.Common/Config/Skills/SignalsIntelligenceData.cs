@@ -72,7 +72,8 @@ public class SignalsIntelligenceData
                 || !SignalPoint.Finite(p.SearchRadius)
                 || p.SearchRadius < 0
                 || p.SearchRadius > 25
-                || (p.Map != "bigmap" && p.Map != "woods")
+                || !SignalsMaps.IsSupported(p.Map)
+                || p.Map != SignalsMaps.Normalize(p.Map)
             )
             || Placements.Select(p => p.Id).Distinct().Count() != Placements.Count
         )

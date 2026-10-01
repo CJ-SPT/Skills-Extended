@@ -4,7 +4,7 @@
     <div class="se-locations-heading">
         <h2 id="locations-heading">Cache locations <span class="se-badge">@Placements.Count locations · @Placements.Count(p => p.Enabled) enabled</span></h2>
     </div>
-    <p>Organize cache areas by map. The host searches nearby ground and falls back to another enabled area when needed. Preview new locations in-game before enabling them.</p>
+    <p>Organize cache areas by map. All raid maps except Factory support signal hunts. Maps with no enabled locations do not generate a cache. Preview new locations in-game before enabling them.</p>
 
     <div class="se-toolbar">
         <label class="se-field">Search locations
@@ -36,7 +36,7 @@
                     <span aria-hidden="true">@(open ? "▾" : "▸")</span>
                     <span><strong>@MapName(map)</strong><small>@all.Length locations · @all.Count(p => p.Enabled) enabled</small></span>
                 </button>
-                @if (map is "bigmap" or "woods")
+                @if (SignalsMaps.IsSupported(map))
                 {
                     <button id="@($"location-add-{map}")" type="button" class="se-button" disabled="@(Placements.Count >= 500)"
                             aria-label="@($"Add location to {MapName(map)}")" @onclick="() => Add(map)">+ Add location</button>
@@ -67,11 +67,14 @@
                                 <label class="se-field">Location name <input id="@($"location-name-{index}")" @bind="placement.Name" @bind:after="Session.Notify" /></label>
                                 <label class="se-field">Map
                                     <select id="@($"location-map-select-{index}")" @bind="placement.Map" @bind:after="() => Moved(placement)">
-                                        @if (placement.Map is not ("bigmap" or "woods"))
+                                        @foreach (var option in Maps.Where(SignalsMaps.IsSupported))
+                                        {
+                                            <option value="@option">@MapName(option)</option>
+                                        }
+                                        @if (!SignalsMaps.IsSupported(placement.Map))
                                         {
                                             <option value="@placement.Map">Unsupported: @placement.Map</option>
                                         }
-                                        <option value="bigmap">Customs</option><option value="woods">Woods</option>
                                     </select>
                                 </label>
                             </div>
@@ -122,17 +125,13 @@
     private readonly HashSet<SignalPlacement> _expanded = [];
     private readonly HashSet<string> _collapsedMaps = [];
     private List<SignalPlacement> Placements => Session.Skills.SignalsIntelligence.Placements;
-    private string[] Maps => new[] { "bigmap", "woods" }.Concat(Placements.Select(p => p.Map)).Distinct().ToArray();
+    private string[] Maps => SignalsMaps.StandardMaps.Keys.Concat(Placements.Select(p => p.Map)).Distinct().ToArray();
     private IEnumerable<SignalPlacement> Filtered => Placements.Where(p =>
         (_statusFilter.Length == 0 || p.Enabled == (_statusFilter == "enabled"))
         && ($"{p.Name} {p.Id} {p.Map} {MapName(p.Map)}").Contains(_search.Trim(), StringComparison.OrdinalIgnoreCase));
 
-    private static string MapName(string map) => map switch
-    {
-        "bigmap" => "Customs",
-        "woods" => "Woods",
-        _ => $"Unsupported map ({map})",
-    };
+    private static string MapName(string map) => SignalsMaps.StandardMaps.TryGetValue(map, out var name) ? name
+        : SignalsMaps.IsSupported(map) ? map : $"Unsupported map ({map})";
 
     private static string Number(float value) => value.ToString("0.###", CultureInfo.CurrentCulture);
 
@@ -168,7 +167,7 @@
 
     private void Add(string map)
     {
-        if (Placements.Count >= 500)
+        if (Placements.Count >= 500 || !SignalsMaps.IsSupported(map))
         {
             return;
         }

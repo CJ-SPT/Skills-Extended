@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using SkillsExtended.DeveloperTools;
 
 namespace SkillsExtended.Config.Skills;
 
@@ -78,12 +79,13 @@ public class HackingData
         };
 
     public int Difficulty(string map, string door, string key) =>
-        DoorDifficulties.TryGetValue(map + "/" + door, out var d) ? d
+        DoorRuleMaps.TryDifficulty(DoorDifficulties, map, door, out var d) ? d
         : KeycardDifficulties.TryGetValue(key ?? "", out d) ? d
         : DefaultDifficulty;
 
     public bool Excluded(string map, string door, string key) =>
-        ExcludedDoors.Contains(map + "/" + door) || ExcludedKeycards.Contains(key ?? "");
+        ExcludedDoors.Any(rule => DoorRuleMaps.OnMap(rule, map) && DoorRuleMaps.Door(rule) == door)
+        || ExcludedKeycards.Contains(key ?? "");
 
     public HackingTier Tier(int level) => Tiers.Single(t => t.Level == level);
 

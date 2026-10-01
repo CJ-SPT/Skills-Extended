@@ -1,5 +1,11 @@
 # Skills Extended regression checks
 
+The shared in-game developer editor (cache placement and Hacking/Lock Picking door
+rules) is documented in [the developer editor guide](../docs/developer-editor.md).
+Build the full solution first, then run `Tests/SkillsExtended.DeveloperEditorTests`
+with deployment and packaging disabled for its offline draft, geometry, session,
+configuration, layout and compiled cleanup checks.
+
 For configuration editing, profile tools, and offline page/layout checks, see
 [the web regression suite](SkillsExtended.WebRegression/README.md).
 

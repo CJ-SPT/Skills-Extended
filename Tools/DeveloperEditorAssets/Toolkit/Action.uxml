@@ -1,0 +1,4 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <Style src="Editor.uss" />
+    <ui:Button class="editor-action" />
+</ui:UXML>

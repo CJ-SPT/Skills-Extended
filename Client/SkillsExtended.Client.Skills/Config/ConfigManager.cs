@@ -14,9 +14,15 @@ public static class ConfigManager
     public static ConfigEntry<bool> LockPickingReducedMotion;
     public static ConfigEntry<int> SignalsVolume;
     public static ConfigEntry<KeyboardShortcut> SignalsShortcut;
+    public static ConfigEntry<bool> DeveloperEditorEnabled;
+    public static ConfigEntry<KeyboardShortcut> DeveloperEditorShortcut;
 
     public static void RegisterConfig(ConfigFile config)
     {
+        DeveloperEditorEnabled = config.Bind("Developer tools", "Enable developer editor", false,
+            "Allow the in-game solo developer editor. AI and raid time continue while editing.");
+        DeveloperEditorShortcut = config.Bind("Developer tools", "Open developer editor",
+            new KeyboardShortcut(KeyCode.F9, KeyCode.LeftControl), "Toggle the in-game developer editor on a loaded map.");
         LockPickingVolume = config.Bind(
             "Lock Picking",
             "Volume (%)",

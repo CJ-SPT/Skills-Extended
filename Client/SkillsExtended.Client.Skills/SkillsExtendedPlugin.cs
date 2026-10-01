@@ -72,6 +72,7 @@ public class SkillsExtendedPlugin : BaseUnityPlugin
             EFT.UI.ConsoleScreen.Processor.RegisterCommandGroup<Skills.LockPicking.LockPickingConsoleCommands>();
             EFT.UI.ConsoleScreen.Processor.RegisterCommandGroup<Skills.Signals.SignalsConsoleCommands>();
             EFT.UI.ConsoleScreen.Processor.RegisterCommandGroup<Skills.Signals.SignalsAuthoring>();
+            EFT.UI.ConsoleScreen.Processor.RegisterCommandGroup<DeveloperTools.DeveloperEditorConsoleCommands>();
         }
     }
 

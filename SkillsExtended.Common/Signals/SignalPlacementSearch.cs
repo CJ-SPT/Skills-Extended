@@ -120,6 +120,15 @@ public static class SignalPlacementSearch
                 SearchRadius = p.SearchRadius,
             };
 
+    public static SignalPoint GroundAnchor(SignalPoint root, SignalCaseGeometry geometry) => new()
+    {
+        X = root.X, Y = root.Y + geometry.Body.Center.Y - geometry.Body.Extents.Y - .02f, Z = root.Z,
+    };
+    public static SignalPoint PreviewRoot(SignalPoint anchor, SignalCaseGeometry geometry) => new()
+    {
+        X = anchor.X, Y = anchor.Y - geometry.Body.Center.Y + geometry.Body.Extents.Y + .02f, Z = anchor.Z,
+    };
+
     // Explicit PRNG and ID hash keep ordering independent of runtime/string hash versions.
     private static uint Next(ref uint state)
     {
@@ -200,16 +209,22 @@ public static class SignalPlacementSearch
         uint seed,
         SignalCaseGeometry geometry,
         ISignalPlacementScene scene,
-        CancellationToken cancellation = default
+        CancellationToken cancellation = default,
+        bool exactYaw = false
     )
     {
         foreach (var anchor in orderedLocations)
         foreach (var sample in Samples(anchor, seed))
-            for (var turn = 0; turn < 4; turn++)
+            for (var turn = 0; turn < (exactYaw ? 1 : 4); turn++)
             {
                 cancellation.ThrowIfCancellationRequested();
                 var yaw = SignalsModel.Wrap(anchor.Yaw + turn * 90);
                 var failure = Evaluate(anchor, sample, yaw, geometry, scene, out var position);
+                // An exact authoring preview must already sit on its ground anchor.
+                // Do not approve a floating/sunken preview by silently grounding it.
+                if (exactYaw && anchor.SearchRadius == 0 && failure == SignalPlacementFailure.None
+                    && Math.Abs(GroundAnchor(Point(position), geometry).Y - sample.Y) > .05001f)
+                    failure = SignalPlacementFailure.Support;
                 var resolved = failure == SignalPlacementFailure.None ? Copy(anchor) : null;
                 if (resolved != null)
                 {

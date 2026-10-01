@@ -37,6 +37,9 @@ internal static class SignalsFikaBridge
 
     public static void Initialize()
     {
+        SkillsExtended.DeveloperTools.SkillsDeveloperEditor.FikaSoloHost = () => FikaBackendUtils.IsServer && _server != null
+            && _server.NetServer != null
+            && !_server.NetServer.Cast<NetPeer>().Any(p => p.ConnectionState == ConnectionState.Connected);
         SignalsRuntime.IsAuthority = () => FikaBackendUtils.IsServer;
         SignalsRuntime.Transport = Send;
         SignalsRuntime.ConnectedActors = () =>

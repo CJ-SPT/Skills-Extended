@@ -201,6 +201,17 @@ public static class ComponentChecks
                     && session.Skills.SignalsIntelligence.Placements.Count == originalLocations,
                 "Discard resets grouped locations and removes newly added entries"
             );
+            check(renderer.HasHandler(rewards, "location-add-laboratory", "onclick")
+                && renderer.HasHandler(rewards, "location-add-labyrinth", "onclick")
+                && !renderer.HasHandler(rewards, "location-add-factory4_day", "onclick")
+                && !session.Dirty,
+                "Expanded map controls appear without generating draft locations or admitting Factory");
+            await renderer.Click(rewards, "location-add-laboratory");
+            check(session.Skills.SignalsIntelligence.Placements.Count == originalLocations + 1
+                && session.Skills.SignalsIntelligence.Placements.Single(p => p.Map == "laboratory").Enabled == false
+                && ConfigRules.Validate(session.Skills).Count == 0,
+                "Explicitly adding a new-map web location creates one valid disabled draft");
+            session.Reset(snapshot);
         });
         await renderer.Dispatcher.InvokeAsync(async () =>
         {

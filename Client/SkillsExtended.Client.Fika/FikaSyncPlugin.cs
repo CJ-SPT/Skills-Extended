@@ -8,9 +8,9 @@ using SkillsExtended;
 
 namespace SkillsExtendedFika;
 
-[BepInPlugin("com.cj.SkillsExtendedFika", "Skills Extended Fika", SkillsExtendedInfo.SYNC_VERSION)]
+[BepInPlugin("com.cj.SkillsExtendedFika", "Skills Extended Fika","1.2.1")]
 [BepInDependency(SkillsExtendedInfo.MOD_GUID, SkillsExtendedInfo.VERSION)]
-[BepInDependency("com.fika.core", SkillsExtendedInfo.MIN_FIKA_VERSION)]
+[BepInDependency("com.fika.core", "2.4.3")]
 public class FikaSyncPlugin : BaseUnityPlugin
 {
     internal static new ManualLogSource? Logger;

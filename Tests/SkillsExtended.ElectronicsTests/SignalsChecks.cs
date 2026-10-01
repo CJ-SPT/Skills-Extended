@@ -28,7 +28,7 @@ internal static class SignalsChecks
         }
         var c = new SignalsIntelligenceData();
         c.Validate();
-        foreach (var map in new[] { "woods", "Woods", "WOODS", "bigmap", "Bigmap", "BIGMAP" })
+        foreach (var map in SignalsMaps.StandardMaps.Keys.Concat(new[] { "Woods", "WOODS", "Bigmap", "BIGMAP", "modded-raid-map" }))
         {
             Check(SignalsMaps.IsSupported(map), "native and configured map casing: " + map);
             Check(
@@ -39,6 +39,9 @@ internal static class SignalsChecks
         Check(
             !SignalsMaps.IsSupported(null)
                 && !SignalsMaps.IsSupported("factory4_day")
+                && !SignalsMaps.IsSupported("Factory4_night")
+                && !SignalsMaps.IsSupported(" FACTORY ")
+                && !SignalsMaps.IsSupported("  ")
                 && !SignalsMaps.Same(null, null),
             "missing and unsupported map IDs stay excluded"
         );
@@ -512,6 +515,39 @@ internal static class SignalsChecks
             .GetField("_runtime", BindingFlags.Instance | BindingFlags.NonPublic)!
             .SetValue(config, snapshot);
         var service = new SignalsRaidService(config, templates, json);
+        foreach (var map in SignalsMaps.StandardMaps.Keys.Where(m => m is not ("woods" or "bigmap")).Append("modded-raid-map"))
+        {
+            service.Start("empty-map", map, map.ToUpperInvariant(), true);
+            var empty = service.Get("empty-map");
+            Check(empty.Error != null && empty.PlacementCandidates.Count == 0 && empty.ItemsJson == "[]",
+                "New map without authored locations generates no cache or loot: " + map);
+            var authored = SignalPlacementSearch.Copy(snapshot.Skills.SignalsIntelligence.Placements[0]);
+            authored.Id = "manual-" + map; authored.Map = map; authored.SearchRadius = 0;
+            snapshot.Skills.SignalsIntelligence.Placements.Add(authored);
+            service.Start("authored-map", map, map.ToUpperInvariant(), true);
+            var generated = service.Get("authored-map");
+            Check(generated.Error == null && generated.PlacementCandidates.Single().Id == authored.Id
+                && generated.PlacementCandidates.Single().Map == map && generated.ItemsJson != "[]",
+                "New map generates a runtime cache only from manually authored locations: " + map);
+            snapshot.Skills.SignalsIntelligence.Placements.Remove(authored);
+        }
+        foreach (var map in new[] { "Factory4_day", "FACTORY4_NIGHT" })
+        {
+            var forbidden = SignalPlacementSearch.Copy(snapshot.Skills.SignalsIntelligence.Placements[0]);
+            forbidden.Id = "factory-test"; forbidden.Map = SignalsMaps.Normalize(map);
+            snapshot.Skills.SignalsIntelligence.Placements.Add(forbidden);
+            var rejected = false;
+            try { snapshot.Skills.SignalsIntelligence.Validate(); } catch (ArgumentException) { rejected = true; }
+            Check(rejected, "Configuration rejects Factory locations");
+            service.Start("factory-map", map, map, true);
+            var blocked = service.Get("factory-map");
+            Check(blocked.Error != null && blocked.PlacementCandidates.Count == 0 && blocked.ItemsJson == "[]",
+                "Factory runtime never generates a cache even with an injected location");
+            snapshot.Skills.SignalsIntelligence.Placements.Remove(forbidden);
+        }
+        Check(snapshot.Skills.SignalsIntelligence.Placements.Count == 24
+            && snapshot.Skills.SignalsIntelligence.Placements.All(p => p.Map is "bigmap" or "woods"),
+            "Expanded map support leaves the original shipped locations unchanged");
         foreach (var map in new[] { "Woods", "Bigmap" })
         {
             service.Start("case-fixture", map, map, true);

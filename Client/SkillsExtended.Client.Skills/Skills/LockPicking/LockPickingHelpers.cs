@@ -26,21 +26,7 @@ public static class LockPickingHelpers
         var maps = SkillsExtendedPlugin.SkillData?.LockPicking?.DoorPickLevels;
         if (maps == null || string.IsNullOrEmpty(doorId))
             return -1;
-        var table = locationId?.ToLowerInvariant() switch
-        {
-            "factory4_day" or "factory4_night" => maps.Factory,
-            "woods" => maps.Woods,
-            "bigmap" => maps.Customs,
-            "interchange" => maps.Interchange,
-            "rezervbase" => maps.Reserve,
-            "shoreline" => maps.Shoreline,
-            "laboratory" => maps.Labs,
-            "lighthouse" => maps.Lighthouse,
-            "tarkovstreets" => maps.Streets,
-            "sandbox" or "sandbox_high" => maps.GroundZero,
-            "labyrinth" => maps.Labyrinth,
-            _ => null,
-        };
+        var table = SkillsExtended.DeveloperTools.DoorRuleMaps.Locks(maps, locationId);
         return table != null && table.TryGetValue(doorId, out var level) ? level : -1;
     }
 
