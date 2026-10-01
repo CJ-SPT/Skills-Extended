@@ -41,7 +41,7 @@ internal static class LockPickingFikaBridge
         PickingRuntime.AuthorityReply += Broadcast;
         FikaEventDispatcher.SubscribeEvent<PeerDisconnectedEvent>(e =>
         {
-            if (FikaBackendUtils.IsServer && e.Peer.Tag is string actor)
+            if (FikaBackendUtils.IsServer && FikaPeerIdentity.Peers.Actor(e.Peer) is string actor)
                 PickingRuntime.Instance?.Disconnect(actor);
             else if (!FikaBackendUtils.IsServer)
                 PickingRuntime.Instance?.ConnectionLost();
@@ -71,7 +71,7 @@ internal static class LockPickingFikaBridge
         try
         {
             var request = JsonConvert.DeserializeObject<PickRequest>(packet.Json);
-            if (request == null || !(peer.Tag is string actor) || request.Actor != actor)
+            if (request == null || !FikaPeerIdentity.Peers.Matches(peer, request.Actor))
                 return;
             PickingRuntime.Instance?.Handle(request);
         }

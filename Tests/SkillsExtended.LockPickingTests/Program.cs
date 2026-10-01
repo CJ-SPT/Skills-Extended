@@ -17,6 +17,78 @@ var config = new LockPickingData
     XpTable = new() { ["1"] = 4 },
 };
 config.Validate();
+
+// Remote requests must use the profile bound by Fika's handshake, not a nickname
+// or an actor supplied by a different connection.
+var peers = new SkillsExtendedFika.PeerActorRegistry<object>();
+var remote = new object();
+var otherPeer = new object();
+Check(!peers.Matches(remote, "profile-a"), "unbound peer rejected");
+peers.Bind(remote, "profile-a");
+peers.Bind(otherPeer, "profile-b");
+Check(peers.Matches(remote, "profile-a"), "remote profile accepted");
+Check(!peers.Matches(remote, "Player Nickname"), "nickname is not an actor");
+Check(!peers.Matches(remote, "profile-b"), "another player's actor rejected");
+Check(!peers.Matches(remote, ""), "empty actor rejected");
+var remoteAuthority = new PickingAuthority(config, 1);
+var sync = new PickRequest { Actor = "profile-a" };
+var synced = peers.Matches(remote, sync.Actor)
+    ? remoteAuthority.Process(sync, 0, 1, 0, 10, null)
+    : null;
+Check(synced?.Raid == remoteAuthority.Raid, "remote handshake receives authority raid");
+var inspect = new PickRequest
+{
+    Actor = "profile-a",
+    Raid = synced.Raid,
+    Door = "door",
+    Operation = "inspect",
+};
+Check(
+    peers.Matches(remote, inspect.Actor)
+        && remoteAuthority.Process(inspect, 0, 1, 0, 10, null).Error == null,
+    "remote inspection accepted after sync"
+);
+peers.Remove(remote);
+Check(peers.Actor(remote) == null, "disconnect removes actor");
+Check(peers.Matches(otherPeer, "profile-b"), "disconnect preserves other connections");
+var reconnect = new object();
+Check(!peers.Matches(reconnect, "profile-a"), "new connection needs handshake");
+peers.Bind(reconnect, "profile-a");
+Check(peers.Matches(reconnect, "profile-a"), "reconnect can bind same profile");
+peers.Clear();
+Check(
+    peers.Actor(otherPeer) == null && peers.Actor(reconnect) == null,
+    "new manager clears previous raid"
+);
+
+// Compile-time checks cannot verify a private Harmony target. Check the installed
+// Fika assembly's actual callback signature without starting the game.
+using (
+    var fika = Mono.Cecil.AssemblyDefinition.ReadAssembly(
+        Path.GetFullPath("../../BepInEx/plugins/Fika/Fika.Core.dll")
+    )
+)
+{
+    var callback = fika
+        .MainModule.GetType("Fika.Core.Networking.FikaServer")
+        .Methods.Single(m => m.Name == "OnNetworkSettingsPacketReceived");
+    Check(
+        callback
+            .Parameters.Select(p => p.ParameterType.FullName)
+            .SequenceEqual(
+                new[]
+                {
+                    "Fika.Core.Networking.Packets.Backend.NetworkSettingsPacket",
+                    "Fika.Core.Networking.LiteNetLib.NetPeer",
+                }
+            ),
+        "installed Fika handshake patch signature"
+    );
+    Check(
+        callback.Parameters[0].Name == "packet" && callback.Parameters[1].Name == "peer",
+        "installed Fika Harmony argument names"
+    );
+}
 void Advance(
     PinLockEngine e,
     float depth,

@@ -44,7 +44,7 @@ internal static class SignalsFikaBridge
                 _server
                     ?.NetServer?.Cast<NetPeer>()
                     .Where(peer => peer.ConnectionState == ConnectionState.Connected)
-                    .Select(peer => peer.Tag as string)
+                    .Select(peer => FikaPeerIdentity.Peers.Actor(peer))
                 ?? Enumerable.Empty<string>()
             )
                 .Concat(new[] { SignalsRuntime.Instance?.World.MainPlayer?.ProfileId })
@@ -52,7 +52,7 @@ internal static class SignalsFikaBridge
         SignalsRuntime.AuthorityReply += Broadcast;
         FikaEventDispatcher.SubscribeEvent<PeerDisconnectedEvent>(e =>
         {
-            if (FikaBackendUtils.IsServer && e.Peer.Tag is string actor)
+            if (FikaBackendUtils.IsServer && FikaPeerIdentity.Peers.Actor(e.Peer) is string actor)
                 SignalsRuntime.Instance?.Disconnect(actor);
             else if (!FikaBackendUtils.IsServer)
                 SignalsView.Current?.Close();
@@ -80,7 +80,7 @@ internal static class SignalsFikaBridge
         try
         {
             var request = JsonConvert.DeserializeObject<SignalRequest>(packet.Json);
-            if (request == null || !(peer.Tag is string actor) || request.Actor != actor)
+            if (request == null || !FikaPeerIdentity.Peers.Matches(peer, request.Actor))
                 return;
             SignalsRuntime.Instance?.Handle(request);
         }

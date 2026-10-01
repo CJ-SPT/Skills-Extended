@@ -14,6 +14,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile
+      Include="../../Client/SkillsExtended.Client.Fika/PeerActorRegistry.cs"
+      Link="PeerActorRegistry.cs"
+    />
+    <Reference Include="Mono.Cecil" HintPath="../../../../BepInEx/core/Mono.Cecil.dll" />
+    <Compile
       Include="../../Client/SkillsExtended.Client.Skills/Skills/LockPicking/LockPickingCutaway.cs"
       Link="LockPickingCutaway.cs"
     />

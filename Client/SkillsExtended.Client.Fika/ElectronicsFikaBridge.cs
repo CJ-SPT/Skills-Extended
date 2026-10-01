@@ -41,7 +41,7 @@ internal static class ElectronicsFikaBridge
         ElectronicsRuntime.AuthorityReply += Broadcast;
         FikaEventDispatcher.SubscribeEvent<PeerDisconnectedEvent>(e =>
         {
-            if (FikaBackendUtils.IsServer && e.Peer.Tag is string actor)
+            if (FikaBackendUtils.IsServer && FikaPeerIdentity.Peers.Actor(e.Peer) is string actor)
             {
                 ElectronicsRuntime.Instance?.Disconnect(actor);
             }
@@ -80,8 +80,8 @@ internal static class ElectronicsFikaBridge
         try
         {
             var request = JsonConvert.DeserializeObject<HackRequest>(packet.Json);
-            // Fika authenticates the peer's profile in Tag. Never trust a caller-supplied actor.
-            if (request == null || !(peer.Tag is string actor) || request.Actor != actor)
+            // Validate against Fika's connection handshake, never its display-name Tag.
+            if (request == null || !FikaPeerIdentity.Peers.Matches(peer, request.Actor))
             {
                 return;
             }

@@ -67,3 +67,6 @@ confirm the normal warning appears. For Fika, verify plugin loading and synchron
 door unlocking and pick consumption with another player and a headless host.
 Lock Picking 2.0 still requires live artwork, input, audio and Fika acceptance;
 its offline pin and cutaway suite is in `SkillsExtended.LockPickingTests`.
+That suite also covers Fika peer/profile binding, remote sync and inspection,
+actor spoof rejection, disconnect/reconnect cleanup, and the installed Fika
+handshake callback signature. Run it from the repository root with Fika installed.

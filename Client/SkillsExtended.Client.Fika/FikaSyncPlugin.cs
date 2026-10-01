@@ -23,15 +23,21 @@ public class FikaSyncPlugin : BaseUnityPlugin
             throw new Exception("Invalid EFT Version");
         }
 
+        new FikaPeerIdentityPatch().Enable();
         SkillsExtendedInfo.SyncPluginPresent = true;
         ElectronicsFikaBridge.Initialize();
         SignalsFikaBridge.Initialize();
         LockPickingFikaBridge.Initialize();
+        // Run after the bridges have released sessions using the departing actor.
+        FikaEventDispatcher.SubscribeEvent<PeerDisconnectedEvent>(e =>
+            FikaPeerIdentity.Peers.Remove(e.Peer)
+        );
         FikaEventDispatcher.SubscribeEvent<FikaNetworkManagerCreatedEvent>(OnNetworkManagerCreated);
     }
 
     private static void OnNetworkManagerCreated(FikaNetworkManagerCreatedEvent createdEvent)
     {
+        FikaPeerIdentity.Peers.Clear();
         ElectronicsFikaBridge.Connect(createdEvent.Manager);
         SignalsFikaBridge.Connect(createdEvent.Manager);
         LockPickingFikaBridge.Connect(createdEvent.Manager);
