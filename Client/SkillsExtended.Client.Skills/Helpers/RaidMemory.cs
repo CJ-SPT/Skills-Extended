@@ -11,25 +11,21 @@ namespace SkillsExtended.Helpers;
 public sealed class RaidMemory : MonoBehaviour
 {
     private static RaidMemory _current;
-    private readonly MemoryDiagnostics _diagnostics = new("raid");
 
     private void Awake()
     {
         _current = this;
         AutomaticCollection.SetRaidActive(ConfigManager.AutomaticRaidCollection.Value);
-        _diagnostics.Begin();
     }
 
     private void Update()
     {
         if (_current != this) return;
         AutomaticCollection.SetRaidActive(ConfigManager.AutomaticRaidCollection.Value);
-        _diagnostics.Tick();
     }
 
     private void OnDestroy()
     {
-        _diagnostics.Stop();
         if (_current != this) return;
         _current = null;
         AutomaticCollection.SetRaidActive(false);

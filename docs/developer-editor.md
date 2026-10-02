@@ -21,10 +21,6 @@ the editor always keeps collection enabled while open. The latest game-requested
 mode is restored once both raid and editor collection ownership end.
 Idle draft status is cached after edits/save/undo rather than rebuilding
 placement comparisons and door sets every frame; unchanged handles do not redraw.
-For the first three minutes of a raid and each editor opening, passive memory samples are logged
-every 30 seconds with GC mode, managed heap use, Unity allocation and process
-private memory. Sampling stops on teardown/close or after three minutes and never forces
-collection. Unsupported counters are reported as unavailable.
 
 For Fika, an administrator must select your profile under **Fika client editor
 access** on the Skills Extended web configuration page and save. The default

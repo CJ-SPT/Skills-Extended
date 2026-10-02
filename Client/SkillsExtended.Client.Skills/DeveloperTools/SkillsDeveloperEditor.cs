@@ -24,7 +24,6 @@ public sealed class SkillsDeveloperEditor : MonoBehaviour
     public bool IsOpen { get; private set; }
     public bool Looking => _cameraInput.Looking;
     private readonly DeveloperEditorCameraInput _cameraInput = new();
-    private readonly Helpers.MemoryDiagnostics _memoryDiagnostics = new("editor");
     private readonly IDeveloperEditorTool[] _tools = { new SignalCacheEditorTool(), new DoorEditorTool() };
     private readonly HackingInputState _input = new();
     private readonly HackingUiInputState _ui = new();
@@ -96,7 +95,6 @@ public sealed class SkillsDeveloperEditor : MonoBehaviour
             };
             IsOpen = true;
             Helpers.AutomaticCollection.SetEditorActive(true);
-            _memoryDiagnostics.Begin();
             _nextAuthorizationCheck = Time.realtimeSinceStartup + 5;
             _input.Capture(true); _ui.Capture();
             foreach (var renderer in _camera.GetComponentsInChildren<Renderer>(true))
@@ -164,7 +162,6 @@ public sealed class SkillsDeveloperEditor : MonoBehaviour
             if (ConfigManager.DeveloperEditorShortcut?.Value.IsDown() == true && _view?.Typing != true) Toggle();
             if (!IsOpen) return;
             if (!Eligible() || OtherModal) { Close(); return; }
-            _memoryDiagnostics.Tick();
             if (SkillsExtendedInfo.IsFikaPresent && !_checkingAuthorization
                 && Time.realtimeSinceStartup >= _nextAuthorizationCheck)
                 CheckAuthorization();
@@ -232,7 +229,6 @@ public sealed class SkillsDeveloperEditor : MonoBehaviour
     {
         if (!IsOpen) return;
         IsOpen = false; _cameraInput.Reset();
-        _memoryDiagnostics.Stop();
         _operation?.Cancel();
         try { _tool?.Deactivate(); }
         finally

@@ -52,9 +52,6 @@ internal static class AutomaticCollection
         try
         {
             GarbageCollector.GCMode = mode.Value;
-            SkillsExtendedPlugin.Log.LogInfo(Policy.Active
-                ? "Skills memory: automatic garbage collection enabled."
-                : "Skills memory: restored requested garbage collection mode " + mode.Value + ".");
         }
         finally { _applying = false; }
     }
