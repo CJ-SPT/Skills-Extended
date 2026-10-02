@@ -7,6 +7,7 @@ const { chromium } = require(process.env.PLAYWRIGHT_MODULE_PATH || "playwright")
 
 (async () => {
     const directory = path.resolve(process.argv[2] || path.join(__dirname, "bin/Release/net10.0/rendered"));
+    const accessOnly = process.argv.includes("--client-editor-access");
     const browser = await chromium.launch({
         headless: true,
         executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH || undefined,
@@ -16,10 +17,35 @@ const { chromium } = require(process.env.PLAYWRIGHT_MODULE_PATH || "playwright")
     try {
         for (const width of [2560, 1440, 768, 390]) {
             const page = await browser.newPage({ viewport: { width, height: 1000 } });
-            for (const file of fs.readdirSync(directory).filter(file => file.endsWith(".html"))) {
+            for (const file of fs.readdirSync(directory).filter(file => file.endsWith(".html") && (!accessOnly || file === "client-editor-access.html"))) {
                 await page.goto(pathToFileURL(path.join(directory, file)).href);
                 await page.locator(".se-app").waitFor();
                 assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), `${file}: viewport overflow at ${width}`);
+                if (file === "client-editor-access.html") {
+                    const access = page.getByRole("region", { name: "Fika client editor access" });
+                    const geometry = await access.evaluate(element => {
+                        const search = element.querySelector("input[type=search]").getBoundingClientRect();
+                        const rows = [...element.querySelectorAll(".se-editor-access-profile")];
+                        const first = rows[0].getBoundingClientRect();
+                        return {
+                            searchGap: first.top - search.bottom,
+                            fits: rows.every(row => row.scrollWidth <= row.clientWidth + 1),
+                            aligned: rows.every(row => {
+                                const checkbox = row.querySelector("input").getBoundingClientRect();
+                                const identity = row.querySelector("span").getBoundingClientRect();
+                                return Math.abs((checkbox.top + checkbox.bottom - identity.top - identity.bottom) / 2) <= 1;
+                            }),
+                            minRowHeight: Math.min(...rows.map(row => row.getBoundingClientRect().height)),
+                        };
+                    });
+                    assert.ok(geometry.searchGap >= 16, `Profile list has search spacing at ${width}`);
+                    assert.ok(geometry.fits && geometry.aligned && geometry.minRowHeight >= 60, `Profile rows fit and align at ${width}`);
+                    assert.equal(await access.getByRole("checkbox").count(), 3);
+                    assert.equal(await access.getByRole("checkbox", { checked: true }).count(), 2);
+                    await access.screenshot({ path: path.join(directory, `client-editor-access-${width}.png`) });
+                    checks++;
+                    continue;
+                }
                 const centering = await page.evaluate(() => {
                     const main = document.querySelector(".se-content").getBoundingClientRect();
                     const content = document.querySelector(".se-content > .se-editor-fields").getBoundingClientRect();
@@ -87,7 +113,7 @@ const { chromium } = require(process.env.PLAYWRIGHT_MODULE_PATH || "playwright")
             }
 
             // Show the real drawer in its open CSS state; event handling is verified separately in Blazor checks.
-            if (width === 390) {
+            if (width === 390 && !accessOnly) {
                 await page.evaluate(() => document.querySelector(".se-sidebar").classList.add("se-open"));
                 assert.ok(await page.getByRole("navigation", { name: "Skills Extended navigation" }).isVisible());
                 await page.screenshot({ path: path.join(directory, "navigation-390.png") });

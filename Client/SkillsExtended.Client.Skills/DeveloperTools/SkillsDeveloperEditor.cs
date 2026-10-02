@@ -21,7 +21,6 @@ namespace SkillsExtended.DeveloperTools;
 public sealed class SkillsDeveloperEditor : MonoBehaviour
 {
     public static SkillsDeveloperEditor Current { get; private set; }
-    public static Func<bool> FikaSoloHost;
     public bool IsOpen { get; private set; }
     public bool Looking { get; private set; }
     private readonly IDeveloperEditorTool[] _tools = { new SignalCacheEditorTool(), new DoorEditorTool() };
@@ -37,6 +36,8 @@ public sealed class SkillsDeveloperEditor : MonoBehaviour
     private Quaternion _savedRotation, _flyRotation;
     private CancellationTokenSource _operation;
     private bool _opening, _switching;
+    private bool _checkingAuthorization;
+    private float _nextAuthorizationCheck;
     private float _speed = 6;
     private bool OtherModal => SignalsView.Current || HackingView.IsOpen || LockPickingGame.Current
         || CommonUI.Instance?.InventoryScreen?.gameObject.activeInHierarchy == true
@@ -50,7 +51,7 @@ public sealed class SkillsDeveloperEditor : MonoBehaviour
     public static void ToggleCurrent()
     {
         if (Current) Current.Toggle();
-        else ElectronicsRuntime.Notify("Load a solo PMC raid before opening the developer editor.");
+        else ElectronicsRuntime.Notify("Load a PMC raid before opening the developer editor.");
     }
     private bool Eligible()
     {
@@ -58,13 +59,13 @@ public sealed class SkillsDeveloperEditor : MonoBehaviour
         return DeveloperEditorPolicy.Eligible(ConfigManager.DeveloperEditorEnabled?.Value == true,
             _world && !string.IsNullOrWhiteSpace(_world.LocationId),
             p && p.Side != EPlayerSide.Savage && p.HealthController.IsAlive,
-            SkillsExtendedInfo.IsFikaHeadless, SkillsExtendedInfo.IsFikaPresent, FikaSoloHost?.Invoke() == true);
+            SkillsExtendedInfo.IsFikaHeadless);
     }
     private void Toggle()
     {
         if (IsOpen) { if (!_view.Typing) Close(); return; }
         if (!Eligible())
-        { ElectronicsRuntime.Notify("Enable Developer tools, then load a solo PMC raid. Fika requires a host with no connected peers."); return; }
+        { ElectronicsRuntime.Notify("Enable Developer tools, then load a PMC raid. Fika editor access is granted by the server administrator."); return; }
         if (OtherModal || _opening) return;
         Open();
     }
@@ -92,6 +93,7 @@ public sealed class SkillsDeveloperEditor : MonoBehaviour
                 Frame = target => { _flyPosition = target + new Vector3(0, 2, -4); _flyRotation = Quaternion.LookRotation(target - _flyPosition); },
             };
             IsOpen = true;
+            _nextAuthorizationCheck = Time.realtimeSinceStartup + 5;
             _input.Capture(true); _ui.Capture();
             foreach (var renderer in _camera.GetComponentsInChildren<Renderer>(true))
             { _renderers.Add((renderer, renderer.enabled)); renderer.enabled = false; }
@@ -144,6 +146,9 @@ public sealed class SkillsDeveloperEditor : MonoBehaviour
             if (ConfigManager.DeveloperEditorShortcut?.Value.IsDown() == true && _view?.Typing != true) Toggle();
             if (!IsOpen) return;
             if (!Eligible() || OtherModal) { Close(); return; }
+            if (SkillsExtendedInfo.IsFikaPresent && !_checkingAuthorization
+                && Time.realtimeSinceStartup >= _nextAuthorizationCheck)
+                CheckAuthorization();
             _view.Tick();
             _view.DraftState(_tools.Any(t => t.Dirty) ? "Unsaved drafts" : "Drafts saved");
             _view.Actions.SetEnabled(!_switching && !_tool.Busy);
@@ -179,6 +184,27 @@ public sealed class SkillsDeveloperEditor : MonoBehaviour
         catch (Exception e) { Fail(e); }
     }
     private void LateUpdate() { if (IsOpen && _camera) _camera.transform.SetPositionAndRotation(_flyPosition, _flyRotation); }
+    private async void CheckAuthorization()
+    {
+        _checkingAuthorization = true;
+        _nextAuthorizationCheck = Time.realtimeSinceStartup + 5;
+        var operation = _operation;
+        try
+        {
+            var reply = await Post<DeveloperEditorReply>("/skills-extended/editor/session",
+                new DeveloperEditorRequest { Map = _world.LocationId });
+            if (this && IsOpen && operation == _operation && !reply.Success)
+            {
+                Close();
+                ElectronicsRuntime.Notify(reply.Message);
+            }
+        }
+        catch (Exception e)
+        {
+            if (this && IsOpen && operation == _operation) Fail(e);
+        }
+        finally { _checkingAuthorization = false; }
+    }
     private void CameraPose(Camera camera) { if (IsOpen && camera == _camera) camera.transform.SetPositionAndRotation(_flyPosition, _flyRotation); }
     private void Escape() { if (_tool?.Cancel() != true) Close(); }
     public void Close()

@@ -20,7 +20,7 @@ public static class ConfigManager
     public static void RegisterConfig(ConfigFile config)
     {
         DeveloperEditorEnabled = config.Bind("Developer tools", "Enable developer editor", false,
-            "Allow the in-game solo developer editor. AI and raid time continue while editing.");
+            "Enable the in-game developer editor. Fika requires server authorization for your profile. AI and raid time continue while editing.");
         DeveloperEditorShortcut = config.Bind("Developer tools", "Open developer editor",
             new KeyboardShortcut(KeyCode.F9, KeyCode.LeftControl), "Toggle the in-game developer editor on a loaded map.");
         LockPickingVolume = config.Bind(

@@ -12,11 +12,30 @@ For configuration editing, profile tools, and offline page/layout checks, see
 Run from the repository root:
 
 ```powershell
+dotnet run --project Tests/SkillsExtended.SignalsLoadingTests -c Release -p:DeploySkillsExtended=false -p:PackageSkillsExtended=false
+dotnet run --project Tests/SkillsExtended.SignalsInventoryTests -c Release -p:DeploySkillsExtended=false -p:PackageSkillsExtended=false
 dotnet run --project Tests/SkillsExtended.ElectronicsTests -c Release -p:DeploySkillsExtended=false -p:PackageSkillsExtended=false
 dotnet run --project Tests/SkillsExtended.LockPickingTests -c Release -p:DeploySkillsExtended=false -p:PackageSkillsExtended=false
 dotnet run --project Tests/SkillsExtended.Regression -c Release -p:DeploySkillsExtended=false
 dotnet build 'Skills Extended.sln' -c Release -p:DeploySkillsExtended=false -p:FikaAssemblyPath='C:\path\to\Fika.Core.dll'
 ```
+
+Signals loading checks execute the production completion routines and both native
+hooks with external Unity/EFT substitutes. They cover solo SPT, regular Fika and
+headless hosts, peers, duplicate calls, native failures, raid cancellation, disabled
+hunts and unsupported maps. Serialization checks also inspect the installed
+`Fika.Headless.dll` boundary when present; set `SKILLS_EFT_HEADLESS_ROOT` for an
+installation outside the default sibling directory. Live loading and shared cache
+interaction still require a manual Woods/Customs retest in each hosting mode.
+
+Signals inventory checks use the installed game's actual descriptors and native
+binary codec. They reproduce the abstract-component JSON failure, then roundtrip
+nested resource, medical and key components, grid/slot identities and updated loot
+state through the existing inventory string envelope. Every host and peer needs
+matching client binaries for the native inventory payload. Set `SKILLS_EFT_ROOT`
+to test a separate installation; `SignalsGameRoot` overrides build references.
+Loading checks also verify repeated identical failed snapshots are diagnosed once
+and that a changed inventory can recover. These checks do not start the game.
 
 The Electronics suite covers seeded graphs at levels 0/25/51, defenses, utilities,
 turn ordering, XP/attempt authority, profile initialization, and ID 200 round trips

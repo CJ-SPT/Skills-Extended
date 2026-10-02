@@ -73,6 +73,8 @@ Sign in with an **SPT administrator account** to edit skill settings, door table
 
 Use the in-game BepInEx configuration menu for client preferences such as lock-picking sensitivity, tension binding, sound volume, and reduced motion. Existing custom difficulty values remain in effect when defaults change.
 
+For Fika, select authorized profiles under **Fika client editor access** on the Skills Extended configuration page and save. The default empty list permits no client editor access. Listed players can enable Developer tools and open the in-game editor during a PMC raid, including shared raids. Authorization is checked on the server when opening, reading, and saving; removing a profile blocks further operations immediately. Headless clients and Scavs cannot use the editor. Authored changes apply to future raids or after the normal client configuration reload.
+
 ## Support
 
 Report problems through [GitHub Issues](https://github.com/CJ-SPT/Skills-Extended/issues). Include your SPT version, Skills Extended version, whether you use Fika, relevant logs, and steps to reproduce the problem. A screenshot or short clip helps with minigame display issues.

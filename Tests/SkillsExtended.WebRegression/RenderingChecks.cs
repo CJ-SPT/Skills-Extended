@@ -84,6 +84,51 @@ public static class RenderingChecks
             "Render actual overview with all skill cards"
         );
         await Write(output, "overview", home);
+        var accessSession = new EditorSession(
+            await homeProvider.GetRequiredService<ConfigController>().GetSnapshotAsync()
+        );
+        accessSession.Server.AuthorizedEditorProfiles.Add("0123456789abcdef01234567");
+        accessSession.Server.AuthorizedEditorProfiles.Add("0123456789abcdef01234569");
+        var accessProfiles = new ProfileChoice[]
+        {
+            new("0123456789abcdef01234567", "Authorized player"),
+            new("0123456789abcdef01234568", "Other player"),
+        };
+        var accessHtml = await homeRenderer.Dispatcher.InvokeAsync(async () =>
+        {
+            RenderFragment body = builder =>
+            {
+                builder.OpenComponent<ClientEditorAccess>(0);
+                builder.AddAttribute(1, "Profiles", accessProfiles);
+                builder.CloseComponent();
+            };
+            var root = await homeRenderer.RenderComponentAsync<CascadingValue<EditorSession>>(
+                ParameterView.FromDictionary(
+                    new Dictionary<string, object?>
+                    {
+                        ["Value"] = accessSession,
+                        ["ChildContent"] = body,
+                    }
+                )
+            );
+            return root.ToHtmlString();
+        });
+        check(
+            accessHtml.Contains("Search profiles")
+                && accessHtml.Contains("Authorized player")
+                && accessHtml.Contains("Other player")
+                && accessHtml.Contains("Unavailable profile")
+                && accessHtml.Contains("checked")
+                && accessHtml.Contains("2 authorized profile(s)"),
+            "Render searchable profile access picker with selected and unavailable profiles"
+        );
+        await Write(
+            output,
+            "client-editor-access",
+            "<div class=\"se-app\" style=\"padding:24px\"><div style=\"max-width:1200px;margin-inline:auto\">"
+                + accessHtml
+                + "</div></div>"
+        );
         var releaseNotes = System.Text.Json.JsonSerializer.Deserialize<
             List<SkillsExtended.Models.ReleaseNote>
         >(

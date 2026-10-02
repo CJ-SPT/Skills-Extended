@@ -65,11 +65,8 @@ foreach (var enabled in new[] { false, true })
 foreach (var loaded in new[] { false, true })
 foreach (var alive in new[] { false, true })
 foreach (var headless in new[] { false, true })
-foreach (var fika in new[] { false, true })
-foreach (var soloHost in new[] { false, true })
-    Check(DeveloperEditorPolicy.Eligible(enabled, loaded, alive, headless, fika, soloHost)
-        == (enabled && loaded && alive && !headless && (!fika || soloHost)), "Solo admission matrix");
-Check(!DeveloperEditorPolicy.Eligible(true, true, true, false, true, false), "Peer join revokes editor admission");
+    Check(DeveloperEditorPolicy.Eligible(enabled, loaded, alive, headless)
+        == (enabled && loaded && alive && !headless), "Local admission matrix; Fika access is decided by the server");
 foreach (var size in new[] { (1920, 1080), (2560, 1440), (3440, 1440), (5120, 1440), (1280, 720) })
 {
     var scale = DeveloperEditorLayout.Scale(size.Item1, size.Item2);
@@ -198,6 +195,44 @@ try
             && (await transactions.Execute("factory-owner", factoryRequest, true)).Status == "validation",
             "Factory variants reject cache authoring reads and writes");
     }
+    var accessSnapshot = await store.ReadSnapshotAsync();
+    var access = new DeveloperEditorTransactions(() => Task.FromResult(ConfigStore.Clone(accessSnapshot)),
+        s => store.SaveAsync(s.Skills, s.Server, s.Revision, _ => { }), () => now, () => true);
+    const string allowedProfile = "0123456789abcdef01234567";
+    const string deniedProfile = "0123456789abcdef01234568";
+    access.Start(allowedProfile, "shared-raid", "woods", true);
+    access.Start(deniedProfile, "shared-raid", "woods", true);
+    var accessDoor = new DoorAuthoringRequest { Map = "woods", Raid = "shared-raid", Revision = accessSnapshot.Revision };
+    var accessSignal = new SignalAuthoringRequest { Map = "woods", Raid = "shared-raid", Revision = accessSnapshot.Revision };
+    async Task CheckDenied(string profile)
+    {
+        Check((await access.Open(profile, new() { Map = "woods" })).Status == "unauthorized", "Unlisted Fika profile cannot open editor");
+        foreach (var write in new[] { false, true })
+        {
+            Check((await access.ExecuteDoors(profile, accessDoor, write)).Status == "unauthorized", "Unlisted Fika profile cannot read or save door rules");
+            Check((await access.Execute(profile, accessSignal, write)).Status == "unauthorized", "Unlisted Fika profile cannot read or save cache placements");
+        }
+    }
+    await CheckDenied(allowedProfile);
+    accessSnapshot.Server.AuthorizedEditorProfiles.Add(allowedProfile.ToUpperInvariant());
+    Check((await access.Open(allowedProfile, new() { Map = "woods" })).Success, "Listed Fika profile can open in a shared raid; profile ID hex casing is equivalent");
+    Check((await access.ExecuteDoors(allowedProfile, accessDoor, false)).Success
+        && (await access.Execute(allowedProfile, accessSignal, false)).Success, "Listed Fika profile can read both tools");
+    var doorWrite = await access.ExecuteDoors(allowedProfile, accessDoor, true);
+    Check(doorWrite.Success, "Listed Fika profile can save doors");
+    accessSnapshot = await store.ReadSnapshotAsync();
+    accessSignal.Revision = accessSnapshot.Revision;
+    Check((await access.Execute(allowedProfile, accessSignal, true)).Success, "Listed Fika profile can save placements");
+    accessSnapshot = await store.ReadSnapshotAsync();
+    await CheckDenied(deniedProfile);
+    accessSnapshot.Server.AuthorizedEditorProfiles.Clear();
+    var beforeDenied = await File.ReadAllBytesAsync(Path.Combine(directory, "SkillsConfig.json"));
+    await CheckDenied(allowedProfile);
+    var afterDenied = await File.ReadAllBytesAsync(Path.Combine(directory, "SkillsConfig.json"));
+    Check(beforeDenied.SequenceEqual(afterDenied), "Revocation blocks existing session writes and preserves config");
+    var standalone = new DeveloperEditorTransactions(() => Task.FromResult(accessSnapshot), s => Task.FromResult(new EditResult(EditStatus.Success, "", s)), () => now, () => false);
+    standalone.Start(allowedProfile, "shared-raid", "woods", true);
+    Check((await standalone.Open(allowedProfile, new() { Map = "woods" })).Success, "Standalone SPT does not require the Fika allowlist");
     now = now.AddHours(5);
     Check(!(await transactions.Open("owner", new() { Map = "laboratory" })).Success, "Expired raid session fails closed");
     Check(ReferenceEquals(DoorRuleMaps.Locks(after.Skills.LockPicking.DoorPickLevels, "factory4_day"),
@@ -228,7 +263,10 @@ using (var client = AssemblyDefinition.ReadAssembly(Path.Combine(repo, "Client/S
     var close = Calls("Close");
     Check(close.Contains("HackingInputState::Restore") && close.Contains("HackingUiInputState::Restore")
         && close.Contains("onPreCull") && close.Contains("System.Delegate::Remove") && close.Contains("SetPositionAndRotation"), "Close restores native input, cursor, camera and render callback ownership");
-    Check(Calls("Update").Contains("Eligible") && Calls("Update").Contains("Close"), "Active editor continuously enforces solo admission");
+    Check(Calls("Update").Contains("Eligible") && Calls("Update").Contains("Close"), "Active editor continuously enforces local admission");
+    Check(Calls("Update").Contains("CheckAuthorization")
+        && Calls("CheckAuthorization").Contains("/skills-extended/editor/session")
+        && Calls("CheckAuthorization").Contains("Close"), "Compiled client rechecks server access and closes a revoked editor");
     Check(!client.MainModule.AssemblyReferences.Any(r => r.Name.StartsWith("WTT")), "Standalone client has no Campaigns assembly dependency");
     Check(client.MainModule.GetType("SkillsExtended.DeveloperTools.IDeveloperEditorTool") != null
         && client.MainModule.GetType("SkillsExtended.DeveloperTools.DoorEditorTool") != null, "Generic module boundary and door implementation are compiled");

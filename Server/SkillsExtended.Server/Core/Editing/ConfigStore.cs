@@ -95,6 +95,7 @@ public sealed class ConfigStore(string directory, IConfigFiles files)
     )
     {
         var errors = ConfigRules.Validate(skills);
+        errors.AddRange(ConfigRules.Validate(server));
         if (errors.Count > 0)
             return new(EditStatus.Validation, string.Join("\n", errors));
         // Detach before the first await; later edits cannot change this transaction.

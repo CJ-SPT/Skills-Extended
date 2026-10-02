@@ -96,12 +96,7 @@ public sealed class SignalsCase : IDisposable
                 (
                     inventory == null
                         ? factory.CreateItem(manifest.RootId, manifest.ContainerTemplate, null)
-                        : JsonConvert
-                            .DeserializeObject<ItemDescriptor>(
-                                inventory,
-                                EftJsonConverters.Converters
-                            )
-                            .Deserialize()
+                        : SignalsInventoryCodec.Deserialize(inventory).Deserialize()
                 ) as ContainerCollection;
             if (root == null)
                 throw new InvalidOperationException("Signal case inventory unavailable.");
@@ -254,9 +249,8 @@ public sealed class SignalsCase : IDisposable
     public string Snapshot() =>
         Container?.ItemOwner?.RootItem == null
             ? null
-            : JsonConvert.SerializeObject(
-                ItemBinarySerializer.SerializeItem(Container.ItemOwner.RootItem, null),
-                EftJsonConverters.Converters
+            : SignalsInventoryCodec.Serialize(
+                ItemBinarySerializer.SerializeItem(Container.ItemOwner.RootItem, null)
             );
 
     public void Dispose()

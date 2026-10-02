@@ -35,6 +35,37 @@ Check(
     "Obsolete angle and door-breaking controls are hidden"
 );
 var editor = new EditorSession(shipped);
+Check(
+    shipped.Server.AuthorizedEditorProfiles.Count == 0,
+    "Shipped Fika editor access defaults to deny"
+);
+var legacyServer = System.Text.Json.JsonSerializer.Deserialize<SkillsExtended.Models.ServerConfig>(
+    "{\"CheckForUpdates\":true}"
+)!;
+Check(
+    legacyServer.AuthorizedEditorProfiles.Count == 0,
+    "Legacy server config loads an empty allowlist"
+);
+editor.Server.AuthorizedEditorProfiles.Add("0123456789abcdef01234567");
+Check(
+    editor.Dirty && editor.ChangeCount == 1 && shipped.Server.AuthorizedEditorProfiles.Count == 0,
+    "Profile access selection is a detached draft and enables saving"
+);
+editor.Server.AuthorizedEditorProfiles.Add("0123456789abcdef01234568");
+editor.Server.AuthorizedEditorProfiles = editor
+    .Server.AuthorizedEditorProfiles.Reverse()
+    .ToHashSet();
+Check(editor.ChangeCount == 2, "Profile access order does not change the pending count");
+Check(ConfigRules.Validate(editor.Server).Count == 0, "Valid profile IDs accepted");
+editor.Server.AuthorizedEditorProfiles.Add("invalid-profile");
+Check(ConfigRules.Validate(editor.Server).Count > 0, "Malformed profile IDs rejected");
+editor.Server.AuthorizedEditorProfiles = null!;
+Check(ConfigRules.Validate(editor.Server).Count > 0, "Null profile permissions fail validation");
+editor.Reset(shipped);
+Check(
+    !editor.Dirty && editor.Server.AuthorizedEditorProfiles.Count == 0,
+    "Discard restores profile permissions"
+);
 var hackingAttempts = SkillCatalog
     .Fields["Hacking"]
     .Single(field => field.Key == "AttemptsPerDoor");
@@ -184,6 +215,7 @@ var fake = new MemoryFiles(
 );
 var transactional = new ConfigStore("fixture", fake);
 var first = await transactional.ReadSnapshotAsync();
+first.Server.AuthorizedEditorProfiles.Add("0123456789abcdef01234567");
 var second = await transactional.ReadSnapshotAsync();
 ConfigSnapshot? published = null;
 var result = await transactional.SaveAsync(
@@ -205,8 +237,9 @@ Check(
 );
 Check(
     result.Snapshot.Skills.ProneMovement.XpPerAction == .0025f
-        && result.Snapshot.Skills.NatoWeapons.Weapons.Any(x => x.StartsWith("__")),
-    "Round-trip preserves fractional XP and weapon category markers"
+        && result.Snapshot.Skills.NatoWeapons.Weapons.All(x => !x.StartsWith("__"))
+        && result.Snapshot.Server.AuthorizedEditorProfiles.Contains("0123456789abcdef01234567"),
+    "Round-trip preserves fractional XP, marker-free weapon IDs, and profile permissions"
 );
 first.Skills.FirstAid.Enabled = !first.Skills.FirstAid.Enabled;
 Check(
@@ -230,6 +263,13 @@ Check(
     (await transactional.SaveAsync(fresh.Skills, fresh.Server, fresh.Revision, _ => { })).Status
         == EditStatus.Conflict,
     "External file edits are detected"
+);
+fresh = await transactional.ReadSnapshotAsync();
+fresh.Server.AuthorizedEditorProfiles.Add("invalid-profile");
+Check(
+    (await transactional.SaveAsync(fresh.Skills, fresh.Server, fresh.Revision, _ => { })).Status
+        == EditStatus.Validation,
+    "Backend independently rejects malformed editor permissions"
 );
 fresh = await transactional.ReadSnapshotAsync();
 fresh.Skills.LockPicking.PickWearSeconds = -1;

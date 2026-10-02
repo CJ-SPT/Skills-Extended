@@ -18,7 +18,8 @@
   </Target>
 
   <Target Name="DeploySkillsExtendedFika" AfterTargets="PostBuildEvent"
-          Condition="'$(DeploySkillsExtended)' == 'true' And Exists('$(TarkovPluginsDir)Fika\Fika.Core.dll')">
-    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(SkillsExtendedClientDeployDir)" SkipUnchangedFiles="true" />
+          Condition="'$(DeploySkillsExtended)' == 'true'">
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(SkillsExtendedClientDeployDir)" SkipUnchangedFiles="true" Condition="Exists('$(TarkovPluginsDir)Fika\Fika.Core.dll')" />
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(SkillsExtendedHeadlessClientDeployDir)" SkipUnchangedFiles="true" Condition="Exists('$(TarkovHeadlessDir)\BepInEx\plugins\Fika\Fika.Core.dll')" />
   </Target>
 </Project>

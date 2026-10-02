@@ -7,4 +7,7 @@ public record ServerConfig
 {
     [DataMember]
     public required bool CheckForUpdates { get; set; }
+
+    [DataMember]
+    public HashSet<string> AuthorizedEditorProfiles { get; set; } = [];
 }

@@ -1,11 +1,26 @@
 using System.Globalization;
 using SkillsExtended.Config;
 using SkillsExtended.Config.Skills;
+using SkillsExtended.Models;
 
 namespace SkillsExtended.Core.Editing;
 
 public static class ConfigRules
 {
+    public static List<string> Validate(ServerConfig config)
+    {
+        if (
+            config.AuthorizedEditorProfiles is null
+            || config.AuthorizedEditorProfiles.Any(id =>
+                id is null || id.Length != 24 || id.Any(c => !char.IsAsciiHexDigit(c))
+            )
+        )
+        {
+            return ["Client editor access: select valid profile IDs."];
+        }
+        return [];
+    }
+
     public static void RequireStructure(SkillsConfig config)
     {
         foreach (var skill in SkillCatalog.All)

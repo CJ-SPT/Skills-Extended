@@ -86,6 +86,22 @@ internal static class ClientSerialization
             )
                 throw new Exception("Fika and solo loot initialization boundaries differ.");
         }
+        var headlessRoot = Environment.GetEnvironmentVariable("SKILLS_EFT_HEADLESS_ROOT")
+            ?? Path.GetFullPath(Path.Combine(root, "../" + Path.GetFileName(root.TrimEnd(Path.DirectorySeparatorChar)) + " - Headless"));
+        var headlessPath = Path.Combine(headlessRoot, "BepInEx/plugins/Fika/Fika.Headless.dll");
+        if (File.Exists(headlessPath))
+        {
+            using var headless = AssemblyDefinition.ReadAssembly(headlessPath);
+            var headlessGame = headless.MainModule.GetType("Fika.Headless.Classes.GameMode.HeadlessGame");
+            var loadLoot = headlessGame?.Methods.SingleOrDefault(m => m.Name == "LoadLoot"
+                && m.Parameters.Count == 1
+                && m.Parameters[0].ParameterType.FullName == lootBoundary.Parameters[0].ParameterType.FullName);
+            if (headlessGame?.BaseType.FullName != "EFT.AbstractGame"
+                || loadLoot?.ReturnType.FullName != "System.Threading.Tasks.Task"
+                || headlessGame.Properties.SingleOrDefault(p => p.Name == "GameWorld")?.PropertyType.FullName != "EFT.GameWorld")
+                throw new Exception("Fika headless loot initialization boundary changed.");
+            Console.WriteLine("Installed Fika headless loot boundary and world property passed.");
+        }
         // Start from the unpatched game assembly, not a dump containing an older local prepatch.
         // Invoke the production enum patch on an in-memory copy. Never overwrite installed assemblies.
         var patch = typeof(SkillsExtended.SkillsExtendedPatcher).GetMethod(

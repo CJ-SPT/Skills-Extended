@@ -22,9 +22,8 @@ public class DeveloperEditorReply
 }
 public static class DeveloperEditorPolicy
 {
-    public static bool Eligible(bool enabled, bool loadedMap, bool alivePmc,
-        bool headless, bool fika, bool soloHost) =>
-        enabled && loadedMap && alivePmc && !headless && (!fika || soloHost);
+    public static bool Eligible(bool enabled, bool loadedMap, bool alivePmc, bool headless) =>
+        enabled && loadedMap && alivePmc && !headless;
     public static bool Accepts(string ownerRaid, string ownerMap, DeveloperEditorRequest request) =>
         request != null && !string.IsNullOrEmpty(ownerRaid) && ownerRaid == request.Raid
         && !string.IsNullOrWhiteSpace(ownerMap) && SignalsMaps.Same(ownerMap, request.Map);

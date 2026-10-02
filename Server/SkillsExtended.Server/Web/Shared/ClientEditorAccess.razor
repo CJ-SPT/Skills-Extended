@@ -1,0 +1,56 @@
+<section class="se-panel se-editor-access" aria-label="Fika client editor access">
+    <h2>Fika client editor access</h2>
+    <p>Select the profiles allowed to use the in-game developer editor. An empty list disables client editing on Fika servers. Save changes to apply access immediately.</p>
+    <label class="se-field se-editor-access-search">
+        Search profiles
+        <input type="search" @bind="_search" @bind:event="oninput" placeholder="Name or profile ID" />
+    </label>
+    <div class="se-editor-access-list" role="group" aria-label="Profile permissions">
+        @foreach (var profile in Choices.Where(p => p.Name.Contains(_search, StringComparison.OrdinalIgnoreCase)
+            || p.Id.Contains(_search, StringComparison.OrdinalIgnoreCase)))
+        {
+            <label class="se-toggle se-editor-access-profile" @key="profile.Id">
+                <input type="checkbox" checked="@Session.Server.AuthorizedEditorProfiles.Contains(profile.Id)"
+                       @onchange="e => Select(profile.Id, e.Value is true)" />
+                <span class="se-editor-access-identity"><strong>@profile.Name</strong><small>@profile.Id</small></span>
+            </label>
+        }
+    </div>
+    @if (!Choices.Any())
+    {
+        <p class="se-empty">No profiles are available.</p>
+    }
+    else if (!Choices.Any(p => p.Name.Contains(_search, StringComparison.OrdinalIgnoreCase)
+        || p.Id.Contains(_search, StringComparison.OrdinalIgnoreCase)))
+    {
+        <p class="se-empty">No profiles match this search.</p>
+    }
+    <small class="se-editor-access-summary">@Session.Server.AuthorizedEditorProfiles.Count authorized profile(s). Standalone SPT editor access is unchanged.</small>
+</section>
+
+@code
+{
+    [CascadingParameter]
+    public EditorSession Session { get; set; } = null!;
+
+    [Parameter]
+    public IReadOnlyList<ProfileChoice> Profiles { get; set; } = [];
+
+    private string _search = "";
+    private IEnumerable<ProfileChoice> Choices => Profiles.Concat(
+        Session.Server.AuthorizedEditorProfiles.Where(id => !Profiles.Any(p => p.Id == id))
+            .OrderBy(id => id).Select(id => new ProfileChoice(id, "Unavailable profile")));
+
+    private void Select(string id, bool authorized)
+    {
+        if (authorized)
+        {
+            Session.Server.AuthorizedEditorProfiles.Add(id);
+        }
+        else
+        {
+            Session.Server.AuthorizedEditorProfiles.Remove(id);
+        }
+        Session.Notify();
+    }
+}

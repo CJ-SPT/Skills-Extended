@@ -1,7 +1,7 @@
 # In-game developer editor
 
 Enable **Developer tools → Enable developer editor** in the BepInEx configuration
-manager. Load a solo PMC raid and press **Ctrl+F9**, or enter `skills_editor` in the
+manager. Load a PMC raid and press **Ctrl+F9**, or enter `skills_editor` in the
 game console. `signals_editor` remains an alias. The shortcut is configurable.
 
 The editor uses the same Unity UI Toolkit styling and controls as Campaigns and
@@ -13,9 +13,14 @@ in the toolbar. Press F to frame a selection and Ctrl+Z/Ctrl+Y to undo/redo. Esc
 cancels typing or an active placement/drag before closing. Closing retains drafts
 for the same raid and does not save them. Drafts end with the raid.
 
-SPT solo raids and Fika hosts with no connected peers are supported. Fika clients
-and headless hosts are excluded; connecting a peer closes the editor. No PDA is
-required. A disabled gameplay skill does not disable its authoring tool.
+For Fika, an administrator must select your profile under **Fika client editor
+access** on the Skills Extended web configuration page and save. The default
+empty list denies access. Authorized hosts and joining players can edit during
+shared raids; connecting peers does not close the editor. Permissions are checked
+on every server read/save and periodically while open. Removing a profile blocks
+further operations immediately and closes its editor at the next access check.
+Headless clients remain excluded. No PDA is required. A disabled gameplay skill
+does not disable its authoring tool. Standalone SPT access is unchanged.
 
 ## Signal caches
 

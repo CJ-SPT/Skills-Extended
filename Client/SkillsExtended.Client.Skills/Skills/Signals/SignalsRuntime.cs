@@ -5,7 +5,6 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Comfort.Common;
-using Diz.Jobs;
 using EFT;
 using EFT.Ballistics;
 using EFT.Interactive;
@@ -14,7 +13,6 @@ using HarmonyLib;
 using Newtonsoft.Json;
 using SkillsExtended.Signals;
 using SkillsExtended.Skills.Hacking;
-using SPT.Common.Http;
 using SPT.Reflection.Patching;
 using UnityEngine;
 
@@ -28,7 +26,7 @@ public class SignalsEnvelope
     public string Inventory { get; set; }
 }
 
-public sealed class SignalsRuntime : MonoBehaviour
+public sealed partial class SignalsRuntime : MonoBehaviour
 {
     public static SignalsRuntime Instance { get; private set; }
     public static Func<bool> IsAuthority = () => !SkillsExtendedInfo.IsFikaPresent;
@@ -68,107 +66,6 @@ public sealed class SignalsRuntime : MonoBehaviour
         TaskCreationOptions.RunContinuationsAsynchronously
     );
 
-    public static Task Boot(GameWorld world)
-    {
-        if (Instance && Instance.World == world)
-            return Task.CompletedTask;
-        if (Instance)
-            Destroy(Instance);
-        var runtime = world.gameObject.AddComponent<SignalsRuntime>();
-        runtime.World = world;
-        Instance = runtime;
-        return Task.CompletedTask;
-    }
-
-    public Task FinishLoot() => _finishLoot ??= FinishLootInternal();
-
-    private async Task FinishLootInternal()
-    {
-        if (
-            !SignalsMaps.IsSupported(World.LocationId)
-            || (SkillsExtendedInfo.IsFikaPresent && Transport == null)
-        )
-            return;
-        try
-        {
-            SkillsExtendedPlugin.Log.LogInfo(
-                $"Signals initializing on {World.LocationId} ({SignalsMaps.Normalize(World.LocationId)}); authority={IsAuthority()}."
-            );
-            if (IsAuthority())
-            {
-                Manifest = Helpers.ConfigurationJson.Deserialize<SignalManifest>(
-                    await RequestHandler.GetJsonAsync("/skills-extended/signals/raid")
-                );
-                if (Manifest == null)
-                    throw new InvalidOperationException("No signal manifest returned.");
-                RefreshSkillRules();
-                if (Manifest.Error != null)
-                {
-                    Publish();
-                    return;
-                }
-                if (
-                    Manifest.PlacementCandidates.Count == 0
-                    || Manifest.PlacementCandidates.Any(p =>
-                        !SignalsMaps.Same(p.Map, World.LocationId)
-                    )
-                )
-                    throw new InvalidOperationException("Signal manifest belongs to another map.");
-                Authority = new SignalsAuthority(Manifest);
-                State = Authority.State;
-            }
-            else
-            {
-                Send("sync");
-                var wait = await Task.WhenAny(
-                    _snapshotReady.Task,
-                    Task.Delay(120000, _lifetime.Token)
-                );
-                _lifetime.Token.ThrowIfCancellationRequested();
-                if (wait != _snapshotReady.Task)
-                    throw new InvalidOperationException(
-                        "Signal host did not supply a cache snapshot during loot loading."
-                    );
-                if (Manifest?.Error != null)
-                    return;
-            }
-            _lootReady = true;
-            EnsureCase();
-            if (_caseTask != null)
-                await _caseTask;
-        }
-        catch (OperationCanceledException) { }
-        catch (Exception e)
-        {
-            Manifest ??= new SignalManifest();
-            Manifest.Error = "Signal raid initialization: " + e.Message;
-            SkillsExtendedPlugin.Log.LogError(Manifest.Error);
-            if (IsAuthority())
-                Publish();
-        }
-    }
-
-    public void LootReady()
-    {
-        _lootReady = true;
-        EnsureCase();
-    }
-
-    private void EnsureCase()
-    {
-        if (!_lootReady || _case != null || Manifest == null || Manifest.Error != null)
-            return;
-        if (
-            !IsAuthority()
-            && (State?.Ready != true || !Manifest.PlacementResolved || _inventory == null)
-        )
-            return;
-        if (_creating)
-            return;
-        _creating = true;
-        _caseTask = CreateCase();
-    }
-
     public void RefreshRegistration(World world)
     {
         if (_case == null || World.World != world)
@@ -189,73 +86,6 @@ public sealed class SignalsRuntime : MonoBehaviour
             if (IsAuthority())
                 Publish();
         }
-    }
-
-    private async Task CreateCase()
-    {
-        try
-        {
-            await Preload();
-            if (_lifetime.IsCancellationRequested || !this || !World)
-                return;
-            if (IsAuthority() && !Manifest.PlacementResolved)
-            {
-                var report = await SignalsPlacement.Resolve(
-                    this,
-                    Manifest.PlacementCandidates,
-                    Manifest.Seed,
-                    _lifetime.Token
-                );
-                _lifetime.Token.ThrowIfCancellationRequested();
-                if (report.Placement == null)
-                    throw new InvalidOperationException(report.ToString());
-                Manifest.Placement = report.Placement;
-                Manifest.PlacementResolved = true;
-            }
-            _case = SignalsCase.Create(World, Manifest, _inventory);
-            if (IsAuthority())
-            {
-                Authority.Ready();
-                Publish();
-            }
-            if (State?.Unlocked == true)
-                _case.Unlock();
-        }
-        catch (OperationCanceledException) { }
-        catch (Exception e)
-        {
-            Manifest.Error = "Signal case unavailable: " + e.Message;
-            SkillsExtendedPlugin.Log.LogError(Manifest.Error);
-            if (IsAuthority())
-                Publish();
-        }
-        finally
-        {
-            _creating = false;
-        }
-    }
-
-    private Task Preload()
-    {
-        if (_preload != null)
-            return _preload;
-        var factory = Singleton<ItemFactory>.Instance;
-        var resources = Newtonsoft
-            .Json.Linq.JArray.Parse(Manifest.ItemsJson)
-            .Skip(1)
-            .Select(r => factory.ItemTemplates[(string)r["_tpl"]])
-            .SelectMany(t => new[] { t.Prefab, t.UsePrefab })
-            .Where(r => r != null && !string.IsNullOrEmpty(r.path))
-            .Distinct()
-            .ToArray();
-        return _preload = Singleton<ObjectsFactory>.Instance.LoadBundlesAndCreatePools(
-            ObjectsFactory.PoolsCategory.Raid,
-            ObjectsFactory.AssemblyType.Local,
-            resources,
-            JobYieldPriority.Immediate,
-            null,
-            _lifetime.Token
-        );
     }
 
     public string Eligibility(Player player)
@@ -648,23 +478,4 @@ public class SignalsCaseLockPatch : ModulePatch
     private static bool Prefix(LootableContainer __instance) =>
         __instance.Id?.StartsWith(SignalsIds.Prefix) != true
         || __instance.DoorState != EDoorState.Locked;
-}
-
-// Both LocalGame and Fika CoopGame inherit this same closed generic base.
-// Await initialization here so native world/loot synchronization sees the case.
-public class SignalsLootCompletionPatch : ModulePatch
-{
-    protected override MethodBase GetTargetMethod() =>
-        AccessTools.Method(typeof(LocalGame).BaseType, "SpawnLoot");
-
-    [PatchPostfix]
-    private static void Postfix(ref Task __result) =>
-        __result = Complete(__result, SignalsRuntime.Instance);
-
-    private static async Task Complete(Task task, SignalsRuntime runtime)
-    {
-        await task;
-        if (runtime)
-            await runtime.FinishLoot();
-    }
 }

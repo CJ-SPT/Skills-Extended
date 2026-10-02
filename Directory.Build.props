@@ -23,6 +23,8 @@
     <TarkovBepInExCoreDir Condition="'$(IsSkillsExtendedClient)' == 'true'">$(TarkovDir)BepInEx\core\</TarkovBepInExCoreDir>
     <TarkovDumpedAssemblyDir Condition="'$(IsSkillsExtendedClient)' == 'true'">$(TarkovDir)BepInEx\DumpedAssemblies\EscapeFromTarkov\</TarkovDumpedAssemblyDir>
     <SkillsExtendedClientDeployDir Condition="'$(IsSkillsExtendedClient)' == 'true'">$(TarkovPluginsDir)SkillsExtended\</SkillsExtendedClientDeployDir>
+    <TarkovHeadlessDir Condition="'$(TarkovHeadlessDir)' == ''">F:\SPT 4.1.x - Headless\</TarkovHeadlessDir>
+    <SkillsExtendedHeadlessClientDeployDir Condition="'$(IsSkillsExtendedClient)' == 'true'">$([MSBuild]::NormalizeDirectory('$(TarkovHeadlessDir)', 'BepInEx\plugins\SkillsExtended'))</SkillsExtendedHeadlessClientDeployDir>
     <SptModDir Condition="'$(SkillsExtendedProjectType)' == 'Server'">$(TarkovDir)SPT_Runtime\user\mods\SkillsExtended\</SptModDir>
     <SptServerPackageVersion Condition="'$(SkillsExtendedProjectType)' == 'Server'">4.1.0-pre.202607161908</SptServerPackageVersion>
 
@@ -86,12 +88,16 @@
       <SkillsExtendedClientDeployFiles Include="$(ProjectDir)Resources\**\*.*" Condition="'$(DeployClientResources)' == 'true'" />
     </ItemGroup>
     <Copy SourceFiles="@(SkillsExtendedClientDeployFiles)" DestinationFolder="$(SkillsExtendedClientDeployDir)%(RecursiveDir)" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(SkillsExtendedClientDeployFiles)" DestinationFolder="$(SkillsExtendedHeadlessClientDeployDir)%(RecursiveDir)" SkipUnchangedFiles="true" Condition="Exists('$(TarkovHeadlessDir)\BepInEx')" />
   </Target>
 
   <Target Name="DeploySkillsExtendedPrepatcher" AfterTargets="PostBuildEvent" Condition="'$(DeploySkillsExtended)' == 'true' And '$(SkillsExtendedProjectType)' == 'ClientPrepatch'">
     <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(TarkovDir)BepInEx\patchers\" SkipUnchangedFiles="true" />
     <Copy SourceFiles="$(TargetDir)$(TargetName).pdb" DestinationFolder="$(TarkovDir)BepInEx\patchers\" Condition="'$(Configuration)' == 'Debug' And Exists('$(TargetDir)$(TargetName).pdb')" SkipUnchangedFiles="true" />
     <Delete Files="$(TarkovDir)BepInEx\patchers\$(TargetName).pdb" Condition="'$(Configuration)' != 'Debug'" />
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(TarkovHeadlessDir)\BepInEx\patchers\" SkipUnchangedFiles="true" Condition="Exists('$(TarkovHeadlessDir)\BepInEx')" />
+    <Copy SourceFiles="$(TargetDir)$(TargetName).pdb" DestinationFolder="$(TarkovHeadlessDir)\BepInEx\patchers\" Condition="Exists('$(TarkovHeadlessDir)\BepInEx') And '$(Configuration)' == 'Debug' And Exists('$(TargetDir)$(TargetName).pdb')" SkipUnchangedFiles="true" />
+    <Delete Files="$(TarkovHeadlessDir)\BepInEx\patchers\$(TargetName).pdb" Condition="Exists('$(TarkovHeadlessDir)\BepInEx') And '$(Configuration)' != 'Debug'" />
   </Target>
 
   <Target Name="DeploySkillsExtendedServer" AfterTargets="PostBuildEvent" Condition="'$(DeploySkillsExtended)' == 'true' And '$(SkillsExtendedProjectType)' == 'Server'">

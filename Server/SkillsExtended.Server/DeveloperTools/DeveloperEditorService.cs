@@ -21,11 +21,15 @@ public sealed class NativeDoorAuthoringRequest : DoorAuthoringRequest, IRequestD
 
 // The same transaction boundary is exercised with temporary config files offline.
 public sealed class DeveloperEditorTransactions(
-    Func<Task<ConfigSnapshot>> read, Func<ConfigSnapshot, Task<EditResult>> save, Func<DateTime>? utcNow = null)
+    Func<Task<ConfigSnapshot>> read, Func<ConfigSnapshot, Task<EditResult>> save, Func<DateTime>? utcNow = null,
+    Func<bool>? isFika = null)
 {
     private readonly Func<DateTime> _now = utcNow ?? (() => DateTime.UtcNow);
     private readonly SemaphoreSlim _gate = new(1, 1);
     private readonly Dictionary<string, (string Raid, string Map, DateTime Expires)> _sessions = new();
+    private bool Authorized(string owner, ConfigSnapshot snapshot) => isFika?.Invoke() != true
+        || snapshot.Server.AuthorizedEditorProfiles?.Any(id => string.Equals(id, owner, StringComparison.OrdinalIgnoreCase)) == true;
+    private const string AccessDenied = "This profile is not authorized to use the client editor. Ask a server administrator to enable it on the Skills Extended web page.";
     public void Start(string owner, string raid, string map, bool pmc)
     {
         _gate.Wait();
@@ -51,6 +55,8 @@ public sealed class DeveloperEditorTransactions(
             if (!_sessions.TryGetValue(owner, out var session) || session.Expires < _now()
                 || request == null || !SignalsMaps.Same(session.Map, request.Map))
                 return new() { Status = "session", Message = "Load a PMC raid on this map before opening the developer editor." };
+            if (!Authorized(owner, await read()))
+                return new() { Status = "unauthorized", Message = AccessDenied };
             return new() { Status = "success", Map = session.Map, Raid = session.Raid };
         }
         finally { _gate.Release(); }
@@ -64,6 +70,8 @@ public sealed class DeveloperEditorTransactions(
                 || !DeveloperEditorPolicy.Accepts(session.Raid, session.Map, request))
                 return new() { Status = "session", Message = "No matching active PMC raid on this map." };
             var snapshot = await read();
+            if (!Authorized(owner, snapshot))
+                return new() { Status = "unauthorized", Message = AccessDenied };
             var locks = DoorRuleMaps.Locks(snapshot.Skills.LockPicking.DoorPickLevels, session.Map);
             var hacking = snapshot.Skills.Hacking;
             if (write)
@@ -123,9 +131,11 @@ public sealed class DeveloperEditorTransactions(
             if (!_sessions.TryGetValue(owner, out var session) || session.Expires < _now()
                 || !DeveloperEditorPolicy.Accepts(session.Raid, session.Map, request))
                 return new() { Status = "session", Message = "No matching active PMC raid on this map. Reopen the editor in a loaded raid." };
+            var snapshot = await read();
+            if (!Authorized(owner, snapshot))
+                return new() { Status = "unauthorized", Message = AccessDenied };
             if (!SignalsMaps.IsSupported(session.Map))
                 return new() { Status = "validation", Message = "Signal caches are unavailable on Factory." };
-            var snapshot = await read();
             if (write)
             {
                 if (snapshot.Revision != request.Revision)
@@ -158,7 +168,8 @@ public sealed class DeveloperEditorTransactions(
 [Injectable(InjectionType.Singleton)]
 public sealed class DeveloperEditorService(ConfigController config)
 {
-    public DeveloperEditorTransactions Transactions { get; } = new(config.GetSnapshotAsync, config.SaveAsync);
+    public DeveloperEditorTransactions Transactions { get; } = new(config.GetSnapshotAsync, config.SaveAsync,
+        isFika: () => config.IsFikaPresent);
 }
 
 [Injectable]

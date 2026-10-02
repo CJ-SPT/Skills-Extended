@@ -28,6 +28,8 @@
     </label>
 </section>
 
+<ClientEditorAccess Profiles="@_profiles" />
+
 @if (Session.Server.CheckForUpdates && Updates?.UpdateAvailable == true && Updates.ReleaseInformation is { } release)
 {
     <p class="se-notice">
@@ -69,6 +71,10 @@
 @code
 {
     private UpdateChecker? Updates => Services.GetService<UpdateChecker>();
+    private IReadOnlyList<ProfileChoice> _profiles = [];
+
+    protected override void OnInitialized() =>
+        _profiles = Services.GetService<SkillLevelAdjuster>()?.GetProfiles() ?? [];
 
     [CascadingParameter]
     public EditorSession Session { get; set; } = null!;
