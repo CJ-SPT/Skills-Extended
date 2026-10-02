@@ -214,34 +214,43 @@ public static class SignalPlacementSearch
     )
     {
         foreach (var anchor in orderedLocations)
-        foreach (var sample in Samples(anchor, seed))
-            for (var turn = 0; turn < (exactYaw ? 1 : 4); turn++)
+        {
+            cancellation.ThrowIfCancellationRequested();
+            // Radius zero is an explicit prefab transform, not a search anchor.
+            // Trust the authored position and yaw without touching scene geometry.
+            if (anchor.SearchRadius == 0)
             {
-                cancellation.ThrowIfCancellationRequested();
-                var yaw = SignalsModel.Wrap(anchor.Yaw + turn * 90);
-                var failure = Evaluate(anchor, sample, yaw, geometry, scene, out var position);
-                // An exact authoring preview must already sit on its ground anchor.
-                // Do not approve a floating/sunken preview by silently grounding it.
-                if (exactYaw && anchor.SearchRadius == 0 && failure == SignalPlacementFailure.None
-                    && Math.Abs(GroundAnchor(Point(position), geometry).Y - sample.Y) > .05001f)
-                    failure = SignalPlacementFailure.Support;
-                var resolved = failure == SignalPlacementFailure.None ? Copy(anchor) : null;
-                if (resolved != null)
-                {
-                    resolved.Position = Point(position);
-                    resolved.Yaw = yaw;
-                    resolved.SearchRadius = 0;
-                }
-                cancellation.ThrowIfCancellationRequested();
                 yield return new SignalPlacementAttempt
                 {
                     Location = anchor.Id,
-                    Failure = failure,
-                    Placement = resolved,
+                    Placement = Copy(anchor),
                 };
-                if (resolved != null)
-                    yield break;
+                yield break;
             }
+            foreach (var sample in Samples(anchor, seed))
+                for (var turn = 0; turn < (exactYaw ? 1 : 4); turn++)
+                {
+                    cancellation.ThrowIfCancellationRequested();
+                    var yaw = SignalsModel.Wrap(anchor.Yaw + turn * 90);
+                    var failure = Evaluate(anchor, sample, yaw, geometry, scene, out var position);
+                    var resolved = failure == SignalPlacementFailure.None ? Copy(anchor) : null;
+                    if (resolved != null)
+                    {
+                        resolved.Position = Point(position);
+                        resolved.Yaw = yaw;
+                        resolved.SearchRadius = 0;
+                    }
+                    cancellation.ThrowIfCancellationRequested();
+                    yield return new SignalPlacementAttempt
+                    {
+                        Location = anchor.Id,
+                        Failure = failure,
+                        Placement = resolved,
+                    };
+                    if (resolved != null)
+                        yield break;
+                }
+        }
     }
 
     private static SignalPlacementFailure Evaluate(
@@ -256,10 +265,6 @@ public static class SignalPlacementSearch
         position = default;
         if (!scene.Navigation(sample, out var nav) || !SnapAllowed(sample, nav))
             return SignalPlacementFailure.Navigation;
-        // Radius zero preserves authored X/Z, while allowing grounding and checking
-        // nearby navigation. Nonzero areas allow only bounded navigation adjustment.
-        if (anchor.SearchRadius == 0)
-            nav = new Vector3(sample.X, nav.Y, sample.Z);
         if (Horizontal(nav, Vector(anchor.Position)) > anchor.SearchRadius + .0001f)
             return SignalPlacementFailure.OutsideArea;
         var body = geometry.Body;

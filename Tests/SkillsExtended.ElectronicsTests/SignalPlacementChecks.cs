@@ -18,7 +18,7 @@ internal static class SignalPlacementChecks
         {
             Id = "first",
             Map = "woods",
-            SearchRadius = 0,
+            SearchRadius = 10,
         };
         var geometry = new SignalCaseGeometry
         {
@@ -38,7 +38,7 @@ internal static class SignalPlacementChecks
                     42,
                     geometry,
                     scene
-                )
+                ).Take(locations.Length == 0 ? 4 : int.MaxValue)
             )
                 report.Add(attempt);
             return report;
@@ -149,13 +149,28 @@ internal static class SignalPlacementChecks
             rotated.Placement?.Yaw == 90 && rotated.Attempts == 2,
             "rotated footprint fits narrow support"
         );
-        var exact = Resolve(
-            new() { NavigationMap = p => p.X == 0 && p.Z == 0 ? p + new Vector3(.5f, 0, 0) : p }
-        );
+        var exactAnchor = SignalPlacementSearch.Copy(anchor);
+        exactAnchor.SearchRadius = 0;
+        exactAnchor.Position = new() { X = 11.125f, Y = 8.75f, Z = -19.5f };
+        exactAnchor.Yaw = -721.25f;
+        var exact = new SignalPlacementReport();
+        foreach (var attempt in SignalPlacementSearch.Search([exactAnchor, anchor], 42, null, null))
+            exact.Add(attempt);
         Check(
-            exact.Placement?.Position.X == 0 && exact.Placement?.Position.Z == 0,
-            "zero radius preserves authored horizontal position"
+            exact.Attempts == 1 && exact.Rejections.Count == 0
+                && exact.Placement?.Position.X == exactAnchor.Position.X
+                && exact.Placement.Position.Y == exactAnchor.Position.Y
+                && exact.Placement.Position.Z == exactAnchor.Position.Z
+                && exact.Placement.Yaw == exactAnchor.Yaw,
+            "zero radius preserves exact XYZ and raw yaw without scene or geometry"
         );
+        exact.Placement.Position.Y += 10;
+        Check(exactAnchor.Position.Y == 8.75f, "exact placement is detached from saved coordinates");
+        var mixed = Resolve(new() { NoNavigation = true }, anchor, exactAnchor);
+        Check(mixed.Attempts == 133 && mixed.Placement.Position.Y == exactAnchor.Position.Y
+            && mixed.Placement.Yaw == exactAnchor.Yaw
+            && mixed.Rejections[SignalPlacementFailure.Navigation] == 132,
+            "failed search area falls back to unchanged exact transform");
         var area = SignalPlacementSearch.Copy(anchor);
         area.SearchRadius = 10;
         var samples = SignalPlacementSearch.Samples(area, 42).ToArray();
@@ -173,7 +188,7 @@ internal static class SignalPlacementChecks
             "seed varies samples"
         );
         Check(
-            SignalPlacementSearch.Samples(anchor, 42).Count() == 1,
+            SignalPlacementSearch.Samples(exactAnchor, 42).Count() == 1,
             "exact mode uses only centre"
         );
         var localFallback = Resolve(
@@ -209,7 +224,7 @@ internal static class SignalPlacementChecks
         {
             Id = "second",
             Map = "woods",
-            SearchRadius = 0,
+            SearchRadius = 10,
             Position = new() { X = 20 },
         };
         var fallback = Resolve(
@@ -223,13 +238,13 @@ internal static class SignalPlacementChecks
         );
         Check(
             fallback.Placement?.Id == "second"
-                && fallback.Attempts == 5
+                && fallback.Attempts == 133
                 && fallback.Locations.Count == 2,
             "exhaust first area then fall back"
         );
         var exhausted = Resolve(new() { NoNavigation = true }, area, other);
         Check(
-            exhausted.Placement == null && exhausted.Attempts == 136,
+            exhausted.Placement == null && exhausted.Attempts == 264,
             "all candidates exhausted within attempt limit"
         );
         var empty = new SignalPlacementReport();

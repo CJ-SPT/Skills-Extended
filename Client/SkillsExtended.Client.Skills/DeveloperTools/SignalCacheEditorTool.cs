@@ -97,7 +97,7 @@ internal sealed class SignalCacheEditorTool : IDeveloperEditorTool
         {
             token.ThrowIfCancellationRequested();
             _context.Status("Checking " + p.Name + "…");
-            var report = await SignalsPlacement.Resolve(_context.Runner, new[] { SignalPlacementSearch.Copy(p) }, 0, token, authoring: true);
+            var report = await SignalsPlacement.Resolve(_context.Runner, new[] { SignalPlacementSearch.Copy(p) }, 0, token);
             if (!_draft.Record(p.Id, version, report)) return false;
         }
         if (_context.IsOpen()) { Reconcile(); Inspector(); }
@@ -109,7 +109,7 @@ internal sealed class SignalCacheEditorTool : IDeveloperEditorTool
         try
         {
             var valid = await CheckAll();
-            _context.Status(valid ? "Enabled caches passed placement checks. Inspect their physical access before saving." : "Some caches failed. Select a marker to see the rejection reasons.");
+            _context.Status(valid ? "Placements accepted. Radius zero uses the exact position and yaw; areas passed placement checks." : "Some areas failed. Select a marker to see the rejection reasons.");
         }
         finally { Busy = false; }
     }
@@ -123,12 +123,6 @@ internal sealed class SignalCacheEditorTool : IDeveloperEditorTool
             if (!await CheckAll()) { _context.Status("Save blocked: enabled caches must pass placement checks."); return; }
             _context.Cancellation().ThrowIfCancellationRequested();
             var request = _draft.Request();
-            foreach (var p in request.Placements.Where(p => p.Enabled && p.SearchRadius == 0))
-            {
-                var resolved = _draft.Check(p.Id).Placement;
-                p.Position = SignalPlacementSearch.GroundAnchor(resolved.Position, SignalsPlacement.Geometry());
-                p.Yaw = resolved.Yaw;
-            }
             var response = await SkillsDeveloperEditor.Post<SignalAuthoringReply>("/skills-extended/signals/editor/save", request);
             if (!_context.World) return;
             if (response.Success) { _draft.Load(response); if (_context.IsOpen()) Refresh(); }
@@ -149,7 +143,8 @@ internal sealed class SignalCacheEditorTool : IDeveloperEditorTool
         var p = new SignalPlacement
         {
             Id = _draft.Map + "-" + Guid.NewGuid().ToString("N").Substring(0, 8), Map = _draft.Map,
-            Name = "Cache " + (_draft.Points.Count + 1), Position = SignalsCase.Point(point),
+            Name = "Cache " + (_draft.Points.Count + 1),
+            Position = SignalPlacementSearch.PreviewRoot(SignalsCase.Point(point), SignalsPlacement.Geometry()),
             Yaw = _context.Camera().transform.eulerAngles.y, Enabled = true, SearchRadius = 0,
         };
         _draft.Edit(points => points.Add(p)); _selected = p.Id; Refresh();
@@ -234,9 +229,8 @@ internal sealed class SignalCacheEditorTool : IDeveloperEditorTool
                 label.style.position = Position.Absolute;
                 preview = (Visual("Cache preview " + id), label); _previews.Add(id, preview);
             }
-            var checkedPlacement = p.SearchRadius == 0 ? _draft.Check(p.Id)?.Placement : null;
-            preview.Case.transform.SetPositionAndRotation(SignalsCase.Vector(checkedPlacement?.Position
-                ?? SignalPlacementSearch.PreviewRoot(p.Position, SignalsPlacement.Geometry())),
+            preview.Case.transform.SetPositionAndRotation(SignalsCase.Vector(p.SearchRadius == 0
+                ? p.Position : SignalPlacementSearch.PreviewRoot(p.Position, SignalsPlacement.Geometry())),
                 Quaternion.Euler(0, p.Yaw, 0));
             preview.Label.text = p.Name + (p.Enabled ? "" : " [disabled]");
         }
@@ -303,7 +297,8 @@ internal sealed class SignalCacheEditorTool : IDeveloperEditorTool
                 var origin = SignalsCase.Vector(Selected.Position);
                 _drag.Position = SignalsCase.Point(origin + Axis(_axis) * (EditorSceneHandles.AxisDistance(ray, origin, Axis(_axis)) - _dragStart));
             }
-            _previews[_drag.Id].Case.transform.SetPositionAndRotation(SignalsCase.Vector(SignalPlacementSearch.PreviewRoot(_drag.Position, SignalsPlacement.Geometry())),
+            _previews[_drag.Id].Case.transform.SetPositionAndRotation(SignalsCase.Vector(_drag.SearchRadius == 0
+                ? _drag.Position : SignalPlacementSearch.PreviewRoot(_drag.Position, SignalsPlacement.Geometry())),
                 Quaternion.Euler(0, _drag.Yaw, 0));
             return;
         }

@@ -32,15 +32,15 @@ Select previews by their labels or case bodies. Use Move/Rotate and the visible
 handles, or edit XYZ/yaw in the inspector. Duplicate and Delete operate on the
 draft; undo/redo also covers inspector edits.
 
-New placements are enabled and exact (search radius zero). An exact placement
-validates its authored yaw without trying another orientation. Geometry checks
-ground the native prefab while keeping the saved position as a ground anchor.
-A radius from 0 to 25 metres enables the existing bounded runtime placement
+New placements are enabled and exact (search radius zero). Zero radius spawns
+the native prefab at the saved XYZ and yaw, without grounding, rotation fallback,
+or geometry/navigation checks. The preview uses that same exact transform.
+A radius greater than zero, up to 25 metres, enables bounded runtime placement
 search; validation shows its resolved preview separately from the authored anchor.
 
-Validate checks all enabled current-map placements and reports geometry/access
-rejections. Save repeats these checks, then writes only the current map's
-placements. Disabled drafts can be saved without passing geometric checks.
+Validate accepts exact placements directly and checks enabled search areas for
+geometry/access rejections. Save repeats this process and preserves exact XYZ/yaw,
+then writes only the current map's placements. Disabled drafts bypass geometry checks.
 Previews have no usable interaction, rewards, XP, or synchronized multiplayer state.
 Saved placements are used in subsequent raids; the active raid cache is unchanged.
 
@@ -103,7 +103,7 @@ dotnet run --project Tests/SkillsExtended.WebRegression -c Release -p:DeploySkil
 ```
 
 The editor suite covers detached drafts, history, stale validation, exact yaw,
-ground-anchor round trips, layout dimensions, serialized client/server requests,
+exact XYZ preservation, layout dimensions, serialized client/server requests,
 session admission/expiry, map isolation, conflicts, rollback, native map casing,
 legacy door preservation, and compiled cleanup/dependency contracts. Existing
 client fixtures exercise the reused native input and cursor restoration helpers.

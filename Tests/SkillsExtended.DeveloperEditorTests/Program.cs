@@ -42,21 +42,25 @@ var geometry = new SignalCaseGeometry
 var authored = new SignalPlacement { Id = "exact", Map = "woods", SearchRadius = 0, Yaw = 0 };
 var scene = new Scene();
 var exact = SignalPlacementSearch.Search([authored], 0, geometry, scene, exactYaw: true).ToArray();
-Check(exact.Length == 1 && exact[0].Placement == null, "Authoring exact yaw cannot silently rotate around a collision");
+Check(exact.Length == 1 && exact[0].Placement?.Yaw == 0 && exact[0].Placement.Position.Y == 0,
+    "Exact authoring uses saved XYZ and yaw even when geometry would reject it");
 var gameplay = SignalPlacementSearch.Search([authored], 0, geometry, scene).ToArray();
-Check(gameplay.Last().Placement?.Yaw == 90, "Existing runtime search still uses its yaw fallback");
+Check(gameplay.Length == 1 && gameplay[0].Placement?.Yaw == 0,
+    "Runtime exact placement agrees with the editor without a yaw fallback");
+authored.SearchRadius = 10;
+var searched = SignalPlacementSearch.Search([authored], 0, geometry, scene).ToArray();
+Check(searched.Last().Placement?.Yaw == 90, "Positive radius retains its yaw fallback");
+authored.SearchRadius = 0;
 authored.Yaw = 90;
 authored.Position.Y = .8f;
-Check(SignalPlacementSearch.Search([authored], 0, geometry, scene, exactYaw: true).Single().Failure == SignalPlacementFailure.Support,
-    "Floating exact preview is rejected instead of silently moved to the ground");
+Check(SignalPlacementSearch.Search([authored], 0, null, null, exactYaw: true).Single().Placement.Position.Y == .8f,
+    "Exact placement preserves authored height without grounding");
 authored.Position.Y = 0;
 for (var i = 0; i < 100; i++)
 {
     var resolved = SignalPlacementSearch.Search([authored], 0, geometry, scene, exactYaw: true).Single().Placement;
-    authored.Position = SignalPlacementSearch.GroundAnchor(resolved.Position, geometry);
     Check(Math.Abs(authored.Position.Y) < .00001f && resolved.Yaw == 90, "Repeated exact anchor resolution does not drift");
-    var preview = SignalPlacementSearch.PreviewRoot(authored.Position, geometry);
-    Check(Math.Abs(preview.Y - resolved.Position.Y) < .00001f, "Preview and resolved prefab root agree");
+    Check(resolved.Position.Y == authored.Position.Y, "Saved exact position and prefab root agree");
 }
 var cancellation = new CancellationTokenSource(); cancellation.Cancel();
 try { SignalPlacementSearch.Search([authored], 0, geometry, scene, cancellation.Token, true).ToArray(); Check(false, "Cancelled validation accepted"); }

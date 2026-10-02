@@ -53,10 +53,8 @@ public class SignalsAuthoring
                     ElectronicsRuntime.Notify("Capture rejected. " + report);
                     return;
                 }
-                // Store the ground anchor, not the prefab root offset; resolving a captured
-                // point again must not repeatedly add the case's pivot/ground clearance.
                 p.Yaw = report.Placement.Yaw;
-                p.Position = SignalPlacementSearch.GroundAnchor(report.Placement.Position, SignalsPlacement.Geometry());
+                p.Position = report.Placement.Position;
                 var directory = Path.Combine(
                     Path.GetDirectoryName(typeof(SignalsAuthoring).Assembly.Location),
                     "SignalsPlacements"
