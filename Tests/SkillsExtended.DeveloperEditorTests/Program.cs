@@ -71,6 +71,22 @@ foreach (var alive in new[] { false, true })
 foreach (var headless in new[] { false, true })
     Check(DeveloperEditorPolicy.Eligible(enabled, loaded, alive, headless)
         == (enabled && loaded && alive && !headless), "Local admission matrix; Fika access is decided by the server");
+var cameraInput = new DeveloperEditorCameraInput();
+cameraInput.Update(true, true);
+Check(!cameraInput.Looking, "RMB over toolbar or inspector leaves UI in control");
+cameraInput.Update(true, false);
+Check(cameraInput.Looking, "RMB over the scene or a scene label starts free camera");
+for (var frame = 0; frame < 10; frame++)
+{
+    cameraInput.Update(true, frame % 2 == 0);
+    Check(cameraInput.Looking, "Locked cursor passing over UI cannot interrupt held camera control");
+}
+cameraInput.Update(false, true);
+Check(!cameraInput.Looking, "RMB release hands pointer control back to UI");
+cameraInput.Update(true, true);
+Check(!cameraInput.Looking, "A fresh RMB hold over a panel does not inherit previous camera ownership");
+cameraInput.Update(true, false); cameraInput.Reset();
+Check(!cameraInput.Looking, "Focus loss, typing, modal state and editor close release camera ownership");
 foreach (var size in new[] { (1920, 1080), (2560, 1440), (3440, 1440), (5120, 1440), (1280, 720) })
 {
     var scale = DeveloperEditorLayout.Scale(size.Item1, size.Item2);

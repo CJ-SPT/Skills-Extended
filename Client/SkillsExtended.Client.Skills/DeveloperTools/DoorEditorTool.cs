@@ -40,9 +40,12 @@ internal sealed class DoorEditorTool : IDeveloperEditorTool
     {
         View.Button(parent, "Select door", () => _context.Status("Click a door or its reader in the scene, or search the loaded-door list."));
         View.Button(parent, "Rescan", () => { if (!Busy) { Scan(); RefreshList(); Inspector(); } });
+        View.Separator(parent);
         View.Button(parent, "Clear overrides", () => Edit(r =>
         { r.HackingDifficulties.Remove(_selected); r.ExcludedHackingDoors.RemoveAll(id => id == _selected); r.LockLevels.Remove(_selected); }));
+        View.Separator(parent);
         View.Button(parent, "Undo", () => Undo(false)); View.Button(parent, "Redo", () => Undo(true));
+        View.Separator(parent);
         View.Button(parent, "Save", () => Run(Save));
         View.Button(parent, "Reload", () =>
         {

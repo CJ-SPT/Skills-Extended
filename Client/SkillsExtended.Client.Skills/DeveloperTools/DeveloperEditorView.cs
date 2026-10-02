@@ -55,6 +55,15 @@ internal sealed partial class DeveloperEditorView : IDisposable
             return picked != null && picked != Root && picked != Surface;
         }
     }
+    internal bool PointerOverPanel
+    {
+        get
+        {
+            var picked = Root.panel?.Pick(Pointer);
+            return picked != null && picked != Root && picked != Surface
+                && picked != Markers && !Markers.Contains(picked);
+        }
+    }
     internal static float ResolveScale(int width, int height) =>
         DeveloperEditorLayout.Scale(width, height);
 
@@ -146,6 +155,17 @@ internal sealed partial class DeveloperEditorView : IDisposable
         button.clicked += () => { try { action(); } catch (Exception e) { Failed?.Invoke(e); } };
         parent.Add(button); return button;
     }
+    internal void Separator(VisualElement parent)
+    {
+        var separator = new VisualElement { pickingMode = PickingMode.Ignore };
+        separator.AddToClassList("editor-toolbar-separator");
+        separator.style.width = separator.style.minWidth = separator.style.maxWidth = 1;
+        separator.style.height = 20; separator.style.flexShrink = 0;
+        separator.style.alignSelf = Align.Center;
+        separator.style.marginLeft = separator.style.marginRight = 6;
+        separator.style.backgroundColor = new Color(75 / 255f, 78 / 255f, 71 / 255f);
+        parent.Add(separator);
+    }
     internal TextField Field(VisualElement parent, string name, string value, Action<string> changed)
     {
         var tree = _bundle.LoadAsset<VisualTreeAsset>(Assets + "field.uxml").CloneTree();
@@ -161,7 +181,7 @@ internal sealed partial class DeveloperEditorView : IDisposable
         field.RegisterCallback<DetachFromPanelEvent>(_ => _committed.Remove(field));
         parent.Add(field); return field;
     }
-    internal void Number(VisualElement parent, string name, float value, float min, float max, Action<float> changed)
+    internal TextField Number(VisualElement parent, string name, float value, float min, float max, Action<float> changed)
     {
         TextField field = null;
         field = Field(parent, name, value.ToString("0.###", CultureInfo.InvariantCulture), text =>
@@ -176,6 +196,7 @@ internal sealed partial class DeveloperEditorView : IDisposable
                 Status(name + " must be a finite number from " + min + " to " + max + ".");
             }
         });
+        return field;
     }
     internal void Confirm(string message, Action yes)
     {

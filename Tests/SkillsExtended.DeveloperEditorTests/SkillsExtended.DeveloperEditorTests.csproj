@@ -5,6 +5,7 @@
     <DeploySkillsExtended>false</DeploySkillsExtended><PackageSkillsExtended>false</PackageSkillsExtended>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="../../Client/SkillsExtended.Client.Skills/DeveloperTools/DeveloperEditorCameraInput.cs" Link="Production/DeveloperEditorCameraInput.cs" />
     <ProjectReference Include="../../Server/SkillsExtended.Server/SkillsExtended.Server.csproj" />
     <Reference Include="Mono.Cecil" HintPath="../../../../BepInEx/core/Mono.Cecil.dll" />
     <Reference Include="Newtonsoft.Json" HintPath="../../../../EscapeFromTarkov_Data/Managed/Newtonsoft.Json.dll" />

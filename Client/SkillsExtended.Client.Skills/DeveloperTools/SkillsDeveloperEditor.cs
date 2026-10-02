@@ -22,7 +22,8 @@ public sealed class SkillsDeveloperEditor : MonoBehaviour
 {
     public static SkillsDeveloperEditor Current { get; private set; }
     public bool IsOpen { get; private set; }
-    public bool Looking { get; private set; }
+    public bool Looking => _cameraInput.Looking;
+    private readonly DeveloperEditorCameraInput _cameraInput = new();
     private readonly IDeveloperEditorTool[] _tools = { new SignalCacheEditorTool(), new DoorEditorTool() };
     private readonly HackingInputState _input = new();
     private readonly HackingUiInputState _ui = new();
@@ -109,6 +110,7 @@ public sealed class SkillsDeveloperEditor : MonoBehaviour
         var view = new DeveloperEditorView();
         view.Failed = Fail;
         view.Escape = Escape;
+        view.Separator(view.Toolbar);
         foreach (var tool in _tools)
         {
             var button = view.Button(view.Toolbar, tool.Title, async () =>
@@ -116,8 +118,21 @@ public sealed class SkillsDeveloperEditor : MonoBehaviour
             button.userData = tool;
             button.SetEnabled(tool.Supports(_world.LocationId));
         }
-        view.Number(view.Toolbar, "Speed", _speed, .25f, 96, n => _speed = n);
+        view.Separator(view.Toolbar);
+        var speed = view.Number(view.Toolbar, "Speed", _speed, .25f, 96, n => _speed = n);
+        speed.style.width = speed.style.minWidth = speed.style.maxWidth = 124;
+        speed.style.height = speed.style.minHeight = speed.style.maxHeight = 28;
+        speed.style.flexGrow = 0; speed.style.flexShrink = 0;
+        speed.style.alignSelf = Align.Center;
+        speed.style.marginTop = speed.style.marginBottom = 0;
+        speed.labelElement.style.width = speed.labelElement.style.minWidth = speed.labelElement.style.maxWidth = 44;
+        speed.labelElement.style.marginLeft = 0; speed.labelElement.style.marginRight = 6;
+        speed.labelElement.style.paddingLeft = speed.labelElement.style.paddingRight = 0;
+        speed.labelElement.style.alignSelf = Align.Center;
+        var speedInput = speed.Q(className: "unity-base-text-field__input");
+        speedInput.style.minWidth = 0; speedInput.style.flexGrow = 1; speedInput.style.flexShrink = 1;
         view.Button(view.Toolbar, "Frame [F]", () => _tool?.Frame());
+        view.Separator(view.Toolbar);
         view.Button(view.Toolbar, "Close", Close);
         view.Search.RegisterValueChangedCallback(_ => _tool?.RefreshList());
         return view;
@@ -153,12 +168,12 @@ public sealed class SkillsDeveloperEditor : MonoBehaviour
             _view.DraftState(_tools.Any(t => t.Dirty) ? "Unsaved drafts" : "Drafts saved");
             _view.Actions.SetEnabled(!_switching && !_tool.Busy);
             _view.Inspector.SetEnabled(!_switching && !_tool.Busy);
-            if (!Application.isFocused) { Looking = false; _tool.Cancel(); _ui.Maintain(); return; }
+            if (!Application.isFocused) { _cameraInput.Reset(); _tool.Cancel(); _ui.Maintain(); return; }
             if (Input.GetKeyDown(KeyCode.Escape) && !_view.ConsumedEscape)
             { if (_view.MenuOpen) _view.DismissMenu(); else if (_view.Typing) _view.CancelTyping(); else Escape(); return; }
             if (_view.Typing || _view.Confirming || _view.MenuOpen || _view.MenuDismissed || _switching || _tool.Busy)
-            { Looking = false; _ui.Maintain(); _tool.Tick(); return; }
-            Looking = Input.GetMouseButton(1) && !_view.PointerOver;
+            { _cameraInput.Reset(); _ui.Maintain(); _tool.Tick(); return; }
+            _cameraInput.Update(Input.GetMouseButton(1), _view.PointerOverPanel);
             _ui.Maintain(Looking);
             if (Looking)
             {
@@ -210,7 +225,7 @@ public sealed class SkillsDeveloperEditor : MonoBehaviour
     public void Close()
     {
         if (!IsOpen) return;
-        IsOpen = false; Looking = false;
+        IsOpen = false; _cameraInput.Reset();
         _operation?.Cancel();
         try { _tool?.Deactivate(); }
         finally

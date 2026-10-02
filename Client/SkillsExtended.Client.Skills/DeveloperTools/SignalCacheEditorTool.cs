@@ -55,10 +55,13 @@ internal sealed class SignalCacheEditorTool : IDeveloperEditorTool
             View.Button(parent, char.ToUpper(mode[0]) + mode.Substring(1), () =>
             { if (Busy) return; Cancel(); _mode = captured; _context.Status("Cache tool: " + captured + ". Click the scene; changes are drafts until Save."); });
         }
+        View.Separator(parent);
         View.Button(parent, "Duplicate", Duplicate);
         View.Button(parent, "Delete", Delete);
+        View.Separator(parent);
         View.Button(parent, "Undo", () => Undo(false));
         View.Button(parent, "Redo", () => Undo(true));
+        View.Separator(parent);
         View.Button(parent, "Validate", () => Run(Validate));
         View.Button(parent, "Save", () => Run(Save));
         View.Button(parent, "Reload", RequestReload);
