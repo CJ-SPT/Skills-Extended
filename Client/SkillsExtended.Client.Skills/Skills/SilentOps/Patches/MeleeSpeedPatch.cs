@@ -23,6 +23,12 @@ public class MeleeSpeedPatch : ModulePatch
             return;
         }
 
-        speed *= 1 + GameUtils.GetSkillManager()!.SkillsExtendedManager.SilentOpsIncMeleeSpeedBuff;
+        var skills = GameUtils.GetSkillManager()?.SkillsExtendedManager;
+        if (skills == null)
+        {
+            return;
+        }
+
+        speed *= 1 + skills.SilentOpsIncMeleeSpeedBuff;
     }
 }

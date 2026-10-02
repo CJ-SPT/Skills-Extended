@@ -2,6 +2,20 @@
 // starting Unity or an SPT server. Full solution builds validate the real API surface.
 using System.Reflection;
 
+public class ObjectInHandsAnimator
+{
+    public void SetMeleeSpeed(float speed) { }
+}
+
+namespace SkillsExtended.Utils
+{
+    public static class GameUtils
+    {
+        public static EFT.SkillManager SkillManager;
+        public static EFT.SkillManager GetSkillManager() => SkillManager;
+    }
+}
+
 namespace HarmonyLib
 {
     public static class AccessTools
@@ -87,6 +101,7 @@ namespace EFT.InventoryLogic
     public class HealthEffectsComponent
     {
         public Item Item = new();
+        public float UseTime { get; set; }
         public Dictionary<EDamageEffectType, JsonType.DamageEffectSpecification> DamageEffects { get; set; }
     }
 }
@@ -117,6 +132,11 @@ namespace EFT
     }
     public class Player
     {
+        public class MedsController
+        {
+            public InventoryLogic.Item Item = new();
+            public void Spawn(float animationSpeed, Action callback) { }
+        }
         public enum ESpeedLimit { Swamp }
         public bool IsYourPlayer;
         public SkillManager Skills = new();

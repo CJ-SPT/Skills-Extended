@@ -20,6 +20,8 @@
     <Compile Include="../../Client/SkillsExtended.Client.Skills/Skills/Core/Patches/CreateSkillPatches.cs" Link="Production/CreateSkillPatches.cs" />
     <Compile Include="../../Client/SkillsExtended.Client.Skills/Skills/FieldMedicine/Patches/PersonalBuffPatch.cs" Link="Production/PersonalBuffPatch.cs" />
     <Compile Include="../../Client/SkillsExtended.Client.Skills/Skills/FirstAid/Patches/HealthEffectComponentPatch.cs" Link="Production/HealthEffectComponentPatch.cs" />
+    <Compile Include="../../Client/SkillsExtended.Client.Skills/Skills/FirstAid/Patches/HealthEffectUseTimePatch.cs" Link="Production/HealthEffectUseTimePatch.cs" />
+    <Compile Include="../../Client/SkillsExtended.Client.Skills/Skills/SilentOps/Patches/MeleeSpeedPatch.cs" Link="Production/MeleeSpeedPatch.cs" />
     <Compile Include="../../Client/SkillsExtended.Client.Skills/Skills/ProneMovement/Patches/ProneMoveStatePatch.cs" Link="Production/ProneMoveStatePatch.cs" />
     <Compile Include="../../Client/SkillsExtended.Client.Skills/Skills/SilentOps/Patches/DoorSoundPatch.cs" Link="Production/DoorSoundPatch.cs" />
     <Compile Include="../../Client/SkillsExtended.Client.Skills/Skills/Strength/Patches/MovementContextSetSpeedLimitPatch.cs" Link="Production/MovementContextSetSpeedLimitPatch.cs" />

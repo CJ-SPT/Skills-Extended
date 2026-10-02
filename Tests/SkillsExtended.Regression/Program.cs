@@ -56,6 +56,7 @@ Bind(
 Bind(new ProneMoveVolumePatch());
 var failures = new List<string>();
 var assertions = 0;
+Run("Headless First Aid and melee initialization", () => FirstAidSpeedChecks.Run(config, Check));
 Run(
     "Skill registration preserves unique save and display entries",
     () => SkillListChecks.Run(Check)
