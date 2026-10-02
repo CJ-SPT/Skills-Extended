@@ -211,7 +211,8 @@ internal sealed partial class DeveloperEditorView : IDisposable
     internal void BrowserTitle(string title, int matches, int total) => _browserTitle.text = title.ToUpperInvariant() + " · " + matches + " / " + total;
     internal void Tick()
     {
-        _settings.scale = ResolveScale(Screen.width, Screen.height);
+        var scale = ResolveScale(Screen.width, Screen.height);
+        if (_settings.scale != scale) _settings.scale = scale;
         _positionMenu?.Invoke();
     }
     internal void ReleaseFocus() => (Root?.panel?.focusController.focusedElement as VisualElement)?.Blur();

@@ -10,7 +10,7 @@ public sealed class DoorEditorDraft
     private readonly List<DoorAuthoringRequest> _undo = new(), _redo = new();
     public DoorAuthoringReply Metadata { get; private set; }
     public DoorAuthoringRequest Rules => _rules;
-    public bool Dirty => !Equal(_rules, _baseline);
+    public bool Dirty { get; private set; }
     public bool Loaded => Metadata != null;
     public bool CanUndo => _undo.Count > 0;
     public bool CanRedo => _redo.Count > 0;
@@ -29,17 +29,19 @@ public sealed class DoorEditorDraft
     {
         if (!reply.Success) throw new ArgumentException(reply.Message);
         Metadata = reply; _rules = Copy(reply.Rules); _baseline = Copy(_rules); _undo.Clear(); _redo.Clear();
+        Dirty = false;
     }
     public void Edit(Action<DoorAuthoringRequest> action)
     {
         var next = Copy(_rules); action(next); if (Equal(_rules, next)) return;
         _undo.Add(Copy(_rules)); if (_undo.Count > 100) _undo.RemoveAt(0);
-        _rules = next; _redo.Clear();
+        _rules = next; _redo.Clear(); Dirty = !Equal(_rules, _baseline);
     }
     public void Undo(bool redo)
     {
         var source = redo ? _redo : _undo; var target = redo ? _undo : _redo;
         if (source.Count == 0) return;
         target.Add(Copy(_rules)); _rules = source[source.Count - 1]; source.RemoveAt(source.Count - 1);
+        Dirty = !Equal(_rules, _baseline);
     }
 }

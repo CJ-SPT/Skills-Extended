@@ -16,9 +16,12 @@ public static class ConfigManager
     public static ConfigEntry<KeyboardShortcut> SignalsShortcut;
     public static ConfigEntry<bool> DeveloperEditorEnabled;
     public static ConfigEntry<KeyboardShortcut> DeveloperEditorShortcut;
+    public static ConfigEntry<bool> AutomaticRaidCollection;
 
     public static void RegisterConfig(ConfigFile config)
     {
+        AutomaticRaidCollection = config.Bind("Memory", "Automatic garbage collection during raids", true,
+            "Keep automatic garbage collection enabled in raids so temporary allocations can be reclaimed. Restores the latest game-requested mode at raid exit. Can be changed during a raid.");
         DeveloperEditorEnabled = config.Bind("Developer tools", "Enable developer editor", false,
             "Enable the in-game developer editor. Fika requires server authorization for your profile. AI and raid time continue while editing.");
         DeveloperEditorShortcut = config.Bind("Developer tools", "Open developer editor",

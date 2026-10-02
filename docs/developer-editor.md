@@ -13,6 +13,19 @@ in the toolbar. Press F to frame a selection and Ctrl+Z/Ctrl+Y to undo/redo. Esc
 cancels typing or an active placement/drag before closing. Closing retains drafts
 for the same raid and does not save them. Drafts end with the raid.
 
+Automatic garbage collection stays enabled during raids by default through
+**Memory → Automatic garbage collection during raids**, including headless hosts.
+This prevents temporary allocations accumulating when the game disables GC on
+machines with at least 25 GB of RAM. The setting can be changed during a raid;
+the editor always keeps collection enabled while open. The latest game-requested
+mode is restored once both raid and editor collection ownership end.
+Idle draft status is cached after edits/save/undo rather than rebuilding
+placement comparisons and door sets every frame; unchanged handles do not redraw.
+For the first three minutes of a raid and each editor opening, passive memory samples are logged
+every 30 seconds with GC mode, managed heap use, Unity allocation and process
+private memory. Sampling stops on teardown/close or after three minutes and never forces
+collection. Unsupported counters are reported as unavailable.
+
 For Fika, an administrator must select your profile under **Fika client editor
 access** on the Skills Extended web configuration page and save. The default
 empty list denies access. Authorized hosts and joining players can edit during
@@ -31,6 +44,8 @@ on that map. Existing Customs/Woods locations are preserved.
 Select previews by their labels or case bodies. Use Move/Rotate and the visible
 handles, or edit XYZ/yaw in the inspector. Duplicate and Delete operate on the
 draft; undo/redo also covers inspector edits.
+Move handles sit at the preview object's pivot and follow its local axes.
+Drag around the rotation ring to change yaw about that same pivot.
 
 New placements are enabled and exact (search radius zero). Zero radius spawns
 the native prefab at the saved XYZ and yaw, without grounding, rotation fallback,

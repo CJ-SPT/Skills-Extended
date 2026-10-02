@@ -3,6 +3,7 @@ using System.Text.Json;
 using Mono.Cecil;
 using SkillsExtended.Core.Editing;
 using SkillsExtended.DeveloperTools;
+using SkillsExtended.Helpers;
 using SkillsExtended.ServerDeveloperTools;
 using SkillsExtended.Signals;
 
@@ -31,6 +32,89 @@ Check(draft.Points[0].Position.X == 0, "Transport request cannot mutate draft");
 draft.Edit(p => { var clone = SignalPlacementSearch.Copy(p[0]); clone.Id = "b"; p.Add(clone); });
 draft.Edit(p => p.RemoveAll(x => x.Id == "a")); draft.Undo();
 Check(draft.Points.Count == 2 && draft.Points.Any(p => p.Id == "a"), "Deleted cache is restored by undo");
+
+// Model ten minutes of idle editor frames with a populated cache/door draft.
+var allocationSignals = new SignalEditorDraft();
+allocationSignals.Load(new() { Status = "success", Placements = Enumerable.Range(0, 15)
+    .Select(i => new SignalPlacement { Id = "cache-" + i, Map = "bigmap" }).ToList() });
+var allocationDoors = new DoorEditorDraft();
+allocationDoors.Load(new() { Status = "success", Rules = new()
+{
+    LockLevels = Enumerable.Range(0, 500).ToDictionary(i => "door-" + i, _ => 3),
+    ExcludedHackingDoors = Enumerable.Range(0, 100).Select(i => "reader-" + i).ToList(),
+} });
+bool ReadDirty()
+{
+    var signalDirty = allocationSignals.Dirty;
+    var doorDirty = allocationDoors.Dirty;
+    return signalDirty || doorDirty;
+}
+long MeasureDirty(out int dirtyFrames)
+{
+    dirtyFrames = 0;
+    var start = GC.GetAllocatedBytesForCurrentThread();
+    for (var i = 0; i < 36000; i++) if (ReadDirty()) dirtyFrames++;
+    return GC.GetAllocatedBytesForCurrentThread() - start;
+}
+// Warm the complete measurement loop, including the runtime's tiered loop entry.
+MeasureDirty(out _); MeasureDirty(out _);
+var idleAllocated = MeasureDirty(out var dirtyFrames);
+Console.WriteLine($"Idle dirty checks: {idleAllocated:N0} bytes / 36,000 frames (15 caches, 500 doors, 100 exclusions).");
+Check(dirtyFrames == 0, "Idle dirty checks preserve clean drafts");
+Check(idleAllocated == 0, "Idle cached dirty checks allocate no managed memory");
+allocationSignals.Edit(p => p[0].Name = "Edited");
+allocationDoors.Edit(r => r.LockLevels["door-0"] = 5);
+Check(allocationSignals.Dirty && allocationDoors.Dirty, "Both draft caches become dirty after editing");
+Check(MeasureDirty(out dirtyFrames) == 0 && dirtyFrames == 36000,
+    "Dirty drafts also allocate zero bytes over 36,000 frame reads");
+allocationSignals.Edit(p => p[0].Name = "");
+allocationDoors.Edit(r => r.LockLevels["door-0"] = 3);
+Check(!allocationSignals.Dirty && !allocationDoors.Dirty, "Editing back to saved values clears cached dirty state");
+allocationSignals.Edit(p => p.Reverse());
+allocationDoors.Edit(r => r.ExcludedHackingDoors.Reverse());
+Check(!allocationSignals.Dirty && !allocationDoors.Dirty, "Reordering does not create unsaved changes");
+allocationSignals.Edit(p => p[0].Yaw = 90);
+allocationDoors.Edit(r => r.ExcludedHackingDoors.Add("new-reader"));
+allocationSignals.Load(new() { Status = "success", Placements = allocationSignals.Request().Placements });
+allocationDoors.Load(new() { Status = "success", Rules = DoorEditorDraft.Copy(allocationDoors.Rules) });
+Check(!allocationSignals.Dirty && !allocationDoors.Dirty && !allocationSignals.CanUndo && !allocationDoors.CanUndo,
+    "Successful save/reload resets dirty state and history");
+
+foreach (var initial in Enum.GetValues<UnityEngine.Scripting.GarbageCollector.Mode>())
+{
+    var policy = new AutomaticCollectionPolicy();
+    Check(policy.Transition(false, false, initial) == null && policy.Filter(initial) == initial,
+        "Closed editor leaves every game GC mode unchanged");
+    Check(policy.Transition(false, true, initial) == UnityEngine.Scripting.GarbageCollector.Mode.Enabled,
+        "Opening editor enables automatic collection from every mode");
+    Check(policy.Transition(false, true, UnityEngine.Scripting.GarbageCollector.Mode.Enabled) == null,
+        "Repeated open state does not replace the saved game mode");
+    Check(policy.Transition(false, false, UnityEngine.Scripting.GarbageCollector.Mode.Enabled) == initial,
+        "Closing editor restores the original mode without a new game request");
+    foreach (var requested in Enum.GetValues<UnityEngine.Scripting.GarbageCollector.Mode>())
+    {
+        policy.Transition(false, true, initial);
+        Check(policy.Filter(requested) == UnityEngine.Scripting.GarbageCollector.Mode.Enabled,
+            "Native and Unity requests cannot disable collection while editor is open");
+        Check(policy.Transition(false, false, UnityEngine.Scripting.GarbageCollector.Mode.Enabled) == requested,
+            "Closing editor restores the latest game request including menu enable and manual mode");
+    }
+    Check(policy.Transition(false, false, initial) == null, "Repeated close/teardown does not alter GC again");
+    Check(policy.Transition(true, false, initial) == UnityEngine.Scripting.GarbageCollector.Mode.Enabled,
+        "A normal raid enables collection with the editor closed");
+    Check(policy.Transition(true, true, UnityEngine.Scripting.GarbageCollector.Mode.Enabled) == null
+        && policy.Transition(true, false, UnityEngine.Scripting.GarbageCollector.Mode.Enabled) == null,
+        "Opening and closing the editor cannot disable active raid collection");
+    Check(policy.Transition(false, false, UnityEngine.Scripting.GarbageCollector.Mode.Enabled) == initial,
+        "Raid exit restores the original mode after editor open/close");
+    policy.Transition(true, true, initial);
+    Check(policy.Transition(false, true, UnityEngine.Scripting.GarbageCollector.Mode.Enabled) == null,
+        "Disabling the raid option keeps collection on until the editor closes");
+    policy.Filter(UnityEngine.Scripting.GarbageCollector.Mode.Enabled);
+    Check(policy.Transition(false, false, UnityEngine.Scripting.GarbageCollector.Mode.Enabled)
+        == UnityEngine.Scripting.GarbageCollector.Mode.Enabled,
+        "A menu enable request during teardown overrides the earlier disabled raid mode");
+}
 
 var geometry = new SignalCaseGeometry
 {
@@ -72,6 +156,42 @@ foreach (var headless in new[] { false, true })
     Check(DeveloperEditorPolicy.Eligible(enabled, loaded, alive, headless)
         == (enabled && loaded && alive && !headless), "Local admission matrix; Fika access is decided by the server");
 var cameraInput = new DeveloperEditorCameraInput();
+foreach (var offset in new[] { Vector3.Zero, new Vector3(1000, 120, -3000), new Vector3(-800, -15, 2400) })
+foreach (var yaw in new[] { 0f, 45f, 90f, 180f, 270f })
+foreach (var axisIndex in new[] { 0, 1, 2 })
+{
+    var axis = EditorHandleMath.Axis(axisIndex, yaw);
+    var pivot = offset + new Vector3(7, 5, 11);
+    var camera = pivot + new Vector3(3, 7, -8);
+    var startRay = Vector3.Normalize(pivot + axis * .5f - camera);
+    var endRay = Vector3.Normalize(pivot + axis * 2.5f - camera);
+    Check(EditorHandleMath.TryAxisDistance(camera, startRay, pivot, axis, out var start)
+        && EditorHandleMath.TryAxisDistance(camera, endRay, pivot, axis, out var end)
+        && Math.Abs((end - start) - 2) < .001f,
+        "Axis dragging follows the object's local axis at arbitrary world positions and yaw");
+    Check(EditorHandleMath.TryAxisDistance(camera, startRay, pivot, axis, out var repeated)
+        && Math.Abs(repeated - start) < .00001f, "Picking a handle without moving cannot jump the object");
+}
+Check(Vector3.Distance(EditorHandleMath.Axis(0, 90), -Vector3.UnitZ) < .00001f
+    && Vector3.Distance(EditorHandleMath.Axis(2, 90), Vector3.UnitX) < .00001f,
+    "X/Z move handles rotate with the selected object");
+Check(!EditorHandleMath.TryAxisDistance(Vector3.Zero, Vector3.UnitX, new(100, 2, 3), Vector3.UnitX, out _),
+    "View-aligned axes retain their previous transform instead of snapping on a degenerate ray");
+foreach (var center in new[] { Vector2.Zero, new Vector2(800, 400), new Vector2(1200, 700) })
+{
+    var previous = center + new Vector2(48, 0);
+    var total = 0f;
+    foreach (var next in new[] { new Vector2(0, 48), new Vector2(-48, 0), new Vector2(0, -48), new Vector2(48, 0) })
+    {
+        var current = center + next;
+        var delta = EditorHandleMath.RotationDelta(center, previous, current);
+        Check(Math.Abs(delta - 90) < .001f, "Rotation follows the pointer around the object's projected pivot");
+        total += delta; previous = current;
+    }
+    Check(Math.Abs(total - 360) < .001f, "Rotation can cross the angular seam and complete a full turn");
+    Check(EditorHandleMath.RotationDelta(center, previous, center) == 0,
+        "Dragging through the ring centre does not jump the yaw");
+}
 cameraInput.Update(true, true);
 Check(!cameraInput.Looking, "RMB over toolbar or inspector leaves UI in control");
 cameraInput.Update(true, false);
@@ -283,6 +403,26 @@ using (var client = AssemblyDefinition.ReadAssembly(Path.Combine(repo, "Client/S
     var close = Calls("Close");
     Check(close.Contains("HackingInputState::Restore") && close.Contains("HackingUiInputState::Restore")
         && close.Contains("onPreCull") && close.Contains("System.Delegate::Remove") && close.Contains("SetPositionAndRotation"), "Close restores native input, cursor, camera and render callback ownership");
+    Check(Calls("Open").Contains("AutomaticCollection::SetEditorActive") && close.Contains("AutomaticCollection::SetEditorActive")
+        && Calls("OnDestroy").Contains("Close"), "GC lifetime follows successful open, close and raid teardown");
+    var memory = client.MainModule.GetType("SkillsExtended.Helpers.AutomaticCollection");
+    var memoryCalls = string.Join("\n", memory.Methods.Where(m => m.HasBody).SelectMany(m => m.Body.Instructions)
+        .Select(i => i.Operand?.ToString()));
+    Check(memoryCalls.Contains("GCMode") && memoryCalls.Contains("GCEnabled")
+        && memoryCalls.Contains("BeforeNativeMode") && !memoryCalls.Contains("::Collect("),
+        "GC policy records native early-out requests and never forces collections");
+    var raidMemory = client.MainModule.GetType("SkillsExtended.Helpers.RaidMemory");
+    string RaidCalls(string method) => string.Join("\n", raidMemory.Methods.Where(m => m.Name == method && m.HasBody)
+        .SelectMany(m => m.Body.Instructions).Select(i => i.Operand?.ToString()));
+    Check(RaidCalls("Awake").Contains("AutomaticCollection::SetRaidActive")
+        && RaidCalls("Update").Contains("AutomaticRaidCollection")
+        && RaidCalls("OnDestroy").Contains("AutomaticCollection::SetRaidActive"),
+        "Raid component activates collection, handles live option changes and releases ownership at teardown");
+    var raidPatch = client.MainModule.GetType("SkillsExtended.Helpers.RaidMemoryStartPatch");
+    var raidPatchCalls = string.Join("\n", raidPatch.Methods.Where(m => m.HasBody).SelectMany(m => m.Body.Instructions)
+        .Select(i => i.Operand?.ToString()));
+    Check(raidPatchCalls.Contains("OnGameStarted") && raidPatchCalls.Contains("HideoutGameWorld")
+        && !raidPatchCalls.Contains("MainPlayer"), "Memory scope starts on actual raids, excludes hideout and supports headless");
     Check(Calls("Update").Contains("Eligible") && Calls("Update").Contains("Close"), "Active editor continuously enforces local admission");
     Check(Calls("Update").Contains("CheckAuthorization")
         && Calls("CheckAuthorization").Contains("/skills-extended/editor/session")

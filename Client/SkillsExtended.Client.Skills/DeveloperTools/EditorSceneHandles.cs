@@ -10,11 +10,30 @@ internal sealed class EditorSceneHandles : VisualElement
     internal readonly Vector2[] Ends = new Vector2[3];
     internal bool Rotate;
     internal bool Active;
+    private bool _paintedActive, _paintedRotate;
+    private Vector2 _paintedCenter;
+    private readonly Vector2[] _paintedEnds = new Vector2[3];
+    private static readonly Color[] AxisColors =
+        { new(.95f, .35f, .3f), new(.35f, .95f, .45f), new(.35f, .6f, 1) };
     internal EditorSceneHandles()
     {
         pickingMode = PickingMode.Ignore;
         style.position = Position.Absolute; style.left = style.top = style.right = style.bottom = 0;
         generateVisualContent += Draw;
+    }
+    internal void RepaintIfChanged()
+    {
+        var changed = Active != _paintedActive;
+        if (Active)
+        {
+            changed |= Rotate != _paintedRotate || !Center.Equals(_paintedCenter);
+            if (!Rotate)
+                for (var i = 0; i < 3; i++) changed |= !Ends[i].Equals(_paintedEnds[i]);
+        }
+        if (!changed) return;
+        _paintedActive = Active; _paintedRotate = Rotate; _paintedCenter = Center;
+        for (var i = 0; i < 3; i++) _paintedEnds[i] = Ends[i];
+        MarkDirtyRepaint();
     }
     private void Draw(MeshGenerationContext ctx)
     {
@@ -35,10 +54,9 @@ internal sealed class EditorSceneHandles : VisualElement
         }
         else
         {
-            var colors = new[] { new Color(.95f, .35f, .3f), new Color(.35f, .95f, .45f), new Color(.35f, .6f, 1) };
             for (var i = 0; i < 3; i++)
             {
-                painter.strokeColor = colors[i]; painter.BeginPath(); painter.MoveTo(Center); painter.LineTo(Ends[i]);
+                painter.strokeColor = AxisColors[i]; painter.BeginPath(); painter.MoveTo(Center); painter.LineTo(Ends[i]);
                 painter.Stroke();
                 var tangent = (Ends[i] - Center).normalized;
                 var cross = new Vector2(-tangent.y, tangent.x);
@@ -69,10 +87,19 @@ internal sealed class EditorSceneHandles : VisualElement
         visible = pixel.z > .01f;
         return RuntimePanelUtils.ScreenToPanel(root.panel, new Vector2(pixel.x, Screen.height - pixel.y));
     }
-    internal static float AxisDistance(Ray ray, Vector3 origin, Vector3 axis)
+    internal static bool TryAxisDistance(Ray ray, Vector3 origin, Vector3 axis, out float distance)
     {
-        var b = Vector3.Dot(axis, ray.direction); var w = origin - ray.origin;
-        var denominator = 1 - b * b;
-        return denominator < .0001f ? 0 : (b * Vector3.Dot(ray.direction, w) - Vector3.Dot(axis, w)) / denominator;
+        return EditorHandleMath.TryAxisDistance(
+            new(ray.origin.x, ray.origin.y, ray.origin.z), new(ray.direction.x, ray.direction.y, ray.direction.z),
+            new(origin.x, origin.y, origin.z), new(axis.x, axis.y, axis.z), out distance);
+    }
+    internal static Vector3 Axis(int axis, float yaw)
+    {
+        var direction = EditorHandleMath.Axis(axis, yaw);
+        return new Vector3(direction.X, direction.Y, direction.Z);
+    }
+    internal static float RotationDelta(Vector2 pivot, Vector2 previous, Vector2 current)
+    {
+        return EditorHandleMath.RotationDelta(new(pivot.x, pivot.y), new(previous.x, previous.y), new(current.x, current.y));
     }
 }

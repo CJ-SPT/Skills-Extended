@@ -28,7 +28,7 @@ public sealed class SignalEditorDraft
     public int Version { get; private set; }
     public bool CanUndo => _undo.Count != 0;
     public bool CanRedo => _redo.Count != 0;
-    public bool Dirty => !Equal(_points, _baseline);
+    public bool Dirty { get; private set; }
     private static List<SignalPlacement> Copy(IEnumerable<SignalPlacement> points) =>
         points.Select(SignalPlacementSearch.Copy).ToList();
     private static bool Equal(List<SignalPlacement> a, List<SignalPlacement> b) =>
@@ -59,7 +59,7 @@ public sealed class SignalEditorDraft
         target.Add(Copy(_points)); _points = source[source.Count - 1];
         source.RemoveAt(source.Count - 1); Invalidate();
     }
-    private void Invalidate() { Version++; _checks.Clear(); }
+    private void Invalidate() { Version++; _checks.Clear(); Dirty = !Equal(_points, _baseline); }
     public bool Record(string id, int version, SignalPlacementReport report)
     {
         if (version != Version || !_points.Any(p => p.Id == id)) return false;

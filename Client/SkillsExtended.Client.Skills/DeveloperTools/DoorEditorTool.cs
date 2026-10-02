@@ -26,6 +26,8 @@ internal sealed class DoorEditorTool : IDeveloperEditorTool
     private string _selected = "";
     private int _filter;
     private Button _label;
+    private WorldInteractiveObject _labelDoor;
+    private string _labelSceneName, _labelKey;
     private DeveloperEditorView View => _context.View;
     private WorldInteractiveObject Selected => _doors.TryGetValue(_selected, out var door) && door ? door : null;
     public async Task Activate(DeveloperEditorContext context)
@@ -35,7 +37,7 @@ internal sealed class DoorEditorTool : IDeveloperEditorTool
         if (!_draft.Loaded) await Reload();
         if (context.IsOpen()) { RefreshList(); Inspector(); }
     }
-    public void Deactivate() { _label = null; }
+    public void Deactivate() { _label = null; _labelDoor = null; }
     public void BuildActions(VisualElement parent)
     {
         View.Button(parent, "Select door", () => _context.Status("Click a door or its reader in the scene, or search the loaded-door list."));
@@ -231,9 +233,13 @@ internal sealed class DoorEditorTool : IDeveloperEditorTool
     {
         if (_label == null || View.Root.panel == null) return;
         var door = Selected;
-        if (!door) { _label.style.display = DisplayStyle.None; return; }
+        if (!door) { _label.style.display = DisplayStyle.None; _labelDoor = null; return; }
         var position = EditorSceneHandles.Project(_context.Camera(), View.Root, door.transform.position + Vector3.up, out var visible);
-        _label.text = DisplayName(door) + " [selected]";
+        if (_labelDoor != door || _labelSceneName != door.name || _labelKey != door.KeyId)
+        {
+            _labelDoor = door; _labelSceneName = door.name; _labelKey = door.KeyId;
+            _label.text = DisplayName(door) + " [selected]";
+        }
         _label.style.display = visible ? DisplayStyle.Flex : DisplayStyle.None;
         _label.style.left = position.x; _label.style.top = position.y;
     }

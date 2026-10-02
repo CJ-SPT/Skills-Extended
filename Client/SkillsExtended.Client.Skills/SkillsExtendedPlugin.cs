@@ -52,6 +52,7 @@ public class SkillsExtendedPlugin : BaseUnityPlugin
         SkillsExtendedInfo.IsFikaHeadless = Chainloader.PluginInfos.Keys.Contains(
             "com.fika.headless"
         );
+        AutomaticCollection.Enable();
 #if DEBUG
         Logger.LogWarning($"PRE RELEASE BUILD OF `{SkillsExtendedInfo.VERSION}` - NO SUPPORT");
         Logger.LogWarning("DEBUG BUILD FEATURES ENABLED");

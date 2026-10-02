@@ -30,7 +30,17 @@ internal sealed class SignalCacheEditorTool : IDeveloperEditorTool
     private SignalPlacement _drag;
     private float _dragStart;
     private Vector2 _dragMouse;
-    private SignalPlacement Selected => _draft.Points.FirstOrDefault(p => p.Id == _selected);
+    private Vector2 _dragPivot;
+    private Vector3 _dragOrigin, _dragAxis;
+    private SignalPlacement Selected
+    {
+        get
+        {
+            for (var i = 0; i < _draft.Points.Count; i++)
+                if (_draft.Points[i].Id == _selected) return _draft.Points[i];
+            return null;
+        }
+    }
     private DeveloperEditorView View => _context.View;
 
     public async Task Activate(DeveloperEditorContext context)
@@ -244,8 +254,9 @@ internal sealed class SignalCacheEditorTool : IDeveloperEditorTool
         if (!_context.IsOpen() || _handles == null || View.Root.panel == null) return;
         if (_presented != _draft.Version) Refresh();
         var camera = _context.Camera();
-        foreach (var p in _draft.Points)
+        for (var i = 0; i < _draft.Points.Count; i++)
         {
+            var p = _draft.Points[i];
             var preview = _previews[p.Id];
             var pos = EditorSceneHandles.Project(camera, View.Root, preview.Case.transform.position + Vector3.up * .5f, out var visible);
             preview.Label.style.display = visible ? DisplayStyle.Flex : DisplayStyle.None;
@@ -255,14 +266,15 @@ internal sealed class SignalCacheEditorTool : IDeveloperEditorTool
         _handles.Active = selected != null && (_mode == "move" || _mode == "rotate");
         if (selected != null)
         {
-            var origin = SignalsCase.Vector(selected.Position);
+            var origin = _previews[selected.Id].Case.transform.position;
             _handles.Center = EditorSceneHandles.Project(camera, View.Root, origin, out var visible);
             _handles.Active &= visible; _handles.Rotate = _mode == "rotate";
             var length = Mathf.Max(.4f, Vector3.Distance(camera.transform.position, origin) * .08f);
             for (var i = 0; i < 3; i++)
-                _handles.Ends[i] = EditorSceneHandles.Project(camera, View.Root, origin + Axis(i) * length, out _);
+                _handles.Ends[i] = EditorSceneHandles.Project(camera, View.Root,
+                    origin + EditorSceneHandles.Axis(i, selected.Yaw) * length, out _);
         }
-        _handles.MarkDirtyRepaint();
+        _handles.RepaintIfChanged();
         var resolved = selected == null ? null : _draft.Check(selected.Id)?.Placement;
         if (selected != null && selected.SearchRadius > 0 && resolved != null)
         {
@@ -283,7 +295,6 @@ internal sealed class SignalCacheEditorTool : IDeveloperEditorTool
             if (_resolvedLabel != null) _resolvedLabel.style.display = DisplayStyle.None;
         }
     }
-    private static Vector3 Axis(int axis) => axis == 0 ? Vector3.right : axis == 1 ? Vector3.up : Vector3.forward;
     public void WorldInput(Ray ray)
     {
         if (Busy || string.IsNullOrEmpty(_draft.Raid)) return;
@@ -294,11 +305,15 @@ internal sealed class SignalCacheEditorTool : IDeveloperEditorTool
                 var p = _drag; _drag = null; _axis = -1;
                 _draft.Edit(points => { var index = points.FindIndex(x => x.Id == p.Id); points[index] = p; }); Refresh(); return;
             }
-            if (_axis == 3) _drag.Yaw = SignalsModel.Wrap(Selected.Yaw + (View.Pointer.x - _dragMouse.x) * .5f);
+            if (_axis == 3)
+            {
+                _drag.Yaw = SignalsModel.Wrap(_drag.Yaw + EditorSceneHandles.RotationDelta(_dragPivot, _dragMouse, View.Pointer));
+                _dragMouse = View.Pointer;
+            }
             else
             {
-                var origin = SignalsCase.Vector(Selected.Position);
-                _drag.Position = SignalsCase.Point(origin + Axis(_axis) * (EditorSceneHandles.AxisDistance(ray, origin, Axis(_axis)) - _dragStart));
+                if (!EditorSceneHandles.TryAxisDistance(ray, _dragOrigin, _dragAxis, out var distance)) return;
+                _drag.Position = SignalsCase.Point(SignalsCase.Vector(Selected.Position) + _dragAxis * (distance - _dragStart));
             }
             _previews[_drag.Id].Case.transform.SetPositionAndRotation(SignalsCase.Vector(_drag.SearchRadius == 0
                 ? _drag.Position : SignalPlacementSearch.PreviewRoot(_drag.Position, SignalsPlacement.Geometry())),
@@ -309,8 +324,16 @@ internal sealed class SignalCacheEditorTool : IDeveloperEditorTool
         _axis = _handles.Pick(View.Pointer);
         if (_axis >= 0 && Selected != null)
         {
+            _dragOrigin = _previews[Selected.Id].Case.transform.position;
+            _dragPivot = EditorSceneHandles.Project(_context.Camera(), View.Root, _dragOrigin, out _);
+            if (_axis != 3)
+            {
+                _dragAxis = EditorSceneHandles.Axis(_axis, Selected.Yaw);
+                if (!EditorSceneHandles.TryAxisDistance(ray, _dragOrigin, _dragAxis, out _dragStart))
+                { _axis = -1; return; }
+            }
             _drag = SignalPlacementSearch.Copy(Selected); _dragMouse = View.Pointer;
-            _dragStart = EditorSceneHandles.AxisDistance(ray, SignalsCase.Vector(Selected.Position), Axis(_axis)); return;
+            return;
         }
         if (_mode == "add")
         {

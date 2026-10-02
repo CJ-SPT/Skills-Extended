@@ -24,6 +24,7 @@ public sealed class SkillsDeveloperEditor : MonoBehaviour
     public bool IsOpen { get; private set; }
     public bool Looking => _cameraInput.Looking;
     private readonly DeveloperEditorCameraInput _cameraInput = new();
+    private readonly Helpers.MemoryDiagnostics _memoryDiagnostics = new("editor");
     private readonly IDeveloperEditorTool[] _tools = { new SignalCacheEditorTool(), new DoorEditorTool() };
     private readonly HackingInputState _input = new();
     private readonly HackingUiInputState _ui = new();
@@ -94,6 +95,8 @@ public sealed class SkillsDeveloperEditor : MonoBehaviour
                 Frame = target => { _flyPosition = target + new Vector3(0, 2, -4); _flyRotation = Quaternion.LookRotation(target - _flyPosition); },
             };
             IsOpen = true;
+            Helpers.AutomaticCollection.SetEditorActive(true);
+            _memoryDiagnostics.Begin();
             _nextAuthorizationCheck = Time.realtimeSinceStartup + 5;
             _input.Capture(true); _ui.Capture();
             foreach (var renderer in _camera.GetComponentsInChildren<Renderer>(true))
@@ -161,11 +164,14 @@ public sealed class SkillsDeveloperEditor : MonoBehaviour
             if (ConfigManager.DeveloperEditorShortcut?.Value.IsDown() == true && _view?.Typing != true) Toggle();
             if (!IsOpen) return;
             if (!Eligible() || OtherModal) { Close(); return; }
+            _memoryDiagnostics.Tick();
             if (SkillsExtendedInfo.IsFikaPresent && !_checkingAuthorization
                 && Time.realtimeSinceStartup >= _nextAuthorizationCheck)
                 CheckAuthorization();
             _view.Tick();
-            _view.DraftState(_tools.Any(t => t.Dirty) ? "Unsaved drafts" : "Drafts saved");
+            var dirty = false;
+            for (var i = 0; i < _tools.Length; i++) dirty |= _tools[i].Dirty;
+            _view.DraftState(dirty ? "Unsaved drafts" : "Drafts saved");
             _view.Actions.SetEnabled(!_switching && !_tool.Busy);
             _view.Inspector.SetEnabled(!_switching && !_tool.Busy);
             if (!Application.isFocused) { _cameraInput.Reset(); _tool.Cancel(); _ui.Maintain(); return; }
@@ -226,6 +232,7 @@ public sealed class SkillsDeveloperEditor : MonoBehaviour
     {
         if (!IsOpen) return;
         IsOpen = false; _cameraInput.Reset();
+        _memoryDiagnostics.Stop();
         _operation?.Cancel();
         try { _tool?.Deactivate(); }
         finally
@@ -236,6 +243,7 @@ public sealed class SkillsDeveloperEditor : MonoBehaviour
             _renderers.Clear();
             _input.Restore(); _ui.Restore(); _view?.SetVisible(false);
             _camera = null; _operation?.Dispose(); _operation = null;
+            Helpers.AutomaticCollection.SetEditorActive(false);
         }
     }
     private void Fail(Exception e)

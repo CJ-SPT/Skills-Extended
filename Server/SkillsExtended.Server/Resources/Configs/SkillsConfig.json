@@ -1037,6 +1037,1644 @@
                 "Yaw": 54.188652,
                 "SearchRadius": 0,
                 "Enabled": true
+            },
+            {
+                "Id": "bigmap-96664f51",
+                "Map": "bigmap",
+                "Name": "Warehouse 6 - 1",
+                "Position": {
+                    "X": 569.32886,
+                    "Y": 6.983766,
+                    "Z": -87.14316,
+                    "IsFinite": true
+                },
+                "Yaw": 98.4291,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "bigmap-96007afd",
+                "Map": "bigmap",
+                "Name": "Warehouse 6 - 2",
+                "Position": {
+                    "X": 567.67236,
+                    "Y": 6.9373865,
+                    "Z": -56.0482,
+                    "IsFinite": true
+                },
+                "Yaw": 278.02734,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "bigmap-1c6f1e0a",
+                "Map": "bigmap",
+                "Name": "Warehouse 7 - 1",
+                "Position": {
+                    "X": 556.6793,
+                    "Y": 9.432724,
+                    "Z": -120.67216,
+                    "IsFinite": true
+                },
+                "Yaw": 276.17505,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "bigmap-00b9ad51",
+                "Map": "bigmap",
+                "Name": "Warehouse 7 - 2",
+                "Position": {
+                    "X": 575.5562,
+                    "Y": 1.6451665,
+                    "Z": -132.01155,
+                    "IsFinite": true
+                },
+                "Yaw": 95.7718,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "bigmap-55733e19",
+                "Map": "bigmap",
+                "Name": "Warehouse 5",
+                "Position": {
+                    "X": 469.4066,
+                    "Y": 3.0641136,
+                    "Z": -73.11051,
+                    "IsFinite": true
+                },
+                "Yaw": 186.61987,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "bigmap-048b8c0f",
+                "Map": "bigmap",
+                "Name": "New Gas - 1",
+                "Position": {
+                    "X": 420.094,
+                    "Y": 1.4048965,
+                    "Z": 23.570047,
+                    "IsFinite": true
+                },
+                "Yaw": 4.5151114,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "bigmap-d20cecd0",
+                "Map": "bigmap",
+                "Name": "New Gas - 2",
+                "Position": {
+                    "X": 389.38925,
+                    "Y": 1.167995,
+                    "Z": 43.66767,
+                    "IsFinite": true
+                },
+                "Yaw": 274.36276,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "bigmap-3fd2c2ae",
+                "Map": "bigmap",
+                "Name": "Warehouse 3",
+                "Position": {
+                    "X": 393.23715,
+                    "Y": 1.6032555,
+                    "Z": -111.30899,
+                    "IsFinite": true
+                },
+                "Yaw": 187.6621,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "bigmap-cc0d7a3a",
+                "Map": "bigmap",
+                "Name": "Bus Depot",
+                "Position": {
+                    "X": 221.14594,
+                    "Y": -0.26625982,
+                    "Z": 61.29586,
+                    "IsFinite": true
+                },
+                "Yaw": 359.71002,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "bigmap-1709fe11",
+                "Map": "bigmap",
+                "Name": "Skeleton",
+                "Position": {
+                    "X": 208.4759,
+                    "Y": 7.6858816,
+                    "Z": -3.6652753,
+                    "IsFinite": true
+                },
+                "Yaw": 253.35855,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "bigmap-8a849af2",
+                "Map": "bigmap",
+                "Name": "Fortress - 1",
+                "Position": {
+                    "X": 195.23282,
+                    "Y": 7.995824,
+                    "Z": -148.92902,
+                    "IsFinite": true
+                },
+                "Yaw": 258.35812,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "bigmap-8b7d5247",
+                "Map": "bigmap",
+                "Name": "Fortress - 2",
+                "Position": {
+                    "X": 209.55138,
+                    "Y": 7.9958315,
+                    "Z": -100.15221,
+                    "IsFinite": true
+                },
+                "Yaw": 81.858055,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "bigmap-f0fd1354",
+                "Map": "bigmap",
+                "Name": "Fortress - 3",
+                "Position": {
+                    "X": 203.71684,
+                    "Y": 1.9926453,
+                    "Z": -124.6414,
+                    "IsFinite": true
+                },
+                "Yaw": 256.95703,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "bigmap-ddc12dd8",
+                "Map": "bigmap",
+                "Name": "Repair Shop",
+                "Position": {
+                    "X": 99.92395,
+                    "Y": 1.5797079,
+                    "Z": -96.45514,
+                    "IsFinite": true
+                },
+                "Yaw": 254.755,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "bigmap-85e9a5f7",
+                "Map": "bigmap",
+                "Name": "Crackhouse",
+                "Position": {
+                    "X": 77.6347,
+                    "Y": 4.9437704,
+                    "Z": -161.63206,
+                    "IsFinite": true
+                },
+                "Yaw": 258.00162,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "bigmap-3d9906a1",
+                "Map": "bigmap",
+                "Name": "Dorms - 1",
+                "Position": {
+                    "X": 178.46048,
+                    "Y": 6.1202545,
+                    "Z": 157.72806,
+                    "IsFinite": true
+                },
+                "Yaw": 189.35043,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "bigmap-8d7bb28f",
+                "Map": "bigmap",
+                "Name": "Dorms - 2",
+                "Position": {
+                    "X": 224.93672,
+                    "Y": 3.1501567,
+                    "Z": 157.3366,
+                    "IsFinite": true
+                },
+                "Yaw": 277.9997,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "bigmap-b864e67d",
+                "Map": "bigmap",
+                "Name": "Powerstation",
+                "Position": {
+                    "X": 491.85303,
+                    "Y": 15.713521,
+                    "Z": 115.19422,
+                    "IsFinite": true
+                },
+                "Yaw": 334.5989,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "bigmap-e6191cd4",
+                "Map": "bigmap",
+                "Name": "Military Checkpoint",
+                "Position": {
+                    "X": 583.6616,
+                    "Y": 3.3083973,
+                    "Z": 3.3659496,
+                    "IsFinite": true
+                },
+                "Yaw": 124.54809,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "bigmap-688b232b",
+                "Map": "bigmap",
+                "Name": "Industrial Plant",
+                "Position": {
+                    "X": 253.64536,
+                    "Y": 1.7300707,
+                    "Z": -72.800934,
+                    "IsFinite": true
+                },
+                "Yaw": 282.2445,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "bigmap-bbb0fb29",
+                "Map": "bigmap",
+                "Name": "Main Bridge",
+                "Position": {
+                    "X": -75.73047,
+                    "Y": 0.66755056,
+                    "Z": 12.800525,
+                    "IsFinite": true
+                },
+                "Yaw": 263.99304,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "bigmap-4e8a7ac4",
+                "Map": "bigmap",
+                "Name": "Big Red - 1",
+                "Position": {
+                    "X": -225.36458,
+                    "Y": 1.3489666,
+                    "Z": -133.00412,
+                    "IsFinite": true
+                },
+                "Yaw": 272.64203,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "bigmap-4ff53b73",
+                "Map": "bigmap",
+                "Name": "Big Red - 2",
+                "Position": {
+                    "X": -203.37187,
+                    "Y": 7.1993346,
+                    "Z": -97.5903,
+                    "IsFinite": true
+                },
+                "Yaw": 180.6908,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "bigmap-3d328d27",
+                "Map": "bigmap",
+                "Name": "Storage - 1",
+                "Position": {
+                    "X": -296.53336,
+                    "Y": 1.2302216,
+                    "Z": -116.95183,
+                    "IsFinite": true
+                },
+                "Yaw": 268.78662,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "bigmap-9982d590",
+                "Map": "bigmap",
+                "Name": "Storage - 2",
+                "Position": {
+                    "X": -272.27393,
+                    "Y": 1.1181152,
+                    "Z": -115.39703,
+                    "IsFinite": true
+                },
+                "Yaw": 274.0843,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "bigmap-12b335cf",
+                "Map": "bigmap",
+                "Name": "Old Construction",
+                "Position": {
+                    "X": 68.98761,
+                    "Y": 6.953895,
+                    "Z": -19.707092,
+                    "IsFinite": true
+                },
+                "Yaw": 185.63388,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "bigmap-349c7a64",
+                "Map": "bigmap",
+                "Name": "Snack Shack",
+                "Position": {
+                    "X": 10.510231,
+                    "Y": -0.70587295,
+                    "Z": 35.595676,
+                    "IsFinite": true
+                },
+                "Yaw": 281.73242,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "bigmap-b63ff242",
+                "Map": "bigmap",
+                "Name": "River Front - 1",
+                "Position": {
+                    "X": -42.535248,
+                    "Y": -10.068553,
+                    "Z": -61.56308,
+                    "IsFinite": true
+                },
+                "Yaw": 117.08066,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "bigmap-1c895c92",
+                "Map": "bigmap",
+                "Name": "River Front - 2",
+                "Position": {
+                    "X": -111.4668,
+                    "Y": -8.564715,
+                    "Z": -47.87628,
+                    "IsFinite": true
+                },
+                "Yaw": 284.0794,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "sandbox-d76df31b",
+                "Map": "sandbox",
+                "Name": "Terragroup Outside",
+                "Position": {
+                    "X": 64.9518,
+                    "Y": 22.858408,
+                    "Z": -2.449036,
+                    "IsFinite": true
+                },
+                "Yaw": 91.31143,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "sandbox-2d5a8c1f",
+                "Map": "sandbox",
+                "Name": "Coffee Shop - 1",
+                "Position": {
+                    "X": 15.947371,
+                    "Y": 24.414707,
+                    "Z": 73.693756,
+                    "IsFinite": true
+                },
+                "Yaw": 295.2602,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "sandbox-c357cbe1",
+                "Map": "sandbox",
+                "Name": "Intersection",
+                "Position": {
+                    "X": 96.471054,
+                    "Y": 22.859205,
+                    "Z": 63.275154,
+                    "IsFinite": true
+                },
+                "Yaw": 212.55862,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "sandbox-243354f8",
+                "Map": "sandbox",
+                "Name": "Winery",
+                "Position": {
+                    "X": 123.85258,
+                    "Y": 23.034126,
+                    "Z": 15.843103,
+                    "IsFinite": true
+                },
+                "Yaw": 269.0567,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "sandbox-f72e336b",
+                "Map": "sandbox",
+                "Name": "Coffee Shop - 2",
+                "Position": {
+                    "X": 81.73616,
+                    "Y": 22.8972,
+                    "Z": 135.43271,
+                    "IsFinite": true
+                },
+                "Yaw": 358.05307,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "sandbox-57ea5d26",
+                "Map": "sandbox",
+                "Name": "M",
+                "Position": {
+                    "X": 93.32778,
+                    "Y": 23.057217,
+                    "Z": 224.93404,
+                    "IsFinite": true
+                },
+                "Yaw": 90.400894,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "sandbox-90f6507f",
+                "Map": "sandbox",
+                "Name": "Bus",
+                "Position": {
+                    "X": 55.426826,
+                    "Y": 23.78511,
+                    "Z": 93.20203,
+                    "IsFinite": true
+                },
+                "Yaw": 325.79956,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "sandbox-73abf22a",
+                "Map": "sandbox",
+                "Name": "Parking - 1",
+                "Position": {
+                    "X": 91.78137,
+                    "Y": 14.203762,
+                    "Z": 97.83599,
+                    "IsFinite": true
+                },
+                "Yaw": 268.74792,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "sandbox-893b947a",
+                "Map": "sandbox",
+                "Name": "Parking - 2",
+                "Position": {
+                    "X": 77.70135,
+                    "Y": 14.203755,
+                    "Z": 134.93332,
+                    "IsFinite": true
+                },
+                "Yaw": 105.54723,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "sandbox-6c709f6e",
+                "Map": "sandbox",
+                "Name": "Parking - 3",
+                "Position": {
+                    "X": 81.20792,
+                    "Y": 14.431514,
+                    "Z": 177.46533,
+                    "IsFinite": true
+                },
+                "Yaw": 119.147026,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "sandbox-139e8b53",
+                "Map": "sandbox",
+                "Name": "Bridge of Death",
+                "Position": {
+                    "X": 18.93691,
+                    "Y": 24.268457,
+                    "Z": 29.923088,
+                    "IsFinite": true
+                },
+                "Yaw": 0.09147992,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "sandbox-677292db",
+                "Map": "sandbox",
+                "Name": "Well This Sucks",
+                "Position": {
+                    "X": 85.31649,
+                    "Y": 22.859205,
+                    "Z": 67.2538,
+                    "IsFinite": true
+                },
+                "Yaw": 3.9916856,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "sandbox-1c1ac159",
+                "Map": "sandbox",
+                "Name": "Well This Sucks - 2",
+                "Position": {
+                    "X": 59.481728,
+                    "Y": 22.858402,
+                    "Z": 47.872097,
+                    "IsFinite": true
+                },
+                "Yaw": 219.14096,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "sandbox-81444cb7",
+                "Map": "sandbox",
+                "Name": "Well This Sucks - 3",
+                "Position": {
+                    "X": 72.253235,
+                    "Y": 22.859203,
+                    "Z": 272.63968,
+                    "IsFinite": true
+                },
+                "Yaw": 352.4915,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "interchange-eaeff1ac",
+                "Map": "interchange",
+                "Name": "Oli Dock - 1",
+                "Position": {
+                    "X": -161.02618,
+                    "Y": 21.587566,
+                    "Z": 156.2562,
+                    "IsFinite": true
+                },
+                "Yaw": 30.027328,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "interchange-bb1b2d2c",
+                "Map": "interchange",
+                "Name": "Oli Dock - 2",
+                "Position": {
+                    "X": -164.28815,
+                    "Y": 21.579052,
+                    "Z": 89.50087,
+                    "IsFinite": true
+                },
+                "Yaw": 177.87724,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "interchange-7b421133",
+                "Map": "interchange",
+                "Name": "Oli Dock - 3",
+                "Position": {
+                    "X": -153.3777,
+                    "Y": 27.368755,
+                    "Z": 151.91135,
+                    "IsFinite": true
+                },
+                "Yaw": 86.12596,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "interchange-478b4647",
+                "Map": "interchange",
+                "Name": "Oli Dock - 4",
+                "Position": {
+                    "X": -132.41943,
+                    "Y": 27.368757,
+                    "Z": 103.377014,
+                    "IsFinite": true
+                },
+                "Yaw": 91.17559,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "interchange-1cc2c581",
+                "Map": "interchange",
+                "Name": "Goshan Dock - 1",
+                "Position": {
+                    "X": -182.22868,
+                    "Y": 27.368767,
+                    "Z": 27.147942,
+                    "IsFinite": true
+                },
+                "Yaw": 88.67741,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "interchange-dad8c35a",
+                "Map": "interchange",
+                "Name": "Goshan Dock - 2",
+                "Position": {
+                    "X": -182.44162,
+                    "Y": 27.635464,
+                    "Z": -6.286867,
+                    "IsFinite": true
+                },
+                "Yaw": 89.87707,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "interchange-9f7022f1",
+                "Map": "interchange",
+                "Name": "Oli - 1",
+                "Position": {
+                    "X": 0.25199002,
+                    "Y": 27.77379,
+                    "Z": 137.06358,
+                    "IsFinite": true
+                },
+                "Yaw": 269.19754,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "interchange-2986e432",
+                "Map": "interchange",
+                "Name": "Oli - 2",
+                "Position": {
+                    "X": 27.07197,
+                    "Y": 27.791523,
+                    "Z": 159.53233,
+                    "IsFinite": true
+                },
+                "Yaw": 87.8462,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "interchange-5ed4fdb2",
+                "Map": "interchange",
+                "Name": "Oli - 3",
+                "Position": {
+                    "X": 24.741474,
+                    "Y": 27.348602,
+                    "Z": 112.08603,
+                    "IsFinite": true
+                },
+                "Yaw": 132.89629,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "interchange-73e0cc88",
+                "Map": "interchange",
+                "Name": "Oli - 4",
+                "Position": {
+                    "X": 77.11051,
+                    "Y": 27.348602,
+                    "Z": 119.82864,
+                    "IsFinite": true
+                },
+                "Yaw": 90.44671,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "interchange-d1ae683f",
+                "Map": "interchange",
+                "Name": "Oli - 5",
+                "Position": {
+                    "X": 77.112656,
+                    "Y": 27.3486,
+                    "Z": 132.85205,
+                    "IsFinite": true
+                },
+                "Yaw": 88.44651,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "interchange-cbc34355",
+                "Map": "interchange",
+                "Name": "Oli - 6",
+                "Position": {
+                    "X": -24.63749,
+                    "Y": 27.348608,
+                    "Z": 73.538765,
+                    "IsFinite": true
+                },
+                "Yaw": 181.09627,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "interchange-078b951a",
+                "Map": "interchange",
+                "Name": "TechLight",
+                "Position": {
+                    "X": 98.75388,
+                    "Y": 36.847126,
+                    "Z": 54.193512,
+                    "IsFinite": true
+                },
+                "Yaw": 88.59916,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "interchange-c08634f1",
+                "Map": "interchange",
+                "Name": "Papillion",
+                "Position": {
+                    "X": 98.78979,
+                    "Y": 36.847572,
+                    "Z": 11.458794,
+                    "IsFinite": true
+                },
+                "Yaw": 89.59927,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "interchange-e17a4da2",
+                "Map": "interchange",
+                "Name": "Urban Clothes",
+                "Position": {
+                    "X": 19.9007,
+                    "Y": 36.84213,
+                    "Z": 40.88785,
+                    "IsFinite": true
+                },
+                "Yaw": 271.247,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "interchange-074dfdad",
+                "Map": "interchange",
+                "Name": "Fasion Store",
+                "Position": {
+                    "X": 24.52513,
+                    "Y": 36.842133,
+                    "Z": 67.99867,
+                    "IsFinite": true
+                },
+                "Yaw": 268.24493,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "interchange-1c5bf154",
+                "Map": "interchange",
+                "Name": "Escalators - 1",
+                "Position": {
+                    "X": 79.33768,
+                    "Y": 36.83178,
+                    "Z": -55.082546,
+                    "IsFinite": true
+                },
+                "Yaw": 275.6443,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "interchange-4cbdb7f9",
+                "Map": "interchange",
+                "Name": "Escalators - 2",
+                "Position": {
+                    "X": -38.39391,
+                    "Y": 36.83177,
+                    "Z": -54.25403,
+                    "IsFinite": true
+                },
+                "Yaw": 89.69435,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "interchange-529a8054",
+                "Map": "interchange",
+                "Name": "Escalators - 3",
+                "Position": {
+                    "X": 6.3720894,
+                    "Y": 27.348602,
+                    "Z": -54.083626,
+                    "IsFinite": true
+                },
+                "Yaw": 272.4477,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "interchange-bbbc1fbc",
+                "Map": "interchange",
+                "Name": "Brutal Shop",
+                "Position": {
+                    "X": 27.60049,
+                    "Y": 27.34996,
+                    "Z": -26.00705,
+                    "IsFinite": true
+                },
+                "Yaw": 359.79697,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "interchange-7c71fc04",
+                "Map": "interchange",
+                "Name": "Military Tents",
+                "Position": {
+                    "X": -62.192516,
+                    "Y": 27.348618,
+                    "Z": -50.567135,
+                    "IsFinite": true
+                },
+                "Yaw": 180.19759,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "interchange-06bb59a9",
+                "Map": "interchange",
+                "Name": "Kostin",
+                "Position": {
+                    "X": -34.212082,
+                    "Y": 27.355679,
+                    "Z": -97.95592,
+                    "IsFinite": true
+                },
+                "Yaw": 269.89838,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "interchange-94d6904e",
+                "Map": "interchange",
+                "Name": "Nortex",
+                "Position": {
+                    "X": 98.6179,
+                    "Y": 27.356125,
+                    "Z": -147.67693,
+                    "IsFinite": true
+                },
+                "Yaw": 89.64892,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "interchange-ae4fa1ff",
+                "Map": "interchange",
+                "Name": "Trend",
+                "Position": {
+                    "X": 68.427925,
+                    "Y": 27.357676,
+                    "Z": -150.56564,
+                    "IsFinite": true
+                },
+                "Yaw": 357.44742,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "interchange-c8e2be2d",
+                "Map": "interchange",
+                "Name": "Idea - 1",
+                "Position": {
+                    "X": 68.310715,
+                    "Y": 27.348146,
+                    "Z": -196.01389,
+                    "IsFinite": true
+                },
+                "Yaw": 88.99698,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "interchange-a2cf8ef7",
+                "Map": "interchange",
+                "Name": "Idea - 2",
+                "Position": {
+                    "X": 11.294029,
+                    "Y": 27.350819,
+                    "Z": -242.66664,
+                    "IsFinite": true
+                },
+                "Yaw": 89.94576,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "interchange-af0d1fa1",
+                "Map": "interchange",
+                "Name": "Idea - 3",
+                "Position": {
+                    "X": 88.70348,
+                    "Y": 32.46003,
+                    "Z": -296.58212,
+                    "IsFinite": true
+                },
+                "Yaw": 267.89587,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "interchange-28d3a349",
+                "Map": "interchange",
+                "Name": "Idea - 4",
+                "Position": {
+                    "X": 8.563124,
+                    "Y": 27.349308,
+                    "Z": -278.311,
+                    "IsFinite": true
+                },
+                "Yaw": 1.4984527,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "interchange-eef3281d",
+                "Map": "interchange",
+                "Name": "Idea - 5",
+                "Position": {
+                    "X": -50.039013,
+                    "Y": 27.507652,
+                    "Z": -302.922,
+                    "IsFinite": true
+                },
+                "Yaw": 180.8466,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "interchange-eeb9d1e1",
+                "Map": "interchange",
+                "Name": "Idea - 6",
+                "Position": {
+                    "X": -44.400196,
+                    "Y": 27.507662,
+                    "Z": -215.45251,
+                    "IsFinite": true
+                },
+                "Yaw": 3.5976672,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "interchange-b779b06c",
+                "Map": "interchange",
+                "Name": "Idea Dock - 1",
+                "Position": {
+                    "X": -158.12231,
+                    "Y": 27.368864,
+                    "Z": -309.63055,
+                    "IsFinite": true
+                },
+                "Yaw": 269.89832,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "interchange-b3704e01",
+                "Map": "interchange",
+                "Name": "Idea Dock - 2",
+                "Position": {
+                    "X": -157.53287,
+                    "Y": 27.348776,
+                    "Z": -180.19708,
+                    "IsFinite": true
+                },
+                "Yaw": 358.7475,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "interchange-83d7dab5",
+                "Map": "interchange",
+                "Name": "Power",
+                "Position": {
+                    "X": -204.05708,
+                    "Y": 21.595226,
+                    "Z": -347.22137,
+                    "IsFinite": true
+                },
+                "Yaw": 272.09625,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "interchange-a6500ada",
+                "Map": "interchange",
+                "Name": "Sign",
+                "Position": {
+                    "X": 46.16449,
+                    "Y": 26.078884,
+                    "Z": -374.34283,
+                    "IsFinite": true
+                },
+                "Yaw": 17.296307,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "interchange-7e4150d7",
+                "Map": "interchange",
+                "Name": "GoKart",
+                "Position": {
+                    "X": 154.47424,
+                    "Y": 21.940678,
+                    "Z": -247.26373,
+                    "IsFinite": true
+                },
+                "Yaw": 354.5963,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "interchange-70b7b0cd",
+                "Map": "interchange",
+                "Name": "Parking Lot Mil Tents",
+                "Position": {
+                    "X": 163.96335,
+                    "Y": 21.587566,
+                    "Z": -66.314064,
+                    "IsFinite": true
+                },
+                "Yaw": 315.7987,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "interchange-50d27d4f",
+                "Map": "interchange",
+                "Name": "Sign - 2",
+                "Position": {
+                    "X": 205.06483,
+                    "Y": 22.493145,
+                    "Z": 214.80368,
+                    "IsFinite": true
+                },
+                "Yaw": 69.29838,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "interchange-04a16cda",
+                "Map": "interchange",
+                "Name": "Shipping",
+                "Position": {
+                    "X": 135.16167,
+                    "Y": 21.587566,
+                    "Z": 272.69003,
+                    "IsFinite": true
+                },
+                "Yaw": 268.79715,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "shoreline-4b9d542d",
+                "Map": "shoreline",
+                "Name": "Radio Tower",
+                "Position": {
+                    "X": -710.11847,
+                    "Y": -27.232199,
+                    "Z": 98.21976,
+                    "IsFinite": true
+                },
+                "Yaw": 88.65832,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "shoreline-61bd3431",
+                "Map": "shoreline",
+                "Name": "Weather Station - 1",
+                "Position": {
+                    "X": -509.61804,
+                    "Y": -13.583685,
+                    "Z": 263.29242,
+                    "IsFinite": true
+                },
+                "Yaw": 268.50827,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "shoreline-4ca9d66a",
+                "Map": "shoreline",
+                "Name": "Weather Station - 2",
+                "Position": {
+                    "X": -506.6561,
+                    "Y": -18.149364,
+                    "Z": 238.37837,
+                    "IsFinite": true
+                },
+                "Yaw": 88.208176,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "shoreline-19b8919d",
+                "Map": "shoreline",
+                "Name": "Weather Station - 3",
+                "Position": {
+                    "X": -463.81873,
+                    "Y": -25.096573,
+                    "Z": 270.94446,
+                    "IsFinite": true
+                },
+                "Yaw": 87.15851,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "shoreline-1a596042",
+                "Map": "shoreline",
+                "Name": "Military Camp - 1",
+                "Position": {
+                    "X": -612.0526,
+                    "Y": -29.621069,
+                    "Z": -173.82213,
+                    "IsFinite": true
+                },
+                "Yaw": 193.15657,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "shoreline-d8ae2788",
+                "Map": "shoreline",
+                "Name": "Military Camp - 2",
+                "Position": {
+                    "X": -631.1728,
+                    "Y": -26.621237,
+                    "Z": -225.43655,
+                    "IsFinite": true
+                },
+                "Yaw": 104.306114,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "shoreline-ccac9a27",
+                "Map": "shoreline",
+                "Name": "Military Camp - 3",
+                "Position": {
+                    "X": -695.0617,
+                    "Y": -26.619907,
+                    "Z": -212.14868,
+                    "IsFinite": true
+                },
+                "Yaw": 289.055,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "shoreline-f29e4652",
+                "Map": "shoreline",
+                "Name": "East Wing - 1",
+                "Position": {
+                    "X": -353.9017,
+                    "Y": -0.5782535,
+                    "Z": -87.04689,
+                    "IsFinite": true
+                },
+                "Yaw": 98.25479,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "shoreline-7b249cef",
+                "Map": "shoreline",
+                "Name": "East Wing - 2",
+                "Position": {
+                    "X": -360.82202,
+                    "Y": 7.1211567,
+                    "Z": -84.53538,
+                    "IsFinite": true
+                },
+                "Yaw": 83.70389,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "shoreline-b3896fee",
+                "Map": "shoreline",
+                "Name": "Well This Sucks - 1",
+                "Position": {
+                    "X": -251.37837,
+                    "Y": -4.878847,
+                    "Z": -72.17217,
+                    "IsFinite": true
+                },
+                "Yaw": 181.20393,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "shoreline-3dc2cc29",
+                "Map": "shoreline",
+                "Name": "Well This Sucks - 2",
+                "Position": {
+                    "X": -251.65944,
+                    "Y": -3.9087298,
+                    "Z": -105.469086,
+                    "IsFinite": true
+                },
+                "Yaw": 180.60403,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "shoreline-0e7a864a",
+                "Map": "shoreline",
+                "Name": "North Bunker",
+                "Position": {
+                    "X": -154.23273,
+                    "Y": -15.940906,
+                    "Z": -296.0296,
+                    "IsFinite": true
+                },
+                "Yaw": 19.503756,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "shoreline-4c7fc110",
+                "Map": "shoreline",
+                "Name": "West Wing - 1",
+                "Position": {
+                    "X": -159.76917,
+                    "Y": -0.5782459,
+                    "Z": -74.64502,
+                    "IsFinite": true
+                },
+                "Yaw": 0.10347979,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "shoreline-9325e23d",
+                "Map": "shoreline",
+                "Name": "West Wing - 2",
+                "Position": {
+                    "X": -157.53297,
+                    "Y": 2.3362901,
+                    "Z": -82.64722,
+                    "IsFinite": true
+                },
+                "Yaw": 85.80268,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "shoreline-904e3e26",
+                "Map": "shoreline",
+                "Name": "Bus Terminal",
+                "Position": {
+                    "X": -122.28935,
+                    "Y": -21.398306,
+                    "Z": -22.408504,
+                    "IsFinite": true
+                },
+                "Yaw": 172.75208,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "shoreline-60392aa8",
+                "Map": "shoreline",
+                "Name": "Power - 1",
+                "Position": {
+                    "X": -249.97977,
+                    "Y": -40.516903,
+                    "Z": 184.55045,
+                    "IsFinite": true
+                },
+                "Yaw": 236.69894,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "shoreline-ab751af3",
+                "Map": "shoreline",
+                "Name": "Power - 2",
+                "Position": {
+                    "X": -233.66406,
+                    "Y": -40.684055,
+                    "Z": 161.6734,
+                    "IsFinite": true
+                },
+                "Yaw": 177.74908,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "shoreline-9e7534a2",
+                "Map": "shoreline",
+                "Name": "Power - 3",
+                "Position": {
+                    "X": -225.25035,
+                    "Y": -34.431675,
+                    "Z": 195.11816,
+                    "IsFinite": true
+                },
+                "Yaw": 0.64891523,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "shoreline-61a38aac",
+                "Map": "shoreline",
+                "Name": "Gas Station - 1",
+                "Position": {
+                    "X": -199.69565,
+                    "Y": -55.20725,
+                    "Z": 385.9434,
+                    "IsFinite": true
+                },
+                "Yaw": 282.94867,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "shoreline-576d8992",
+                "Map": "shoreline",
+                "Name": "Gas Station - 2",
+                "Position": {
+                    "X": -174.28064,
+                    "Y": -55.483116,
+                    "Z": 398.62872,
+                    "IsFinite": true
+                },
+                "Yaw": 78.34849,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "shoreline-d745374b",
+                "Map": "shoreline",
+                "Name": "Construction - 1",
+                "Position": {
+                    "X": 45.758102,
+                    "Y": -46.539314,
+                    "Z": 133.24202,
+                    "IsFinite": true
+                },
+                "Yaw": 128.99701,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "shoreline-8abe31d0",
+                "Map": "shoreline",
+                "Name": "Construction - 2",
+                "Position": {
+                    "X": 53.998474,
+                    "Y": -46.556656,
+                    "Z": 100.974335,
+                    "IsFinite": true
+                },
+                "Yaw": 78.59711,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "shoreline-534f876a",
+                "Map": "shoreline",
+                "Name": "Cottage - 1",
+                "Position": {
+                    "X": 94.740585,
+                    "Y": -47.872673,
+                    "Z": 116.27708,
+                    "IsFinite": true
+                },
+                "Yaw": 175.04585,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "shoreline-15d96a65",
+                "Map": "shoreline",
+                "Name": "Cottage - 2",
+                "Position": {
+                    "X": 126.40901,
+                    "Y": -48.20618,
+                    "Z": 132.43791,
+                    "IsFinite": true
+                },
+                "Yaw": 2.5461197,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "shoreline-c9cc3907",
+                "Map": "shoreline",
+                "Name": "Cottage - 3",
+                "Position": {
+                    "X": 170.6283,
+                    "Y": -48.215218,
+                    "Z": 110.90509,
+                    "IsFinite": true
+                },
+                "Yaw": 95.29604,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "shoreline-04e59cb9",
+                "Map": "shoreline",
+                "Name": "Village - 1",
+                "Position": {
+                    "X": 284.75214,
+                    "Y": -50.365734,
+                    "Z": -48.939598,
+                    "IsFinite": true
+                },
+                "Yaw": 269.2934,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "shoreline-c9609ccd",
+                "Map": "shoreline",
+                "Name": "Village - 2",
+                "Position": {
+                    "X": 324.42282,
+                    "Y": -54.510883,
+                    "Z": -100.336624,
+                    "IsFinite": true
+                },
+                "Yaw": 89.84297,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "shoreline-af8b6cd0",
+                "Map": "shoreline",
+                "Name": "Village - 3",
+                "Position": {
+                    "X": 351.7956,
+                    "Y": -54.36973,
+                    "Z": -129.69725,
+                    "IsFinite": true
+                },
+                "Yaw": 352.0935,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "shoreline-45123fc0",
+                "Map": "shoreline",
+                "Name": "Tractor",
+                "Position": {
+                    "X": 395.51666,
+                    "Y": -54.60122,
+                    "Z": 11.5260315,
+                    "IsFinite": true
+                },
+                "Yaw": 320.79233,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "shoreline-9ca5bac8",
+                "Map": "shoreline",
+                "Name": "Village - 4",
+                "Position": {
+                    "X": 398.75186,
+                    "Y": -53.964283,
+                    "Z": 99.4714,
+                    "IsFinite": true
+                },
+                "Yaw": 271.69086,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "shoreline-dbe33bb2",
+                "Map": "shoreline",
+                "Name": "Village - 5",
+                "Position": {
+                    "X": 247.08722,
+                    "Y": -55.677216,
+                    "Z": 149.53491,
+                    "IsFinite": true
+                },
+                "Yaw": 277.13974,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "shoreline-1a818fe3",
+                "Map": "shoreline",
+                "Name": "Campsite",
+                "Position": {
+                    "X": 42.234634,
+                    "Y": -21.383503,
+                    "Z": -128.25085,
+                    "IsFinite": true
+                },
+                "Yaw": 199.33794,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "shoreline-1f0765b7",
+                "Map": "shoreline",
+                "Name": "Woods - 1",
+                "Position": {
+                    "X": -274.34192,
+                    "Y": -31.446865,
+                    "Z": 40.763023,
+                    "IsFinite": true
+                },
+                "Yaw": 182.08675,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "shoreline-13750521",
+                "Map": "shoreline",
+                "Name": "Woods - 2",
+                "Position": {
+                    "X": -108.95648,
+                    "Y": -36.483067,
+                    "Z": 96.91295,
+                    "IsFinite": true
+                },
+                "Yaw": 353.53644,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "shoreline-13e89256",
+                "Map": "shoreline",
+                "Name": "Woods - 3",
+                "Position": {
+                    "X": -358.24762,
+                    "Y": -43.964012,
+                    "Z": 216.94467,
+                    "IsFinite": true
+                },
+                "Yaw": 250.5852,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "shoreline-e1accdf9",
+                "Map": "shoreline",
+                "Name": "Woods - 4",
+                "Position": {
+                    "X": -34.648525,
+                    "Y": -48.219532,
+                    "Z": 330.2767,
+                    "IsFinite": true
+                },
+                "Yaw": 59.68532,
+                "SearchRadius": 0,
+                "Enabled": true
             }
         ],
         "Loot": [
