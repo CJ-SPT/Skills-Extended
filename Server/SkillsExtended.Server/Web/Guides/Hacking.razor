@@ -1,0 +1,29 @@
+@page "/skills-extended/guides/hacking"
+@layout GuideLayout
+@attribute [AllowAnonymous]
+
+<PageTitle>Hacking guide · Skills Extended</PageTitle>
+<header class="se-page-heading"><div><p class="se-eyebrow">Player handbook</p><h1>Hacking</h1><p>Find the security core and destroy it before your coherence reaches zero.</p></div></header>
+<section class="se-panel"><h2>Equipment and starting</h2><p>Craft a reusable Modified PDA at Workbench level 2 and carry it as a living PMC. Approach the active reader side of a supported electronic or keycard door, stop moving, and choose Hack with PDA. Power and native access conditions still apply; some systems cannot be bypassed.</p></section>
+<figure class="se-panel se-guide-figure">
+    <img src="/skills-extended/guides/hacking.png" alt="Schematic hacking network showing a left entrance, a connected exploration path, defense branches, a security core on the right and utility slots below." width="1536" height="1024" loading="lazy" />
+    <figcaption>Schematic example — each attempt generates its own network. <a href="/skills-extended/guides/hacking.png">View full illustration</a></figcaption>
+    <ol><li><strong>Entrance:</strong> your starting cleared node.</li><li><strong>Exploration:</strong> follow connected accessible nodes.</li><li><strong>Defenses:</strong> revealed active defenses block neighboring nodes.</li><li><strong>Core:</strong> destroy this to unlock the door.</li><li><strong>Utilities:</strong> collect tools into your limited slots and activate them when useful.</li></ol>
+</figure>
+<section class="se-panel"><h2>Controls</h2>
+    <dl class="se-guide-controls"><dt>Left click a node</dt><dd>Reveal an accessible unknown node, collect a utility, open a data cache, or attack a revealed defense/core.</dd><dt>Hover a node</dt><dd>Read its details and effect.</dd><dt>Click a utility / number keys</dt><dd>Activate the matching slot (1–3 by default, with a fourth slot at elite by default). For Kernel Rot or Secondary Vector, then click a revealed accessible defense or core. Click the selected utility again to deselect it.</dd><dt>Abort / Escape</dt><dd>End the attempt.</dd></dl>
+</section>
+<section class="se-panel"><h2>Objective and interface cues</h2>
+    <ol><li>Explore from the entrance through connected cleared nodes. Revealing a defense is different from attacking it.</li><li>Read defenses and remaining coherence before fighting. Strength is your attack damage; coherence is your survival pool.</li><li>Collect useful utilities and attack the security core until its coherence reaches zero.</li></ol>
+    <p>A surviving defense or core retaliates when attacked if it has attack strength. Destroying it avoids that retaliation. Empty cleared nodes can display distance clues to the nearest remaining core, utility, or data cache; a low clue is not a guarantee that the core is nearby. Data caches can expose a utility or defense.</p>
+</section>
+<section class="se-panel"><h2>Defenses and utilities</h2>
+    <dl class="se-guide-controls"><dt>Firewall / Antivirus</dt><dd>Firewall withstands more damage; Antivirus is fragile but strikes harder. Both obstruct exploration.</dd><dt>Restoration</dt><dd>Repairs another damaged revealed defense by 10 each turn while active.</dd><dt>Suppressor</dt><dd>Reduces your strength by 5 while revealed and active, with a minimum strength of 5.</dd><dt>Self Repair</dt><dd>Restores 8 coherence each turn for 3 turns, up to your starting coherence.</dd><dt>Kernel Rot</dt><dd>Halves a revealed target's current coherence, rounded down.</dd><dt>Polymorphic Shield</dt><dd>Prevents the next two retaliations.</dd><dt>Secondary Vector</dt><dd>Deals 20 damage per turn for 3 turns to a revealed target.</dd></dl>
+    <p>Utilities advance the turn. Active repair/vector effects tick on turns, and Restoration can heal while you explore. You cannot collect a utility when your slots are full. Slot count depends on skill and server settings.</p>
+</section>
+<section class="se-panel"><h2>Success, failure, and practical tips</h2>
+    <p>Destroying the core unlocks the door. Reaching zero coherence loses the attempt. Losing or choosing Abort consumes one of the door's configured attempts for this raid. Once attempts run out, use the normal keycard/access method.</p>
+    <ul><li>Explore alternate branches before fighting every defense.</li><li>Remove Restoration or Suppressor when their ongoing effects make a route expensive.</li><li>Use repair before you are nearly out of coherence, and reserve targeted utilities for costly enemies or the core.</li><li>Check the interaction's remaining attempts before starting again.</li></ul>
+    <p>At the main menu, enter <code>hacking 2 0 1</code> in the console for difficulty 2, skill 0, seed 1. Practice changes no raid doors or progression; its Retry button starts a new board. Difficulty ranges from 1–3 and skill from 0–51.</p>
+</section>
+<p class="se-notice">Supported doors, attempt limits, board difficulty, and skill bonuses depend on server configuration.</p>

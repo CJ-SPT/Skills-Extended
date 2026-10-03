@@ -7,6 +7,8 @@
     <DeploySkillsExtended>false</DeploySkillsExtended>
   </PropertyGroup>
   <ItemGroup>
+    <None Include="../../Server/SkillsExtended.Server/wwwroot/guides/*.png"
+          Link="guides/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <ProjectReference Include="../../Server/SkillsExtended.Server/SkillsExtended.Server.csproj" />
     <None
       Include="../../Server/SkillsExtended.Server/Resources/Configs/*.json"

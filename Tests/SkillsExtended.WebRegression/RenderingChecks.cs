@@ -59,6 +59,9 @@ public static class RenderingChecks
                     && !html.Contains("Could not load configuration"),
                 $"Render actual {skill.Name} page with its layout"
             );
+            if (skill.Key is "LockPicking" or "Hacking" or "SignalsIntelligence")
+                check(html.Contains("player guide") && html.Contains("/skills-extended/guides/"),
+                    $"{skill.Name} settings link to its public guide");
             await Write(output, skill.Slug, html);
         }
 
@@ -84,6 +87,8 @@ public static class RenderingChecks
             "Render actual overview with all skill cards"
         );
         await Write(output, "overview", home);
+        check(home.Contains("Read mini-game guides") && home.Contains("Mini-game guides"),
+            "Overview and editor navigation link to the guide hub");
         var accessSession = new EditorSession(
             await homeProvider.GetRequiredService<ConfigController>().GetSnapshotAsync()
         );
@@ -160,6 +165,28 @@ public static class RenderingChecks
             "Render the themed release history with every existing version"
         );
         await Write(output, "release-notes", releases);
+        foreach (var guide in typeof(Home).Assembly.GetTypes().Where(type =>
+            type.GetCustomAttributes<RouteAttribute>().Any(route => route.Template.StartsWith("/skills-extended/guides", StringComparison.Ordinal))))
+        {
+            var route = guide.GetCustomAttribute<RouteAttribute>()!.Template;
+            var guideHtml = await homeRenderer.Dispatcher.InvokeAsync(async () =>
+            {
+                RenderFragment body = builder =>
+                {
+                    builder.OpenComponent(0, guide);
+                    builder.CloseComponent();
+                };
+                var root = await homeRenderer.RenderComponentAsync<GuideLayout>(
+                    ParameterView.FromDictionary(new Dictionary<string, object?> { ["Body"] = body }));
+                return root.ToHtmlString();
+            });
+            check(guideHtml.Contains("loading=\"lazy\"") && guideHtml.Contains("se-guide-nav")
+                && !guideHtml.Contains("se-savebar"), $"Render illustrated public guide {route}");
+            if (route != "/skills-extended/guides")
+                check(guideHtml.Contains("<figcaption>") && guideHtml.Contains("Controls")
+                    && guideHtml.Contains("Success"), $"Guide {route} includes illustration legend, controls and outcomes");
+            await Write(output, route == "/skills-extended/guides" ? "guides-index" : "guides-" + route.Split('/').Last(), guideHtml);
+        }
         Console.WriteLine($"Rendered offline HTML fixtures: {output}");
     }
 
@@ -167,6 +194,9 @@ public static class RenderingChecks
     {
         // Only asset paths are rewritten; layout and page markup come from the real components.
         markup = markup.Replace("/skills-extended/icons/", "../icons/");
+        markup = markup.Replace("src=\"/skills-extended/guides/", "src=\"../guides/");
+        foreach (var image in new[] { "lockpicking", "hacking", "signals" })
+            markup = markup.Replace($"href=\"/skills-extended/guides/{image}.png\"", $"href=\"../guides/{image}.png\"");
         var css = await File.ReadAllTextAsync(Path.Combine(AppContext.BaseDirectory, "editor.css"));
         await File.WriteAllTextAsync(
             Path.Combine(directory, name + ".html"),

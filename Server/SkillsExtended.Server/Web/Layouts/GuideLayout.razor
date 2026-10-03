@@ -1,0 +1,22 @@
+@inherits LayoutComponentBase
+
+<HeadContent>
+    <link href="/skills-extended/editor.css" rel="stylesheet" />
+</HeadContent>
+
+<div class="se-app se-guides">
+    <a class="se-skip-link" href="#se-content">Skip to content</a>
+    <header class="se-topbar">
+        <a class="se-brand" href="/skills-extended/guides">SKILLS <span>EXTENDED</span></a>
+        <a class="se-source-link" href="/skills-extended">Administrator configuration</a>
+    </header>
+    <nav class="se-guide-nav" aria-label="Mini-game guides">
+        <NavLink href="/skills-extended/guides" Match="NavLinkMatch.All">All guides</NavLink>
+        <NavLink href="/skills-extended/guides/lockpicking">Lockpicking</NavLink>
+        <NavLink href="/skills-extended/guides/hacking">Hacking</NavLink>
+        <NavLink href="/skills-extended/guides/signals">Signals Intelligence</NavLink>
+    </nav>
+    <main id="se-content" class="se-content" tabindex="-1">
+        <div class="se-guide-content">@Body</div>
+    </main>
+</div>

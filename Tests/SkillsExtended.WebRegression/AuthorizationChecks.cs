@@ -36,6 +36,28 @@ public static class AuthorizationChecks
         foreach (var page in pages)
         {
             var attributes = page.GetCustomAttributes<AuthorizeAttribute>().ToArray();
+            var isGuide = page.GetCustomAttributes<RouteAttribute>()
+                .All(route => route.Template == "/skills-extended/guides"
+                    || route.Template.StartsWith("/skills-extended/guides/", StringComparison.Ordinal));
+            if (isGuide)
+            {
+                check(attributes.Length == 0 && page.IsDefined(typeof(AllowAnonymousAttribute), true),
+                    $"{page.Name} explicitly permits anonymous guide access");
+                foreach (var principal in new[] { anonymous, user, admin })
+                {
+                    await using var guideRenderer = new HtmlRenderer(provider, provider.GetRequiredService<ILoggerFactory>());
+                    var guideHtml = await guideRenderer.Dispatcher.InvokeAsync(async () =>
+                    {
+                        var root = await guideRenderer.RenderComponentAsync<RouteHost>(ParameterView.FromDictionary(
+                            new Dictionary<string, object?> { [nameof(RouteHost.Page)] = page, [nameof(RouteHost.User)] = principal }));
+                        return root.ToHtmlString();
+                    });
+                    check(guideHtml.Contains("se-guide-content") && guideHtml.Contains("<h1>")
+                        && !guideHtml.Contains("se-savebar") && !guideHtml.Contains("Loading configuration"),
+                        $"{page.Name} renders publicly without editor services for {principal.Identity?.Name ?? "anonymous"}");
+                }
+                continue;
+            }
             check(attributes.Any(attribute => attribute.Policy == "Administrator")
                 && !page.IsDefined(typeof(AllowAnonymousAttribute), true),
                 $"{page.Name} requires the SPT Administrator policy");

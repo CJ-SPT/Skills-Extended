@@ -8,6 +8,7 @@ const { chromium } = require(process.env.PLAYWRIGHT_MODULE_PATH || "playwright")
 (async () => {
     const directory = path.resolve(process.argv[2] || path.join(__dirname, "bin/Release/net10.0/rendered"));
     const accessOnly = process.argv.includes("--client-editor-access");
+    const guidesOnly = process.argv.includes("--guides-only");
     const browser = await chromium.launch({
         headless: true,
         executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH || undefined,
@@ -17,7 +18,7 @@ const { chromium } = require(process.env.PLAYWRIGHT_MODULE_PATH || "playwright")
     try {
         for (const width of [2560, 1440, 768, 390]) {
             const page = await browser.newPage({ viewport: { width, height: 1000 } });
-            for (const file of fs.readdirSync(directory).filter(file => file.endsWith(".html") && (!accessOnly || file === "client-editor-access.html"))) {
+            for (const file of fs.readdirSync(directory).filter(file => file.endsWith(".html") && (!accessOnly || file === "client-editor-access.html") && (!guidesOnly || file.startsWith("guides-")))) {
                 await page.goto(pathToFileURL(path.join(directory, file)).href);
                 await page.locator(".se-app").waitFor();
                 assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), `${file}: viewport overflow at ${width}`);
@@ -43,6 +44,28 @@ const { chromium } = require(process.env.PLAYWRIGHT_MODULE_PATH || "playwright")
                     assert.equal(await access.getByRole("checkbox").count(), 3);
                     assert.equal(await access.getByRole("checkbox", { checked: true }).count(), 2);
                     await access.screenshot({ path: path.join(directory, `client-editor-access-${width}.png`) });
+                    checks++;
+                    continue;
+                }
+                if (file.startsWith("guides-")) {
+                    assert.equal(await page.locator("h1").count(), 1);
+                    assert.equal(await page.locator(".se-savebar, input, select").count(), 0);
+                    assert.equal(await page.getByRole("navigation", { name: "Mini-game guides" }).getByRole("link").count(), 4);
+                    await page.locator(".se-guides img").first().scrollIntoViewIfNeeded();
+                    await page.waitForFunction(() => [...document.querySelectorAll(".se-guides img")].every(img => img.complete && img.naturalWidth > 0));
+                    assert.ok(await page.locator(".se-guides img").evaluateAll(images => images.every(img =>
+                        img.alt.length > 20 && img.hasAttribute("width") && img.hasAttribute("height")
+                        && img.getBoundingClientRect().width <= img.parentElement.clientWidth)));
+                    const centered = await page.locator(".se-guide-content").evaluate(element => {
+                        const rect = element.getBoundingClientRect();
+                        return Math.abs((rect.left + rect.right) / 2 - innerWidth / 2) <= 1;
+                    });
+                    assert.ok(centered, `${file}: public guide is centered at ${width}`);
+                    await page.evaluate(() => window.scrollTo(0, 0));
+                    await page.keyboard.press("Tab");
+                    assert.equal(await page.locator(":focus").textContent(), "Skip to content");
+                    await page.locator(":focus").evaluate(element => element.blur());
+                    await page.screenshot({ path: path.join(directory, `${file.slice(0, -5)}-${width}.png`), fullPage: true });
                     checks++;
                     continue;
                 }
@@ -113,14 +136,15 @@ const { chromium } = require(process.env.PLAYWRIGHT_MODULE_PATH || "playwright")
             }
 
             // Show the real drawer in its open CSS state; event handling is verified separately in Blazor checks.
-            if (width === 390 && !accessOnly) {
+            if (width === 390 && !accessOnly && !guidesOnly) {
+                await page.goto(pathToFileURL(path.join(directory, "overview.html")).href);
                 await page.evaluate(() => document.querySelector(".se-sidebar").classList.add("se-open"));
                 assert.ok(await page.getByRole("navigation", { name: "Skills Extended navigation" }).isVisible());
                 await page.screenshot({ path: path.join(directory, "navigation-390.png") });
             }
             await page.close();
         }
-        console.log(`${checks} rendered page/viewport checks passed (layout, field labels, save controls, keyboard entry).`);
+        console.log(`${checks} rendered page/viewport checks passed (${guidesOnly ? "public guides, images, layout, navigation, keyboard entry" : "layout, field labels, save controls, keyboard entry"}).`);
     } finally {
         await browser.close();
     }

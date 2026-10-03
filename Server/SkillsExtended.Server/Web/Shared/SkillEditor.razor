@@ -19,6 +19,11 @@
 
 <p class="se-notice">Save your changes, then restart connected game clients to load the new settings.</p>
 
+@if (SkillKey is "LockPicking" or "Hacking" or "SignalsIntelligence")
+{
+    <p class="se-notice"><a href="@GuideUrl">Read the @Definition.Name player guide</a></p>
+}
+
 @foreach (var group in Definition.Fields.GroupBy(f => f.Group))
 {
     <section class="se-panel" aria-label="@group.Key">
@@ -63,4 +68,10 @@
     [Parameter, EditorRequired]
     public string SkillKey { get; set; } = "";
     private SkillDefinition Definition => SkillCatalog.All.Single(s => s.Key == SkillKey);
+    private string GuideUrl => "/skills-extended/guides/" + (SkillKey switch
+    {
+        "LockPicking" => "lockpicking",
+        "Hacking" => "hacking",
+        _ => "signals",
+    });
 }

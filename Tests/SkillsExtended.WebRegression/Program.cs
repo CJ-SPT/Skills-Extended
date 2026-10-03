@@ -15,6 +15,13 @@ void Check(bool condition, string name)
 }
 
 var source = Path.Combine(AppContext.BaseDirectory, "Resources", "Configs");
+if (args.Contains("--guides-only"))
+{
+    await AuthorizationChecks.Run(Check);
+    await RenderingChecks.Run(Check);
+    Console.WriteLine($"Guides and protected web routes: {checks} checks passed.");
+    return;
+}
 var store = new ConfigStore(source, new ConfigFiles());
 var shipped = await store.ReadSnapshotAsync();
 Check(

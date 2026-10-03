@@ -1,0 +1,25 @@
+@page "/skills-extended/guides/signals"
+@layout GuideLayout
+@attribute [AllowAnonymous]
+
+<PageTitle>Signals Intelligence guide · Skills Extended</PageTitle>
+<header class="se-page-heading"><div><p class="se-eyebrow">Player handbook</p><h1>Signals Intelligence</h1><p>Tune, triangulate, search, and pair with a hidden cache.</p></div></header>
+<section class="se-panel"><h2>Equipment and starting</h2><p>Carry a reusable Modified PDA, crafted at Workbench level 2, into a supported PMC raid. Use Open receiver in the PDA's inventory context menu. Signals must be enabled and the exact map must have an enabled cache placement. Factory is excluded; a supported map with no authored placement has no hunt.</p></section>
+<figure class="se-panel se-guide-figure">
+    <img src="/skills-extended/guides/signals.png" alt="Schematic receiver with a spectrum and frequency, bearing and phase controls beside two separated observation points whose bearings cross in a cache search area." width="1536" height="1024" loading="lazy" />
+    <figcaption>Schematic example — the crossing is an estimate, not an exact cache marker. <a href="/skills-extended/guides/signals.png">View full illustration</a></figcaption>
+    <ol><li><strong>Frequency:</strong> tune the transmission peak.</li><li><strong>Bearing:</strong> sweep for the strongest direction.</li><li><strong>Phase:</strong> align the moving signal when pairing at the case.</li><li><strong>Readings:</strong> record from separated positions.</li><li><strong>Fix:</strong> crossing bearings narrow the search area and recover an access code.</li></ol>
+</figure>
+<section class="se-panel"><h2>Controls</h2>
+    <dl class="se-guide-controls"><dt>Left / Right arrows</dt><dd>Decrease / increase frequency. You can also drag its slider.</dd><dt>Down / Up arrows</dt><dd>Decrease / increase bearing. Its slider also works.</dd><dt>Q / E</dt><dd>Decrease / increase phase alignment when pairing.</dd><dt>Enter / Record button</dt><dd>Start recording; press again to cancel. In pairing mode this starts pairing.</dd><dt>Escape / movement</dt><dd>Close the receiver. Moving, jumping, sprinting, or changing stance interrupts receiver use in a raid.</dd></dl>
+</section>
+<section class="se-panel"><h2>Objective and interface cues</h2>
+    <ol><li>Use the spectrum to find the frequency peak, then sweep the bearing for strongest reception. Follow the alignment hints.</li><li>Start recording and hold still with frequency and bearing aligned until the reading completes.</li><li>Close the receiver and move sideways far enough from previous readings. Retune the bearing and record again; crossing bearings are more useful than nearly parallel ones.</li><li>When a fix is established, use the bearing plot and search radius to find the case. Additional useful readings can improve the estimate.</li><li>Approach the case and choose Pair PDA · Signal cache. Align the moving phase signal and maintain it while pairing completes, then loot the unlocked case.</li></ol>
+    <p>The recovered access code appears after a crossing fix; there is no manual code-entry step. Reception helps with tuning, while the plot estimates position. Near the search area, proximity pulses become faster as you approach the case, and their pitch helps indicate heading.</p>
+</section>
+<section class="se-panel"><h2>Success, interruption, and practical tips</h2>
+    <p>Successful pairing unlocks the supply cache. Moving or losing alignment interrupts progress; stop and realign before recording again. Readings taken too close to your earlier positions are rejected, and near-parallel readings may produce no fix. Follow the receiver's status message rather than repeatedly recording in place.</p>
+    <ul><li>Change observation position sideways relative to the suspected signal, rather than walking straight toward it for every reading.</li><li>Wait for a completed reading before moving. Frequency alone is not enough: bearing must also be aligned.</li><li>Search the plotted area and listen for proximity cues. Terrain and bearing uncertainty mean the estimate can differ from the real case location.</li><li>During pairing, track the moving phase instead of leaving the control at one angle.</li></ul>
+    <p>At the main menu, enter <code>signals 0 1</code> in the console to practice at skill 0 with seed 1. Practice uses simulated movement controls and awards no XP or loot. Practice skill levels range from 0–51.</p>
+</section>
+<p class="se-notice">Placements, minimum reading separation, recording and pairing durations, rewards, and skill bonuses depend on server settings.</p>

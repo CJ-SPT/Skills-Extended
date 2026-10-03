@@ -1,0 +1,42 @@
+@page "/skills-extended/guides/lockpicking"
+@layout GuideLayout
+@attribute [AllowAnonymous]
+
+<PageTitle>Lockpicking guide · Skills Extended</PageTitle>
+<header class="se-page-heading"><div><p class="se-eyebrow">Player handbook</p><h1>Lockpicking</h1><p>Feel for binding pins and balance lift against tension.</p></div></header>
+<section class="se-panel">
+    <h2>Equipment and starting</h2>
+    <p>Craft a Lockpick set at Workbench level 1 and carry a usable set as a living PMC. Approach a supported locked door, stop moving, and select its lockpicking interaction. Native door requirements still apply. All configured lock tiers can be attempted at any skill level; higher skill improves control and resilience.</p>
+</section>
+<figure class="se-panel se-guide-figure">
+    <img src="/skills-extended/guides/lockpicking.png" alt="Abstract spring-pin cutaway with horizontal depth and upward lift arrows, a turning-pressure indicator, and plain, spool and serrated pin shapes." width="1536" height="1024" loading="lazy" />
+    <figcaption>Schematic example — abstract control and pin-shape illustration, not a physical lock diagram. <a href="/skills-extended/guides/lockpicking.png">View full illustration</a></figcaption>
+    <ol><li><strong>Depth:</strong> move beneath another pin only with the pick lowered.</li><li><strong>Lift:</strong> raise the selected pin carefully.</li><li><strong>Tension:</strong> apply turning pressure; adjust it instead of forcing the lock.</li><li><strong>Security pins:</strong> spool waists and serrated grooves can create misleading catches.</li></ol>
+</figure>
+<section class="se-panel">
+    <h2>Controls</h2>
+    <dl class="se-guide-controls">
+        <dt>Mouse left / right</dt><dd>Change depth while the pick is lowered.</dd>
+        <dt>Mouse up / down</dt><dd>Lift or lower the pick.</dd>
+        <dt>Hold A</dt><dd>Apply tension by default. With Toggle tension enabled, press once for on and again for off.</dd>
+        <dt>Mouse wheel / E / Q</dt><dd>While applying tension, increase pressure with wheel up or E; decrease it with wheel down or Q.</dd>
+        <dt>Release tension</dt><dd>Drop the pins and reset the lock.</dd>
+        <dt>Escape</dt><dd>Leave the mini-game.</dd>
+    </dl>
+    <p>Change tension bindings, toggle mode, sensitivity, sound, and reduced motion in the BepInEx configuration menu.</p>
+</section>
+<section class="se-panel">
+    <h2>Objective and interface cues</h2>
+    <ol><li>Apply moderate tension and probe for a pin that resists your pick. A springy pin is not necessarily the current binding pin.</li><li>Lift slowly until the pin reaches its setting point. Standard pins settle after a short steady hold (0.30 seconds with the default settings).</li><li>Lower the pick before changing depth, then find the next binding pin. The lock opens when all pins are truly set.</li></ol>
+    <p>The side cutaway shows abstract pin movement, cylinder rotation, pressure, and tool condition. Watch STRAIN and PICK: excess force causes wear. Raid feedback does not certify true sets or explain pin types; practice adds coaching and true-set indicators.</p>
+</section>
+<section class="se-panel">
+    <h2>Security pins and practical tips</h2>
+    <ul><li><strong>Spool:</strong> a false set can turn the cylinder slightly without unlocking it. Ease tension while lifting to allow counter-rotation.</li><li><strong>Serrated:</strong> intermediate clicks are catches, not proof of a true set. Ease pressure and continue carefully.</li><li><strong>Overset:</strong> lifting too far can spoil a pin, including one already set. Ease tension and lower the pick.</li><li>Too little tension or counter-rotation can drop earlier pins. Use small pressure adjustments and listen as well as watch.</li><li>There is no countdown. Difficult locks can take over a minute; use cover before starting.</li></ul>
+</section>
+<section class="se-panel">
+    <h2>Success, failure, and practice</h2>
+    <p>Success releases the lock. A default set has five uses, and breaking a pick consumes one use. Cancelling consumes no use but does not repair wear already accumulated during the raid. A broken pick never permanently breaks the door or disables its key.</p>
+    <p>Enter <code>lockpicking 2 0 1</code> in the game console to practice with tier 2, skill 0, seed 1. Practice affects no items, XP, or doors. Press R after completion to retry the same lock. Tiers range from 1–5 and practice skill levels from 0–51.</p>
+</section>
+<p class="se-notice">Door availability, pin difficulty, tool rules, and skill bonuses depend on server settings. The controls and values above describe defaults.</p>

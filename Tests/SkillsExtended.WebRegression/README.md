@@ -39,6 +39,15 @@ entry, and visible save controls at 2560, 1440, 768, and 390 pixels. Screenshots
 written beside the fixtures. These are static rendering checks; they do not claim
 acceptance of a live SPT browser circuit or actual gameplay/profile persistence.
 
+For focused guide rendering and authorization checks, run the web regression command
+with `-- --guides-only`. This checks public guide access without editor services and
+retains coverage of administrator protection for every configuration/profile route.
+The layout checks also inspect all guide images, public navigation, and mobile sizing.
+Run `node Tests/SkillsExtended.WebRegression/CheckLayout.cjs Tests/SkillsExtended.WebRegression/bin/Release/net10.0/rendered --guides-only`
+to inspect just the four public guide pages at all four viewport widths.
+Guides are available without signing in at `/skills-extended/guides`; their layout
+does not load configuration or profile data.
+
 ## Live acceptance
 
 After installing and restarting on your normal schedule:

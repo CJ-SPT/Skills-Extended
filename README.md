@@ -70,6 +70,8 @@ Door availability, attempts, signal placements, rewards, and skill bonuses are c
 
 ## Configuration
 
+Illustrated [mini-game guides](https://127.0.0.1:6969/skills-extended/guides) cover Lockpicking, Hacking, and Signals Intelligence. No sign-in is required. Use your server's address and port if different.
+
 While the server is running, open its Skills Extended web page. With the default local server address, this is [https://127.0.0.1:6969/skills-extended/](https://127.0.0.1:6969/skills-extended/). Use your server's address and port if different.
 
 Sign in with an **SPT administrator account** to edit skill settings, door tables, pin difficulty, or profile skill levels. Save your changes and restart the game client to load the updated configuration.

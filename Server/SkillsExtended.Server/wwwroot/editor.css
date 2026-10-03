@@ -1,3 +1,94 @@
+.se-guides .se-content {
+    margin-left: 0;
+    padding: 30px 24px 64px;
+}
+
+.se-guide-content {
+    max-width: 1050px;
+    margin-inline: auto;
+}
+
+.se-guide-nav {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px 24px;
+    padding: 18px 24px;
+    border-bottom: 1px solid #354252;
+}
+
+.se-guide-nav .active {
+    color: #fff;
+    text-decoration-thickness: 3px;
+    text-underline-offset: 6px;
+}
+
+.se-guides .se-topbar {
+    height: auto;
+    min-height: 68px;
+    flex-wrap: wrap;
+    padding-block: 14px;
+}
+
+.se-guides img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+.se-guides .se-guide-cards {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 270px), 1fr));
+}
+
+.se-guide-cards a {
+    text-decoration: none;
+}
+
+.se-guides .se-panel p + p,
+.se-guide-cards img + p {
+    margin-top: 14px;
+}
+
+.se-guide-figure {
+    margin-inline: 0;
+}
+
+.se-guide-figure figcaption {
+    margin-top: 12px;
+    color: var(--se-muted);
+}
+
+.se-guides li + li {
+    margin-top: 10px;
+}
+
+.se-guide-controls {
+    display: grid;
+    grid-template-columns: minmax(130px, 1fr) 3fr;
+    gap: 12px 22px;
+}
+
+.se-guide-controls dt {
+    font-weight: 650;
+}
+
+.se-guide-controls dd {
+    margin: 0;
+    color: var(--se-muted);
+}
+
+@media (max-width: 600px) {
+    .se-guide-controls {
+        grid-template-columns: 1fr;
+        gap: 5px;
+    }
+
+    .se-guide-controls dd {
+        margin-bottom: 12px;
+    }
+}
+
 .se-app {
     --se-bg: #10151c;
     --se-panel: #1a222d;
