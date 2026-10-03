@@ -30,6 +30,8 @@ public sealed class LockPickingGame : MonoBehaviour
         _finishAt = -1,
         _receivedAt;
     private bool _closed;
+    private float _tensionStrength = .35f, _clickUntil;
+    private readonly PickCueReader _visualCues = new();
     private readonly HackingInputState _input = new();
     private readonly HackingUiInputState _ui = new();
     private LockPickingArtwork _art;
@@ -73,7 +75,7 @@ public sealed class LockPickingGame : MonoBehaviour
         var view = Create(Mathf.Clamp(difficulty, 1, 5), Singleton<GameWorld>.Instance?.MainPlayer);
         view._level = Mathf.Clamp(level, 0, 51);
         view._practiceLock = PinLockDefinition.Create(
-            PickingRuntime.Config.Tier(view._difficulty).Pins,
+            PickingRuntime.Config.Tier(view._difficulty),
             seed
         );
         view.RetryPractice();
@@ -295,6 +297,9 @@ public sealed class LockPickingGame : MonoBehaviour
         _practice = new PinLockEngine(_practiceLock, PickingRuntime.Config, _difficulty, _level);
         _state = _practice.Snapshot();
         _depth = _lift = 0;
+        _tensionStrength = .35f;
+        _finishAt = -1;
+        _visualCues.Reset();
         _cutaway.ResetAnimation();
     }
 
@@ -348,13 +353,20 @@ public sealed class LockPickingGame : MonoBehaviour
         var tension = Input.GetKey(ConfigManager.LpMiniGameTurnKey.Value);
         if (_state.Outcome == PickOutcome.Active)
         {
+            if (tension)
+            {
+                var notches = Input.mouseScrollDelta.y;
+                if (ConfigManager.LockPickingTensionIncrease.Value.IsDown()) notches++;
+                if (ConfigManager.LockPickingTensionDecrease.Value.IsDown()) notches--;
+                _tensionStrength = Mathf.Clamp01(_tensionStrength + notches * .05f);
+            }
             var sensitivity = ConfigManager.LockPickingSensitivity.Value;
             if (_state.Lift < .08f)
                 _depth = Mathf.Clamp01(_depth + Input.GetAxisRaw("Mouse X") * .035f * sensitivity);
             _lift = Mathf.Clamp01(_lift + Input.GetAxisRaw("Mouse Y") * .035f * sensitivity);
             if (_practice != null)
             {
-                _practice.Advance(Time.unscaledDeltaTime, _depth, _lift, tension);
+                _practice.Advance(Time.unscaledDeltaTime, _depth, _lift, tension, _tensionStrength);
                 _state = _practice.Snapshot();
             }
             else if (_runtime && Time.unscaledTime >= _sendAt)
@@ -372,6 +384,7 @@ public sealed class LockPickingGame : MonoBehaviour
                         Depth = _depth,
                         Lift = _lift,
                         Tension = tension,
+                        TensionStrength = _tensionStrength,
                     }
                 );
             }
@@ -381,49 +394,59 @@ public sealed class LockPickingGame : MonoBehaviour
 
     private void Render(bool tension)
     {
+        foreach (var cue in _visualCues.Read(_state))
+            if (cue.Sound == PickSound.Click) _clickUntil = Time.unscaledTime + .4f;
+        var coaching = _practice?.Coaching();
         _status.text = _state.Outcome switch
         {
             PickOutcome.Unlocked => "Lock released",
             PickOutcome.PickBroken => "Pick broken — the key still works",
             _ => _state.Feedback switch
             {
-                PickFeedback.Binding => "Binding — lift gently",
-                PickFeedback.Ready => "Hold steady",
-                PickFeedback.Set => "Pin set — lower the pick before moving",
-                PickFeedback.Overset => "Overset — release tension to reset",
-                PickFeedback.Strain => "Too much force — ease off",
-                PickFeedback.Springy => "Probe gently for resistance",
-                _ => "Apply tension and feel for the binding pin",
+                PickFeedback.CounterRotation => "Backward pressure on the wrench",
+                PickFeedback.Strain => "Strong resistance",
+                _ when Time.unscaledTime < _clickUntil => "A small click",
+                PickFeedback.Binding => "Resistance under the pick",
+                PickFeedback.Springy => "Spring movement",
+                _ => "Probe the lock",
             },
         };
-        _detail.text =
-            $"DEPTH {_state.Selected + 1}/{_state.Pins}    ·    {_state.SetPins} SET"
-            + (_state.Lift >= .08f ? "    ·    Lower pick to change depth" : "");
-        _help.text =
-            $"MOUSE ← →  Depth     MOUSE ↑ ↓  Lift     HOLD {ConfigManager.LpMiniGameTurnKey.Value}  Tension     ESC  Leave"
-            + "\nRelease tension to drop all pins. Forcing the pick causes lasting wear."
-            + (
-                _practice != null
-                    ? "\nPRACTICE — no items or XP affected. Press R after completion to retry."
-                    : ""
-            );
+        if (coaching != null && _state.Outcome == PickOutcome.Active)
+            _status.text = coaching.State switch
+            {
+                PinState.Caught => coaching.Type == PinType.Spool
+                    ? "Spool catch — ease tension and allow counter-rotation"
+                    : "Serration catch — ease tension and continue lifting",
+                PinState.Overset => "Overset — ease tension and lower the pick",
+                PinState.Set => "True set — lower the pick before moving",
+                _ when coaching.Ready => "Hold steady at the setting point",
+                _ => $"{coaching.Type} pin — probe for resistance",
+            };
+        _detail.text = $"DEPTH {_state.Selected + 1}/{_state.Pins}    ·    TENSION {_state.TensionStrength:P0}"
+            + (coaching != null ? $"    ·    {coaching.SetPins} TRUE SET" : "")
+            + (_state.Lift >= .08f ? "    ·    Lower pick to move" : "");
+        _help.text = $"MOUSE ← → Depth   ↑ ↓ Lift   HOLD {ConfigManager.LpMiniGameTurnKey.Value} Tension   ESC Leave"
+            + $"\nWHEEL / {ConfigManager.LockPickingTensionIncrease.Value} / {ConfigManager.LockPickingTensionDecrease.Value} Pressure   ·   Release tension to reset"
+            + (_practice != null ? "\nPRACTICE — no items or XP affected. R after completion retries the same lock." : "");
         _strain.rectTransform.sizeDelta = new Vector2(280 * _state.Strain, 5);
         _wear.rectTransform.sizeDelta = new Vector2(280 * (1 - _state.Wear), 5);
         _cutaway.Render(
             _state,
             Time.unscaledDeltaTime,
-            ConfigManager.LockPickingReducedMotion.Value
+            ConfigManager.LockPickingReducedMotion.Value,
+            coaching
         );
         _tensionLabel.text =
             _state.Outcome == PickOutcome.Unlocked ? "RELEASED"
             : _state.Outcome == PickOutcome.PickBroken ? "PICK BROKEN"
-            : _state.Tension ? "TENSION ON"
+            : _state.Tension ? $"TENSION {_state.TensionStrength:P0}"
             : "TENSION OFF";
         _art.Render(
             _state.Lift,
             _depth,
             _state.Strain,
-            tension,
+            _state.TensionStrength,
+            _state.CylinderRotation,
             _state.Outcome == PickOutcome.Unlocked,
             _state.Outcome == PickOutcome.PickBroken,
             ConfigManager.LockPickingReducedMotion.Value

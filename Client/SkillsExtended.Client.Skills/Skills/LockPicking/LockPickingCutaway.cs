@@ -15,6 +15,8 @@ internal sealed class LockPickingCutaway : MaskableGraphic
     private static readonly Color Set = new(.55f, .70f, .57f);
     private static readonly Color Warning = new(.88f, .65f, .33f);
     private PickSnapshot _state;
+    private PickCoaching _coaching;
+    private float _rotation;
     private float _lift,
         _pickX,
         _retraction;
@@ -25,7 +27,7 @@ internal sealed class LockPickingCutaway : MaskableGraphic
 
     public void ResetAnimation() => _initialized = false;
 
-    public void Render(PickSnapshot state, float deltaTime, bool reducedMotion)
+    public void Render(PickSnapshot state, float deltaTime, bool reducedMotion, PickCoaching coaching = null)
     {
         if (state == null || state.Pins < 3 || state.Pins > 5)
         {
@@ -49,8 +51,13 @@ internal sealed class LockPickingCutaway : MaskableGraphic
         _pickX = Mathf.Lerp(_pickX, x, blend);
         _lift = Mathf.Lerp(_lift, lift, blend);
         _retraction = Mathf.Lerp(_retraction, retract, blend);
+        if (System.Math.Abs(_lift - lift) < .0001f) _lift = lift;
+        if (System.Math.Abs(_pickX - x) < .0001f) _pickX = x;
+        if (System.Math.Abs(_retraction - retract) < .0001f) _retraction = retract;
         _pinCount = state.Pins;
         _state = state;
+        _coaching = coaching;
+        _rotation = Mathf.Lerp(_rotation, state.CylinderRotation, blend);
         _initialized = true;
         SetVerticesDirty();
     }
@@ -63,11 +70,11 @@ internal sealed class LockPickingCutaway : MaskableGraphic
         if (_state == null)
             return;
         var selected = Mathf.Clamp(_state.Selected, 0, _state.Pins - 1);
-        var known = _state.SetPinStates != null && _state.SetPinStates.Length == _state.Pins;
+        var known = _coaching?.SetPinStates != null && _coaching.SetPinStates.Length == _state.Pins;
         var warning =
             _state.Outcome == PickOutcome.Active
             && (
-                _state.Feedback is PickFeedback.Strain or PickFeedback.Overset
+                _state.Feedback == PickFeedback.Strain
                 || _state.Strain > .5f
             );
         var tension = _state.Tension && _state.Outcome == PickOutcome.Active;
@@ -116,15 +123,19 @@ internal sealed class LockPickingCutaway : MaskableGraphic
         Ellipse(vh, 335, -31, 8, 27, new Color(.36f, .31f, .18f));
         Ellipse(vh, 333, -30, 5, 23, new Color(.55f, .49f, .30f));
 
+        // Neutral rotation gauge: readable with sound or decorative vibration disabled.
+        Ellipse(vh, 411, -30, 24, 24, Edge);
+        var angle = _rotation * Mathf.PI * .5f;
+        Line(vh, new(411, -30), new(411 + Mathf.Sin(angle) * 55, -30 + Mathf.Cos(angle) * 55), Shine, 3);
         for (var pin = 0; pin < _state.Pins; pin++)
         {
             var x = PinX(pin, _state.Pins);
             var completed =
                 known
-                && _state.SetPinStates[pin]
+                && _coaching.SetPinStates[pin]
                 && (_state.Tension || _state.Outcome == PickOutcome.Unlocked);
             var bottom = completed ? 8 : -10 + (pin == selected ? _lift * 16 : 0);
-            var top = bottom + 30;
+            var top = bottom + 38;
             Rect(vh, x - 13, 8, 26, 48, new Color(.045f, .048f, .037f));
             Rect(vh, x - 15, 9, 2, 47, new Color(.80f, .74f, .50f));
             Rect(vh, x + 13, 9, 2, 47, new Color(.25f, .21f, .13f));
@@ -141,7 +152,9 @@ internal sealed class LockPickingCutaway : MaskableGraphic
             }
             // Distinct rounded key pin and steel driver, with a visible contact joint.
             PinBody(vh, x, bottom, 18, false);
-            PinBody(vh, x, bottom + 18, 12, true);
+            var type = _state.PinTypes != null && _state.PinTypes.Length == _state.Pins
+                ? _state.PinTypes[pin] : PinType.Standard;
+            DriverPin(vh, x, bottom + 18, type);
             if (pin == selected)
             {
                 var outline = warning ? Warning : Shine;
@@ -201,6 +214,31 @@ internal sealed class LockPickingCutaway : MaskableGraphic
             tipX + local.x * c - local.y * s,
             -10 + lift * 16 + local.x * s + local.y * c
         );
+    }
+
+    private static void DriverPin(VertexHelper vh, float x, float bottom, PinType type)
+    {
+        if (type != PinType.Spool && type != PinType.Serrated)
+        {
+            PinBody(vh, x, bottom, 20, true);
+            return;
+        }
+        // Fixed illustrative profiles: never draw the secret catch locations or target heights.
+        var dark = new Color(.20f, .23f, .23f);
+        var light = new Color(.80f, .84f, .82f);
+        for (var row = 0; row < 20; row++)
+        {
+            var radius = type == PinType.Spool
+                ? (row >= 4 && row < 16 ? 4f : 8f)
+                : (row == 4 || row == 5 || row == 9 || row == 10 || row == 14 || row == 15 ? 5f : 8f);
+            for (var band = 0; band < 16; band++)
+            {
+                var lighting = Mathf.Pow(Mathf.Max(0, Mathf.Cos((band / 15f - .40f) * Mathf.PI)), .7f);
+                Rect(vh, x - radius + band * radius / 8, bottom + row,
+                    radius / 8, 1, Color.Lerp(dark, light, lighting));
+            }
+        }
+        Ellipse(vh, x, bottom + 20, 8, 1, light);
     }
 
     private static void PinBody(VertexHelper vh, float x, float bottom, float height, bool steel)

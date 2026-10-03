@@ -18,10 +18,26 @@ public sealed partial class SignalsRuntime
     private string _caseFailure;
     private string _failedInventory;
 
+    // Hideout worlds can retain a raid location ID. Check the world type before
+    // creating a runtime; a Fika peer must never wait for a raid host here.
+    private static bool IsRaidWorld(GameWorld world) => world
+        && world is not HideoutGameWorld
+        && SignalsMaps.Normalize(world.LocationId) != "hideout";
+
     public static Task Boot(GameWorld world)
     {
         if (!world || !Singleton<GameWorld>.Instantiated || Singleton<GameWorld>.Instance != world)
             return Task.CompletedTask;
+        if (!IsRaidWorld(world))
+        {
+            if (Instance)
+            {
+                Instance._lifetime.Cancel();
+                Destroy(Instance);
+                Instance = null;
+            }
+            return Task.CompletedTask;
+        }
         if (Instance && Instance.World == world)
             return Task.CompletedTask;
         if (Instance)
@@ -43,10 +59,12 @@ public sealed partial class SignalsRuntime
         if (!world || !Singleton<GameWorld>.Instantiated || Singleton<GameWorld>.Instance != world)
             return;
         await Boot(world);
+        if (!IsRaidWorld(world)) return;
         await Instance.FinishLoot();
     }
 
-    public Task FinishLoot() => _finishLoot ??= FinishLootInternal();
+    public Task FinishLoot() => !IsRaidWorld(World)
+        ? Task.CompletedTask : _finishLoot ??= FinishLootInternal();
 
     private async Task FinishLootInternal()
     {
@@ -128,7 +146,7 @@ public sealed partial class SignalsRuntime
 
     private void EnsureCase()
     {
-        if (!_lootReady || _case != null || Manifest == null || Manifest.Error != null)
+        if (!IsRaidWorld(World) || !_lootReady || _case != null || Manifest == null || Manifest.Error != null)
             return;
         // Peers poll the host every half-second. A fresh envelope must not trigger
         // repeated object creation/logging for the same already-failed inventory.

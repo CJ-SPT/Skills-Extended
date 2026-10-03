@@ -2,7 +2,7 @@
 
 Skills Extended expands skill progression in **SPT** with new activities, additional skill effects, and configurable bonuses. Pick mechanical locks, bypass electronic door security, and track hidden signal caches using a Modified PDA.
 
-**Core version:** 3.1.0 · **SPT target:** 4.1.x · **Optional Fika integration:** 1.2.0
+**Core version:** 3.1.1 · **SPT target:** 4.1.x · **Optional Fika integration:** 1.2.2
 
 ## Features
 
@@ -34,7 +34,7 @@ Install the complete package. It contains client plugins, a client patcher, serv
 
 Install the core package **and** the matching Fika integration ZIP on the host and every client, including a headless host when used. The integration requires Fika **2.2.4 or newer** and is an add-on, not a replacement for the core package.
 
-Use the same Skills Extended versions across the session: **core 3.1.0 + integration 1.2.0**. The host controls minigame outcomes, lock state, and shared progression decisions.
+Use the same Skills Extended versions across the session: **core 3.1.1 + integration 1.2.2**. The host controls minigame outcomes, lock state, and shared progression decisions. The security-pin upgrade uses lockpicking protocol 3: update core and Fika on every host and joining player together; incompatible picking sessions are refused.
 
 ## Getting started
 
@@ -47,14 +47,17 @@ Craft a **Lockpick set at Workbench level 1** and carry it to a supported locked
 | Mouse left / right | Change depth while the pick is lowered. |
 | Mouse up / down | Lift or lower the pick. |
 | Hold **A** by default | Apply tension. The binding is configurable. |
-| Release tension | Drop the pins and reset an overset. |
+| Mouse wheel / **E** / **Q** while holding tension | Increase or decrease pressure. E/Q can be rebound. |
+| Release tension | Drop all pins and reset the lock. |
 | **Escape** | Leave the minigame. |
 
-Feel for binding pins and remain in the setting window for **0.30 seconds**. Lower the pick before moving to another depth. The side cutaway shows tool movement and completed pins without revealing target heights or binding order.
+Feel for resistance and lower the pick before changing depth. Standard pins settle after **0.30 seconds** at their setting point. Spool pins can produce a false set: the cylinder turns slightly but stays locked. Ease tension while lifting to allow counter-rotation. Serrated pins produce intermediate clicks; a click alone does not confirm a true set. Too little pressure or counter-rotation can drop previously set pins. Previously set pins can also be overset.
+
+The raid cutaway shows abstract movement, cylinder rotation, pressure, and tool condition with visible spool waists and serrated grooves, without confirming true sets or explaining pin types. Practice adds pin-type coaching and true-set indicators. Difficult locks can take over a minute; there is no countdown.
 
 Every configured tier can be attempted at any skill level. Higher skill improves control and resilience. Excess force causes lasting pick wear during the raid; cancelling does not consume a use, but does not repair that wear. Breaking a pick never permanently breaks the door or disables its key.
 
-For practice, enter `lockpicking 2 0 1` in the game console: tier 2, skill level 0, seed 1. Practice does not affect items, XP, or doors. Press **R** after completion to retry.
+For practice, enter `lockpicking 2 0 1` in the game console: tier 2, skill level 0, seed 1. Practice does not affect items, XP, or doors. Press **R** after completion to retry the same lock. Practice uses the same security mechanics as raids.
 
 ### Hacking and Signals Intelligence
 
@@ -71,7 +74,7 @@ While the server is running, open its Skills Extended web page. With the default
 
 Sign in with an **SPT administrator account** to edit skill settings, door tables, pin difficulty, or profile skill levels. Save your changes and restart the game client to load the updated configuration.
 
-Use the in-game BepInEx configuration menu for client preferences such as lock-picking sensitivity, tension binding, sound volume, and reduced motion. Existing custom difficulty values remain in effect when defaults change.
+Use the in-game BepInEx configuration menu for client preferences such as lock-picking sensitivity, tension and pressure bindings, sound volume, and reduced motion. Existing custom difficulty values remain in effect when defaults change.
 
 For Fika, select authorized profiles under **Fika client editor access** on the Skills Extended configuration page and save. The default empty list permits no client editor access. Listed players can enable Developer tools and open the in-game editor during a PMC raid, including shared raids. Authorization is checked on the server when opening, reading, and saving; removing a profile blocks further operations immediately. Headless clients and Scavs cannot use the editor. Authored changes apply to future raids or after the normal client configuration reload.
 

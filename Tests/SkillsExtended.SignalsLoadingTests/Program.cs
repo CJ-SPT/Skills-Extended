@@ -93,6 +93,35 @@ foreach (var headless in new[] { false, true })
 var unsupported = Fixture.Reset(); unsupported.LocationId = "factory4_day";
 await SignalsRuntime.CompleteLoot(Task.CompletedTask, unsupported);
 Check(Fixture.Requests == 0 && Fixture.Cases == 0, "Unsupported map skips Signals work");
+foreach (var authority in new[] { false, true })
+foreach (var typedHideout in new[] { false, true })
+{
+    Fixture.Reset(fika: true, authority: authority);
+    // The type guard also covers a hideout retaining its previous raid map ID.
+    GameWorld hideout = typedHideout ? new HideoutGameWorld { LocationId = "woods" }
+        : new GameWorld { LocationId = " HideOut " };
+    Singleton<GameWorld>.Instance = hideout;
+    await SignalsRuntime.Boot(hideout);
+    Check(SignalsRuntime.Instance == null, "Hideout InitLevel never attaches a Signals runtime");
+    var native = new TaskCompletionSource();
+    var loading = Hook(new LocalGame { GameWorld = hideout }, native.Task);
+    Check(!loading.IsCompleted, "Hideout still waits for its own native loading");
+    native.SetResult();
+    await loading.WaitAsync(TimeSpan.FromSeconds(1));
+    Check(SignalsRuntime.Instance == null && Fixture.Requests == 0 && Fixture.Syncs == 0
+        && Fixture.Preloads == 0 && Fixture.Placements == 0 && Fixture.Cases == 0 && Fixture.Logs.Count == 0,
+        "Hideout host and peer skip all Signals requests, snapshot waits, assets, placement and logs");
+    await Throws<OperationCanceledException>(Hook(new LocalGame { GameWorld = hideout },
+        Task.FromCanceled(new CancellationToken(true))), "Hideout native cancellation is preserved");
+}
+var leavingRaid = Fixture.Reset();
+await SignalsRuntime.Boot(leavingRaid);
+var leavingRuntime = SignalsRuntime.Instance;
+var returningHideout = new HideoutGameWorld { LocationId = "woods" };
+Singleton<GameWorld>.Instance = returningHideout;
+await SignalsRuntime.CompleteLoot(Task.CompletedTask, returningHideout);
+Check(leavingRuntime.Canceled && SignalsRuntime.Instance == null && Fixture.Requests == 0,
+    "Entering the hideout cancels and clears any remaining raid runtime");
 var disabled = Fixture.Reset(fika: true, headless: true);
 Fixture.Manifest = () =>
 {

@@ -34,6 +34,12 @@ Check(
         .All(f => f.Key != "SweetSpotRangeBase" && f.Key != "AttemptsBeforeBreak"),
     "Obsolete angle and door-breaking controls are hidden"
 );
+await LockPickingWebChecks.Run(source, Check, args.Contains("--lockpicking-only"));
+if (args.Contains("--lockpicking-only"))
+{
+    Console.WriteLine($"Lock-picking web: {checks} checks passed.");
+    return;
+}
 var editor = new EditorSession(shipped);
 Check(
     shipped.Server.AuthorizedEditorProfiles.Count == 0,

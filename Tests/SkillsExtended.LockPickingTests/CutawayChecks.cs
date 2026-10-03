@@ -69,10 +69,6 @@ internal static class CutawayChecks
                 Lift = lift,
                 Tension = true,
                 Outcome = outcome,
-                SetPinStates = Enumerable
-                    .Range(0, pins)
-                    .Select(p => outcome == PickOutcome.Unlocked || p < selected)
-                    .ToArray(),
                 Feedback = lift == 1 ? PickFeedback.Strain : PickFeedback.Searching,
                 Strain = lift,
             };
@@ -118,32 +114,29 @@ internal static class CutawayChecks
                 Selected = 1,
                 Lift = .5f,
                 Tension = true,
-                SetPinStates = flags,
             };
         graphic.Render(State(), .016f, true);
         var unknown = Geometry(graphic.CaptureMesh());
-        graphic.Render(State([true]), .016f, true);
-        check(
-            Geometry(graphic.CaptureMesh()) == unknown,
-            "Wrong-length flags do not invent completed pins"
-        );
-        graphic.Render(State([false, false, false]), .016f, true);
-        check(Geometry(graphic.CaptureMesh()) == unknown, "Unknown flags use neutral pins");
-        graphic.Render(State([true, false, false]), .016f, true);
-        check(
-            Geometry(graphic.CaptureMesh()) != unknown,
-            "Completed flags visibly change the diagram"
-        );
-        var released = State([true, true, true]);
-        released.Tension = false;
-        graphic.Render(released, .016f, true);
-        var release = Geometry(graphic.CaptureMesh());
-        released.SetPinStates = [false, false, false];
-        graphic.Render(released, .016f, true);
-        check(
-            Geometry(graphic.CaptureMesh()) == release,
-            "Release removes completion marks immediately"
-        );
+        graphic.Render(State(), .016f, true, new PickCoaching { SetPinStates = [true, false, false] });
+        check(Geometry(graphic.CaptureMesh()) != unknown, "Local practice coaching can show a true set");
+        graphic.Render(State(), .016f, true);
+        check(Geometry(graphic.CaptureMesh()) == unknown, "Raid cutaway has no true-set marks");
+        var profiled = State();
+        profiled.PinTypes = [PinType.Standard, PinType.Spool, PinType.Serrated];
+        graphic.Render(profiled, .016f, true);
+        var shapes = Geometry(graphic.CaptureMesh());
+        if (output != null) File.WriteAllText(Path.Combine(output, "pin-types.json"), shapes);
+        check(shapes != unknown, "Raid cutaway distinguishes visible security-pin shapes without coaching");
+        profiled.PinTypes = [PinType.Standard, PinType.Serrated, PinType.Spool];
+        graphic.Render(profiled, .016f, true);
+        check(Geometry(graphic.CaptureMesh()) != shapes, "Spool waists and serrated grooves have different profiles");
+        profiled.PinTypes = [PinType.Spool];
+        graphic.Render(profiled, .016f, true);
+        check(Geometry(graphic.CaptureMesh()) == unknown, "Malformed visible profiles fall back to neutral pins");
+        var rotation = State();
+        rotation.CylinderRotation = .1f;
+        graphic.Render(rotation, .016f, true);
+        check(Geometry(graphic.CaptureMesh()) != unknown, "False-set rotation is visible without audio or vibration");
         var moving = State();
         moving.Selected = 2;
         moving.Lift = 1;

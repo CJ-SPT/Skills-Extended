@@ -76,6 +76,7 @@ namespace EFT
         public UnityEngine.GameObject gameObject = new();
     }
     public class AbstractGame { }
+    public class HideoutGameWorld : GameWorld { }
     public class EftGamePlayerOwner { }
     public class BaseLocalGame<T> : AbstractGame
     {

@@ -37,6 +37,8 @@ Available on every loaded raid map except Factory (day and night). Select Add an
 click terrain or a static surface. New maps start with no locations; no locations
 are generated automatically. A runtime hunt requires an enabled saved location
 on that map. Existing Customs/Woods locations are preserved.
+Signals does not initialize in the hideout: it creates no runtime, requests no
+raid manifest or peer snapshot, and loads no cache assets there.
 Select previews by their labels or case bodies. Use Move/Rotate and the visible
 handles, or edit XYZ/yaw in the inspector. Duplicate and Delete operate on the
 draft; undo/redo also covers inspector edits.

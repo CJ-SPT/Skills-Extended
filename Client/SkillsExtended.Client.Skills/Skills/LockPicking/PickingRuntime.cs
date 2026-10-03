@@ -31,6 +31,7 @@ public sealed class PickingRuntime : MonoBehaviour
         _finished = new();
     private readonly Dictionary<string, long> _revisions = new();
     private readonly Dictionary<Player, Action<DamageInfo, EBodyPart, float>> _hits = new();
+    private bool _protocolMismatch;
     private string _raid,
         _pending;
     private float _tick,
@@ -144,6 +145,11 @@ public sealed class PickingRuntime : MonoBehaviour
             Notify("Lock-picking artwork could not be loaded.");
             return;
         }
+        if (_protocolMismatch)
+        {
+            Notify(PickingProtocol.UpdateMessage);
+            return;
+        }
         if (_raid == null)
         {
             Send(new PickRequest { Actor = owner.Player.ProfileId });
@@ -167,6 +173,7 @@ public sealed class PickingRuntime : MonoBehaviour
 
     public void Send(PickRequest request)
     {
+        request.ProtocolVersion = PickingProtocol.Version;
         if (IsAuthority())
             Handle(request);
         else
@@ -225,7 +232,18 @@ public sealed class PickingRuntime : MonoBehaviour
 
     public void Receive(PickReply reply)
     {
-        if (reply == null || (_raid != null && reply.Raid != _raid))
+        if (reply == null) return;
+        if (reply.ProtocolVersion != PickingProtocol.Version || reply.Error == PickingProtocol.UpdateMessage)
+        {
+            // Replies are broadcast: another player's rejected handshake must not disable us.
+            if (World?.MainPlayer?.ProfileId != reply.Actor) return;
+            if (!_protocolMismatch) Notify(PickingProtocol.UpdateMessage);
+            _protocolMismatch = true;
+            _pending = null;
+            LockPickingGame.Current?.Close();
+            return;
+        }
+        if (_raid != null && reply.Raid != _raid)
             return;
         _raid = reply.Raid;
         if (reply.Attempt != null)
@@ -355,6 +373,7 @@ public sealed class PickingRuntime : MonoBehaviour
 
     public void ConnectionLost()
     {
+        _protocolMismatch = false;
         _raid = null;
         _pending = null;
         _nextSync = 0;
@@ -369,7 +388,7 @@ public sealed class PickingRuntime : MonoBehaviour
             _pending = null;
         if (!IsAuthority())
         {
-            if (_raid == null && World.MainPlayer && Time.unscaledTime >= _nextSync)
+            if (!_protocolMismatch && _raid == null && World.MainPlayer && Time.unscaledTime >= _nextSync)
             {
                 _nextSync = Time.unscaledTime + 3;
                 Send(new PickRequest { Actor = World.MainPlayer.ProfileId });

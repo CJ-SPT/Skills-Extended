@@ -266,31 +266,46 @@
                 "Level": 1,
                 "Pins": 3,
                 "Tolerance": 0.096,
-                "StrainWarningSeconds": 0.65
+                "StrainWarningSeconds": 0.65,
+                "SpoolPins": 0,
+                "SerratedPins": 0,
+                "SerrationCatches": 0
             },
             {
                 "Level": 2,
                 "Pins": 3,
                 "Tolerance": 0.08,
-                "StrainWarningSeconds": 0.55
+                "StrainWarningSeconds": 0.55,
+                "SpoolPins": 1,
+                "SerratedPins": 0,
+                "SerrationCatches": 0
             },
             {
                 "Level": 3,
                 "Pins": 4,
                 "Tolerance": 0.068,
-                "StrainWarningSeconds": 0.45
+                "StrainWarningSeconds": 0.45,
+                "SpoolPins": 1,
+                "SerratedPins": 1,
+                "SerrationCatches": 1
             },
             {
                 "Level": 4,
-                "Pins": 4,
+                "Pins": 5,
                 "Tolerance": 0.056,
-                "StrainWarningSeconds": 0.35
+                "StrainWarningSeconds": 0.35,
+                "SpoolPins": 2,
+                "SerratedPins": 1,
+                "SerrationCatches": 2
             },
             {
                 "Level": 5,
                 "Pins": 5,
                 "Tolerance": 0.044,
-                "StrainWarningSeconds": 0.3
+                "StrainWarningSeconds": 0.3,
+                "SpoolPins": 2,
+                "SerratedPins": 2,
+                "SerrationCatches": 3
             }
         ],
         "PickStrengthBase": 1.50,

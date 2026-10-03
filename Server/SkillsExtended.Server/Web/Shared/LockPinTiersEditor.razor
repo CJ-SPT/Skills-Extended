@@ -3,10 +3,10 @@
 
 <section class="se-panel">
     <h2>Pin difficulty</h2>
-    <p>Every mechanical tier can be attempted at any skill level. Releasing tension resets pins; broken picks cost one use. Keys always remain usable.</p>
+    <p>Standard pins are the remainder after spool and serrated counts. Keep at least one standard pin. Every tier can be attempted at any skill level. Easing tension can free catches; releasing it resets all pins; broken picks cost one use. Keys always remain usable.</p>
     <div class="se-table-wrap">
         <table class="se-table">
-            <thead><tr><th>Tier</th><th>Pins</th><th>Setting tolerance</th><th>Strain warning (seconds)</th></tr></thead>
+            <thead><tr><th>Tier</th><th>Pins</th><th>Setting tolerance</th><th>Strain warning (seconds)</th><th>Spool pins</th><th>Serrated pins</th><th>Catches per serrated pin</th></tr></thead>
             <tbody>
             @foreach (var tier in Session.Skills.LockPicking.Tiers.OrderBy(t => t.Level))
             {
@@ -25,13 +25,13 @@
             </tbody>
         </table>
     </div>
-    <p>3–5 pins; tolerance 0.02–0.20 of pin travel; warning 0.1–2 seconds. Higher tolerance and longer warnings are easier. Door levels outside 1–5 use the nearest tier while retaining their own XP entry.</p>
+    <p>3–5 pins; tolerance 0.02–0.20 of pin travel; warning 0.1–2 seconds. Higher tolerance and longer warnings are easier. Security counts must total fewer than the pins; serrated pins require 1–3 catches. Door levels outside 1–5 use the nearest tier while retaining their own XP entry.</p>
 </section>
 @code {
     [CascadingParameter] public EditorSession Session { get; set; } = null!;
     private sealed record Field(string Key, string Label, float Min, float Max)
     { public PropertyInfo Property { get; } = typeof(LockPickingTier).GetProperty(Key)!; }
-    private static readonly Field[] Fields = [new("Pins", "pins", 3, 5), new("Tolerance", "tolerance", .02f, .2f), new("StrainWarningSeconds", "warning", .1f, 2)];
+    private static readonly Field[] Fields = [new("Pins", "pins", 3, 5), new("Tolerance", "tolerance", .02f, .2f), new("StrainWarningSeconds", "warning", .1f, 2), new("SpoolPins", "spool pins", 0, 4), new("SerratedPins", "serrated pins", 0, 4), new("SerrationCatches", "serration catches", 0, 3)];
     private void Edit(LockPickingTier tier, Field field, string input)
     {
         var path = $"LockPicking.Tiers.{tier.Level}.{field.Key}";

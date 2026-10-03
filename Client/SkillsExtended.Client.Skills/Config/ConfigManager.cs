@@ -12,6 +12,8 @@ public static class ConfigManager
     public static ConfigEntry<int> LockPickingVolume;
     public static ConfigEntry<float> LockPickingSensitivity;
     public static ConfigEntry<bool> LockPickingReducedMotion;
+    public static ConfigEntry<KeyboardShortcut> LockPickingTensionIncrease;
+    public static ConfigEntry<KeyboardShortcut> LockPickingTensionDecrease;
     public static ConfigEntry<int> SignalsVolume;
     public static ConfigEntry<KeyboardShortcut> SignalsShortcut;
     public static ConfigEntry<bool> DeveloperEditorEnabled;
@@ -26,6 +28,10 @@ public static class ConfigManager
             "Enable the in-game developer editor. Fika requires server authorization for your profile. AI and raid time continue while editing.");
         DeveloperEditorShortcut = config.Bind("Developer tools", "Open developer editor",
             new KeyboardShortcut(KeyCode.F9, KeyCode.LeftControl), "Toggle the in-game developer editor on a loaded map.");
+        LockPickingTensionIncrease = config.Bind("Lock Picking", "Increase tension",
+            new KeyboardShortcut(KeyCode.E), "Increase pressure while holding the tension key. Mouse wheel also adjusts pressure.");
+        LockPickingTensionDecrease = config.Bind("Lock Picking", "Decrease tension",
+            new KeyboardShortcut(KeyCode.Q), "Decrease pressure while holding the tension key. Releasing tension resets all pins.");
         LockPickingVolume = config.Bind(
             "Lock Picking",
             "Volume (%)",

@@ -5,8 +5,15 @@ using SkillsExtended.Config.Skills;
 
 namespace SkillsExtended.LockPicking;
 
+public static class PickingProtocol
+{
+    public const int Version = 3;
+    public const string UpdateMessage = "Lock-picking versions differ. Update Skills Extended core and Fika on the host and all players.";
+}
+
 public sealed class PickRequest
 {
+    public int ProtocolVersion { get; set; }
     public string Raid { get; set; }
     public string Actor { get; set; }
     public string Door { get; set; }
@@ -18,10 +25,12 @@ public sealed class PickRequest
     public float Depth { get; set; }
     public float Lift { get; set; }
     public bool Tension { get; set; }
+    public float TensionStrength { get; set; } = .35f;
 }
 
 public sealed class PickReply
 {
+    public int ProtocolVersion { get; set; }
     public string Raid { get; set; }
     public string Actor { get; set; }
     public string Door { get; set; }
@@ -50,6 +59,7 @@ public sealed class PickSession
         Lift,
         IdleSeconds;
     public bool Tension;
+    public float TensionStrength = .35f;
     public PinLockEngine Engine;
 }
 
@@ -84,12 +94,18 @@ public sealed class PickingAuthority
     {
         var reply = new PickReply
         {
+            ProtocolVersion = PickingProtocol.Version,
             Raid = Raid,
             Actor = r.Actor,
             Door = r.Door,
             RequestId = r.RequestId,
             Revision = ++_revision,
         };
+        if (r.ProtocolVersion != PickingProtocol.Version)
+        {
+            reply.Error = PickingProtocol.UpdateMessage;
+            return reply;
+        }
         if (r.Operation == "sync")
             return reply;
         if (r.Raid != Raid || string.IsNullOrEmpty(r.Actor) || string.IsNullOrEmpty(r.Door))
@@ -137,7 +153,7 @@ public sealed class PickingAuthority
             }
             if (!_locks.TryGetValue(r.Door, out var definition))
             {
-                definition = PinLockDefinition.Create(_config.Tier(difficulty).Pins, ++_seed);
+                definition = PinLockDefinition.Create(_config.Tier(difficulty), ++_seed);
                 _locks.Add(r.Door, definition);
             }
             var session = new PickSession
@@ -169,6 +185,9 @@ public sealed class PickingAuthority
             || r.Sequence <= s.Sequence
             || !PinLockEngine.Finite(r.Depth)
             || !PinLockEngine.Finite(r.Lift)
+            || !PinLockEngine.Finite(r.TensionStrength)
+            || r.TensionStrength < 0
+            || r.TensionStrength > 1
             || r.Depth < 0
             || r.Depth > 1
             || r.Lift < 0
@@ -179,6 +198,7 @@ public sealed class PickingAuthority
         s.Depth = r.Depth;
         s.Lift = r.Lift;
         s.Tension = r.Tension;
+        s.TensionStrength = r.TensionStrength;
         s.IdleSeconds = 0;
         return null;
     }
@@ -194,7 +214,7 @@ public sealed class PickingAuthority
                 replies.Add(End(s.Door, true));
                 continue;
             }
-            s.Engine.Advance(seconds, s.Depth, s.Lift, s.Tension);
+            s.Engine.Advance(seconds, s.Depth, s.Lift, s.Tension, s.TensionStrength);
             var reply = Reply(s);
             if (s.Engine.Outcome != PickOutcome.Active)
                 Finish(s, reply);
@@ -245,6 +265,7 @@ public sealed class PickingAuthority
     private PickReply Reply(PickSession s) =>
         new()
         {
+            ProtocolVersion = PickingProtocol.Version,
             Raid = Raid,
             Actor = s.Actor,
             Door = s.Door,

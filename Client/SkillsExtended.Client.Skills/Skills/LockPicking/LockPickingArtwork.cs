@@ -231,7 +231,8 @@ internal sealed class LockPickingArtwork : IDisposable
         float lift,
         float depth,
         float strain,
-        bool tension,
+        float tension,
+        float cylinderRotation,
         bool unlocked,
         bool broken,
         bool reducedMotion
@@ -246,11 +247,10 @@ internal sealed class LockPickingArtwork : IDisposable
             -.045f + depth * .002f
         );
         _pick.gameObject.SetActive(!broken);
-        _tension.localRotation = _tensionRest * Quaternion.Euler(0, 0, tension ? -4 : 0);
+        _tension.localRotation = _tensionRest * Quaternion.Euler(0, 0, -4 * tension - cylinderRotation * 90);
         var rotation =
             unlocked ? 90
-            : tension ? 2
-            : 0;
+            : cylinderRotation * 90;
         _cylinder.localRotation = Quaternion.Slerp(
             _cylinder.localRotation,
             Quaternion.Euler(0, 0, rotation),

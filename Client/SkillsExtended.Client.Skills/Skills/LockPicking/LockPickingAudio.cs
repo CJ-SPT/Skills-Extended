@@ -32,12 +32,11 @@ internal sealed class LockPickingAudio : IDisposable
     private float _lastMotion,
         _lastWarning = -10,
         _lastLift;
-    private int _selected,
-        _pins;
-    private bool _initialized,
-        _tension;
+    private int _selected;
+    private readonly PickCueReader _cues = new();
+    private readonly Queue<PickSound> _pending = new();
+    private bool _initialized;
     private PickOutcome _outcome;
-    private PickFeedback _lastFeedback;
 
     public LockPickingAudio(GameObject owner)
     {
@@ -155,6 +154,8 @@ internal sealed class LockPickingAudio : IDisposable
             _lastLift = state.Lift;
             _lastMotion = now;
             _lastWarning = now - 2;
+            _cues.Reset(state.Cue);
+            _pending.Clear();
             Remember(state);
             return;
         }
@@ -172,22 +173,19 @@ internal sealed class LockPickingAudio : IDisposable
             return;
         }
 
+        foreach (var mechanical in _cues.Read(state)) _pending.Enqueue(mechanical.Sound);
         string cue = null;
-        if (state.SetPins > _pins)
-            cue = "Pin";
-        else if (state.Tension != _tension)
-            cue = state.Tension ? "Tension" : "Release";
-        else if (
-            state.Feedback == PickFeedback.Ready
-            && _lastFeedback != PickFeedback.Ready
-            && !_feedback.isPlaying
-        )
-            cue = "Probe";
-        else if (
-            state.Feedback is PickFeedback.Strain or PickFeedback.Overset
-            && now - _lastWarning > 1.1f
-            && !_feedback.isPlaying
-        )
+        if (!_feedback.isPlaying && _pending.Count > 0)
+            cue = _pending.Dequeue() switch
+            {
+                PickSound.Click => "Pin",
+                PickSound.Release => "Release",
+                PickSound.Tension => "Tension",
+                PickSound.Strain => "Strain",
+                _ => null,
+            };
+        if (cue == null && state.Feedback == PickFeedback.Strain
+            && now - _lastWarning > 1.1f && !_feedback.isPlaying)
         {
             cue = "Strain";
             _lastWarning = now;
@@ -217,10 +215,7 @@ internal sealed class LockPickingAudio : IDisposable
 
     private void Remember(PickSnapshot state)
     {
-        _pins = state.SetPins;
-        _tension = state.Tension;
         _outcome = state.Outcome;
-        _lastFeedback = state.Feedback;
     }
 
     private void Play(AudioSource source, string role)

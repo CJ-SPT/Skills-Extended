@@ -1,8 +1,27 @@
 [
   {
+    "Version": "3.1.1",
+    "ReleaseDate": "October 2, 2026",
+    "IsLatest": true,
+    "Features": [
+      "Lock Picking: spool and serrated security pins, false sets, and adjustable tension"
+    ],
+    "Improvements": [
+      "Adjust tension with the mouse wheel or rebindable E/Q shortcuts while holding the tension key.",
+      "Raids show spool waists and serrated grooves with resistance, clicks, and cylinder movement; practice alone explains pin types and confirms true sets.",
+      "Recover individual oversets and catches; low tension and counter-rotation can drop previously set pins.",
+      "Configure security-pin compositions and serration catches per tier in the web editor.",
+      "Lockpicking protocol 3 requires matching upgraded core and Fika installations across hosts and joining players."
+    ],
+    "BugFixes": [
+      "Previously set pins can now be overset; intermediate catches never count as unlock or failure-XP progress.",
+      "Short mechanical cues are retained across network updates and played once."
+    ]
+  },
+  {
     "Version": "3.1.0",
     "ReleaseDate": "September 30, 2026",
-    "IsLatest": true,
+    "IsLatest": false,
     "Features": [
       "Skill: Lock Picking 2.0",
       "New Skill: Signals Intelligence"

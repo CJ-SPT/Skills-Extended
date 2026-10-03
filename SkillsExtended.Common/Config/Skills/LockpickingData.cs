@@ -48,7 +48,7 @@ public class LockPickingData
             new()
             {
                 Level = 4,
-                Pins = 4,
+                Pins = 5,
                 Tolerance = .056f,
                 StrainWarningSeconds = .35f,
             },
@@ -82,6 +82,14 @@ public class LockPickingData
                 || t.Level > 5
                 || t.Pins < 3
                 || t.Pins > 5
+                || t.SpoolPins < 0
+                || t.SpoolPins >= t.Pins
+                || t.SerratedPins >= t.Pins
+                || t.SerratedPins < 0
+                || t.SpoolPins + t.SerratedPins >= t.Pins
+                || t.SerrationCatches < 0
+                || t.SerrationCatches > 3
+                || (t.SerratedPins > 0 && t.SerrationCatches < 1)
                 || !Range(t.Tolerance, .02f, .2f)
                 || !Range(t.StrainWarningSeconds, .1f, 2)
             )
@@ -97,10 +105,30 @@ public class LockPickingData
 
 public class LockPickingTier
 {
+    private int? _spools, _serrated, _catches;
     public int Level { get; set; }
     public int Pins { get; set; }
     public float Tolerance { get; set; }
     public float StrainWarningSeconds { get; set; }
+    // Missing fields inherit security defaults without replacing custom pin counts.
+    // Explicit counts are never silently repaired; Validate reports invalid compositions.
+    public int SpoolPins
+    {
+        get => _spools ?? Math.Min(Level >= 4 ? 2 : Level >= 2 ? 1 : 0,
+            Math.Max(0, Pins - 1 - (_serrated ?? 0)));
+        set => _spools = value;
+    }
+    public int SerratedPins
+    {
+        get => _serrated ?? Math.Min(Level == 5 ? 2 : Level >= 3 ? 1 : 0,
+            Math.Max(0, Pins - 1 - SpoolPins));
+        set => _serrated = value;
+    }
+    public int SerrationCatches
+    {
+        get => _catches ?? (Level >= 3 ? Math.Min(3, Level - 2) : 0);
+        set => _catches = value;
+    }
 }
 
 // DoorId : level to pick the lock
