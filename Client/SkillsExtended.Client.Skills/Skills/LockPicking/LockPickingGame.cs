@@ -30,6 +30,8 @@ public sealed class LockPickingGame : MonoBehaviour
         _finishAt = -1,
         _receivedAt;
     private bool _closed;
+    private bool _tensionLatched, _toggleTension;
+    private KeyCode _tensionKey;
     private float _tensionStrength = .35f, _clickUntil;
     private readonly PickCueReader _visualCues = new();
     private readonly HackingInputState _input = new();
@@ -89,6 +91,8 @@ public sealed class LockPickingGame : MonoBehaviour
         Current = view;
         view._player = player;
         view._difficulty = difficulty;
+        view._toggleTension = ConfigManager.LockPickingToggleTension.Value;
+        view._tensionKey = ConfigManager.LpMiniGameTurnKey.Value;
         try
         {
             view.Build();
@@ -298,6 +302,7 @@ public sealed class LockPickingGame : MonoBehaviour
         _state = _practice.Snapshot();
         _depth = _lift = 0;
         _tensionStrength = .35f;
+        _tensionLatched = false;
         _finishAt = -1;
         _visualCues.Reset();
         _cutaway.ResetAnimation();
@@ -350,7 +355,7 @@ public sealed class LockPickingGame : MonoBehaviour
             PickingRuntime.Notify("Lock-picking connection lost.");
             return;
         }
-        var tension = Input.GetKey(ConfigManager.LpMiniGameTurnKey.Value);
+        var tension = ReadTension();
         if (_state.Outcome == PickOutcome.Active)
         {
             if (tension)
@@ -392,6 +397,30 @@ public sealed class LockPickingGame : MonoBehaviour
         Render(tension);
     }
 
+    private bool ReadTension()
+    {
+        var toggle = ConfigManager.LockPickingToggleTension.Value;
+        var key = ConfigManager.LpMiniGameTurnKey.Value;
+        if (toggle != _toggleTension || key != _tensionKey)
+        {
+            // Changing controls must not leave the previous toggle latched on.
+            _toggleTension = toggle;
+            _tensionKey = key;
+            _tensionLatched = false;
+            return false;
+        }
+        if (_state.Outcome != PickOutcome.Active)
+        {
+            _tensionLatched = false;
+            return false;
+        }
+        if (!toggle)
+            return Input.GetKey(key);
+        if (Input.GetKeyDown(key))
+            _tensionLatched = !_tensionLatched;
+        return _tensionLatched;
+    }
+
     private void Render(bool tension)
     {
         foreach (var cue in _visualCues.Read(_state))
@@ -425,7 +454,9 @@ public sealed class LockPickingGame : MonoBehaviour
         _detail.text = $"DEPTH {_state.Selected + 1}/{_state.Pins}    ·    TENSION {_state.TensionStrength:P0}"
             + (coaching != null ? $"    ·    {coaching.SetPins} TRUE SET" : "")
             + (_state.Lift >= .08f ? "    ·    Lower pick to move" : "");
-        _help.text = $"MOUSE ← → Depth   ↑ ↓ Lift   HOLD {ConfigManager.LpMiniGameTurnKey.Value} Tension   ESC Leave"
+        var tensionAction = ConfigManager.LockPickingToggleTension.Value ? "PRESS" : "HOLD";
+        var tensionHelp = ConfigManager.LockPickingToggleTension.Value ? "Tension on/off" : "Tension";
+        _help.text = $"MOUSE ← → Depth   ↑ ↓ Lift   {tensionAction} {ConfigManager.LpMiniGameTurnKey.Value} {tensionHelp}   ESC Leave"
             + $"\nWHEEL / {ConfigManager.LockPickingTensionIncrease.Value} / {ConfigManager.LockPickingTensionDecrease.Value} Pressure   ·   Release tension to reset"
             + (_practice != null ? "\nPRACTICE — no items or XP affected. R after completion retries the same lock." : "");
         _strain.rectTransform.sizeDelta = new Vector2(280 * _state.Strain, 5);

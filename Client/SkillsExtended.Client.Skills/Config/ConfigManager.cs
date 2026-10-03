@@ -12,6 +12,7 @@ public static class ConfigManager
     public static ConfigEntry<int> LockPickingVolume;
     public static ConfigEntry<float> LockPickingSensitivity;
     public static ConfigEntry<bool> LockPickingReducedMotion;
+    public static ConfigEntry<bool> LockPickingToggleTension;
     public static ConfigEntry<KeyboardShortcut> LockPickingTensionIncrease;
     public static ConfigEntry<KeyboardShortcut> LockPickingTensionDecrease;
     public static ConfigEntry<int> SignalsVolume;
@@ -29,9 +30,11 @@ public static class ConfigManager
         DeveloperEditorShortcut = config.Bind("Developer tools", "Open developer editor",
             new KeyboardShortcut(KeyCode.F9, KeyCode.LeftControl), "Toggle the in-game developer editor on a loaded map.");
         LockPickingTensionIncrease = config.Bind("Lock Picking", "Increase tension",
-            new KeyboardShortcut(KeyCode.E), "Increase pressure while holding the tension key. Mouse wheel also adjusts pressure.");
+            new KeyboardShortcut(KeyCode.E), "Increase pressure while tension is applied. Mouse wheel also adjusts pressure.");
         LockPickingTensionDecrease = config.Bind("Lock Picking", "Decrease tension",
-            new KeyboardShortcut(KeyCode.Q), "Decrease pressure while holding the tension key. Releasing tension resets all pins.");
+            new KeyboardShortcut(KeyCode.Q), "Decrease pressure while tension is applied. Releasing tension resets all pins.");
+        LockPickingToggleTension = config.Bind("Lock Picking", "Toggle tension", false,
+            "Press the tension key once to apply tension and again to release it and reset the pins. When disabled, hold the key to apply tension. Each new attempt starts with toggle tension off.");
         LockPickingVolume = config.Bind(
             "Lock Picking",
             "Volume (%)",
@@ -93,7 +96,7 @@ public static class ConfigManager
             "Turn Cylinder Key bind",
             KeyCode.A,
             new ConfigDescription(
-                "Hold to apply tension while working pins. Release to reset the pins.",
+                "Apply tension while working pins. Hold by default, or press to turn tension on/off when Toggle tension is enabled. Releasing tension resets the pins.",
                 null,
                 new ConfigurationManagerAttributes
                 {

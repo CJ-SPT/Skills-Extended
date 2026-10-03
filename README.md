@@ -46,8 +46,8 @@ Craft a **Lockpick set at Workbench level 1** and carry it to a supported locked
 | --- | --- |
 | Mouse left / right | Change depth while the pick is lowered. |
 | Mouse up / down | Lift or lower the pick. |
-| Hold **A** by default | Apply tension. The binding is configurable. |
-| Mouse wheel / **E** / **Q** while holding tension | Increase or decrease pressure. E/Q can be rebound. |
+| Hold **A** by default | Apply tension. Enable **Lock Picking → Toggle tension** to press once for on and again for off. The binding is configurable. |
+| Mouse wheel / **E** / **Q** while tension is applied | Increase or decrease pressure. E/Q can be rebound. |
 | Release tension | Drop all pins and reset the lock. |
 | **Escape** | Leave the minigame. |
 
