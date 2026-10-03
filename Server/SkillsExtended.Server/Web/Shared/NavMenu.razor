@@ -26,7 +26,7 @@
         Profile skill levels
     </NavLink>
 
-    @foreach (var category in SkillCatalog.All.GroupBy(s => s.Category))
+    @foreach (var category in SkillCatalog.Navigation.GroupBy(s => s.Category))
     {
         <p class="se-nav-category">@category.Key</p>
         @foreach (var skill in category.Where(s => s.Name.Contains(_search, StringComparison.OrdinalIgnoreCase)))
@@ -37,7 +37,7 @@
                      width="24"
                      height="24" />
                 <span>@skill.Name</span>
-                @if (Session.ChangesFor(skill.Key) > 0)
+                @if (Session.PageChangesFor(skill.Key) > 0)
                 {
                     <span class="se-pending-dot" aria-label="Unsaved changes">●</span>
                 }
@@ -45,7 +45,7 @@
         }
     }
 
-    @if (!SkillCatalog.All.Any(s => s.Name.Contains(_search, StringComparison.OrdinalIgnoreCase)))
+    @if (!SkillCatalog.Navigation.Any(s => s.Name.Contains(_search, StringComparison.OrdinalIgnoreCase)))
     {
         <p class="se-empty">No skills match.</p>
     }

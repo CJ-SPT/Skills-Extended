@@ -1,5 +1,15 @@
 # Hacking skill icon
 
+## Original built-in skill artwork
+
+`NativeIcons.json` maps the 27 built-in config pages to sprites exported from the installed
+`EscapeFromTarkov_Data/resources.assets`. `Extract-Native.py` reads that file with UnityPy 1.25.3
+and exports unchanged sprites as `Skill_<configuration key>.png`, with dimensions, sprite object IDs,
+and SHA-256 hashes in an extraction receipt. Source game files are never modified.
+The outputs are used by the sidebar, overview cards, and page headers.
+Aim Drills uses the game's weapon-drawing artwork, as assigned by its native skill icon table.
+Recoil Control has no large portrait in that table, so its page uses the game's recoil bonus sprite.
+
 The selected artwork is the rugged PDA option, with its external cable and round
 connector removed. It was generated and edited using the built-in image-generation
 tool, then copied without further image transformations to:

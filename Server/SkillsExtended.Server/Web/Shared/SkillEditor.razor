@@ -13,11 +13,12 @@
         <p>@Definition.Description</p>
     </div>
     <span class="se-badge">
-        @(Session.ChangesFor(SkillKey) == 0 ? "Saved" : $"{Session.ChangesFor(SkillKey)} pending")
+        @(Session.PageChangesFor(SkillKey) == 0 ? "Saved" : $"{Session.PageChangesFor(SkillKey)} pending")
     </span>
 </header>
 
 <p class="se-notice">Save your changes, then restart connected game clients to load the new settings.</p>
+<SkillLevelingEditor SkillKey="@SkillKey" />
 
 @if (SkillKey is "LockPicking" or "Hacking" or "SignalsIntelligence")
 {

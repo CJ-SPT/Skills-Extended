@@ -21,6 +21,8 @@ public class ConfigController(ISptLogger<ConfigController> logger, IReadOnlyList
     public ServerConfig ServerConfig => _runtime.Server;
     public SkillsConfig SkillsConfig => _runtime.Skills;
     public bool IsFikaPresent { get; private set; }
+    public event Action<SkillsConfig>? Saved;
+    public IReadOnlyDictionary<string, float> NativeBonusDefaults { get; set; } = NativeSkillCatalog.Defaults;
 
     public async Task OnLoadAsync(CancellationToken cancellationToken)
     {
@@ -37,6 +39,7 @@ public class ConfigController(ISptLogger<ConfigController> logger, IReadOnlyList
             {
                 var snapshot = await _store.ReadSnapshotAsync();
                 (snapshot.Skills.LevelingSpeed ?? throw new InvalidDataException("Missing leveling speed configuration.")).Validate();
+                snapshot.Skills.NativeSkills.Validate();
                 _runtime = snapshot;
             }
         }
@@ -46,7 +49,8 @@ public class ConfigController(ISptLogger<ConfigController> logger, IReadOnlyList
         }
     }
 
-    public Task<ConfigSnapshot> GetSnapshotAsync() => _store.ReadSnapshotAsync();
+    public async Task<ConfigSnapshot> GetSnapshotAsync() =>
+        (await _store.ReadSnapshotAsync()) with { NativeDefaults = NativeBonusDefaults };
 
     public async Task<EditResult> SaveAsync(ConfigSnapshot draft)
     {
@@ -54,13 +58,15 @@ public class ConfigController(ISptLogger<ConfigController> logger, IReadOnlyList
             draft.Skills,
             draft.Server,
             draft.Revision,
-            snapshot => _runtime = snapshot
+            snapshot => { _runtime = snapshot; Saved?.Invoke(snapshot.Skills); }
         );
         if (!result.Success)
         {
             logger.Warning($"[Skills Extended] {result.Message}");
         }
 
-        return result;
+        return result.Snapshot is null ? result : result with {
+            Snapshot = result.Snapshot with { NativeDefaults = NativeBonusDefaults }
+        };
     }
 }

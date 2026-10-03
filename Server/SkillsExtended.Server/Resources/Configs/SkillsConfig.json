@@ -1,4 +1,7 @@
 {
+    "NativeSkills": {
+        "Overrides": {}
+    },
     "LevelingSpeed": {
         "GlobalMultiplier": 1,
         "SkillMultipliers": {},

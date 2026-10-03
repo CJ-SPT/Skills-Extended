@@ -34,6 +34,16 @@ public sealed class EditorSession
 
     public int ChangesFor(string key)
     {
+        if (NativeSkillCatalog.ByKey.ContainsKey(key))
+        {
+            var nativeChanges = new HashSet<string>();
+            Baseline.Skills.NativeSkills.Overrides.TryGetValue(key, out var before);
+            Skills.NativeSkills.Overrides.TryGetValue(key, out var after);
+            CollectChanges(JsonNode.Parse(ConfigStore.Serialize(before ?? new Dictionary<string, float>())),
+                JsonNode.Parse(ConfigStore.Serialize(after ?? new Dictionary<string, float>())), "NativeSkills." + key, nativeChanges);
+            nativeChanges.UnionWith(InputErrors.Keys.Where(k => k.StartsWith("NativeSkills." + key + ".", StringComparison.Ordinal)));
+            return nativeChanges.Count;
+        }
         if (key == "LevelingSpeed")
         {
             var levelingChanges = new HashSet<string>();
@@ -67,10 +77,23 @@ public sealed class EditorSession
                 "Server",
                 serverChanges
             );
-            return SkillCatalog.All.Sum(s => ChangesFor(s.Key)) + ChangesFor("LevelingSpeed") + serverChanges.Count;
+            return SkillCatalog.All.Sum(s => ChangesFor(s.Key)) + NativeSkillCatalog.All.Sum(s => ChangesFor(s.Key))
+                + ChangesFor("LevelingSpeed") + serverChanges.Count;
         }
     }
     public bool Dirty => ChangeCount > 0;
+
+    public int PageChangesFor(string key)
+    {
+        var levelingKey = key switch {
+            "NatoWeapons" => "UsecArsystems", "EasternWeapons" => "BearAksystems",
+            "LockPicking" => "Lockpicking", "ShadowConnections" => "Shadowconnections",
+            "BearRawPower" => "BearRawpower", _ => key
+        };
+        var inputPath = "LevelingSpeed.SkillMultipliers." + levelingKey;
+        return ChangesFor(key) + (Skills.LevelingSpeed.Individual(levelingKey) != Baseline.Skills.LevelingSpeed.Individual(levelingKey)
+            || InputErrors.ContainsKey(inputPath) ? 1 : 0);
+    }
 
     private static void CollectChanges(
         JsonNode? before,

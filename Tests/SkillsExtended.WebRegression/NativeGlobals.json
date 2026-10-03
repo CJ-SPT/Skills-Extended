@@ -1,0 +1,439 @@
+{
+  "AdvancedModding": [],
+  "AimDrills": {
+    "WeaponShotAction": 0.2
+  },
+  "Assault": {
+    "WeaponChamberAction": 0.1,
+    "WeaponFixAction": 0.1,
+    "WeaponReloadAction": 0.025,
+    "WeaponShotAction": 0.1
+  },
+  "AttachedLauncher": {
+    "WeaponChamberAction": 1.1,
+    "WeaponFixAction": 2.2,
+    "WeaponReloadAction": 0.275,
+    "WeaponShotAction": 1.1
+  },
+  "Attention": {
+    "DependentSkillRatios": [
+      {
+        "Ratio": 0.2,
+        "SkillId": "Charisma"
+      }
+    ],
+    "ExamineWithInstruction": 3,
+    "FindActionFalse": 0.334,
+    "FindActionTrue": 0.167
+  },
+  "Auctions": [],
+  "Barter": [],
+  "BearAksystems": [],
+  "BearAssaultoperations": [],
+  "BearAuthority": [],
+  "BearHeavycaliber": [],
+  "BearRawpower": [],
+  "BipodErgonomicsBonusPerLevel": 0.5,
+  "BotReload": [],
+  "BotSound": [],
+  "Charisma": {
+    "BonusSettings": {
+      "EliteBonusSettings": {
+        "FenceStandingLossDiscount": 0.5,
+        "RepeatableQuestExtraCount": 1,
+        "ScavCaseDiscount": 0.1
+      },
+      "LevelBonusSettings": {
+        "HealthRestoreDiscount": 0.001,
+        "HealthRestoreTraderDiscount": 0.001,
+        "InsuranceDiscount": 0.001,
+        "InsuranceTraderDiscount": 0.001,
+        "PaidExitDiscount": 0.001,
+        "RepeatableQuestChangeDiscount": 0.001
+      }
+    },
+    "Counters": {
+      "insuranceCost": {
+        "divisor": 200000,
+        "points": 1
+      },
+      "repairCost": {
+        "divisor": 10000,
+        "points": 1
+      },
+      "repeatableQuestCompleteCount": {
+        "divisor": 1,
+        "points": 1
+      },
+      "restoredHealthCost": {
+        "divisor": 15000,
+        "points": 1
+      },
+      "scavCaseCost": {
+        "divisor": 150000,
+        "points": 1
+      }
+    },
+    "SkillProgressAtn": 0.5,
+    "SkillProgressInt": 0.5,
+    "SkillProgressPer": 0.5
+  },
+  "Cleanoperations": [],
+  "CovertMovement": {
+    "MovementAction": 0.025
+  },
+  "Crafting": {
+    "CraftTimeReductionPerLevel": 0.75,
+    "CraftingCycleHours": 8,
+    "CraftingPointsToInteligence": 15,
+    "DependentSkillRatios": [
+      {
+        "Ratio": 0.066,
+        "SkillId": "Intellect"
+      }
+    ],
+    "EliteExtraProductions": 1,
+    "PointsPerCraftingCycle": 2,
+    "PointsPerUniqueCraftCycle": 3.75,
+    "ProductionTimeReductionPerLevel": 0.75,
+    "UniqueCraftsPerCycle": 1
+  },
+  "DMR": {
+    "WeaponChamberAction": 0.025,
+    "WeaponFixAction": 0.2,
+    "WeaponReloadAction": 0.02,
+    "WeaponShotAction": 0.2
+  },
+  "Endurance": {
+    "DependentSkillRatios": [
+      {
+        "Ratio": 0.25,
+        "SkillId": "Health"
+      }
+    ],
+    "GainPerFatigueStack": 0.05,
+    "MovementAction": 0.005,
+    "QTELevelMultipliers": {
+      "10": {
+        "Multiplier": 0.9
+      },
+      "25": {
+        "Multiplier": 0.6
+      },
+      "50": {
+        "Multiplier": 0.3
+      }
+    },
+    "SprintAction": 0.04
+  },
+  "FieldMedicine": [],
+  "FirstAid": [],
+  "Freetrading": [],
+  "HMG": {
+    "WeaponChamberAction": 0.6,
+    "WeaponFixAction": 1.2,
+    "WeaponReloadAction": 0.15,
+    "WeaponShotAction": 0.6
+  },
+  "Health": {
+    "SkillProgress": 0.5
+  },
+  "HeavyVests": {
+    "BluntThroughputDamageHVestsReducePerLevel": 0.004,
+    "BuffMaxCount": 1,
+    "BuffSettings": {
+      "CommonBuffChanceLevelBonus": 0.005,
+      "CommonBuffMinChanceValue": 0.15,
+      "CurrentDurabilityLossToRemoveBuff": 0.4,
+      "MaxDurabilityLossToRemoveBuff": 0.4,
+      "RareBuffChanceCoff": 0.15,
+      "ReceivedDurabilityMaxPercent": 30
+    },
+    "Counters": {
+      "armorDurability": {
+        "divisor": 10.2,
+        "points": 1
+      }
+    },
+    "MoveSpeedPenaltyReductionHVestsReducePerLevel": 0.005,
+    "RicochetChanceHVestsCurrentDurabilityThreshold": 0.5,
+    "RicochetChanceHVestsEliteLevel": 0.05,
+    "RicochetChanceHVestsMaxDurabilityThreshold": 0.2,
+    "WearAmountRepairHVestsReducePerLevel": 0.01,
+    "WearChanceRepairHVestsReduceEliteLevel": 0.5
+  },
+  "HideoutManagement": {
+    "CircleOfCultistsBonusPercent": 0.01,
+    "ConsumptionReductionPerLevel": 0.5,
+    "EliteSlots": {
+      "AirFilteringUnit": {
+        "Container": 0,
+        "Slots": 2
+      },
+      "BitcoinFarm": {
+        "Container": 2,
+        "Slots": 0
+      },
+      "Generator": {
+        "Container": 0,
+        "Slots": 2
+      },
+      "WaterCollector": {
+        "Container": 0,
+        "Slots": 2
+      }
+    },
+    "SkillBoostPercent": 1,
+    "SkillPointsPerAreaUpgrade": 30,
+    "SkillPointsPerCraft": 2,
+    "SkillPointsRate": {
+      "AirFilteringUnit": {
+        "PointsGained": 2,
+        "ResourceSpent": 10
+      },
+      "Generator": {
+        "PointsGained": 2,
+        "ResourceSpent": 10
+      },
+      "SolarPower": {
+        "PointsGained": 3,
+        "ResourceSpent": 50
+      },
+      "WaterCollector": {
+        "PointsGained": 2,
+        "ResourceSpent": 10
+      }
+    }
+  },
+  "Immunity": {
+    "HealthNegativeEffect": 0.5,
+    "ImmunityMiscEffects": 1,
+    "ImmunityPainKiller": 1,
+    "ImmunityPoisonBuff": 1,
+    "StimulatorNegativeBuff": 0.011
+  },
+  "Intellect": {
+    "Counters": {
+      "armorDurability": {
+        "divisor": 30,
+        "points": 1
+      },
+      "firearmsDurability": {
+        "divisor": 13,
+        "points": 1
+      },
+      "meleeWeaponDurability": {
+        "divisor": 18,
+        "points": 1
+      }
+    },
+    "DependentSkillRatios": [
+      {
+        "Ratio": 0.2,
+        "SkillId": "Charisma"
+      }
+    ],
+    "ExamineAction": 20,
+    "RepairAction": 0.005,
+    "RepairPointsCostReduction": 0.004,
+    "SkillProgress": 0.5,
+    "WearAmountReducePerLevel": 0.004,
+    "WearChanceReduceEliteLevel": 0.5
+  },
+  "LMG": {
+    "WeaponChamberAction": 0.6,
+    "WeaponFixAction": 1.2,
+    "WeaponReloadAction": 0.15,
+    "WeaponShotAction": 0.6
+  },
+  "Launcher": {
+    "WeaponChamberAction": 1.1,
+    "WeaponFixAction": 2.2,
+    "WeaponReloadAction": 0.275,
+    "WeaponShotAction": 1.1
+  },
+  "LightVests": {
+    "BuffMaxCount": 1,
+    "BuffSettings": {
+      "CommonBuffChanceLevelBonus": 0.005,
+      "CommonBuffMinChanceValue": 0.15,
+      "CurrentDurabilityLossToRemoveBuff": 0.4,
+      "MaxDurabilityLossToRemoveBuff": 0.4,
+      "RareBuffChanceCoff": 0.15,
+      "ReceivedDurabilityMaxPercent": 30
+    },
+    "Counters": {
+      "armorDurability": {
+        "divisor": 9.2,
+        "points": 1
+      }
+    },
+    "MeleeDamageLVestsReducePerLevel": 0.006,
+    "MoveSpeedPenaltyReductionLVestsReducePerLevel": 0.006,
+    "WearAmountRepairLVestsReducePerLevel": 0.008,
+    "WearChanceRepairLVestsReduceEliteLevel": 0.5
+  },
+  "Lockpicking": [],
+  "MagDrills": {
+    "MagazineCheckAction": 0.05,
+    "RaidLoadedAmmoAction": 0.02,
+    "RaidUnloadedAmmoAction": 0.01
+  },
+  "Melee": {
+    "BuffSettings": {
+      "CommonBuffChanceLevelBonus": 0,
+      "CommonBuffMinChanceValue": 1,
+      "RareBuffChanceCoff": 0,
+      "ReceivedDurabilityMaxPercent": 0.01
+    }
+  },
+  "Memory": {
+    "AnySkillUp": 5,
+    "SkillProgress": 0.4
+  },
+  "Metabolism": {
+    "DecreaseNegativeEffectDurationRate": 1,
+    "DecreasePoisonDurationRate": 1,
+    "EnergyRecoveryRate": 20,
+    "HydrationRecoveryRate": 20,
+    "IncreasePositiveEffectDurationRate": 1
+  },
+  "MountingErgonomicsBonusPerLevel": 0.2,
+  "NightOps": [],
+  "Perception": {
+    "DependentSkillRatios": [
+      {
+        "Ratio": 0.2,
+        "SkillId": "Charisma"
+      }
+    ],
+    "OnlineAction": 2.5,
+    "UniqueLoot": 0.334
+  },
+  "Pistol": {
+    "WeaponChamberAction": 0.1,
+    "WeaponFixAction": 0.1,
+    "WeaponReloadAction": 0.025,
+    "WeaponShotAction": 0.1
+  },
+  "ProneMovement": [],
+  "RecoilControl": {
+    "RecoilAction": 0.00015,
+    "RecoilBonusPerLevel": 0.003
+  },
+  "Revolver": {
+    "WeaponChamberAction": 0.1,
+    "WeaponFixAction": 0.2,
+    "WeaponReloadAction": 0.025,
+    "WeaponShotAction": 0.1
+  },
+  "SMG": {
+    "WeaponChamberAction": 0.4,
+    "WeaponFixAction": 0.8,
+    "WeaponReloadAction": 0.1,
+    "WeaponShotAction": 0.4
+  },
+  "Search": {
+    "FindAction": 0.166,
+    "SearchAction": 0.33
+  },
+  "Shadowconnections": [],
+  "Shotgun": {
+    "WeaponChamberAction": 0.1,
+    "WeaponFixAction": 0.2,
+    "WeaponReloadAction": 0.01,
+    "WeaponShotAction": 0.1
+  },
+  "SilentOps": [],
+  "SkillProgressRate": 0.4,
+  "Sniper": {
+    "WeaponChamberAction": 0.025,
+    "WeaponFixAction": 0.2,
+    "WeaponReloadAction": 0.02,
+    "WeaponShotAction": 0.2
+  },
+  "Sniping": [],
+  "Strength": {
+    "DependentSkillRatios": [
+      {
+        "Ratio": 0.25,
+        "SkillId": "Health"
+      }
+    ],
+    "FistfightAction": 0.2,
+    "MovementActionMax": 0.015,
+    "MovementActionMin": 0.005,
+    "PushUpMax": 0.1,
+    "PushUpMin": 0.033,
+    "QTELevelMultipliers": [
+      {
+        "Level": 10,
+        "Multiplier": 0.9
+      },
+      {
+        "Level": 25,
+        "Multiplier": 0.6
+      },
+      {
+        "Level": 50,
+        "Multiplier": 0.3
+      }
+    ],
+    "SprintActionMax": 0.12,
+    "SprintActionMin": 0.04,
+    "ThrowAction": 0.2
+  },
+  "StressResistance": {
+    "HealthNegativeEffect": 0.33,
+    "LowHPDuration": 0.033
+  },
+  "Surgery": {
+    "SkillProgress": 0.5,
+    "SurgeryAction": 3
+  },
+  "Taskperformance": [],
+  "Throwing": {
+    "ThrowAction": 0.25
+  },
+  "TroubleShooting": {
+    "EliteAmmoChanceReduceMult": 0.3,
+    "EliteDurabilityChanceReduceMult": 0.3,
+    "EliteMagChanceReduceMult": 0.3,
+    "MalfRepairSpeedBonusPerLevel": 0.005,
+    "SkillPointsPerMalfFix": 3.2
+  },
+  "UsecArsystems": [],
+  "UsecDeepweaponmodding_Settings": [],
+  "UsecLongrangeoptics_Settings": [],
+  "UsecNegotiations": [],
+  "UsecTactics": [],
+  "Vitality": {
+    "DamageTakenAction": 0.005,
+    "HealthNegativeEffect": 0.5
+  },
+  "WeaponModding": [],
+  "WeaponSkillProgressRate": 1,
+  "WeaponSkillRecoilBonusPerLevel": 0.003,
+  "WeaponTreatment": {
+    "BuffMaxCount": 2,
+    "BuffSettings": {
+      "CommonBuffChanceLevelBonus": 0.0019,
+      "CommonBuffMinChanceValue": 0.074,
+      "CurrentDurabilityLossToRemoveBuff": 0.05,
+      "MaxDurabilityLossToRemoveBuff": 0.05,
+      "RareBuffChanceCoff": 0.075,
+      "ReceivedDurabilityMaxPercent": 30
+    },
+    "Counters": {
+      "firearmsDurability": {
+        "divisor": 6,
+        "points": 1
+      }
+    },
+    "DurLossReducePerLevel": 0.005,
+    "Filter": [],
+    "SkillPointsPerRepair": 3,
+    "WearAmountRepairGunsReducePerLevel": 0.01,
+    "WearChanceRepairGunsReduceEliteLevel": 0.5
+  }
+}

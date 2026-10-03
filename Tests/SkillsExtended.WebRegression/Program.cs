@@ -24,6 +24,16 @@ if (args.Contains("--guides-only"))
 }
 var store = new ConfigStore(source, new ConfigFiles());
 var shipped = await store.ReadSnapshotAsync();
+if (args.Contains("--native-only"))
+{
+    await NativeSkillChecks.Run(shipped, Check);
+    await ComponentChecks.Run(shipped, Check, levelingOnly: true);
+    await AuthorizationChecks.Run(Check);
+    await RenderingChecks.Run(Check);
+    Console.WriteLine($"Built-in skills: {checks} checks passed.");
+    return;
+}
+await NativeSkillChecks.Run(shipped, Check);
 await LevelingChecks.Run(shipped, Check);
 if (args.Contains("--leveling-only"))
 {

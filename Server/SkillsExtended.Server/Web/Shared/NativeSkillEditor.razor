@@ -1,0 +1,24 @@
+@using SkillsExtended.Config
+<PageTitle>@Definition.Name · Skills Extended</PageTitle>
+<header class="se-page-heading">
+    <img src="@($"/skills-extended/icons/Skill_{SkillKey}.png")" alt="" width="48" height="48" />
+    <div><p class="se-eyebrow">@Definition.Category</p><h1>@Definition.Name</h1>
+        <p>Configure built-in skill bonuses and leveling speed.</p></div>
+    <span class="se-badge">@(Session.PageChangesFor(SkillKey) == 0 ? "Saved" : $"{Session.PageChangesFor(SkillKey)} pending")</span>
+</header>
+<p class="se-notice">Save your changes, then restart connected game clients to load raid bonuses. Server and hideout settings use saved values immediately.</p>
+<SkillLevelingEditor SkillKey="@SkillKey" />
+<section class="se-panel" aria-label="Skill bonuses">
+    <h2>Bonuses</h2>
+    <p>Fields start with the game's default values. Server settings include changes from other mods. Reset a field to remove your override and restore its default. Elite unlocks and other native rules remain in effect.</p>
+    <div class="se-fields">
+        @foreach (var field in Definition.Fields) {
+            <NativeBonusField @key="(SkillKey + field.Key)" SkillKey="@SkillKey" Field="@field" />
+        }
+    </div>
+</section>
+@code {
+    [CascadingParameter] public EditorSession Session { get; set; } = null!;
+    [Parameter, EditorRequired] public string SkillKey { get; set; } = "";
+    private NativeSkillDefinition Definition => NativeSkillCatalog.ByKey[SkillKey];
+}

@@ -20,6 +20,7 @@
     <Compile Include="../../Client/SkillsExtended.Client.Skills/Skills/Electronics/ElectronicsDoorRegistry.cs" Link="Production/ElectronicsDoorRegistry.cs" />
     <Compile Include="../../Client/SkillsExtended.Client.Skills/Skills/SkillClasses/Physical/*.cs" Link="Production/Physical/%(Filename)%(Extension)" />
     <Compile Include="../../Client/SkillsExtended.Client.Skills/Skills/Core/Patches/CreateSkillPatches.cs" Link="Production/CreateSkillPatches.cs" />
+    <Compile Include="../../Client/SkillsExtended.Client.Skills/Skills/Core/Patches/NativeSkillBonusesPatch.cs" Link="Production/NativeSkillBonusesPatch.cs" />
     <Compile Include="../../Client/SkillsExtended.Client.Skills/Skills/FieldMedicine/Patches/PersonalBuffPatch.cs" Link="Production/PersonalBuffPatch.cs" />
     <Compile Include="../../Client/SkillsExtended.Client.Skills/Skills/FirstAid/Patches/HealthEffectComponentPatch.cs" Link="Production/HealthEffectComponentPatch.cs" />
     <Compile Include="../../Client/SkillsExtended.Client.Skills/Skills/FirstAid/Patches/HealthEffectUseTimePatch.cs" Link="Production/HealthEffectUseTimePatch.cs" />

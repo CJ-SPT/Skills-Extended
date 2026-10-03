@@ -240,6 +240,9 @@ public static class SkillCatalog
             "Physical skills"
         ),
     ];
+    public static readonly IReadOnlyList<SkillDefinition> Navigation = All.Concat(
+        NativeSkillCatalog.All.Select(s => new SkillDefinition(s.Key, s.Slug, s.Name,
+            "Skill_" + s.Key, "Configure built-in skill bonuses and leveling speed.", s.Category))).ToArray();
     private static readonly Dictionary<string, string> Labels = new()
     {
         ["PinTolerancePerLevel"] = "Pin control bonus per level",

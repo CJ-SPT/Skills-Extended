@@ -1,0 +1,16 @@
+@using SkillsExtended.Config
+<section class="se-panel" aria-label="Skill leveling speed">
+    <h2>Leveling speed</h2>
+    <div class="se-fields"><LevelingMultiplierField Key="@Key" Label="Skill XP multiplier" /></div>
+    <p>Effective speed: <strong>@(Session.Skills.LevelingSpeed.ForSkill(LevelingSkillCatalog.ByKey[Key].Id).ToString(CultureInfo.CurrentCulture))×</strong>.
+        Combines with the <a href="/skills-extended/leveling-speed">global leveling multiplier</a>.</p>
+</section>
+@code {
+    [CascadingParameter] public EditorSession Session { get; set; } = null!;
+    [Parameter, EditorRequired] public string SkillKey { get; set; } = "";
+    private string Key => SkillKey switch {
+        "NatoWeapons" => "UsecArsystems", "EasternWeapons" => "BearAksystems",
+        "LockPicking" => "Lockpicking", "ShadowConnections" => "Shadowconnections",
+        "BearRawPower" => "BearRawpower", _ => SkillKey
+    };
+}

@@ -68,6 +68,7 @@ public class SkillsExtendedPlugin : BaseUnityPlugin
         SkillData.Hacking.Validate();
         SkillData.LockPicking.Validate();
         SkillData.SignalsIntelligence.Validate();
+        SkillData.NativeSkills.Validate();
         if (!SkillsExtendedInfo.IsFikaHeadless)
         {
             EFT.UI.ConsoleScreen.Processor.RegisterCommandGroup<Skills.Hacking.ElectronicsConsoleCommands>();

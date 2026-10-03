@@ -10,6 +10,11 @@ const { chromium } = require(process.env.PLAYWRIGHT_MODULE_PATH || "playwright")
     const accessOnly = process.argv.includes("--client-editor-access");
     const guidesOnly = process.argv.includes("--guides-only");
     const levelingOnly = process.argv.includes("--leveling-only");
+    const nativeOnly = process.argv.includes("--native-only");
+    const nativePages = new Set(["perception", "intellect", "attention", "charisma", "pistols", "revolvers",
+        "submachine-guns", "assault-rifles", "shotguns", "sniper-rifles", "light-machine-guns", "launchers", "melee",
+        "designated-marksman-rifles", "throwing", "recoil-control", "aim-drills", "troubleshooting", "covert-movement",
+        "surgery", "search", "magazine-drills", "light-armor", "heavy-armor", "weapon-maintenance", "crafting", "hideout-management"]);
     const browser = await chromium.launch({
         headless: true,
         executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH || undefined,
@@ -19,8 +24,14 @@ const { chromium } = require(process.env.PLAYWRIGHT_MODULE_PATH || "playwright")
     try {
         for (const width of [2560, 1440, 768, 390]) {
             const page = await browser.newPage({ viewport: { width, height: 1000 } });
-            for (const file of fs.readdirSync(directory).filter(file => file.endsWith(".html") && (!accessOnly || file === "client-editor-access.html") && (!guidesOnly || file.startsWith("guides-")) && (!levelingOnly || file === "leveling-speed.html"))) {
+            for (const file of fs.readdirSync(directory).filter(file => file.endsWith(".html") && (!accessOnly || file === "client-editor-access.html") && (!guidesOnly || file.startsWith("guides-")) && (!levelingOnly || file === "leveling-speed.html") && (!nativeOnly || nativePages.has(file.slice(0, -5))))) {
                 await page.goto(pathToFileURL(path.join(directory, file)).href);
+                if (nativeOnly) {
+                    assert.equal(await page.locator(".se-page-heading img").evaluate(image => image.complete && image.naturalWidth > 0),
+                        true, `${file}: original game icon loads`);
+                    assert.equal(await page.locator(".se-nav-link img").evaluateAll(images => images.every(image => image.complete && image.naturalWidth > 0)),
+                        true, `${file}: all navigation icons load`);
+                }
                 await page.locator(".se-app").waitFor();
                 assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), `${file}: viewport overflow at ${width}`);
                 if (file === "client-editor-access.html") {
@@ -86,7 +97,7 @@ const { chromium } = require(process.env.PLAYWRIGHT_MODULE_PATH || "playwright")
                 await page.keyboard.press("Tab");
                 assert.equal(await page.locator(":focus").textContent(), "Skip to content", `${file}: keyboard skip link is first`);
 
-                if (["overview.html", "endurance.html", "lock-picking.html", "leveling-speed.html"].includes(file)) {
+                if (["overview.html", "endurance.html", "lock-picking.html", "leveling-speed.html", "perception.html", "charisma.html", "surgery.html"].includes(file)) {
                     await page.screenshot({ path: path.join(directory, `${file.slice(0, -5)}-${width}.png`), fullPage: false });
                 }
                 if (file === "leveling-speed.html") {

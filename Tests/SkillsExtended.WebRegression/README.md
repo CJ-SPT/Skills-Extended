@@ -50,6 +50,14 @@ does not load configuration or profile data.
 
 ## Live acceptance
 
+Run `dotnet run --project Tests/SkillsExtended.WebRegression -c Release -p:DeploySkillsExtended=false -- --native-only`
+for all 27 built-in skill routes, legacy defaults, bonus validation, draft/save/reload behavior, real bonus and leveling input handlers,
+server-global application and restoration, administrator access, and component rendering. `NativeGlobals.json` captures the installed
+SPT 4.1 skill settings as a portable offline fixture; it is never written to a game installation.
+Run `node Tests/SkillsExtended.WebRegression/CheckLayout.cjs Tests/SkillsExtended.WebRegression/bin/Release/net10.0/rendered --native-only`
+to inspect all new pages at 2560, 1440, 768, and 390 pixels. Client regression tests exercise the production constructor prefix
+for per-level, maximum-level, elite, absent, and zero overrides. These checks do not prove live gameplay or Fika acceptance.
+
 ### Leveling speed checks
 
 Run `dotnet run --project Tests/SkillsExtended.WebRegression -c Release -p:DeploySkillsExtended=false -- --leveling-only`

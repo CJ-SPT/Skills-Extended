@@ -57,6 +57,28 @@ public static class ComponentChecks
             session.Reset(snapshot);
             await renderer.Refresh(leveling);
             check(!session.Dirty && session.Skills.LevelingSpeed.GlobalMultiplier == 1, "Discard restores rendered leveling state");
+            var native = await renderer.Mount(new NativeHost(session));
+            await renderer.Input(native, "NativeSkills.Surgery.Buff.98.Max", "oninput", "25.5");
+            check(session.Skills.NativeSkills.Overrides["Surgery"]["Buff.98.Max"] == 25.5f && session.PageChangesFor("Surgery") == 1,
+                "Real native bonus input edits a detached draft and updates its page badge");
+            await renderer.Input(native, "NativeSkills.Surgery.Buff.98.Max", "oninput", "bad");
+            check(session.InputErrors.ContainsKey("NativeSkills.Surgery.Buff.98.Max")
+                && session.Skills.NativeSkills.Overrides["Surgery"]["Buff.98.Max"] == 25.5f,
+                "Invalid native text retains the last valid bonus and blocks saving");
+            await renderer.Input(native, "NativeSkills.Surgery.Buff.98.Max", "oninput", "");
+            check(!session.Dirty && !session.Skills.NativeSkills.Overrides.ContainsKey("Surgery"),
+                "Clearing a real bonus input restores the native default");
+            await renderer.Input(native, "NativeSkills.Surgery.Buff.98.Max", "oninput", "20");
+            check(!session.Dirty && !session.Skills.NativeSkills.Overrides.ContainsKey("Surgery"),
+                "Entering the game default keeps native behavior without creating an override");
+            await renderer.Input(native, "NativeSkills.Surgery.Buff.98.Max", "oninput", "50");
+            await renderer.Click(native, "NativeSkills.Surgery.Buff.98.Max-reset");
+            check(!session.Dirty && !session.Inputs.ContainsKey("NativeSkills.Surgery.Buff.98.Max"),
+                "Reset to default restores the displayed value and clears the pending override");
+            await renderer.Input(native, "LevelingSpeed.SkillMultipliers.Surgery", "oninput", "2");
+            check(session.PageChangesFor("Surgery") == 1 && session.ChangeCount == 1,
+                "Per-page leveling controls share the central leveling settings without double counting");
+            session.Reset(snapshot);
             if (levelingOnly) return;
             var root = await renderer.Mount(new FieldHost(session));
             changes = 0;
@@ -335,6 +357,21 @@ public static class ComponentChecks
                     }
                 )
             );
+            builder.CloseComponent();
+        }
+    }
+
+    private sealed class NativeHost(EditorSession session) : ComponentBase
+    {
+        protected override void BuildRenderTree(Microsoft.AspNetCore.Components.Rendering.RenderTreeBuilder builder)
+        {
+            builder.OpenComponent<CascadingValue<EditorSession>>(0);
+            builder.AddAttribute(1, "Value", session);
+            builder.AddAttribute(2, "ChildContent", (RenderFragment)(content => {
+                content.OpenComponent<NativeSkillEditor>(0);
+                content.AddAttribute(1, "SkillKey", "Surgery");
+                content.CloseComponent();
+            }));
             builder.CloseComponent();
         }
     }

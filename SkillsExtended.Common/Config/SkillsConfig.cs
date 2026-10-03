@@ -4,6 +4,7 @@ namespace SkillsExtended.Config;
 
 public class SkillsConfig
 {
+    public NativeSkillData NativeSkills { get; set; } = new();
     public LevelingSpeedData LevelingSpeed { get; set; } = new();
     public SignalsIntelligenceData SignalsIntelligence { get; set; } = new();
     public HackingData Hacking { get; set; } = new();

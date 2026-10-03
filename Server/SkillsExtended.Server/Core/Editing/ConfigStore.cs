@@ -6,7 +6,8 @@ using SkillsExtended.Models;
 
 namespace SkillsExtended.Core.Editing;
 
-public record ConfigSnapshot(SkillsConfig Skills, ServerConfig Server, string Revision);
+public record ConfigSnapshot(SkillsConfig Skills, ServerConfig Server, string Revision,
+    IReadOnlyDictionary<string, float>? NativeDefaults = null);
 
 public enum EditStatus
 {

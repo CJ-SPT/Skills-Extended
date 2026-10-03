@@ -31,7 +31,7 @@ public static class RenderingChecks
         services.AddSingleton(RewardCatalogChecks.Templates());
         var output = Path.Combine(AppContext.BaseDirectory, "rendered");
         Directory.CreateDirectory(output);
-        foreach (var skill in SkillCatalog.All)
+        foreach (var skill in SkillCatalog.Navigation)
         {
             await using var provider = services.BuildServiceProvider();
             await using var renderer = new HtmlRenderer(
@@ -42,7 +42,8 @@ public static class RenderingChecks
             {
                 RenderFragment body = builder =>
                 {
-                    builder.OpenComponent<SkillEditor>(0);
+                    builder.OpenComponent(0, SkillsExtended.Config.NativeSkillCatalog.ByKey.ContainsKey(skill.Key)
+                        ? typeof(NativeSkillEditor) : typeof(SkillEditor));
                     builder.AddAttribute(1, "SkillKey", skill.Key);
                     builder.CloseComponent();
                 };
@@ -83,7 +84,7 @@ public static class RenderingChecks
             return root.ToHtmlString();
         });
         check(
-            home.Contains($"{SkillCatalog.All.Count} skills") && home.Contains("se-card-grid"),
+            home.Contains($"{SkillCatalog.Navigation.Count} skills") && home.Contains("se-card-grid"),
             "Render actual overview with all skill cards"
         );
         await Write(output, "overview", home);

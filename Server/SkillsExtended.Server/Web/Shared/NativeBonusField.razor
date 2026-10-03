@@ -1,0 +1,57 @@
+@using SkillsExtended.Config
+<div class="se-field">
+    <label for="@Id">@Field.Label <span class="se-unit">@Field.Unit</span></label>
+    <input id="@Id" type="text" inputmode="decimal" value="@Text"
+           @oninput="Edit" aria-invalid="@(Error is not null ? "true" : "false")" aria-describedby="@(Id + "-help")" />
+    <small id="@(Id + "-help")" class="@(Error is not null ? "se-error" : "")">@(Error ?? (Field.Integer
+        ? "Enter a whole number from 0 to 100."
+        : Field.Unit == "%" ? "0–100 percentage points; 0.5 means 0.5%."
+        : "Enter a value from 0 to 100."))</small>
+    <small>Default: @Default.ToString(CultureInfo.CurrentCulture) @Field.Unit</small>
+    <button id="@(Id + "-reset")" type="button" class="se-button se-subtle"
+            aria-label="@("Reset " + Field.Label + " to default")" @onclick="Reset">Reset to default</button>
+</div>
+@code {
+    [CascadingParameter] public EditorSession Session { get; set; } = null!;
+    [Parameter, EditorRequired] public string SkillKey { get; set; } = "";
+    [Parameter, EditorRequired] public NativeSetting Field { get; set; } = null!;
+    private string Id => "NativeSkills." + SkillKey + "." + Field.Key;
+    private float Default => Session.Draft.NativeDefaults is { } defaults && defaults.TryGetValue(Field.Key, out var value)
+        ? value : NativeSkillCatalog.Defaults[Field.Key];
+    private string Text => Session.Inputs.GetValueOrDefault(Id,
+        Session.Skills.NativeSkills.Overrides.TryGetValue(SkillKey, out var values) && values.TryGetValue(Field.Key, out var value)
+            ? value.ToString(CultureInfo.CurrentCulture) : Default.ToString(CultureInfo.CurrentCulture));
+    private string? Error => Session.InputErrors.GetValueOrDefault(Id);
+    private void Edit(ChangeEventArgs e)
+    {
+        var text = e.Value?.ToString() ?? "";
+        Session.Inputs[Id] = text;
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            Reset();
+            return;
+        }
+        else if (!float.TryParse(text, NumberStyles.Float, CultureInfo.CurrentCulture, out var value) || !Field.IsValid(value))
+            Session.InputErrors[Id] = Field.Integer ? "Enter a whole number from 0 to 100." : "Enter a finite value from 0 to 100.";
+        else
+        {
+            if (value == Default) { Reset(); return; }
+            Session.InputErrors.Remove(Id);
+            if (!Session.Skills.NativeSkills.Overrides.TryGetValue(SkillKey, out var values))
+                Session.Skills.NativeSkills.Overrides[SkillKey] = values = [];
+            values[Field.Key] = value;
+        }
+        Session.Notify();
+    }
+    private void Reset()
+    {
+        Session.Inputs.Remove(Id);
+        Session.InputErrors.Remove(Id);
+        if (Session.Skills.NativeSkills.Overrides.TryGetValue(SkillKey, out var values))
+        {
+            values.Remove(Field.Key);
+            if (values.Count == 0) Session.Skills.NativeSkills.Overrides.Remove(SkillKey);
+        }
+        Session.Notify();
+    }
+}
