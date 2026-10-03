@@ -2690,6 +2690,566 @@
                 "Yaw": 59.68532,
                 "SearchRadius": 0,
                 "Enabled": true
+            },
+            {
+                "Id": "rezervbase-fc1017d3",
+                "Map": "rezervbase",
+                "Name": "Train Station - 1",
+                "Position": {
+                    "X": 181.27693,
+                    "Y": -1.0411428,
+                    "Z": -151.38477,
+                    "IsFinite": true
+                },
+                "Yaw": 286.7923,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "rezervbase-87a93089",
+                "Map": "rezervbase",
+                "Name": "Train Station - 2",
+                "Position": {
+                    "X": 156.45726,
+                    "Y": -1.1180761,
+                    "Z": -133.62215,
+                    "IsFinite": true
+                },
+                "Yaw": 106.24232,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "rezervbase-cffe7c06",
+                "Map": "rezervbase",
+                "Name": "Train Station - 3",
+                "Position": {
+                    "X": 165.40863,
+                    "Y": -4.7167573,
+                    "Z": -140.24812,
+                    "IsFinite": true
+                },
+                "Yaw": 286.93378,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "rezervbase-5ddf365b",
+                "Map": "rezervbase",
+                "Name": "Train Station - 4",
+                "Position": {
+                    "X": 147.3268,
+                    "Y": -4.946111,
+                    "Z": -158.99854,
+                    "IsFinite": true
+                },
+                "Yaw": 286.58704,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "rezervbase-41826509",
+                "Map": "rezervbase",
+                "Name": "Bunkers Top - 1",
+                "Position": {
+                    "X": 51.444756,
+                    "Y": -0.33936617,
+                    "Z": -178.85489,
+                    "IsFinite": true
+                },
+                "Yaw": 355.4854,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "rezervbase-2c56c0df",
+                "Map": "rezervbase",
+                "Name": "Bunkers Top - 2",
+                "Position": {
+                    "X": 120.59587,
+                    "Y": -0.07261203,
+                    "Z": -215.27032,
+                    "IsFinite": true
+                },
+                "Yaw": 73.38558,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "rezervbase-47afc7c9",
+                "Map": "rezervbase",
+                "Name": "E2 Bunkers",
+                "Position": {
+                    "X": 161.69705,
+                    "Y": -6.4725676,
+                    "Z": -4.976845,
+                    "IsFinite": true
+                },
+                "Yaw": 217.03133,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "rezervbase-0ce400f2",
+                "Map": "rezervbase",
+                "Name": "Fuel Tanks - 1",
+                "Position": {
+                    "X": 167.52628,
+                    "Y": -6.5676556,
+                    "Z": -95.99909,
+                    "IsFinite": true
+                },
+                "Yaw": 285.13028,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "rezervbase-b2855766",
+                "Map": "rezervbase",
+                "Name": "Lookout Tower",
+                "Position": {
+                    "X": 120.29209,
+                    "Y": -0.19558261,
+                    "Z": -86.68365,
+                    "IsFinite": true
+                },
+                "Yaw": 13.778682,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "rezervbase-e7dc1202",
+                "Map": "rezervbase",
+                "Name": "K - 1",
+                "Position": {
+                    "X": 34.01271,
+                    "Y": -4.8461113,
+                    "Z": -124.45762,
+                    "IsFinite": true
+                },
+                "Yaw": 284.72607,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "rezervbase-be6785f2",
+                "Map": "rezervbase",
+                "Name": "K - 2",
+                "Position": {
+                    "X": 18.169432,
+                    "Y": -4.840265,
+                    "Z": -76.606705,
+                    "IsFinite": true
+                },
+                "Yaw": 5.8744526,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "rezervbase-a593fcc6",
+                "Map": "rezervbase",
+                "Name": "White Bishop - 1",
+                "Position": {
+                    "X": -83.41343,
+                    "Y": -0.3185713,
+                    "Z": -28.465788,
+                    "IsFinite": true
+                },
+                "Yaw": 285.22144,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "rezervbase-b884ee94",
+                "Map": "rezervbase",
+                "Name": "White Bishop - 2",
+                "Position": {
+                    "X": -72.44394,
+                    "Y": -6.717878,
+                    "Z": -23.763346,
+                    "IsFinite": true
+                },
+                "Yaw": 284.97018,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "rezervbase-e577c262",
+                "Map": "rezervbase",
+                "Name": "White King - 1",
+                "Position": {
+                    "X": -53.000343,
+                    "Y": -6.479686,
+                    "Z": 12.47894,
+                    "IsFinite": true
+                },
+                "Yaw": 18.565964,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "rezervbase-421d4c20",
+                "Map": "rezervbase",
+                "Name": "White King - 2",
+                "Position": {
+                    "X": -57.05914,
+                    "Y": -3.8244135,
+                    "Z": 5.0116963,
+                    "IsFinite": true
+                },
+                "Yaw": 196.21509,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "rezervbase-e3bf1544",
+                "Map": "rezervbase",
+                "Name": "White King - 3",
+                "Position": {
+                    "X": -57.47602,
+                    "Y": -6.2519846,
+                    "Z": 32.991943,
+                    "IsFinite": true
+                },
+                "Yaw": 287.26337,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "rezervbase-f97a5011",
+                "Map": "rezervbase",
+                "Name": "Black Knight - 1",
+                "Position": {
+                    "X": 12.251834,
+                    "Y": -3.7197878,
+                    "Z": -3.9112701,
+                    "IsFinite": true
+                },
+                "Yaw": 283.66074,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "rezervbase-d2057256",
+                "Map": "rezervbase",
+                "Name": "Black Knight - 2",
+                "Position": {
+                    "X": 15.807238,
+                    "Y": -0.7353928,
+                    "Z": -29.105488,
+                    "IsFinite": true
+                },
+                "Yaw": 198.10873,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "rezervbase-b5e2df6c",
+                "Map": "rezervbase",
+                "Name": "White Knight - 1",
+                "Position": {
+                    "X": 82.49285,
+                    "Y": -0.70851636,
+                    "Z": -24.16385,
+                    "IsFinite": true
+                },
+                "Yaw": 12.907219,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "rezervbase-1ee65e67",
+                "Map": "rezervbase",
+                "Name": "White Knight - 2",
+                "Position": {
+                    "X": 85.63206,
+                    "Y": -6.5719357,
+                    "Z": -32.666836,
+                    "IsFinite": true
+                },
+                "Yaw": 288.70694,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "rezervbase-36050b42",
+                "Map": "rezervbase",
+                "Name": "Garage - 1",
+                "Position": {
+                    "X": 100.17539,
+                    "Y": -6.6836853,
+                    "Z": 5.106621,
+                    "IsFinite": true
+                },
+                "Yaw": 104.55666,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "rezervbase-17a3b708",
+                "Map": "rezervbase",
+                "Name": "Garage - 2",
+                "Position": {
+                    "X": 55.244385,
+                    "Y": -6.4743686,
+                    "Z": 65.865364,
+                    "IsFinite": true
+                },
+                "Yaw": 285.75696,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "rezervbase-8c25271f",
+                "Map": "rezervbase",
+                "Name": "Fuel Tanks - 2",
+                "Position": {
+                    "X": -8.662735,
+                    "Y": -3.5170484,
+                    "Z": 83.335556,
+                    "IsFinite": true
+                },
+                "Yaw": 105.00632,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "rezervbase-fee03830",
+                "Map": "rezervbase",
+                "Name": "Dome - 1",
+                "Position": {
+                    "X": -42.277267,
+                    "Y": 18.834421,
+                    "Z": 185.46623,
+                    "IsFinite": true
+                },
+                "Yaw": 0.5049469,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "rezervbase-784a85b3",
+                "Map": "rezervbase",
+                "Name": "Dome - 2",
+                "Position": {
+                    "X": -14.384819,
+                    "Y": 22.630465,
+                    "Z": 167.56046,
+                    "IsFinite": true
+                },
+                "Yaw": 178.50423,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "rezervbase-52b5535f",
+                "Map": "rezervbase",
+                "Name": "Dome - 3",
+                "Position": {
+                    "X": -11.276808,
+                    "Y": 26.122381,
+                    "Z": 185.21184,
+                    "IsFinite": true
+                },
+                "Yaw": 269.0531,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "rezervbase-817585ae",
+                "Map": "rezervbase",
+                "Name": "Helicopter",
+                "Position": {
+                    "X": -129.9892,
+                    "Y": -4.5868745,
+                    "Z": 27.371054,
+                    "IsFinite": true
+                },
+                "Yaw": 209.55106,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "rezervbase-b15b3421",
+                "Map": "rezervbase",
+                "Name": "White Pawn - 1",
+                "Position": {
+                    "X": -117.243546,
+                    "Y": -0.23635696,
+                    "Z": 91.76116,
+                    "IsFinite": true
+                },
+                "Yaw": 281.7988,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "rezervbase-76adb69a",
+                "Map": "rezervbase",
+                "Name": "White Pawn - 2",
+                "Position": {
+                    "X": -100.53845,
+                    "Y": -3.1363575,
+                    "Z": 98.87356,
+                    "IsFinite": true
+                },
+                "Yaw": 14.548081,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "rezervbase-1494e926",
+                "Map": "rezervbase",
+                "Name": "White Pawn - 3",
+                "Position": {
+                    "X": -99.33002,
+                    "Y": 5.5536575,
+                    "Z": 92.34768,
+                    "IsFinite": true
+                },
+                "Yaw": 19.897205,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "rezervbase-c4e4995b",
+                "Map": "rezervbase",
+                "Name": "Gazibo ",
+                "Position": {
+                    "X": -96.70983,
+                    "Y": -5.369539,
+                    "Z": 35.48807,
+                    "IsFinite": true
+                },
+                "Yaw": 291.64526,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "rezervbase-f63f691d",
+                "Map": "rezervbase",
+                "Name": "Black Pawn - 1",
+                "Position": {
+                    "X": -169.70546,
+                    "Y": 5.5536566,
+                    "Z": 46.23302,
+                    "IsFinite": true
+                },
+                "Yaw": 15.942341,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "rezervbase-bd2b1f19",
+                "Map": "rezervbase",
+                "Name": "Black Pawn - 2",
+                "Position": {
+                    "X": -170.37048,
+                    "Y": 2.6636407,
+                    "Z": 46.214115,
+                    "IsFinite": true
+                },
+                "Yaw": 193.5912,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "rezervbase-20448b82",
+                "Map": "rezervbase",
+                "Name": "Black Pawn - 3",
+                "Position": {
+                    "X": -162.65508,
+                    "Y": -2.980512,
+                    "Z": 69.08716,
+                    "IsFinite": true
+                },
+                "Yaw": 192.64029,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "rezervbase-dc15d171",
+                "Map": "rezervbase",
+                "Name": "Black Bishop - 1",
+                "Position": {
+                    "X": -134.53706,
+                    "Y": 0.07832886,
+                    "Z": -13.322535,
+                    "IsFinite": true
+                },
+                "Yaw": 15.885905,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "rezervbase-caaf5023",
+                "Map": "rezervbase",
+                "Name": "Black Bishop - 2",
+                "Position": {
+                    "X": -159.35246,
+                    "Y": -5.9238095,
+                    "Z": -9.998592,
+                    "IsFinite": true
+                },
+                "Yaw": 5.534825,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "rezervbase-f459eb73",
+                "Map": "rezervbase",
+                "Name": "Black Bishop - 3",
+                "Position": {
+                    "X": -108.03542,
+                    "Y": -5.237596,
+                    "Z": -23.557928,
+                    "IsFinite": true
+                },
+                "Yaw": 111.08393,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "rezervbase-cd043d3a",
+                "Map": "rezervbase",
+                "Name": "Power",
+                "Position": {
+                    "X": -112.788994,
+                    "Y": -14.273619,
+                    "Z": 21.225977,
+                    "IsFinite": true
+                },
+                "Yaw": 103.6822,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "rezervbase-2bc8e66e",
+                "Map": "rezervbase",
+                "Name": "Bunker - 1",
+                "Position": {
+                    "X": -90.037,
+                    "Y": -14.265209,
+                    "Z": 43.887833,
+                    "IsFinite": true
+                },
+                "Yaw": 14.930537,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "rezervbase-8f24e480",
+                "Map": "rezervbase",
+                "Name": "Bunker - 2",
+                "Position": {
+                    "X": -136.72914,
+                    "Y": -14.39159,
+                    "Z": 35.99765,
+                    "IsFinite": true
+                },
+                "Yaw": 196.12856,
+                "SearchRadius": 0,
+                "Enabled": true
             }
         ],
         "Loot": [
