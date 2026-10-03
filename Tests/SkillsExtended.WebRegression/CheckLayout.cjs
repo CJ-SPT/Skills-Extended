@@ -9,6 +9,7 @@ const { chromium } = require(process.env.PLAYWRIGHT_MODULE_PATH || "playwright")
     const directory = path.resolve(process.argv[2] || path.join(__dirname, "bin/Release/net10.0/rendered"));
     const accessOnly = process.argv.includes("--client-editor-access");
     const guidesOnly = process.argv.includes("--guides-only");
+    const levelingOnly = process.argv.includes("--leveling-only");
     const browser = await chromium.launch({
         headless: true,
         executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH || undefined,
@@ -18,7 +19,7 @@ const { chromium } = require(process.env.PLAYWRIGHT_MODULE_PATH || "playwright")
     try {
         for (const width of [2560, 1440, 768, 390]) {
             const page = await browser.newPage({ viewport: { width, height: 1000 } });
-            for (const file of fs.readdirSync(directory).filter(file => file.endsWith(".html") && (!accessOnly || file === "client-editor-access.html") && (!guidesOnly || file.startsWith("guides-")))) {
+            for (const file of fs.readdirSync(directory).filter(file => file.endsWith(".html") && (!accessOnly || file === "client-editor-access.html") && (!guidesOnly || file.startsWith("guides-")) && (!levelingOnly || file === "leveling-speed.html"))) {
                 await page.goto(pathToFileURL(path.join(directory, file)).href);
                 await page.locator(".se-app").waitFor();
                 assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), `${file}: viewport overflow at ${width}`);
@@ -85,8 +86,17 @@ const { chromium } = require(process.env.PLAYWRIGHT_MODULE_PATH || "playwright")
                 await page.keyboard.press("Tab");
                 assert.equal(await page.locator(":focus").textContent(), "Skip to content", `${file}: keyboard skip link is first`);
 
-                if (["overview.html", "endurance.html", "lock-picking.html"].includes(file)) {
+                if (["overview.html", "endurance.html", "lock-picking.html", "leveling-speed.html"].includes(file)) {
                     await page.screenshot({ path: path.join(directory, `${file.slice(0, -5)}-${width}.png`), fullPage: false });
+                }
+                if (file === "leveling-speed.html") {
+                    const rows = page.locator(".se-leveling-row");
+                    assert.equal(await rows.count(), 67);
+                    assert.ok(await rows.evaluateAll(elements => elements.every(element => element.scrollWidth <= element.clientWidth + 1)), `Leveling rows fit at ${width}`);
+                    const input = page.locator('[id="LevelingSpeed.SkillMultipliers.Endurance"]');
+                    await input.fill("1.5");
+                    assert.equal(await input.inputValue(), "1.5");
+                    assert.ok(await page.getByRole("button", { name: "Reset Endurance multiplier", exact: true }).isVisible());
                 }
                 if (file === "release-notes.html") {
                     const releases = page.getByRole("region", { name: "Release history" });

@@ -1,0 +1,67 @@
+@page "/skills-extended/leveling-speed"
+@layout BaseLayout
+@using SkillsExtended.Config
+
+<PageTitle>Leveling speed · Skills Extended</PageTitle>
+<header class="se-page-heading">
+    <div><p class="se-eyebrow">Progression</p><h1>Leveling speed</h1>
+        <p>Adjust gameplay XP for every player skill and individual weapon mastery.</p></div>
+    <span class="se-badge">@(Session.ChangesFor("LevelingSpeed") == 0 ? "Saved" : $"{Session.ChangesFor("LevelingSpeed")} pending")</span>
+</header>
+<p class="se-notice">Server-awarded gameplay XP uses saved settings immediately, including hideout activities, repairs, insurance, and item examination. Restart connected game clients to load raid and mastery settings. Fika hosts, headless hosts, and players need matching updated Skills Extended files.</p>
+<section class="se-panel" aria-label="Overall leveling speed">
+    <h2>Overall speed</h2>
+    <div class="se-fields">
+        <LevelingMultiplierField Key="GlobalMultiplier" Label="Global skill multiplier" />
+        <LevelingMultiplierField Key="WeaponMasteryMultiplier" Label="Weapon mastery multiplier" />
+    </div>
+    <p>Global and individual skill multipliers combine. Weapon mastery uses its own multiplier. Tarkov's fatigue, bonuses, and skill caps still apply. Quest rewards and profile edits keep their stated values.</p>
+    <button id="leveling-reset-all" type="button" class="se-button se-subtle" @onclick="ResetAll">Reset all leveling speeds</button>
+</section>
+<section class="se-panel" aria-label="Individual skill leveling speed">
+    <h2>Individual skills</h2>
+    <label class="se-field" for="leveling-search">Search skills
+        <input id="leveling-search" type="search" placeholder="Search by name or skill ID…" @bind="_search" @bind:event="oninput" />
+    </label>
+    <p>These controls change XP gains only. Dormant and disabled skills stay inactive. Applies to PMC and Scav gameplay where supported.</p>
+    <div class="se-leveling-list">
+        @foreach (var skill in Matches)
+        {
+            <div class="se-leveling-row" @key="skill.Key">
+                <LevelingMultiplierField Key="@skill.Key" Label="@skill.Name" />
+                <div class="se-leveling-effective"><span>Effective skill multiplier</span>
+                    <strong>@(Session.Skills.LevelingSpeed.ForSkill(skill.Id).ToString(CultureInfo.CurrentCulture))×</strong>
+                </div>
+                <button id="@("leveling-reset-" + skill.Key)" type="button" class="se-button se-subtle"
+                        aria-label="@("Reset " + skill.Name + " multiplier")" @onclick="() => ResetSkill(skill.Key)">Reset</button>
+            </div>
+        }
+    </div>
+    @if (!Matches.Any()) { <p class="se-empty">No skills match.</p> }
+</section>
+
+@code {
+    [CascadingParameter] public EditorSession Session { get; set; } = null!;
+    private string _search = "";
+    private IEnumerable<LevelingSkill> Matches => LevelingSkillCatalog.All
+        .Where(s => s.Name.Contains(_search, StringComparison.OrdinalIgnoreCase) || s.Key.Contains(_search, StringComparison.OrdinalIgnoreCase))
+        .OrderBy(s => s.Name);
+    private void ClearInput(string key)
+    {
+        Session.Inputs.Remove("LevelingSpeed.SkillMultipliers." + key);
+        Session.InputErrors.Remove("LevelingSpeed.SkillMultipliers." + key);
+    }
+    private void ResetSkill(string key)
+    {
+        Session.Skills.LevelingSpeed.SkillMultipliers.Remove(key);
+        ClearInput(key);
+        Session.Notify();
+    }
+    private void ResetAll()
+    {
+        Session.Skills.LevelingSpeed = new();
+        foreach (var key in Session.Inputs.Keys.Concat(Session.InputErrors.Keys).Where(k => k.StartsWith("LevelingSpeed.")).ToArray())
+        { Session.Inputs.Remove(key); Session.InputErrors.Remove(key); }
+        Session.Notify();
+    }
+}

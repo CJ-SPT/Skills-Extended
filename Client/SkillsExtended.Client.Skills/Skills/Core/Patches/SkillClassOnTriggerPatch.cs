@@ -17,8 +17,9 @@ public class SkillClassOnTriggerPatch : ModulePatch
     // otherwise it will trigger System.NullReferenceException.
 
     [PatchPrefix]
-    public static void PatchPrefix(Skill __instance)
+    public static void PatchPrefix(Skill __instance, ref float val)
     {
+        val *= SkillsExtendedPlugin.SkillData?.LevelingSpeed?.ForSkill((int)__instance.Id) ?? 1;
         if (__instance.SkillManager.BonusController is not null)
         {
             return;

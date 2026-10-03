@@ -87,6 +87,19 @@ public static class RenderingChecks
             "Render actual overview with all skill cards"
         );
         await Write(output, "overview", home);
+        await using var levelingProvider = services.BuildServiceProvider();
+        await using var levelingRenderer = new HtmlRenderer(levelingProvider, levelingProvider.GetRequiredService<ILoggerFactory>());
+        var levelingHtml = await levelingRenderer.Dispatcher.InvokeAsync(async () =>
+        {
+            RenderFragment body = builder => { builder.OpenComponent<LevelingSpeed>(0); builder.CloseComponent(); };
+            var root = await levelingRenderer.RenderComponentAsync<BaseLayout>(
+                ParameterView.FromDictionary(new Dictionary<string, object?> { ["Body"] = body }));
+            return root.ToHtmlString();
+        });
+        check(levelingHtml.Contains("Individual skill leveling speed") && levelingHtml.Contains("Weapon mastery multiplier")
+            && levelingHtml.Contains("Signals Intelligence") && levelingHtml.Contains("Hideout Management")
+            && !levelingHtml.Contains("BotReload"), "Render all player leveling controls within the real editor layout");
+        await Write(output, "leveling-speed", levelingHtml);
         check(home.Contains("Read mini-game guides") && home.Contains("Mini-game guides"),
             "Overview and editor navigation link to the guide hub");
         var accessSession = new EditorSession(

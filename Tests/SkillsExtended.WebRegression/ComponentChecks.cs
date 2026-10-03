@@ -9,7 +9,7 @@ using SkillsExtended.Web.Shared;
 #pragma warning disable BL0006
 public static class ComponentChecks
 {
-    public static async Task Run(ConfigSnapshot snapshot, Action<bool, string> check)
+    public static async Task Run(ConfigSnapshot snapshot, Action<bool, string> check, bool levelingOnly = false)
     {
         var services = new ServiceCollection()
             .AddLogging()
@@ -25,7 +25,41 @@ public static class ComponentChecks
         session.Changed += () => changes++;
         await renderer.Dispatcher.InvokeAsync(async () =>
         {
+            var leveling = await renderer.Mount(new TablesHost(session, typeof(SkillsExtended.Web.Pages.LevelingSpeed)));
+            await renderer.Input(leveling, "LevelingSpeed.GlobalMultiplier", "oninput", "2");
+            await renderer.Input(leveling, "LevelingSpeed.SkillMultipliers.Endurance", "oninput", "1.5");
+            await renderer.Input(leveling, "LevelingSpeed.WeaponMasteryMultiplier", "oninput", "4");
+            check(session.Skills.LevelingSpeed.ForSkill(0) == 3 && session.ChangeCount == 3
+                && session.Skills.LevelingSpeed.WeaponMasteryMultiplier == 4,
+                "Real leveling inputs update composed multipliers and pending counts");
+            await renderer.Input(leveling, "LevelingSpeed.GlobalMultiplier", "oninput", "101");
+            check(session.InputErrors.ContainsKey("LevelingSpeed.GlobalMultiplier") && session.Skills.LevelingSpeed.GlobalMultiplier == 2,
+                "Invalid leveling input blocks saving while retaining its last valid value");
+            await renderer.Input(leveling, "leveling-search", "oninput", "Signals");
+            check(renderer.HasHandler(leveling, "LevelingSpeed.SkillMultipliers.SignalsIntelligence", "oninput")
+                && !renderer.HasHandler(leveling, "LevelingSpeed.SkillMultipliers.Endurance", "oninput") && session.ChangeCount == 3,
+                "Real leveling search filters skills without changing the draft");
+            await renderer.Input(leveling, "leveling-search", "oninput", "Endurance");
+            await renderer.Click(leveling, "leveling-reset-Endurance");
+            check(session.Skills.LevelingSpeed.ForSkill(0) == 2 && !session.Skills.LevelingSpeed.SkillMultipliers.ContainsKey("Endurance"),
+                "Individual reset removes the override and retains global speed");
+            await renderer.Click(leveling, "leveling-reset-all");
+            check(!session.Dirty && session.InputErrors.Count == 0 && session.Inputs.Count == 0,
+                "Reset all restores neutral speeds and clears invalid inputs");
+            var culture = System.Globalization.CultureInfo.CurrentCulture;
+            try
+            {
+                System.Globalization.CultureInfo.CurrentCulture = System.Globalization.CultureInfo.GetCultureInfo("de-DE");
+                await renderer.Input(leveling, "LevelingSpeed.GlobalMultiplier", "oninput", "0,25");
+                check(session.Skills.LevelingSpeed.GlobalMultiplier == .25f, "Leveling editor preserves locale-specific fractional input");
+            }
+            finally { System.Globalization.CultureInfo.CurrentCulture = culture; }
+            session.Reset(snapshot);
+            await renderer.Refresh(leveling);
+            check(!session.Dirty && session.Skills.LevelingSpeed.GlobalMultiplier == 1, "Discard restores rendered leveling state");
+            if (levelingOnly) return;
             var root = await renderer.Mount(new FieldHost(session));
+            changes = 0;
             var field = SkillCatalog.Fields["FirstAid"].Single(f => f.Key == "XpPerAction");
             var before = session.Skills.FirstAid.XpPerAction;
             await renderer.Input(root, "FirstAid.XpPerAction", "oninput", "invalid");

@@ -50,6 +50,20 @@ does not load configuration or profile data.
 
 ## Live acceptance
 
+### Leveling speed checks
+
+Run `dotnet run --project Tests/SkillsExtended.WebRegression -c Release -p:DeploySkillsExtended=false -- --leveling-only`
+for multiplier validation, legacy defaults, draft/save/conflict checks, real Blazor input/search/reset handlers,
+administrator access, and rendering. This also installs the production server gameplay Harmony hooks in the offline
+test process and intercepts the real SPT award overloads without executing their profile-writing bodies.
+It verifies terminal-only scaling, nested contexts, exception cleanup, and unscaled direct rewards.
+
+Run `node Tests/SkillsExtended.WebRegression/CheckLayout.cjs Tests/SkillsExtended.WebRegression/bin/Release/net10.0/rendered --leveling-only`
+to verify and capture the leveling page at 2560, 1440, 768, and 390 pixels. Client regression checks
+exercise the production action and mastery prefixes with external API substitutes; the full solution build
+checks them against the real game assemblies. Live progression, fatigue, early-level behavior, persistence,
+and Fika synchronization still require manual acceptance.
+
 After installing and restarting on your normal schedule:
 
 - Open Skills Extended while signed out and verify SPT prompts for sign-in. A

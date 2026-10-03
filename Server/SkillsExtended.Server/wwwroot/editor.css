@@ -1467,3 +1467,11 @@ summary):focus-visible {
     }
 
 }
+.se-leveling-list { display: grid; gap: 12px; margin-top: 20px; }
+.se-leveling-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(120px, 180px) auto; gap: 20px; align-items: center; border-top: 1px solid var(--se-border, #334155); padding-top: 16px; }
+.se-leveling-effective { display: flex; flex-direction: column; gap: 6px; font-size: 13px; }
+.se-leveling-effective strong { font-size: 20px; }
+@media (max-width: 600px) {
+    .se-leveling-row { grid-template-columns: minmax(0, 1fr) auto; gap: 12px; }
+    .se-leveling-row > .se-field { grid-column: 1 / -1; }
+}

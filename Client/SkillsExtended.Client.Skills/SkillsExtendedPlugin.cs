@@ -64,6 +64,7 @@ public class SkillsExtendedPlugin : BaseUnityPlugin
     {
         Keys = Get<KeysData>("/skills-extended/get-keys");
         SkillData = Get<SkillsConfig>("/skills-extended/get-skills-config");
+        (SkillData.LevelingSpeed ?? throw new InvalidOperationException("Missing leveling speed configuration.")).Validate();
         SkillData.Hacking.Validate();
         SkillData.LockPicking.Validate();
         SkillData.SignalsIntelligence.Validate();

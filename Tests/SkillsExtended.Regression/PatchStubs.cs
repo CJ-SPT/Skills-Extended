@@ -13,6 +13,8 @@ namespace SkillsExtended.Utils
     {
         public static EFT.SkillManager SkillManager;
         public static EFT.SkillManager GetSkillManager() => SkillManager;
+        public static bool IsScav() => false;
+        public static EFT.Profile GetProfile(EFT.EPlayerSide side) => new();
     }
 }
 
@@ -123,10 +125,15 @@ namespace EFT
     [Flags]
     public enum EPhysicalCondition { None = 0, ProneDisabled = 1, ProneMovementDisabled = 2, SprintDisabled = 4, JumpDisabled = 8 }
     public enum ESkillClass { Physical }
-    public class Skill
+    public class BaseSkill { public virtual void OnTrigger(SkillManager.SkillAction skillAction, float val) { } }
+    public class Mastering : BaseSkill;
+    public class Profile { public object BonusController = new(); }
+    public enum EPlayerSide { Savage, Usec }
+    public class Skill : BaseSkill
     {
         public ESkillId Id;
         public bool IsEliteLevel;
+        public SkillManager SkillManager;
         public Skill() { }
         public Skill(SkillManager manager, ESkillId id, ESkillClass cls, SkillManager.SkillAction[] actions, SkillManager.Buff[] buffs) { Id = id; }
     }

@@ -78,6 +78,10 @@ Sign in with an **SPT administrator account** to edit skill settings, door table
 
 Use the in-game BepInEx configuration menu for client preferences such as lock-picking sensitivity, tension and pressure bindings, sound volume, and reduced motion. Existing custom difficulty values remain in effect when defaults change.
 
+The administrator **Leveling speed** page controls every player skill, including vanilla and extended skills. Its global skill multiplier combines with each individual skill multiplier: 2× globally and 1.5× Endurance gives 3× incoming Endurance XP. Individual weapon mastery has its own independent multiplier. Each control accepts 0–100; 1× preserves current speed and 0 disables the affected gameplay gains. Existing fatigue, bonuses, XP tables, and skill caps still apply. Dormant or disabled skills stay inactive; quest skill rewards and manual profile edits retain their stated values.
+
+These settings are stored under `LevelingSpeed` in `Resources/Configs/SkillsConfig.json`. Missing settings in older configuration files default to 1×. Server-awarded gameplay gains (crafting, consumption, upgrades, Scav case actions, gym workouts, repairs, insurance, and item examination) use saved settings immediately. Quest and prestige rewards retain their stated values. Restart connected game clients to load raid and mastery settings. Use matching updated Skills Extended files on Fika hosts, headless hosts, and every player.
+
 For Fika, select authorized profiles under **Fika client editor access** on the Skills Extended configuration page and save. The default empty list permits no client editor access. Listed players can enable Developer tools and open the in-game editor during a PMC raid, including shared raids. Authorization is checked on the server when opening, reading, and saving; removing a profile blocks further operations immediately. Headless clients and Scavs cannot use the editor. Authored changes apply to future raids or after the normal client configuration reload.
 
 ## Support

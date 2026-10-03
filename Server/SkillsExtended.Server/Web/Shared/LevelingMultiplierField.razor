@@ -1,0 +1,44 @@
+@using SkillsExtended.Config
+
+<div class="se-field">
+    <label for="@Id">@Label <span class="se-unit">×</span></label>
+    <input id="@Id" type="text" inputmode="decimal" value="@Text" @oninput="Edit"
+           aria-invalid="@(Error is not null ? "true" : "false")" aria-describedby="@(Id + "-help")" />
+    <small id="@(Id + "-help")" class="@(Error is not null ? "se-error" : "")">@(Error ?? "0–100. 1× keeps current speed; 0 disables gains.")</small>
+</div>
+
+@code {
+    [CascadingParameter] public EditorSession Session { get; set; } = null!;
+    [Parameter, EditorRequired] public string Key { get; set; } = "";
+    [Parameter, EditorRequired] public string Label { get; set; } = "";
+    private string Id => "LevelingSpeed." + (Key is "GlobalMultiplier" or "WeaponMasteryMultiplier" ? Key : "SkillMultipliers." + Key);
+    private LevelingSpeedData Data => Session.Skills.LevelingSpeed;
+    private float Value => Key switch {
+        "GlobalMultiplier" => Data.GlobalMultiplier,
+        "WeaponMasteryMultiplier" => Data.WeaponMasteryMultiplier,
+        _ => Data.Individual(Key),
+    };
+    private string Text => Session.Inputs.GetValueOrDefault(Id, Value.ToString(CultureInfo.CurrentCulture));
+    private string? Error => Session.InputErrors.GetValueOrDefault(Id);
+    private void Edit(ChangeEventArgs e)
+    {
+        var text = e.Value?.ToString() ?? "";
+        Session.Inputs[Id] = text;
+        if (!float.TryParse(text, NumberStyles.Float, CultureInfo.CurrentCulture, out var value) || !LevelingSpeedData.IsValid(value))
+            Session.InputErrors[Id] = "Enter a finite multiplier from 0 to 100.";
+        else
+        {
+            Session.InputErrors.Remove(Id);
+            switch (Key)
+            {
+                case "GlobalMultiplier": Data.GlobalMultiplier = value; break;
+                case "WeaponMasteryMultiplier": Data.WeaponMasteryMultiplier = value; break;
+                default:
+                    if (value == 1) Data.SkillMultipliers.Remove(Key);
+                    else Data.SkillMultipliers[Key] = value;
+                    break;
+            }
+        }
+        Session.Notify();
+    }
+}

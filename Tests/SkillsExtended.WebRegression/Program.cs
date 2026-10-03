@@ -24,6 +24,15 @@ if (args.Contains("--guides-only"))
 }
 var store = new ConfigStore(source, new ConfigFiles());
 var shipped = await store.ReadSnapshotAsync();
+await LevelingChecks.Run(shipped, Check);
+if (args.Contains("--leveling-only"))
+{
+    await ComponentChecks.Run(shipped, Check, levelingOnly: true);
+    await AuthorizationChecks.Run(Check);
+    await RenderingChecks.Run(Check);
+    Console.WriteLine($"Leveling and editor regression: {checks} checks passed.");
+    return;
+}
 Check(
     ConfigRules.Validate(shipped.Skills).Count == 0,
     "Every shipped field passes shared validation"

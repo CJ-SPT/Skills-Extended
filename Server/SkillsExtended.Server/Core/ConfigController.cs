@@ -35,7 +35,9 @@ public class ConfigController(ISptLogger<ConfigController> logger, IReadOnlyList
         {
             if (_runtime == null)
             {
-                _runtime = await _store.ReadSnapshotAsync();
+                var snapshot = await _store.ReadSnapshotAsync();
+                (snapshot.Skills.LevelingSpeed ?? throw new InvalidDataException("Missing leveling speed configuration.")).Validate();
+                _runtime = snapshot;
             }
         }
         finally

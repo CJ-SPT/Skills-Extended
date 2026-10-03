@@ -4,6 +4,7 @@ public enum EBuffId { BearAkSystemsErgo, BearAkSystemsRecoil, BearRawPowerAllTra
 public enum ESkillId { Endurance, Health, Immunity, Metabolism, Strength, StressResistance, Vitality }
 public partial class SkillManager
 {
+    public object BonusController = new();
     public SkillAction DamageTakenAction = new();
     public FloatBuff EnduranceBreathElite = new();
     public FloatBuff EnduranceBuffBreathTimeInc = new();

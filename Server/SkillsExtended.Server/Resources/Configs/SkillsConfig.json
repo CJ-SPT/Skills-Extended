@@ -1,4 +1,9 @@
 {
+    "LevelingSpeed": {
+        "GlobalMultiplier": 1,
+        "SkillMultipliers": {},
+        "WeaponMasteryMultiplier": 1
+    },
     "FirstAid": {        
         "Enabled": true,
         "XpPerAction": 6.25,

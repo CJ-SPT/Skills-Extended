@@ -34,6 +34,14 @@ public sealed class EditorSession
 
     public int ChangesFor(string key)
     {
+        if (key == "LevelingSpeed")
+        {
+            var levelingChanges = new HashSet<string>();
+            CollectChanges(JsonNode.Parse(ConfigStore.Serialize(Baseline.Skills.LevelingSpeed)),
+                JsonNode.Parse(ConfigStore.Serialize(Skills.LevelingSpeed)), key, levelingChanges);
+            levelingChanges.UnionWith(InputErrors.Keys.Where(k => k.StartsWith(key + ".", StringComparison.Ordinal)));
+            return levelingChanges.Count;
+        }
         var skill = SkillCatalog.All.Single(s => s.Key == key);
         var paths = new HashSet<string>();
         CollectChanges(
@@ -59,7 +67,7 @@ public sealed class EditorSession
                 "Server",
                 serverChanges
             );
-            return SkillCatalog.All.Sum(s => ChangesFor(s.Key)) + serverChanges.Count;
+            return SkillCatalog.All.Sum(s => ChangesFor(s.Key)) + ChangesFor("LevelingSpeed") + serverChanges.Count;
         }
     }
     public bool Dirty => ChangeCount > 0;

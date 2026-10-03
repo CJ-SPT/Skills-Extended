@@ -16,6 +16,10 @@
     <NavLink href="/skills-extended/guides" class="se-nav-link" @onclick="Navigate">
         Mini-game guides
     </NavLink>
+    <NavLink href="/skills-extended/leveling-speed" class="se-nav-link" @onclick="Navigate">
+        Leveling speed
+        @if (Session.ChangesFor("LevelingSpeed") > 0) { <span class="se-pending-dot" aria-label="Unsaved changes">●</span> }
+    </NavLink>
     <NavLink href="/skills-extended/skill-level-changer"
              class="se-nav-link"
              @onclick="Navigate">

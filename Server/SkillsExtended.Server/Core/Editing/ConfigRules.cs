@@ -23,6 +23,8 @@ public static class ConfigRules
 
     public static void RequireStructure(SkillsConfig config)
     {
+        if (config.LevelingSpeed is null)
+            throw new InvalidDataException("Missing leveling speed configuration.");
         foreach (var skill in SkillCatalog.All)
         {
             var data =
@@ -55,6 +57,9 @@ public static class ConfigRules
         var errors = new List<string>();
         try
         {
+            if (config.LevelingSpeed is null)
+                throw new ArgumentException("Leveling speed: missing configuration section.");
+            config.LevelingSpeed.Validate();
             config.Hacking?.Validate();
             config.LockPicking?.Validate();
             config.SignalsIntelligence?.Validate();
