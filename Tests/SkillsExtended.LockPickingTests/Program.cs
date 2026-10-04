@@ -9,6 +9,12 @@ void Check(bool value, string message)
     if (!value)
         throw new Exception(message);
 }
+if (args.Contains("--audio-only"))
+{
+    AudioChecks.Run(Check);
+    Console.WriteLine($"Lock-picking audio: {checks} checks passed (simulated Unity lifecycle).");
+    return;
+}
 var config = new LockPickingData
 {
     Enabled = true,
@@ -433,5 +439,6 @@ Check(
 );
 SecurityChecks.Run(Check);
 CoachingChecks.Run(Check);
+AudioChecks.Run(Check);
 CutawayChecks.Run(Check, args.FirstOrDefault());
 Console.WriteLine($"Lock-picking: {checks} checks passed.");

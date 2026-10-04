@@ -8,7 +8,7 @@ using SkillsExtended;
 
 namespace SkillsExtendedFika;
 
-[BepInPlugin("com.cj.SkillsExtendedFika", "Skills Extended Fika","1.2.3")]
+[BepInPlugin("com.cj.SkillsExtendedFika", "Skills Extended Fika","1.2.4")]
 [BepInDependency(SkillsExtendedInfo.MOD_GUID, SkillsExtendedInfo.VERSION)]
 [BepInDependency("com.fika.core", "2.4.3")]
 [BepInDependency("com.fika.headless", BepInDependency.DependencyFlags.SoftDependency)]

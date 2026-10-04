@@ -24,7 +24,8 @@ internal sealed class LockPickingAudio : IDisposable
         ["Unlock"] = 2,
         ["Break"] = 1,
     };
-    private static Dictionary<string, AudioClip> _clips;
+    // Native clips belong to this view, not a static cache spanning raid cleanup.
+    private Dictionary<string, AudioClip> _clips;
     private readonly Dictionary<string, int> _lastVariant = new();
     private readonly System.Random _random = new();
     private readonly AudioSource _movement,
@@ -58,7 +59,7 @@ internal sealed class LockPickingAudio : IDisposable
         _feedback = Source();
     }
 
-    private static void Prepare()
+    private void Prepare()
     {
         if (_clips != null)
             return;
@@ -124,6 +125,9 @@ internal sealed class LockPickingAudio : IDisposable
                     }
                     var clip = AudioClip.Create(name, samples.Length, channels, frequency, false);
                     loaded.Add(name, clip);
+                    // These runtime recordings are referenced from a managed dictionary.
+                    // Keep the entire bank alive until Dispose explicitly releases it.
+                    clip.hideFlags = HideFlags.DontUnloadUnusedAsset;
                     if (!clip.SetData(samples, 0))
                         throw new InvalidDataException("Could not preload picking audio.");
                 }
@@ -244,6 +248,13 @@ internal sealed class LockPickingAudio : IDisposable
         {
             _feedback.Stop();
             UnityEngine.Object.Destroy(_feedback);
+        }
+        if (_clips != null)
+        {
+            foreach (var clip in _clips.Values)
+                if (clip)
+                    UnityEngine.Object.Destroy(clip);
+            _clips = null;
         }
     }
 }

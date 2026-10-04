@@ -213,7 +213,8 @@ public sealed class PickingRuntime : MonoBehaviour
             door ? LockPickingHelpers.GetLevelForDoor(World.LocationId, door.Id) : 1,
             tool?.KeyComponent.NumberOfUsages ?? 0,
             tool?.KeyComponent.Template.MaximumNumberOfUsage ?? 0,
-            error
+            error,
+            player ? player.Skills.Lockpicking.Level : 0
         );
         if (reply?.State?.Outcome == PickOutcome.Active && player)
             _origins[reply.Attempt] = player.Position;

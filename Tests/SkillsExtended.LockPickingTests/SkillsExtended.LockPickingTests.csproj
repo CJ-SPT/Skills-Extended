@@ -6,6 +6,8 @@
     <DeploySkillsExtended>false</DeploySkillsExtended>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="../../Client/SkillsExtended.Client.Skills/Skills/LockPicking/LockPickingAudio.cs" Link="LockPickingAudio.cs" />
+    <EmbeddedResource Include="../../Client/SkillsExtended.Client.Skills/Assets/LockPicking.audio" LogicalName="SkillsExtended.LockPicking.audio" />
     <ProjectReference Include="../../SkillsExtended.Common/SkillsExtended.Common.csproj" />
     <Reference
       Include="Newtonsoft.Json"

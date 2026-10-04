@@ -248,7 +248,7 @@ public sealed class LockPickingGame : MonoBehaviour
 
     private void BuildCoaching(Transform panel)
     {
-        _coachingPanel = new GameObject("Practice coaching", typeof(RectTransform));
+        _coachingPanel = new GameObject("Lock-picking coaching", typeof(RectTransform));
         _coachingPanel.transform.SetParent(panel, false);
         var root = _coachingPanel.GetComponent<RectTransform>();
         root.anchoredPosition = new Vector2(0, 10);
@@ -497,7 +497,9 @@ public sealed class LockPickingGame : MonoBehaviour
     {
         foreach (var cue in _visualCues.Read(_state))
             if (cue.Sound == PickSound.Click) _clickUntil = Time.unscaledTime + .4f;
-        var coaching = _showCoaching ? _practice?.Coaching() : null;
+        var coaching = _practice != null
+            ? (_showCoaching ? _practice.Coaching() : null)
+            : _reply?.Coaching;
         _status.text = _state.Outcome switch
         {
             PickOutcome.Unlocked => "Lock released",

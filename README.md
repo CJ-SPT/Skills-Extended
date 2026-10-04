@@ -53,7 +53,7 @@ Craft a **Lockpick set at Workbench level 1** and carry it to a supported locked
 
 Feel for resistance and lower the pick before changing depth. Standard pins settle after **0.30 seconds** at their setting point. Spool pins can produce a false set: the cylinder turns slightly but stays locked. Ease tension while lifting to allow counter-rotation. Serrated pins produce intermediate clicks; a click alone does not confirm a true set. Too little pressure or counter-rotation can drop previously set pins. Previously set pins can also be overset.
 
-The raid cutaway shows abstract movement, cylinder rotation, pressure, and tool condition with visible spool waists and serrated grooves, without confirming true sets or explaining pin types. Practice adds pin-type coaching and true-set indicators. Difficult locks can take over a minute; there is no countdown.
+The raid cutaway shows abstract movement, cylinder rotation, pressure, and tool condition with visible spool waists and serrated grooves, without confirming true sets or explaining pin types. Coaching adds pin-type guidance and true-set indicators in practice and automatically in raids for lock tiers 1–3 while your Lock Picking skill level is 10 or lower (before temporary buffs). Difficult locks can take over a minute; there is no countdown.
 
 Every configured tier can be attempted at any skill level. Higher skill improves control and resilience. Excess force causes lasting pick wear during the raid; cancelling does not consume a use, but does not repair that wear. Breaking a pick never permanently breaks the door or disables its key.
 

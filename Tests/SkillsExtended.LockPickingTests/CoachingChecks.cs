@@ -6,6 +6,43 @@ internal static class CoachingChecks
 {
     public static void Run(Action<bool, string> check)
     {
+        for (var tier = 1; tier <= 5; tier++)
+        foreach (var skill in new[] { 0, 5, 6, 10, 11, 51 })
+        {
+            var authority = new PickingAuthority(new LockPickingData(), 123);
+            var start = authority.Process(new PickRequest
+            {
+                ProtocolVersion = PickingProtocol.Version, Raid = authority.Raid,
+                Actor = "learner", Door = "door", Tool = "pick", Operation = "start",
+            }, skill, tier, 0, 10, null);
+            var eligible = tier <= 3 && skill <= 10;
+            check((start.Coaching != null) == eligible, $"Raid coaching boundary: tier {tier}, skill {skill}");
+            var tick = authority.Advance(.05f).Single();
+            var remote = Newtonsoft.Json.JsonConvert.DeserializeObject<PickReply>(
+                Newtonsoft.Json.JsonConvert.SerializeObject(tick));
+            check((remote.Coaching != null) == eligible, "Coaching eligibility survives Fika reply serialization");
+            if (eligible)
+                check(remote.Coaching.BindingPin == authority.Active["door"].Engine.Coaching().BindingPin
+                    && remote.Coaching.SetPinStates.Length == remote.State.Pins,
+                    "Remote coaching reflects the authoritative engine");
+            check(authority.End("door", false).Coaching == null, "Completed attempts stop raid coaching");
+        }
+        var buffed = new PickingAuthority(new LockPickingData(), 123);
+        var buffedStart = buffed.Process(new PickRequest
+        {
+            ProtocolVersion = PickingProtocol.Version, Raid = buffed.Raid,
+            Actor = "learner", Door = "door", Tool = "pick", Operation = "start",
+        }, 13, 3, 0, 10, null, coachingSkill: 10);
+        check(buffedStart.Coaching != null, "Temporary skill buffs do not remove beginner coaching");
+        buffed.Process(new PickRequest
+        {
+            ProtocolVersion = PickingProtocol.Version, Raid = buffed.Raid,
+            Actor = "learner", Door = "door", Attempt = buffedStart.Attempt,
+            Operation = "input", Sequence = 1,
+        }, 11, 3, 0, 10, null, coachingSkill: 11);
+        check(buffed.Advance(.05f).Single().Coaching == null,
+            "Reaching skill level 11 removes coaching from an active attempt");
+
         var config = new LockPickingData();
         // Follow only published practice guidance, with no access to hidden lock geometry.
         for (var tier = 1; tier <= 5; tier++)

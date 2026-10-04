@@ -7,7 +7,7 @@ namespace SkillsExtended.LockPicking;
 
 public static class PickingProtocol
 {
-    public const int Version = 3;
+    public const int Version = 4;
     public const string UpdateMessage = "Lock-picking versions differ. Update Skills Extended core and Fika on the host and all players.";
 }
 
@@ -44,6 +44,7 @@ public sealed class PickReply
     public long Revision { get; set; }
     public float Xp { get; set; }
     public PickSnapshot State { get; set; }
+    public PickCoaching Coaching { get; set; }
 }
 
 public sealed class PickSession
@@ -59,6 +60,7 @@ public sealed class PickSession
         Lift,
         IdleSeconds;
     public bool Tension;
+    public bool ShowCoaching;
     public float TensionStrength = .35f;
     public PinLockEngine Engine;
 }
@@ -89,7 +91,8 @@ public sealed class PickingAuthority
         int difficulty,
         int uses,
         int maximumUses,
-        string error
+        string error,
+        int? coachingSkill = null
     )
     {
         var reply = new PickReply
@@ -162,6 +165,7 @@ public sealed class PickingAuthority
                 Door = r.Door,
                 Tool = r.Tool,
                 Difficulty = difficulty,
+                ShowCoaching = CanCoach(difficulty, coachingSkill ?? skill),
                 Uses = uses,
                 Engine = new PinLockEngine(
                     definition,
@@ -195,6 +199,7 @@ public sealed class PickingAuthority
         )
             return reply;
         s.Sequence = r.Sequence;
+        s.ShowCoaching = CanCoach(s.Difficulty, coachingSkill ?? skill);
         s.Depth = r.Depth;
         s.Lift = r.Lift;
         s.Tension = r.Tension;
@@ -262,6 +267,9 @@ public sealed class PickingAuthority
             ? xp * ratio
             : 0;
 
+    private static bool CanCoach(int difficulty, int skill) =>
+        difficulty >= 1 && difficulty <= 3 && skill >= 0 && skill <= 10;
+
     private PickReply Reply(PickSession s) =>
         new()
         {
@@ -276,5 +284,7 @@ public sealed class PickingAuthority
             ToolUses = s.Uses,
             Revision = ++_revision,
             State = s.Engine.Snapshot(),
+            Coaching = s.ShowCoaching && s.Engine.Outcome == PickOutcome.Active
+                ? s.Engine.Coaching() : null,
         };
 }

@@ -40,6 +40,7 @@ namespace UnityEngine
 
     public static class Mathf
     {
+        public static float Abs(float value) => MathF.Abs(value);
         public const float PI = MathF.PI;
 
         public static float Sin(float x) => MathF.Sin(x);

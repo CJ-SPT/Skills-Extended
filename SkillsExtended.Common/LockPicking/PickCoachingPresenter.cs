@@ -10,7 +10,7 @@ public sealed class PickGuidance
     public float PressureMax { get; set; }
 }
 
-/// <summary>Local practice advice only; never controls or advances the simulation.</summary>
+/// <summary>Picking advice only; never controls or advances the simulation.</summary>
 public static class PickCoachingPresenter
 {
     public static PickGuidance Present(PickSnapshot state, PickCoaching coaching, float commandLift)
