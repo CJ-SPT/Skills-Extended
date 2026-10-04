@@ -64,6 +64,7 @@ Run(
 );
 Run("Built-in skill bonus overrides", () => NativeBonusChecks.Run(Check));
 Run("Hacking cursor and UI event ownership", () => HackingUiInputChecks.Run(Check));
+Run("Skills screen practice settings and launch ownership", () => PracticeChecks.Run(Check));
 Run(
     "Signals UI keyboard taps, holds, release and focus cleanup",
     () => SignalsKeyboardChecks.Run(Check)

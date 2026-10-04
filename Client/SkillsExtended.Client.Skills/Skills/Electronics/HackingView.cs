@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using Comfort.Common;
 using EFT;
 using EFT.Console.Core;
 using EFT.UI;
@@ -189,14 +188,14 @@ public sealed class HackingView : MonoBehaviour
 
     public static void Practice(int difficulty, int level, int seed)
     {
-        if (IsOpen)
+        if (IsOpen || LockPicking.LockPickingGame.Current || Signals.SignalsView.Current)
         {
             return;
         }
 
-        if (Singleton<GameWorld>.Instantiated && Singleton<GameWorld>.Instance.MainPlayer)
+        if (Utils.GameUtils.IsInRaid())
         {
-            ElectronicsRuntime.Notify("Use hacking at the main menu.");
+            ElectronicsRuntime.Notify("Practice is available outside raids.");
             return;
         }
 

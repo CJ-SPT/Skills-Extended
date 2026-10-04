@@ -10,6 +10,8 @@
     <ProjectReference Include="../../SkillsExtended.Common/SkillsExtended.Common.csproj" />
     <Compile Include="../../Client/SkillsExtended.Client.API/SkillsExtendedManager.cs" Link="Production/SkillsExtendedManager.cs" />
     <Compile Include="../../Client/SkillsExtended.Client.Skills/Skills/Core/SkillLists.cs" Link="Production/SkillLists.cs" />
+    <Compile Include="../../Client/SkillsExtended.Client.Skills/Skills/Practice/PracticeSettings.cs" Link="Production/PracticeSettings.cs" />
+    <Compile Include="../../Client/SkillsExtended.Client.Skills/Skills/Practice/PracticeSession.cs" Link="Production/PracticeSession.cs" />
     <Compile Include="../../Client/SkillsExtended.Client.Skills/Skills/Core/Patches/SkillClassOnTriggerPatch.cs" Link="Production/SkillClassOnTriggerPatch.cs" />
     <Compile Include="../../Client/SkillsExtended.Client.Skills/Skills/Core/Patches/MasteringOnTriggerPatch.cs" Link="Production/MasteringOnTriggerPatch.cs" />
     <Compile Include="../../Client/SkillsExtended.Client.Skills/Helpers/CursorSettings.cs" Link="Production/CursorSettings.cs" />
@@ -17,6 +19,7 @@
     <Compile Include="../../Client/SkillsExtended.Client.Skills/Skills/Signals/SignalsKeyboard.cs" Link="Production/SignalsKeyboard.cs" />
     <Compile Include="../../Client/SkillsExtended.Client.Skills/Skills/Electronics/HackingUiInputState.cs" Link="Production/HackingUiInputState.cs" />
     <Compile Include="../../Client/SkillsExtended.Client.Skills/Skills/Electronics/ElectronicsCursorPatch.cs" Link="Production/ElectronicsCursorPatch.cs" />
+    <Compile Include="../../Client/SkillsExtended.Client.Skills/Skills/LockPicking/PickingPracticeCursorPatches.cs" Link="Production/PickingPracticeCursorPatches.cs" />
     <Compile Include="../../Client/SkillsExtended.Client.Skills/Skills/Electronics/ElectronicsDoorRegistry.cs" Link="Production/ElectronicsDoorRegistry.cs" />
     <Compile Include="../../Client/SkillsExtended.Client.Skills/Skills/SkillClasses/Physical/*.cs" Link="Production/Physical/%(Filename)%(Extension)" />
     <Compile Include="../../Client/SkillsExtended.Client.Skills/Skills/Core/Patches/CreateSkillPatches.cs" Link="Production/CreateSkillPatches.cs" />

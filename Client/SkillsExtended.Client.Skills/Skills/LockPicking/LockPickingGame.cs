@@ -1,5 +1,4 @@
 using System;
-using Comfort.Common;
 using EFT;
 using EFT.Console.Core;
 using EFT.UI;
@@ -21,6 +20,7 @@ public sealed class LockPickingGame : MonoBehaviour
     private PickSnapshot _state;
     private PinLockEngine _practice;
     private PinLockDefinition _practiceLock;
+    private bool _showCoaching = true;
     private int _difficulty,
         _level,
         _sequence;
@@ -45,6 +45,10 @@ public sealed class LockPickingGame : MonoBehaviour
     private Image _wear,
         _strain;
     private LockPickingAudio _audio;
+    private RectTransform _artRect;
+    private GameObject _coachingPanel;
+    private Text _liftGuideLabel, _pressureGuideLabel, _holdGuideLabel;
+    private Image _liftBand, _pressureBand, _actualLiftMarker, _commandLiftMarker, _pressureMarker, _holdFill;
 
     public static bool Prepare()
     {
@@ -70,11 +74,19 @@ public sealed class LockPickingGame : MonoBehaviour
         view.Receive(reply);
     }
 
-    public static void Practice(int difficulty, int level, uint seed)
+    public static void Practice(int difficulty, int level, uint seed) => Practice(difficulty, level, seed, true);
+
+    public static void Practice(int difficulty, int level, uint seed, bool showCoaching)
     {
+        if (Utils.GameUtils.IsInRaid())
+        {
+            PickingRuntime.Notify("Practice is available outside raids.");
+            return;
+        }
         if (Current || HackingView.IsOpen || Signals.SignalsView.Current || !Prepare())
             return;
-        var view = Create(Mathf.Clamp(difficulty, 1, 5), Singleton<GameWorld>.Instance?.MainPlayer);
+        var view = Create(Mathf.Clamp(difficulty, 1, 5), null);
+        view._showCoaching = showCoaching;
         view._level = Mathf.Clamp(level, 0, 51);
         view._practiceLock = PinLockDefinition.Create(
             PickingRuntime.Config.Tier(view._difficulty),
@@ -97,7 +109,7 @@ public sealed class LockPickingGame : MonoBehaviour
         {
             view.Build();
             view._input.Capture(player);
-            view._ui.Capture();
+            view._ui.Capture(lockCursor: true);
             return view;
         }
         catch
@@ -163,6 +175,7 @@ public sealed class LockPickingGame : MonoBehaviour
         var artObject = new GameObject("Keyhole", typeof(RectTransform), typeof(RawImage));
         artObject.transform.SetParent(panel.transform, false);
         var rect = artObject.GetComponent<RectTransform>();
+        _artRect = rect;
         rect.sizeDelta = new Vector2(1000, 310);
         rect.anchoredPosition = new Vector2(0, 150);
         artObject.GetComponent<RawImage>().raycastTarget = false;
@@ -177,6 +190,7 @@ public sealed class LockPickingGame : MonoBehaviour
         _cutaway.rectTransform.sizeDelta = new Vector2(1000, 190);
         _cutaway.rectTransform.anchoredPosition = new Vector2(0, -120);
         _cutaway.raycastTarget = false;
+        BuildCoaching(panel.transform);
         Label(
             cutawayObject.transform,
             "SIDE VIEW",
@@ -230,6 +244,64 @@ public sealed class LockPickingGame : MonoBehaviour
             TextAnchor.MiddleCenter
         );
         _audio = new LockPickingAudio(gameObject);
+    }
+
+    private void BuildCoaching(Transform panel)
+    {
+        _coachingPanel = new GameObject("Practice coaching", typeof(RectTransform));
+        _coachingPanel.transform.SetParent(panel, false);
+        var root = _coachingPanel.GetComponent<RectTransform>();
+        root.anchoredPosition = new Vector2(0, 10);
+        root.sizeDelta = new Vector2(1000, 64);
+        var fontColor = new Color(.83f, .84f, .8f);
+        var targetColor = new Color(.25f, .56f, .65f);
+        Image Track(float x) => Box("Guide track", root, new Vector2(280, 8), new Vector2(x, 0), new Color(.16f, .19f, .20f));
+        Image Part(Image track, string name, float height, Color color) => Box(name, track.transform, new Vector2(3, height), Vector2.zero, color);
+        _liftGuideLabel = Label(root, "", 13, new Vector2(-330, 20), new Vector2(315, 22), TextAnchor.MiddleCenter);
+        _pressureGuideLabel = Label(root, "", 13, new Vector2(0, 20), new Vector2(315, 22), TextAnchor.MiddleCenter);
+        _holdGuideLabel = Label(root, "", 13, new Vector2(330, 20), new Vector2(315, 22), TextAnchor.MiddleCenter);
+        var liftTrack = Track(-330);
+        _liftBand = Part(liftTrack, "Lift target band", 8, targetColor);
+        _actualLiftMarker = Part(liftTrack, "Actual lift", 14, fontColor);
+        _commandLiftMarker = Part(liftTrack, "Commanded lift", 6, new Color(.95f, .69f, .30f));
+        var pressureTrack = Track(0);
+        _pressureBand = Part(pressureTrack, "Pressure target band", 8, targetColor);
+        _pressureMarker = Part(pressureTrack, "Actual pressure", 14, fontColor);
+        _holdFill = Part(Track(330), "Setting hold", 8, targetColor);
+        Label(root, "White: actual   Gold: input   Blue: target", 12, new Vector2(-330, -17), new Vector2(320, 20), TextAnchor.MiddleCenter);
+        Label(root, "Keep tension applied while adjusting", 12, new Vector2(0, -17), new Vector2(320, 20), TextAnchor.MiddleCenter);
+        Label(root, "Hold inside the lift band for 0.30s", 12, new Vector2(330, -17), new Vector2(320, 20), TextAnchor.MiddleCenter);
+        _coachingPanel.SetActive(false);
+    }
+
+    private static void GuideRange(Image image, float min, float max)
+    {
+        image.rectTransform.anchoredPosition = new Vector2(-140 + 280 * (min + max) / 2, 0);
+        image.rectTransform.sizeDelta = new Vector2(280 * (max - min), 8);
+    }
+
+    private static void GuideMarker(Image image, float value, float y = 0) =>
+        image.rectTransform.anchoredPosition = new Vector2(-140 + 280 * Mathf.Clamp01(value), y);
+
+    private void RenderCoaching(PickCoaching coaching)
+    {
+        var visible = coaching != null && _state.Outcome == PickOutcome.Active;
+        _coachingPanel.SetActive(visible);
+        // Preserve the artwork render texture's aspect ratio when making room for gauges.
+        _artRect.sizeDelta = visible ? new Vector2(1000 * 250f / 310, 250) : new Vector2(1000, 310);
+        _artRect.anchoredPosition = new Vector2(0, visible ? 180 : 150);
+        if (!visible) return;
+        var guide = PickCoachingPresenter.Present(_state, coaching, _lift);
+        _status.text = guide.Instruction;
+        _liftGuideLabel.text = $"LIFT {_state.Lift:P0} / INPUT {_lift:P0} · {guide.LiftMin:P0}–{guide.LiftMax:P0}";
+        _pressureGuideLabel.text = $"TENSION {_state.TensionStrength:P0} · {guide.PressureMin:P0}–{guide.PressureMax:P0}";
+        _holdGuideLabel.text = $"SETTING HOLD {coaching.HoldProgress:P0}";
+        GuideRange(_liftBand, guide.LiftMin, guide.LiftMax);
+        GuideRange(_pressureBand, guide.PressureMin, guide.PressureMax);
+        GuideRange(_holdFill, 0, coaching.HoldProgress);
+        GuideMarker(_actualLiftMarker, _state.Lift);
+        GuideMarker(_commandLiftMarker, _lift);
+        GuideMarker(_pressureMarker, _state.TensionStrength);
     }
 
     private static Image Box(
@@ -366,7 +438,7 @@ public sealed class LockPickingGame : MonoBehaviour
                 _tensionStrength = Mathf.Clamp01(_tensionStrength + notches * .05f);
             }
             var sensitivity = ConfigManager.LockPickingSensitivity.Value;
-            if (_state.Lift < .08f)
+            if (_state.Lift < PinLockEngine.MoveLiftLimit)
                 _depth = Mathf.Clamp01(_depth + Input.GetAxisRaw("Mouse X") * .035f * sensitivity);
             _lift = Mathf.Clamp01(_lift + Input.GetAxisRaw("Mouse Y") * .035f * sensitivity);
             if (_practice != null)
@@ -425,7 +497,7 @@ public sealed class LockPickingGame : MonoBehaviour
     {
         foreach (var cue in _visualCues.Read(_state))
             if (cue.Sound == PickSound.Click) _clickUntil = Time.unscaledTime + .4f;
-        var coaching = _practice?.Coaching();
+        var coaching = _showCoaching ? _practice?.Coaching() : null;
         _status.text = _state.Outcome switch
         {
             PickOutcome.Unlocked => "Lock released",
@@ -440,20 +512,10 @@ public sealed class LockPickingGame : MonoBehaviour
                 _ => "Probe the lock",
             },
         };
-        if (coaching != null && _state.Outcome == PickOutcome.Active)
-            _status.text = coaching.State switch
-            {
-                PinState.Caught => coaching.Type == PinType.Spool
-                    ? "Spool catch — ease tension and allow counter-rotation"
-                    : "Serration catch — ease tension and continue lifting",
-                PinState.Overset => "Overset — ease tension and lower the pick",
-                PinState.Set => "True set — lower the pick before moving",
-                _ when coaching.Ready => "Hold steady at the setting point",
-                _ => $"{coaching.Type} pin — probe for resistance",
-            };
+        RenderCoaching(coaching);
         _detail.text = $"DEPTH {_state.Selected + 1}/{_state.Pins}    ·    TENSION {_state.TensionStrength:P0}"
             + (coaching != null ? $"    ·    {coaching.SetPins} TRUE SET" : "")
-            + (_state.Lift >= .08f ? "    ·    Lower pick to move" : "");
+            + (_state.Lift >= PinLockEngine.MoveLiftLimit ? "    ·    Lower pick to move" : "");
         var tensionAction = ConfigManager.LockPickingToggleTension.Value ? "PRESS" : "HOLD";
         var tensionHelp = ConfigManager.LockPickingToggleTension.Value ? "Tension on/off" : "Tension";
         _help.text = $"MOUSE ← → Depth   ↑ ↓ Lift   {tensionAction} {ConfigManager.LpMiniGameTurnKey.Value} {tensionHelp}   ESC Leave"
@@ -509,6 +571,7 @@ public sealed class LockPickingGame : MonoBehaviour
         if (_closed)
             return;
         _closed = true;
+        PickingPracticeCursor.Release();
         _input.Restore();
         _ui.Restore();
         _art?.Dispose();

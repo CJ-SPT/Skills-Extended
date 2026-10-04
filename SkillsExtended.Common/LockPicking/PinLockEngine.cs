@@ -89,6 +89,12 @@ public sealed class PickSnapshot
 
 public sealed class PickCoaching
 {
+    public int BindingPin { get; set; } = -1;
+    public float LiftMin { get; set; }
+    public float LiftMax { get; set; }
+    public float PressureMin { get; set; }
+    public float PressureMax { get; set; }
+    public float HoldProgress { get; set; }
     public PinType Type { get; set; }
     public PinState State { get; set; }
     public int SetPins { get; set; }
@@ -114,6 +120,10 @@ public sealed class PickCueReader
 public sealed class PinLockEngine
 {
     public const float StepSeconds = 1f / 60;
+    public const float MoveLiftLimit = .08f;
+    public const float SetHoldSeconds = .30f;
+    public const float ClearPressureMin = .08f, ClearPressureMax = .24f;
+    public const float CatchClearance = .025f;
     private readonly PinLockDefinition _lock;
     private readonly PinState[] _states;
     private readonly int[] _passed;
@@ -190,7 +200,7 @@ public sealed class PinLockEngine
         _held = held;
         _pressure = held ? Move(_pressure, desiredPressure, StepSeconds * 2) : 0;
         _ready = false;
-        if (_lift < .08f)
+        if (_lift < MoveLiftLimit)
         {
             var pin = Math.Min(_states.Length - 1, (int)(depth * _states.Length));
             if (pin != _selected) { _selected = pin; _settle = 0; }
@@ -203,7 +213,7 @@ public sealed class PinLockEngine
         var state = _states[_selected];
         var catches = Catches(_selected);
         var caught = state == PinState.Caught;
-        var canClear = _pressure >= .08f && _pressure <= .24f;
+        var canClear = _pressure >= ClearPressureMin && _pressure <= ClearPressureMax;
         var counter = caught && Type(_selected) == PinType.Spool && target > _lift + .015f;
         var height = _lock.Heights[_selected];
         var resistance = !held ? 1f : state == PinState.Set ? height + _tolerance + .025f
@@ -230,7 +240,7 @@ public sealed class PinLockEngine
             _states[_selected] = PinState.Overset;
             _settle = 0;
         }
-        else if (held && caught && canClear && target > catches[_passed[_selected]] + .025f)
+        else if (held && caught && canClear && target > catches[_passed[_selected]] + CatchClearance)
         {
             _passed[_selected]++;
             _states[_selected] = PinState.Unsettled;
@@ -251,7 +261,7 @@ public sealed class PinLockEngine
         {
             _ready = true;
             _settle += StepSeconds;
-            if (_settle + .000001f >= .3f)
+            if (_settle + .000001f >= SetHoldSeconds)
             {
                 _states[_selected] = PinState.Set;
                 _support[_selected] = _rotation;
@@ -299,12 +309,29 @@ public sealed class PinLockEngine
     {
         if (Outcome == PickOutcome.Active) Outcome = interrupted ? PickOutcome.Interrupted : PickOutcome.Cancelled;
     }
-    public PickCoaching Coaching() => new()
+    public PickCoaching Coaching()
     {
-        Type = Type(_selected), State = _states[_selected], Ready = _ready,
-        SetPins = _states.Count(s => s == PinState.Set),
-        SetPinStates = _states.Select(s => s == PinState.Set).ToArray(),
-    };
+        var state = _states[_selected];
+        var height = _lock.Heights[_selected];
+        var min = Math.Max(0, height - _tolerance);
+        var max = Math.Min(1, height + _tolerance);
+        if (state == PinState.Overset) { min = 0; max = Math.Max(0, height - _tolerance - .02f); }
+        else if (state == PinState.Caught)
+        {
+            min = Math.Min(max, Catches(_selected)[_passed[_selected]] + CatchClearance + .01f);
+            max = Math.Min(max, Math.Max(min, height));
+        }
+        var recovery = state == PinState.Caught || state == PinState.Overset;
+        return new PickCoaching
+        {
+            BindingPin = Binding(), LiftMin = min, LiftMax = max,
+            PressureMin = recovery ? .20f : .25f, PressureMax = recovery ? ClearPressureMax : .35f,
+            HoldProgress = Clamp(_settle / SetHoldSeconds),
+            Type = Type(_selected), State = state, Ready = _ready,
+            SetPins = _states.Count(s => s == PinState.Set),
+            SetPinStates = _states.Select(s => s == PinState.Set).ToArray(),
+        };
+    }
     public PickSnapshot Snapshot() => new()
     {
         Outcome = Outcome, Feedback = _feedback, Pins = _states.Length, Selected = _selected,

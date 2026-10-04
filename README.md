@@ -57,7 +57,11 @@ The raid cutaway shows abstract movement, cylinder rotation, pressure, and tool 
 
 Every configured tier can be attempted at any skill level. Higher skill improves control and resilience. Excess force causes lasting pick wear during the raid; cancelling does not consume a use, but does not repair that wear. Breaking a pick never permanently breaks the door or disables its key.
 
-For practice, enter `lockpicking 2 0 1` in the game console: tier 2, skill level 0, seed 1. Practice does not affect items, XP, or doors. Press **R** after completion to retry the same lock. Practice uses the same security mechanics as raids.
+For practice, open **Character → Skills** outside a raid and click **Practice** beside Lock Picking in the list or below its icon in the grid. Choose a difficulty and start; practice defaults to the displayed skill level. **Customize skill level** changes only the simulation. No equipment is required, and practice does not affect items, XP, or doors. Press **R** after completion to retry the same lock. Practice uses the same security mechanics as raids.
+
+Practice is also available from the hideout's Skills screen. Coaching gives one next action at a time and marks the recommended pin with a blue arrow. Lift and tension gauges show blue target bands, white actual-value markers, and a gold commanded-lift marker; a setting bar shows progress through the 0.30-second hold. Follow the numbered instruction when a catch or dropped pin changes the next step. Recovery guidance uses 20–24% tension; normal guidance uses 25–35%. Keep tension applied while adjusting it, since releasing it resets the lock. These aids do not move the pick or change the simulation.
+
+In Lock Picking setup, uncheck **Coaching hints and true-set indicators** for normal raid-style feedback without coaching instructions, target gauges, next-pin arrows, true-set counts, or true-set highlights. Coaching defaults to on; your choice stays in effect for retries and new attempts from that setup panel. Closing a mini-game returns to setup, where **Start Practice** generates a fresh scenario; **Back** returns to Skills. Console commands remain available for repeatable seeds, for example `lockpicking 2 0 1` (tier 2, skill level 0, seed 1).
 
 ### Hacking and Signals Intelligence
 
@@ -67,6 +71,8 @@ Craft a **Modified PDA at Workbench level 2**. It is reusable and supports both 
 - In a supported raid, use the PDA's **Open receiver** inventory action to tune signals and collect bearings. Move between readings to narrow down a cache's location, then pair the PDA with the cache to unlock it.
 
 Door availability, attempts, signal placements, rewards, and skill bonuses are controlled by the server configuration.
+
+To learn either activity without a PDA, use its **Practice** button on **Character → Skills** outside raids. Hacking offers difficulties 1–3; Signals uses a simulated receiver and pairing scenario. Both default to the displayed skill level and allow a practice-only level adjustment. Disabled or locked skills have no practice button. Practice never creates world caches or awards XP.
 
 ## Configuration
 

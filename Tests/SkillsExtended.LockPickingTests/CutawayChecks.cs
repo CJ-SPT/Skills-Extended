@@ -121,6 +121,14 @@ internal static class CutawayChecks
         check(Geometry(graphic.CaptureMesh()) != unknown, "Local practice coaching can show a true set");
         graphic.Render(State(), .016f, true);
         check(Geometry(graphic.CaptureMesh()) == unknown, "Raid cutaway has no true-set marks");
+        var advice = new PickCoaching { BindingPin = 2, SetPinStates = [true, false, false] };
+        graphic.Render(State(), .016f, true, advice);
+        var recommended = Geometry(graphic.CaptureMesh());
+        advice.BindingPin = 1;
+        graphic.Render(State(), .016f, true, advice);
+        check(Geometry(graphic.CaptureMesh()) != recommended, "Recommended pin marker moves independently of selected and set pins");
+        graphic.Render(State(), .016f, true);
+        check(Geometry(graphic.CaptureMesh()) == unknown, "Coaching off removes recommended and true-set markers");
         var profiled = State();
         profiled.PinTypes = [PinType.Standard, PinType.Spool, PinType.Serrated];
         graphic.Render(profiled, .016f, true);

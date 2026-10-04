@@ -1,7 +1,7 @@
 // External skill identifiers and fields used by the source-linked regression tests.
 namespace EFT;
 public enum EBuffId { BearAkSystemsErgo, BearAkSystemsRecoil, BearRawPowerAllTraderCostDec, BearRawPowerPraporTraderCostDec, BearRawPowerQuestRewardExpInc, FieldMedicineChanceBonus, FieldMedicineDurationBonus, FieldMedicineSkillCap, FirstAidHealingSpeed, FirstAidMovementSpeedElite, FirstAidResourceCost, LockpickingForgivenessAngle, LockpickingTimeIncrease, LockpickingUseElite, ScavGenerateAsCultistChance, ShadowConnectionsCultistCircleReturnTimeDec, ShadowConnectionsScavCooldownTimeDec, ShadowConnectionsScavCooldownTimeElite, SilentOpsIncMeleeSpeed, SilentOpsRedVolume, SilentOpsSilencerCostRed, StrengthColliderSpeedBuff, StrengthColliderSpeedBuffElite, UsecArSystemsErgo, UsecArSystemsRecoil, UsecNegotiationRewardMoneyInc, UsecNegotiationsAllTraderCostDec, UsecNegotiationsPeacekeeperTraderCostDec }
-public enum ESkillId { Endurance, Health, Immunity, Metabolism, Strength, StressResistance, Vitality }
+public enum ESkillId { Endurance, Health, Immunity, Metabolism, Strength, StressResistance, Vitality, Lockpicking = 43 }
 public partial class SkillManager
 {
     public object BonusController = new();

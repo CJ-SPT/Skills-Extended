@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using Comfort.Common;
 using EFT;
 using EFT.Console.Core;
 using EFT.UI;
@@ -83,9 +82,9 @@ public sealed partial class SignalsView : MonoBehaviour
             || SkillsExtendedInfo.IsFikaHeadless
         )
             return;
-        if (Singleton<GameWorld>.Instantiated && Singleton<GameWorld>.Instance.MainPlayer)
+        if (Utils.GameUtils.IsInRaid())
         {
-            ElectronicsRuntime.Notify("Use signals practice at the main menu.");
+            ElectronicsRuntime.Notify("Practice is available outside raids.");
             return;
         }
         if (level < 0 || level > 51)

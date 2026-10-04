@@ -20,7 +20,7 @@ public sealed class HackingUiInputState
     private bool _moduleEnabled;
     private bool _navigation;
 
-    public void Capture()
+    public void Capture(bool lockCursor = false)
     {
         if (_captured)
             return;
@@ -38,7 +38,7 @@ public sealed class HackingUiInputState
         _cursor = CursorSettings.CurrentCursor;
         _captured = true;
         _events.SetSelectedGameObject(null);
-        Maintain();
+        Maintain(lockCursor);
     }
 
     public void Maintain(bool lockCursor = false)
@@ -55,7 +55,7 @@ public sealed class HackingUiInputState
             _events.sendNavigationEvents = false;
             EventSystem.current = _events;
         }
-        CursorSettings.SetCursor(ECursorType.Idle);
+        CursorSettings.SetCursor(lockCursor ? ECursorType.Invisible : ECursorType.Idle);
         CursorSettings.SetCursorLockMode(!lockCursor, Screen.fullScreenMode);
         Cursor.visible = !lockCursor;
     }

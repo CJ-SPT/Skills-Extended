@@ -432,5 +432,6 @@ Check(
     "The pin remains recoverable after interrupted holds"
 );
 SecurityChecks.Run(Check);
+CoachingChecks.Run(Check);
 CutawayChecks.Run(Check, args.FirstOrDefault());
 Console.WriteLine($"Lock-picking: {checks} checks passed.");

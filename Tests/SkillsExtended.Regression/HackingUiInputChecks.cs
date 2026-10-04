@@ -2,6 +2,7 @@ using EFT;
 using EFT.InputSystem;
 using EFT.UI;
 using SkillsExtended.Skills.Hacking;
+using SkillsExtended.Skills.LockPicking;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -52,6 +53,7 @@ public static class HackingUiInputChecks
             check(
                 !Cursor.visible
                     && Cursor.lockState == CursorLockMode.Locked
+                    && CursorSwitcher.LastCursor == ECursorType.Invisible
                     && ui.Events.enabled
                     && ui.Module.enabled,
                 "Relative picking input retains native UI processing with a locked invisible pointer"
@@ -122,6 +124,47 @@ public static class HackingUiInputChecks
             result == ECursorResult.LockCursor,
             "Closed puzzle leaves normal gameplay cursor policy intact"
         );
+
+        var pickingInput = new HackingUiInputState();
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.Confined;
+        CursorSwitcher.SetCursor(ECursorType.Idle);
+        UIEventSystem.Instance = new();
+        pickingInput.Capture(lockCursor: true);
+        check(!Cursor.visible && Cursor.lockState == CursorLockMode.Locked
+            && CursorSwitcher.LastCursor == ECursorType.Invisible,
+            "Picking locks and hides both cursor and texture immediately on open");
+        LockPickingGame.Current = new() { InRaid = false };
+        var manager = new InputManager();
+        for (var frame = 0; frame < 120; frame++)
+        {
+            result = ECursorResult.ShowCursor; // Native Skills/Menu nodes win before our postfix.
+            PickingPracticeDispatchPatch.Postfix(manager, ref result);
+            manager.Decision = result;
+            var visible = true; // Cached first-frame decision or forced cursor event.
+            PickingPracticeVisibilityPatch.Prefix(ref visible);
+            check(result == ECursorResult.LockCursor && !visible,
+                "Menu practice rejects repeated native show/unlock requests without a cursor warp");
+        }
+        PickingPracticeCursor.Release();
+        check(manager.Decision == ECursorResult.ShowCursor,
+            "Close restores the cached native decision before input is sampled again");
+        PickingPracticeCursor.Release();
+        check(manager.Decision == ECursorResult.ShowCursor, "Repeated cursor cleanup is harmless");
+        LockPickingGame.Current.InRaid = true;
+        result = ECursorResult.ShowCursor;
+        var showCursor = true;
+        PickingPracticeDispatchPatch.Postfix(manager, ref result);
+        PickingPracticeVisibilityPatch.Prefix(ref showCursor);
+        check(result == ECursorResult.ShowCursor && showCursor,
+            "Practice overrides leave raid PlayerOwner cursor policy unchanged");
+        LockPickingGame.Current = null;
+        pickingInput.Restore();
+        PickingPracticeDispatchPatch.Postfix(manager, ref result);
+        PickingPracticeVisibilityPatch.Prefix(ref showCursor);
+        check(showCursor && Cursor.visible && Cursor.lockState == CursorLockMode.Confined
+            && CursorSwitcher.LastCursor == ECursorType.Idle,
+            "Closing practice releases native overrides and restores the visible setup cursor");
     }
 }
 
@@ -189,12 +232,32 @@ namespace EFT.UI
 
 namespace EFT.InputSystem
 {
+    public class InputManager : UnityEngine.Object
+    {
+        private ECursorResult _shouldLockCursor;
+        public ECursorResult Decision { get => _shouldLockCursor; set => _shouldLockCursor = value; }
+        public void DispatchInput() { }
+    }
     public enum ECursorResult
     {
         Ignore,
         LockCursor,
         ShowCursor,
     }
+}
+
+namespace SkillsExtended.Skills.LockPicking
+{
+    public class LockPickingGame : UnityEngine.Object
+    {
+        public static LockPickingGame Current;
+        public bool InRaid;
+    }
+}
+
+namespace EFT
+{
+    public class ClientApplicationInitOperation { public static void CursorVisibilityChangedHandler(bool visible) { } }
 }
 
 namespace EFT

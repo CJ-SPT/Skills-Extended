@@ -130,6 +130,15 @@ internal sealed class LockPickingCutaway : MaskableGraphic
         for (var pin = 0; pin < _state.Pins; pin++)
         {
             var x = PinX(pin, _state.Pins);
+            var recommended = _coaching != null && _state.Outcome == PickOutcome.Active
+                && pin == (_coaching.State == PinState.Overset ? selected : _coaching.BindingPin);
+            if (recommended)
+            {
+                var guide = new Color(.25f, .70f, .85f);
+                Line(vh, new(x, 87), new(x, 66), guide, 3);
+                Line(vh, new(x - 6, 72), new(x, 66), guide, 3);
+                Line(vh, new(x + 6, 72), new(x, 66), guide, 3);
+            }
             var completed =
                 known
                 && _coaching.SetPinStates[pin]
