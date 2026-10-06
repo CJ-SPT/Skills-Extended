@@ -37,6 +37,10 @@ public record SettingDefinition(
             ? (
                 Key == "FactionLocked"
                     ? "BEAR or USEC, according to this skill."
+                    : Key == "EnableRaidCoaching"
+                        ? "Allow target guidance for lock tiers 1–3 at skill level 10 or lower, plus pin-type tips in raids. Disabling leaves practice and mechanical feedback available. Save and restart connected clients."
+                    : Key == "ShowCacheArrow"
+                        ? "Show the blue arrow above Signals caches for all players. Disabling keeps the cache, receiver and proximity audio available. Save and restart connected clients."
                     : "Changes are applied after saving and restarting the game client."
             )
         : Unit == "ratio" ? "A fraction from 0 to 1. For example, 0.15 means 15%."
@@ -249,6 +253,7 @@ public static class SkillCatalog
         ["PickResiliencePerLevel"] = "Pick resilience bonus per level",
         ["ExpertControlElite"] = "Expert control and resilience at elite",
         ["PickWearSeconds"] = "Damaging force before a pick breaks",
+        ["EnableRaidCoaching"] = "Enable in-raid coaching",
         ["AttemptsPerDoor"] = "Failed attempts allowed per door",
         ["BaseCoherence"] = "Starting coherence at level zero",
         ["CoherencePerLevel"] = "Extra coherence per level",
@@ -373,6 +378,7 @@ public static class SkillCatalog
                 p,
                 key == "Enabled"
                     ? "Enable Signals Intelligence"
+                    : key == "ShowCacheArrow" ? "Show blue cache arrow"
                     : System.Text.RegularExpressions.Regex.Replace(key, "([a-z])([A-Z])", "$1 $2"),
                 signalUnit,
                 "Receiver and rewards",

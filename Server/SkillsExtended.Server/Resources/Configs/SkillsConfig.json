@@ -265,6 +265,7 @@
     },
     "LockPicking": {
         "Enabled": true,
+        "EnableRaidCoaching": true,
         "PinTolerancePerLevel": 0.5,
         "PickResiliencePerLevel": 0.75,
         "ExpertControlElite": 10,
@@ -839,6 +840,7 @@
     },
     "SignalsIntelligence": {
         "Enabled": true,
+        "ShowCacheArrow": true,
         "ReadingSeconds": 3,
         "PairingSeconds": 5,
         "MinimumSeparation": 125,

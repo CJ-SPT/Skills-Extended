@@ -8,6 +8,7 @@ using System.Linq;
 public class LockPickingData
 {
     public bool Enabled { get; set; }
+    public bool EnableRaidCoaching { get; set; } = true;
     public float PickStrengthBase { get; set; }
     public float PickStrengthPerLevel { get; set; }
     public float SweetSpotRangeBase { get; set; }

@@ -42,6 +42,19 @@ catch (TargetInvocationException e) when (e.InnerException is InvalidOperationEx
 HarmonyLib.AccessTools.HideHeadless = false;
 Target(new SignalsHeadlessLootPatch());
 
+Check(SkillsExtended.Helpers.ConfigurationJson.Deserialize<SkillsExtended.Config.Skills.SignalsIntelligenceData>("{}").ShowCacheArrow,
+    "Legacy client settings retain the visible cache arrow");
+foreach (var showArrow in new[] { true, false })
+{
+    var rules = new SkillsExtended.Config.Skills.SignalsIntelligenceData { ShowCacheArrow = showArrow }.RulesOnly();
+    var manifestJson = System.Text.Json.JsonSerializer.Serialize(new SignalManifest { Config = rules });
+    var host = SkillsExtended.Helpers.ConfigurationJson.Deserialize<SignalManifest>(manifestJson);
+    var peer = JsonConvert.DeserializeObject<SignalManifest>(JsonConvert.SerializeObject(host));
+    Check(host.Config.ShowCacheArrow == showArrow && peer.Config.ShowCacheArrow == showArrow
+        && host.Config.Placements.Count == 0 && host.Config.Loot.Count == 0,
+        "Server arrow setting survives rules filtering, client loading and Fika manifest serialization");
+}
+
 foreach (var mode in new[] { "SPT", "Fika host", "Headless host" })
 {
     var world = Fixture.Reset(fika: mode != "SPT", headless: mode == "Headless host");

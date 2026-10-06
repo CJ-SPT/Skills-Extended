@@ -530,7 +530,7 @@ public sealed class LockPickingGame : MonoBehaviour
         _feedbackText.Update(_state, _lift, Time.unscaledTime);
         var coaching = _practice != null
             ? (_showCoaching ? _practice.Coaching() : null)
-            : _reply?.Coaching;
+            : (PickingRuntime.Config.EnableRaidCoaching ? _reply?.Coaching : null);
         _status.text = _feedbackText.Status;
         _sensation.text = _feedbackText.Detail;
         // Match the signed seed accepted by the console practice command.
@@ -548,7 +548,8 @@ public sealed class LockPickingGame : MonoBehaviour
             }
             : "UNKNOWN";
         _pinTypeLabel.text = $"PARTIAL CUTAWAY · PIN {_state.Selected + 1}: {selectedType}";
-        _pinTip.text = _state.Outcome != PickOutcome.Active ? "" : selectedType switch
+        _pinTip.text = _state.Outcome != PickOutcome.Active
+            || (_practice == null && !PickingRuntime.Config.EnableRaidCoaching) ? "" : selectedType switch
         {
             "STANDARD" => "STANDARD TIP · Hold steady tension and lift gently. Stop at a confirmed set, then lower the pick to move.",
             "SPOOL" => "SPOOL TIP · Ease tension without releasing it; lift gently and allow the wrench to turn back.",

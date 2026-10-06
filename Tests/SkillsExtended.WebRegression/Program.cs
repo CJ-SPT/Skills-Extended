@@ -15,6 +15,12 @@ void Check(bool condition, string name)
 }
 
 var source = Path.Combine(AppContext.BaseDirectory, "Resources", "Configs");
+if (args.Contains("--assistance-only"))
+{
+    await AssistanceWebChecks.Run(source, Check);
+    Console.WriteLine($"Server assistance settings: {checks} checks passed.");
+    return;
+}
 if (args.Contains("--guides-only"))
 {
     await AuthorizationChecks.Run(Check);
@@ -24,6 +30,7 @@ if (args.Contains("--guides-only"))
 }
 var store = new ConfigStore(source, new ConfigFiles());
 var shipped = await store.ReadSnapshotAsync();
+await AssistanceWebChecks.Run(source, Check);
 if (args.Contains("--native-only"))
 {
     await NativeSkillChecks.Run(shipped, Check);

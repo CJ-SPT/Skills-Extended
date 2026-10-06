@@ -267,8 +267,8 @@ public sealed class PickingAuthority
             ? xp * ratio
             : 0;
 
-    private static bool CanCoach(int difficulty, int skill) =>
-        difficulty >= 1 && difficulty <= 3 && skill >= 0 && skill <= 10;
+    private bool CanCoach(int difficulty, int skill) =>
+        _config.EnableRaidCoaching && difficulty >= 1 && difficulty <= 3 && skill >= 0 && skill <= 10;
 
     private PickReply Reply(PickSession s) =>
         new()
@@ -284,7 +284,7 @@ public sealed class PickingAuthority
             ToolUses = s.Uses,
             Revision = ++_revision,
             State = s.Engine.Snapshot(),
-            Coaching = s.ShowCoaching && s.Engine.Outcome == PickOutcome.Active
+            Coaching = _config.EnableRaidCoaching && s.ShowCoaching && s.Engine.Outcome == PickOutcome.Active
                 ? s.Engine.Coaching() : null,
         };
 }

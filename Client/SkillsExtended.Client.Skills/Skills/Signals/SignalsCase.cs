@@ -117,26 +117,29 @@ public sealed class SignalsCase : IDisposable
             }
             LootItem.CreateLootContainer(container, root, "Signal cache", world, container.Id);
             container.DoorState = EDoorState.Locked;
-            var beacon = new GameObject("Signal cache arrow");
-            beacon.transform.SetParent(result._root.transform, false);
-            // The arrow's origin is its downward tip, just above the closed lid.
-            var bounds = SignalsPlacement.Geometry().Body;
-            beacon.transform.localPosition = new Vector3(
-                bounds.Center.X,
-                bounds.Center.Y + bounds.Extents.Y + .12f,
-                bounds.Center.Z
-            );
-            result._beaconMesh = CreateArrowMesh();
-            beacon.AddComponent<MeshFilter>().sharedMesh = result._beaconMesh;
-            var renderer = beacon.AddComponent<MeshRenderer>();
-            renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
-            renderer.receiveShadows = false;
-            var shader = Shader.Find("Unlit/Color");
-            result._beaconMaterial = shader
-                ? new Material(shader)
-                : new Material(clone.GetComponentInChildren<Renderer>(true).sharedMaterial);
-            result._beaconMaterial.color = new Color(.15f, .8f, .72f);
-            renderer.sharedMaterial = result._beaconMaterial;
+            if (manifest.Config?.ShowCacheArrow != false)
+            {
+                var beacon = new GameObject("Signal cache arrow");
+                beacon.transform.SetParent(result._root.transform, false);
+                // The arrow's origin is its downward tip, just above the closed lid.
+                var bounds = SignalsPlacement.Geometry().Body;
+                beacon.transform.localPosition = new Vector3(
+                    bounds.Center.X,
+                    bounds.Center.Y + bounds.Extents.Y + .12f,
+                    bounds.Center.Z
+                );
+                result._beaconMesh = CreateArrowMesh();
+                beacon.AddComponent<MeshFilter>().sharedMesh = result._beaconMesh;
+                var renderer = beacon.AddComponent<MeshRenderer>();
+                renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+                renderer.receiveShadows = false;
+                var shader = Shader.Find("Unlit/Color");
+                result._beaconMaterial = shader
+                    ? new Material(shader)
+                    : new Material(clone.GetComponentInChildren<Renderer>(true).sharedMaterial);
+                result._beaconMaterial.color = new Color(.15f, .8f, .72f);
+                renderer.sharedMaterial = result._beaconMaterial;
+            }
             clone.SetActive(true);
             result._root.SetActive(true);
             result.RegisterInteraction(manifest);

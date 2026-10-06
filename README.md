@@ -70,6 +70,8 @@ The lockpicking cutaway identifies the pin currently above the pick as **Standar
 
 Sensory text describes turning pressure, spring contact, resistance, lowering the pick, and retained movement. The same feedback line that confirms a set also identifies false sets, overset or caught pins, counter-rotation, cleared catches, and recovered oversets. False-set and selected-pin overset indications persist while those conditions remain; an individual catch is not mislabeled as a whole-lock false set. Drop captions combine simultaneous drops and remain visible alongside coaching. Damage text appears only after the pick actually loses condition. These captions remain available with muted audio and reduced motion.
 
+Server administrators can turn off **Lock Picking → Enable in-raid coaching** (`LockPicking.EnableRaidCoaching`) to hide raid target guidance and pin-type tips. Pin-type labels, confirmed sets, and mechanical feedback remain available, and practice keeps its own coaching controls. This setting defaults to `true`; target guidance still requires lock tiers 1–3 and an unbuffed skill level of 10 or lower.
+
 ### Hacking and Signals Intelligence
 
 Craft a **Modified PDA at Workbench level 2**. It is reusable and supports both activities.
@@ -78,6 +80,8 @@ Craft a **Modified PDA at Workbench level 2**. It is reusable and supports both 
 - In a supported raid, use the PDA's **Open receiver** inventory action to tune signals and collect bearings. Move between readings to narrow down a cache's location, then pair the PDA with the cache to unlock it.
 
 Door availability, attempts, signal placements, rewards, and skill bonuses are controlled by the server configuration.
+
+**Signals Intelligence → Show blue cache arrow** (`SignalsIntelligence.ShowCacheArrow`) controls the arrow above the physical cache for all players. It defaults to `true`; turning it off leaves the cache, receiver, pairing, and proximity audio available. Save either assistance setting in the server editor and restart connected clients before the next raid.
 
 To learn either activity without a PDA, use its **Practice** button on **Character → Skills** outside raids. Hacking offers difficulties 1–3; Signals uses a simulated receiver and pairing scenario. Both default to the displayed skill level and allow a practice-only level adjustment. Disabled or locked skills have no practice button. Practice never creates world caches or awards XP.
 

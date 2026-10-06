@@ -8,6 +8,7 @@ namespace SkillsExtended.Config.Skills;
 public class SignalsIntelligenceData
 {
     public bool Enabled { get; set; } = true;
+    public bool ShowCacheArrow { get; set; } = true;
     public float ReadingSeconds { get; set; } = 3;
     public float PairingSeconds { get; set; } = 5;
     public float MinimumSeparation { get; set; } = 125;
