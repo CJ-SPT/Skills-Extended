@@ -854,6 +854,202 @@
         "MaximumLootValue": 500000,
         "Placements": [
             {
+                "Id": "sandbox_high-d76df31b",
+                "Map": "sandbox_high",
+                "Name": "Terragroup Outside",
+                "Position": {
+                    "X": 64.9518,
+                    "Y": 22.858408,
+                    "Z": -2.449036,
+                    "IsFinite": true
+                },
+                "Yaw": 91.31143,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "sandbox_high-2d5a8c1f",
+                "Map": "sandbox_high",
+                "Name": "Coffee Shop - 1",
+                "Position": {
+                    "X": 15.947371,
+                    "Y": 24.414707,
+                    "Z": 73.693756,
+                    "IsFinite": true
+                },
+                "Yaw": 295.2602,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "sandbox_high-c357cbe1",
+                "Map": "sandbox_high",
+                "Name": "Intersection",
+                "Position": {
+                    "X": 96.471054,
+                    "Y": 22.859205,
+                    "Z": 63.275154,
+                    "IsFinite": true
+                },
+                "Yaw": 212.55862,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "sandbox_high-243354f8",
+                "Map": "sandbox_high",
+                "Name": "Winery",
+                "Position": {
+                    "X": 123.85258,
+                    "Y": 23.034126,
+                    "Z": 15.843103,
+                    "IsFinite": true
+                },
+                "Yaw": 269.0567,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "sandbox_high-f72e336b",
+                "Map": "sandbox_high",
+                "Name": "Coffee Shop - 2",
+                "Position": {
+                    "X": 81.73616,
+                    "Y": 22.8972,
+                    "Z": 135.43271,
+                    "IsFinite": true
+                },
+                "Yaw": 358.05307,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "sandbox_high-57ea5d26",
+                "Map": "sandbox_high",
+                "Name": "M",
+                "Position": {
+                    "X": 93.32778,
+                    "Y": 23.057217,
+                    "Z": 224.93404,
+                    "IsFinite": true
+                },
+                "Yaw": 90.400894,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "sandbox_high-90f6507f",
+                "Map": "sandbox_high",
+                "Name": "Bus",
+                "Position": {
+                    "X": 55.426826,
+                    "Y": 23.78511,
+                    "Z": 93.20203,
+                    "IsFinite": true
+                },
+                "Yaw": 325.79956,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "sandbox_high-73abf22a",
+                "Map": "sandbox_high",
+                "Name": "Parking - 1",
+                "Position": {
+                    "X": 91.78137,
+                    "Y": 14.203762,
+                    "Z": 97.83599,
+                    "IsFinite": true
+                },
+                "Yaw": 268.74792,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "sandbox_high-893b947a",
+                "Map": "sandbox_high",
+                "Name": "Parking - 2",
+                "Position": {
+                    "X": 77.70135,
+                    "Y": 14.203755,
+                    "Z": 134.93332,
+                    "IsFinite": true
+                },
+                "Yaw": 105.54723,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "sandbox_high-6c709f6e",
+                "Map": "sandbox_high",
+                "Name": "Parking - 3",
+                "Position": {
+                    "X": 81.20792,
+                    "Y": 14.431514,
+                    "Z": 177.46533,
+                    "IsFinite": true
+                },
+                "Yaw": 119.147026,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "sandbox_high-139e8b53",
+                "Map": "sandbox_high",
+                "Name": "Bridge of Death",
+                "Position": {
+                    "X": 18.93691,
+                    "Y": 24.268457,
+                    "Z": 29.923088,
+                    "IsFinite": true
+                },
+                "Yaw": 0.09147992,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "sandbox_high-677292db",
+                "Map": "sandbox_high",
+                "Name": "Well This Sucks",
+                "Position": {
+                    "X": 85.31649,
+                    "Y": 22.859205,
+                    "Z": 67.2538,
+                    "IsFinite": true
+                },
+                "Yaw": 3.9916856,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "sandbox_high-1c1ac159",
+                "Map": "sandbox_high",
+                "Name": "Well This Sucks - 2",
+                "Position": {
+                    "X": 59.481728,
+                    "Y": 22.858402,
+                    "Z": 47.872097,
+                    "IsFinite": true
+                },
+                "Yaw": 219.14096,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
+                "Id": "sandbox_high-81444cb7",
+                "Map": "sandbox_high",
+                "Name": "Well This Sucks - 3",
+                "Position": {
+                    "X": 72.253235,
+                    "Y": 22.859203,
+                    "Z": 272.63968,
+                    "IsFinite": true
+                },
+                "Yaw": 352.4915,
+                "SearchRadius": 0,
+                "Enabled": true
+            },
+            {
                 "Id": "woods-02",
                 "Map": "woods",
                 "Name": "UN Roadblock",
