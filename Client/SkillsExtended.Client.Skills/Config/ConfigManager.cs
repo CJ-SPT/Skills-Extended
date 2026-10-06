@@ -15,6 +15,7 @@ public static class ConfigManager
     public static ConfigEntry<bool> LockPickingToggleTension;
     public static ConfigEntry<KeyboardShortcut> LockPickingTensionIncrease;
     public static ConfigEntry<KeyboardShortcut> LockPickingTensionDecrease;
+    public static ConfigEntry<KeyboardShortcut> LockPickingFineControl;
     public static ConfigEntry<int> SignalsVolume;
     public static ConfigEntry<KeyboardShortcut> SignalsShortcut;
     public static ConfigEntry<bool> DeveloperEditorEnabled;
@@ -33,6 +34,8 @@ public static class ConfigManager
             new KeyboardShortcut(KeyCode.E), "Increase pressure while tension is applied. Mouse wheel also adjusts pressure.");
         LockPickingTensionDecrease = config.Bind("Lock Picking", "Decrease tension",
             new KeyboardShortcut(KeyCode.Q), "Decrease pressure while tension is applied. Releasing tension resets all pins.");
+        LockPickingFineControl = config.Bind("Lock Picking", "Fine control",
+            new KeyboardShortcut(KeyCode.LeftShift), "Hold for quarter-speed lift and 1% pressure steps. Depth movement is unchanged.");
         LockPickingToggleTension = config.Bind("Lock Picking", "Toggle tension", false,
             "Press the tension key once to apply tension and again to release it and reset the pins. When disabled, hold the key to apply tension. Each new attempt starts with toggle tension off.");
         LockPickingVolume = config.Bind(

@@ -43,6 +43,32 @@ produces `cutaway-states.png` for 3–5 pins in active, unlocked and broken stat
 Full layouts cover 1080p, 1440p and ultrawide. Text rasterization and front-view
 lighting remain approximate; the cutaway's geometry comes from the runtime code.
 
+## Mechanical reference and partial cutaway
+
+The procedural side view is a generic pin-tumbler partial cutaway, informed by:
+
+- [Schlage cylinder guide, pages 3.2 and 7.1–7.3](https://www.schlage.com/content/dam/sch-us/documents/pdf/installation-manuals/P513-325.pdf): the rotating plug, fixed shell, common shear interface, bullet-shaped bottom pins, flat-ended top pins and spring seats.
+- [SPARROWS spool cutaway](https://www.sparrowslockpicks.com/products/cut-away-lock-spool-pins): solid brass around milled inspection windows and flanged spool profiles. Its manufacturer photographs were inspected as references; none are embedded or redistributed.
+- [Matt Blaze's photographed pin-tumbler notes](https://www.mattblaze.org/papers/notes/picking/): the pick pivots at the front keyway ward, torque binds drivers at the plug/shell interface, and spool feedback involves a small reverse plug rotation.
+
+The user chose to preserve hidden heights. The intact metal band therefore covers
+the pin/driver junctions and catching edges around the shear line. Only pin tips,
+upper driver portions and spring travel are exposed. The omitted pin lengths are
+illustrative, not generated from the secret bitting; no visible seam claims to be
+the setting point. A continuous ward surface replaces isolated per-pin supports.
+The end elevation shows a moving plug and warded keyway inside a fixed shell.
+It and the front artwork use the simulation's physical rotation, rather than
+turning a false set into a magnified 30-degree rotation.
+
+The pick remains rigid and levers on a fixed entrance ward. At steep near-pin
+angles its handle leaves the inspection window and is clipped, not stretched.
+Spring coil count and wire width remain fixed while pitch changes with travel.
+This is an explanatory game rendering, not a dimensioned manufacturer replica or
+a new physical lock simulation. Hidden targets remain concealed; confirmed sets
+are shown from authoritative snapshot flags in both normal play and coaching.
+Pins now seat on upward contact instead of requiring a timed hold, and continued
+lift can still overset them. Fine control changes lift speed and pressure steps.
+
 ## Mechanical audio
 
 `Build-Audio.py` cuts 18 natural-pitch excerpts from **Tiny metal/lockpicking** by

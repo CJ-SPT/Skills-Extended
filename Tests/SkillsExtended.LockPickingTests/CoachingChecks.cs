@@ -23,7 +23,7 @@ internal static class CoachingChecks
             check((remote.Coaching != null) == eligible, "Coaching eligibility survives Fika reply serialization");
             if (eligible)
                 check(remote.Coaching.BindingPin == authority.Active["door"].Engine.Coaching().BindingPin
-                    && remote.Coaching.SetPinStates.Length == remote.State.Pins,
+                    && remote.State.SetPinStates.Length == remote.State.Pins,
                     "Remote coaching reflects the authoritative engine");
             check(authority.End("door", false).Coaching == null, "Completed attempts stop raid coaching");
         }
@@ -71,7 +71,7 @@ internal static class CoachingChecks
             check(JsonSerializer.Serialize(game.Snapshot()) == JsonSerializer.Serialize(untouched.Snapshot()),
                 "Coaching reads and presentation do not mutate the simulation");
             var retry = new PinLockEngine(definition, config, tier, skill);
-            check(retry.Coaching().HoldProgress == 0 && retry.Coaching().SetPins == 0,
+            check(PickPresentation.SetCount(retry.Snapshot()) == 0,
                 "Retry has fresh coaching progress");
         }
 
@@ -85,9 +85,9 @@ internal static class CoachingChecks
         check(Guide(.3f).Instruction.StartsWith("Lower"), "Commanded lift must also lower before moving");
         c.BindingPin = 0; s.Tension = false;
         check(Guide().Instruction.Contains("apply tension"), "Tension-off coaching explains the next control");
-        s.Tension = true; c.Ready = true;
-        check(Guide(.5f).Instruction.Contains("hold steady"), "Setting window asks for a hold");
-        check(Guide(.8f).Instruction.Contains("lower your input"), "Excess commanded lift overrides a transient ready state");
+        s.Tension = true;
+        check(Guide(.5f).Instruction.Contains("stop at the set click"), "Coaching explains immediate seating");
+        check(Guide(.8f).Instruction.Contains("lower your input"), "Coaching warns about excessive commanded lift");
         c.State = PinState.Caught; c.PressureMin = .2f; c.PressureMax = .24f;
         check(Guide().Instruction.Contains("ease tension"), "Caught pin first requests recovery pressure");
         s.TensionStrength = .22f; c.Type = PinType.Spool;
@@ -103,14 +103,8 @@ internal static class CoachingChecks
 
         var simple = new PinLockDefinition { Heights = [.5f, .5f, .5f], Order = [0, 1, 2] };
         var hold = new PinLockEngine(simple, config, 1, 0);
-        for (var frame = 0; frame < 100 && !hold.Coaching().Ready; frame++)
+        for (var frame = 0; frame < 100 && !hold.Snapshot().SetPinStates[0]; frame++)
             hold.Advance(PinLockEngine.StepSeconds, 0, .5f, true);
-        check(hold.Coaching().HoldProgress > 0 && hold.Coaching().HoldProgress < 1, "Hold exposes partial progress");
-        hold.Advance(PinLockEngine.StepSeconds, 0, .8f, true);
-        check(hold.Coaching().HoldProgress == 0, "Commanding above the setting window interrupts the hold");
-        hold.Advance(PinLockEngine.StepSeconds, 0, 0, false);
-        check(hold.Coaching().HoldProgress == 0, "Releasing tension clears hold progress");
-        for (var frame = 0; frame < 100; frame++) hold.Advance(PinLockEngine.StepSeconds, 0, .5f, true);
         check(hold.Coaching().BindingPin == 1, "True set advances recommended binding pin");
         hold.Advance(PinLockEngine.StepSeconds, 0, 0, false);
         check(hold.Coaching().BindingPin == 0 && hold.Coaching().SetPins == 0, "Dropped sets recompute binding order");
@@ -123,7 +117,8 @@ internal static class CoachingChecks
         }
         check(hold.Coaching().State == PinState.Unsettled, "Guided pressure and lift recover an actual overset");
         var snapshotNames = typeof(PickSnapshot).GetProperties().Select(p => p.Name).ToArray();
-        foreach (var secret in new[] { "BindingPin", "LiftMin", "LiftMax", "PressureMin", "PressureMax", "HoldProgress", "SetPinStates" })
+        foreach (var secret in new[] { "BindingPin", "LiftMin", "LiftMax", "PressureMin", "PressureMax", "HoldProgress", "Heights", "Order", "Catches", "State" })
             check(!snapshotNames.Contains(secret), "Coaching targets remain outside public snapshots: " + secret);
+        check(snapshotNames.Contains("SetPinStates"), "Confirmed sets are visible without coaching");
     }
 }

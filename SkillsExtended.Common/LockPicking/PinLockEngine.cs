@@ -9,15 +9,25 @@ public enum PickOutcome { Active, Unlocked, PickBroken, Cancelled, Interrupted }
 public enum PickFeedback { Searching, Springy, Binding, Strain, Unlocked, Broken, Click, CounterRotation }
 public enum PinType { Standard, Spool, Serrated }
 public enum PinState { Unsettled, Caught, Set, Overset }
-public enum PickSound { Click, Release, Tension, Strain, Unlock, Break }
+public enum PickSound { Click, Release, Tension, Strain, Unlock, Break, Catch, Seat, Drop, CounterRotation, AdjustTension, LostSet, FalseSet, Overset, Recovered, CatchCleared }
 public sealed class PickCue
 {
     public int Sequence { get; set; }
     public PickSound Sound { get; set; }
+    public int Pin { get; set; } = -1;
+    public float Time { get; set; }
+}
+
+// Observed displacement only: neither target geometry nor logical pin states.
+public sealed class PickPinMotion
+{
+    public float KeyLift { get; set; }
+    public float DriverLift { get; set; }
 }
 
 public sealed class PinLockDefinition
 {
+    public uint? Seed { get; set; }
     public float[] Heights { get; set; }
     public int[] Order { get; set; }
     public PinType[] Types { get; set; }
@@ -37,6 +47,7 @@ public sealed class PinLockDefinition
         var pins = tier.Pins;
         var result = new PinLockDefinition
         {
+            Seed = seed,
             Heights = new float[pins], Order = Enumerable.Range(0, pins).ToArray(),
             Types = new PinType[pins], Catches = new float[pins][],
         };
@@ -69,9 +80,11 @@ public sealed class PinLockDefinition
     }
 }
 
-// Visible pin profiles and sensations only; no completion flags or secret setting geometry.
+// Observed feedback plus reproduction metadata; no explicit setting geometry.
 public sealed class PickSnapshot
 {
+    public uint? Seed { get; set; }
+    public int SkillLevel { get; set; }
     public PickOutcome Outcome { get; set; }
     public PickFeedback Feedback { get; set; }
     public int Pins { get; set; }
@@ -85,6 +98,11 @@ public sealed class PickSnapshot
     public bool Tension { get; set; }
     public float TensionStrength { get; set; }
     public float CylinderRotation { get; set; }
+    public float ElapsedSeconds { get; set; }
+    public PickPinMotion[] PinMotion { get; set; }
+    public bool[] SetPinStates { get; set; }
+    public PinState SelectedPinState { get; set; }
+    public bool FalseSet { get; set; }
 }
 
 public sealed class PickCoaching
@@ -94,12 +112,9 @@ public sealed class PickCoaching
     public float LiftMax { get; set; }
     public float PressureMin { get; set; }
     public float PressureMax { get; set; }
-    public float HoldProgress { get; set; }
     public PinType Type { get; set; }
     public PinState State { get; set; }
     public int SetPins { get; set; }
-    public bool Ready { get; set; }
-    public bool[] SetPinStates { get; set; }
 }
 
 // Retained cue history bridges short events between 20 Hz network snapshots.
@@ -121,18 +136,21 @@ public sealed class PinLockEngine
 {
     public const float StepSeconds = 1f / 60;
     public const float MoveLiftLimit = .08f;
-    public const float SetHoldSeconds = .30f;
     public const float ClearPressureMin = .08f, ClearPressureMax = .24f;
     public const float CatchClearance = .025f;
     private readonly PinLockDefinition _lock;
     private readonly PinState[] _states;
     private readonly int[] _passed;
     private readonly float[] _support;
+    private readonly float[] _driverLift;
     private readonly Queue<PickCue> _cues = new();
     private readonly float _tolerance, _warning, _wearSeconds;
-    private float _remainder, _lift, _strain, _settle, _pressure, _rotation;
+    private readonly int _skill;
+    private float _remainder, _lift, _strain, _pressure, _rotation;
     private int _selected, _cue;
-    private bool _held, _ready;
+    private bool _held;
+    private bool _counterMoving, _falseSet;
+    private float _time, _lastDesiredPressure;
     private PickFeedback _feedback;
     public PickOutcome Outcome { get; private set; }
     public float Wear { get; private set; }
@@ -145,8 +163,10 @@ public sealed class PinLockEngine
         _states = new PinState[definition.Heights.Length];
         _passed = new int[_states.Length];
         _support = new float[_states.Length];
+        _driverLift = new float[_states.Length];
         var tier = config.Tier(difficulty);
         skill = Math.Max(0, Math.Min(51, skill));
+        _skill = skill;
         var elite = skill == 51 ? config.ExpertControlElite / 100f : 0;
         _tolerance = Math.Min(.24f, tier.Tolerance * (1 + skill * config.PinTolerancePerLevel / 100f + elite));
         _warning = tier.StrainWarningSeconds;
@@ -183,32 +203,37 @@ public sealed class PinLockEngine
     {
         _states[pin] = PinState.Unsettled;
         _passed[pin] = 0;
-        if (pin == _selected) _settle = 0;
+        _driverLift[pin] = 0;
+        Emit(PickSound.Drop, pin);
     }
 
     private void Tick(float depth, float target, float desiredPressure)
     {
+        _time += StepSeconds;
         var held = desiredPressure > 0;
         if (_held && !held)
         {
+            for (var i = 0; i < _states.Length; i++)
+                if (_states[i] != PinState.Unsettled) Drop(i);
             Array.Clear(_states, 0, _states.Length);
             Array.Clear(_passed, 0, _passed.Length);
-            _settle = 0;
             Emit(PickSound.Release);
         }
         else if (!_held && held) Emit(PickSound.Tension);
+        else if (held && Math.Abs(desiredPressure - _lastDesiredPressure) >= .005f)
+            Emit(PickSound.AdjustTension);
+        _lastDesiredPressure = desiredPressure;
         _held = held;
         _pressure = held ? Move(_pressure, desiredPressure, StepSeconds * 2) : 0;
-        _ready = false;
         if (_lift < MoveLiftLimit)
         {
             var pin = Math.Min(_states.Length - 1, (int)(depth * _states.Length));
-            if (pin != _selected) { _selected = pin; _settle = 0; }
+            _selected = pin;
         }
         // Very light pressure loses support deterministically, not by a chance roll.
         for (var i = 0; i < _states.Length; i++)
             if (_states[i] == PinState.Set && _pressure < .10f && held && target < .08f)
-            { Drop(i); Emit(PickSound.Release); }
+            { Drop(i); }
         var binding = held && _pressure >= .08f && Binding() == _selected;
         var state = _states[_selected];
         var catches = Catches(_selected);
@@ -227,51 +252,50 @@ public sealed class PinLockEngine
         _strain = forcing ? _strain + StepSeconds : Math.Max(0, _strain - StepSeconds * 3);
         if (forcing && _strain > _warning)
             Wear = Math.Min(1, Wear + StepSeconds / _wearSeconds * (1 + Math.Max(0, _pressure - .35f)));
-        if (Wear >= 1) { Outcome = PickOutcome.PickBroken; Emit(PickSound.Break); return; }
+        if (Wear >= 1) { ObserveMotion(); Outcome = PickOutcome.PickBroken; Emit(PickSound.Break); return; }
         _feedback = !held ? PickFeedback.Searching : forcing ? PickFeedback.Strain
             : counter ? PickFeedback.CounterRotation
             : binding && _lift > .1f ? PickFeedback.Binding : PickFeedback.Springy;
 
         if (held && state == PinState.Overset && canClear && target < height - _tolerance
             && _lift <= height + _tolerance)
-        { Drop(_selected); Emit(PickSound.Release); state = PinState.Unsettled; }
+        {
+            Drop(_selected);
+            Emit(PickSound.Recovered, _selected);
+            state = PinState.Unsettled;
+        }
         if (held && (binding || state == PinState.Set) && _lift > height + _tolerance)
         {
+            if (state == PinState.Set) Emit(PickSound.LostSet, _selected);
+            if (state != PinState.Overset) Emit(PickSound.Overset, _selected);
             _states[_selected] = PinState.Overset;
-            _settle = 0;
         }
         else if (held && caught && canClear && target > catches[_passed[_selected]] + CatchClearance)
         {
             _passed[_selected]++;
             _states[_selected] = PinState.Unsettled;
-            _settle = 0;
+            Emit(PickSound.CatchCleared, _selected);
         }
         else if (held && binding && state == PinState.Unsettled
             && _passed[_selected] < catches.Length && _lift >= catches[_passed[_selected]])
         {
             _lift = catches[_passed[_selected]];
             _states[_selected] = PinState.Caught;
-            _settle = 0;
-            Emit(PickSound.Click);
+            Emit(PickSound.Catch, _selected);
             _feedback = PickFeedback.Click;
         }
         else if (held && binding && state == PinState.Unsettled
-            && Math.Abs(_lift - height) <= _tolerance && target <= height + _tolerance
+            && Math.Abs(_lift - height) <= _tolerance && target >= _lift
             && _passed[_selected] == catches.Length)
         {
-            _ready = true;
-            _settle += StepSeconds;
-            if (_settle + .000001f >= SetHoldSeconds)
-            {
-                _states[_selected] = PinState.Set;
-                _support[_selected] = _rotation;
-                MadeProgress = true;
-                Emit(PickSound.Click);
-                _feedback = PickFeedback.Click;
-                _settle = 0;
-            }
+            // Seat on actual contact, even if the player is still requesting more lift.
+            // Further movement remains possible and can overset this pin on later steps.
+            _states[_selected] = PinState.Set;
+            _support[_selected] = _rotation;
+            MadeProgress = true;
+            Emit(PickSound.Seat, _selected);
+            _feedback = PickFeedback.Click;
         }
-        else _settle = 0;
 
         var complete = true;
         var falseSet = true;
@@ -293,16 +317,41 @@ public sealed class PinLockEngine
                         .03f + Array.IndexOf(_lock.Order, i) * .025f));
         var oldRotation = _rotation;
         _rotation = Move(_rotation, rotationTarget, StepSeconds * .4f);
+        var movingBack = counter && held && _rotation < oldRotation;
+        if (movingBack && !_counterMoving) Emit(PickSound.CounterRotation, _selected);
+        _counterMoving = movingBack;
         if (_rotation < oldRotation && _pressure < .18f && held)
             for (var i = 0; i < _states.Length; i++)
                 if (i != _selected && _states[i] == PinState.Set && _support[i] > _rotation + .025f)
-                { Drop(i); Emit(PickSound.Release); }
+                { Drop(i); }
+        ObserveMotion();
         if (complete) { _rotation = 1; Outcome = PickOutcome.Unlocked; Emit(PickSound.Unlock); }
+        // Describe the resulting state, after any support loss, without changing mechanics.
+        var currentFalseSet = held && Outcome == PickOutcome.Active;
+        var hasSpoolCatch = false;
+        for (var pin = 0; pin < _states.Length; pin++)
+        {
+            if (_states[pin] == PinState.Caught && Type(pin) == PinType.Spool) hasSpoolCatch = true;
+            else if (_states[pin] != PinState.Set) currentFalseSet = false;
+        }
+        currentFalseSet &= hasSpoolCatch;
+        if (currentFalseSet && !_falseSet) Emit(PickSound.FalseSet);
+        _falseSet = currentFalseSet;
     }
 
-    private void Emit(PickSound sound)
+    private void ObserveMotion()
     {
-        _cues.Enqueue(new PickCue { Sequence = ++_cue, Sound = sound });
+        for (var i = 0; i < _states.Length; i++)
+        {
+            var contact = i == _selected ? _lift : 0;
+            _driverLift[i] = _states[i] == PinState.Unsettled
+                ? contact : Math.Max(_driverLift[i], contact);
+        }
+    }
+
+    private void Emit(PickSound sound, int pin = -1)
+    {
+        _cues.Enqueue(new PickCue { Sequence = ++_cue, Sound = sound, Pin = pin, Time = _time });
         while (_cues.Count > 32) _cues.Dequeue();
     }
     public void End(bool interrupted)
@@ -326,19 +375,26 @@ public sealed class PinLockEngine
         {
             BindingPin = Binding(), LiftMin = min, LiftMax = max,
             PressureMin = recovery ? .20f : .25f, PressureMax = recovery ? ClearPressureMax : .35f,
-            HoldProgress = Clamp(_settle / SetHoldSeconds),
-            Type = Type(_selected), State = state, Ready = _ready,
+            Type = Type(_selected), State = state,
             SetPins = _states.Count(s => s == PinState.Set),
-            SetPinStates = _states.Select(s => s == PinState.Set).ToArray(),
         };
     }
     public PickSnapshot Snapshot() => new()
     {
+        Seed = _lock.Seed, SkillLevel = _skill,
         Outcome = Outcome, Feedback = _feedback, Pins = _states.Length, Selected = _selected,
         PinTypes = _lock.Types == null ? new PinType[_states.Length] : (PinType[])_lock.Types.Clone(),
-        Cue = _cue, Cues = _cues.Select(c => new PickCue { Sequence = c.Sequence, Sound = c.Sound }).ToArray(),
+        Cue = _cue, Cues = _cues.Select(c => new PickCue { Sequence = c.Sequence, Sound = c.Sound, Pin = c.Pin, Time = c.Time }).ToArray(),
         Lift = _lift, Strain = Math.Min(1, _strain / _warning), Wear = Wear,
         Tension = _held, TensionStrength = _pressure, CylinderRotation = _rotation,
+        ElapsedSeconds = _time,
+        SetPinStates = _states.Select(s => s == PinState.Set).ToArray(),
+        SelectedPinState = _states[_selected],
+        FalseSet = Outcome == PickOutcome.Active && _falseSet,
+        PinMotion = _driverLift.Select((driver, pin) => new PickPinMotion
+        {
+            KeyLift = pin == _selected ? _lift : 0, DriverLift = driver,
+        }).ToArray(),
     };
     private static float Clamp(float v) => Math.Max(0, Math.Min(1, v));
     private static float Move(float from, float to, float step) => from + Math.Max(-step, Math.Min(step, to - from));

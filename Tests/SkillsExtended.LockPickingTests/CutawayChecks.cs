@@ -5,6 +5,24 @@ using UnityEngine.UI;
 
 internal static class CutawayChecks
 {
+    private static string SurfaceAt(VertexHelper mesh, float x, float y)
+    {
+        // Last covering triangle is the opaque surface visible to the player.
+        var result = "";
+        foreach (var triangle in mesh.Triangles)
+        {
+            var a = mesh.Vertices[triangle[0]];
+            var b = mesh.Vertices[triangle[1]];
+            var c = mesh.Vertices[triangle[2]];
+            var d = (b.Point.y - c.Point.y) * (a.Point.x - c.Point.x) + (c.Point.x - b.Point.x) * (a.Point.y - c.Point.y);
+            if (Math.Abs(d) < .00001f) continue;
+            var u = ((b.Point.y - c.Point.y) * (x - c.Point.x) + (c.Point.x - b.Point.x) * (y - c.Point.y)) / d;
+            var v = ((c.Point.y - a.Point.y) * (x - c.Point.x) + (a.Point.x - c.Point.x) * (y - c.Point.y)) / d;
+            if (u >= 0 && v >= 0 && u + v <= 1)
+                result = JsonSerializer.Serialize(new[] { a.Tint.r, a.Tint.g, a.Tint.b, a.Tint.a });
+        }
+        return result;
+    }
     private static string Geometry(VertexHelper mesh) =>
         JsonSerializer.Serialize(
             new
@@ -47,6 +65,15 @@ internal static class CutawayChecks
                 );
             var grip = LockPickingCutaway.PickPoint(new UnityEngine.Vector2(-383, -18), tip, lift);
             check(grip.x < -43, "The handle remains outside the cylinder at maximum insertion");
+            var shaftA = LockPickingCutaway.PickPoint(new UnityEngine.Vector2(-389, -18), tip, lift);
+            var shaftB = LockPickingCutaway.PickPoint(new UnityEngine.Vector2(-26, -18), tip, lift);
+            var mouthY = shaftA.y + (LockPickingCutaway.MouthX - shaftA.x) * (shaftB.y - shaftA.y) / (shaftB.x - shaftA.x);
+            check(Math.Abs(mouthY - LockPickingCutaway.FulcrumY) < .001f,
+                "The rigid shaft stays on the entrance ward while insertion changes leverage");
+            var contact = LockPickingCutaway.PickPoint(UnityEngine.Vector2.zero, tip, lift);
+            check(Math.Abs(contact.x - tip) < .001f
+                && Math.Abs(contact.y - (LockPickingCutaway.RestTipY + lift * LockPickingCutaway.PinTravel)) < .001f,
+                "The hook's upper contact stays beneath the lifted pin tip");
         }
         foreach (var pins in new[] { 3, 4, 5 })
         foreach (var selected in Enumerable.Range(0, pins))
@@ -114,21 +141,25 @@ internal static class CutawayChecks
                 Selected = 1,
                 Lift = .5f,
                 Tension = true,
+                SetPinStates = flags,
             };
         graphic.Render(State(), .016f, true);
         var unknown = Geometry(graphic.CaptureMesh());
-        graphic.Render(State(), .016f, true, new PickCoaching { SetPinStates = [true, false, false] });
-        check(Geometry(graphic.CaptureMesh()) != unknown, "Local practice coaching can show a true set");
+        graphic.Render(State([true, false, false]), .016f, true);
+        var confirmed = Geometry(graphic.CaptureMesh());
+        check(confirmed != unknown, "Normal play shows authoritative true sets without coaching");
         graphic.Render(State(), .016f, true);
-        check(Geometry(graphic.CaptureMesh()) == unknown, "Raid cutaway has no true-set marks");
-        var advice = new PickCoaching { BindingPin = 2, SetPinStates = [true, false, false] };
-        graphic.Render(State(), .016f, true, advice);
+        check(Geometry(graphic.CaptureMesh()) == unknown, "Missing snapshot flags do not invent true sets");
+        var advice = new PickCoaching { BindingPin = 2 };
+        graphic.Render(State([true, false, false]), .016f, true, advice);
         var recommended = Geometry(graphic.CaptureMesh());
         advice.BindingPin = 1;
-        graphic.Render(State(), .016f, true, advice);
+        graphic.Render(State([true, false, false]), .016f, true, advice);
         check(Geometry(graphic.CaptureMesh()) != recommended, "Recommended pin marker moves independently of selected and set pins");
-        graphic.Render(State(), .016f, true);
-        check(Geometry(graphic.CaptureMesh()) == unknown, "Coaching off removes recommended and true-set markers");
+        graphic.Render(State([true, false, false]), .016f, true);
+        check(Geometry(graphic.CaptureMesh()) == confirmed, "Coaching off removes guidance but retains confirmed sets");
+        graphic.Render(State([true]), .016f, true);
+        check(Geometry(graphic.CaptureMesh()) == unknown, "Malformed set flags are not displayed");
         var profiled = State();
         profiled.PinTypes = [PinType.Standard, PinType.Spool, PinType.Serrated];
         graphic.Render(profiled, .016f, true);
@@ -175,5 +206,67 @@ internal static class CutawayChecks
             Geometry(graphic.CaptureMesh()) == unknown,
             "New active attempt resets terminal animation"
         );
+        foreach (var pins in new[] { 3, 4, 5 })
+        {
+            var badges = new LockPickingCutaway();
+            var observed = new PickSnapshot { Pins = pins, Tension = true };
+            var flags = Enumerable.Range(0, pins).Select(p => p % 2 == 0).ToArray();
+            foreach (var selected in Enumerable.Range(0, pins))
+            foreach (var lift in new[] { 0f, 1f })
+            {
+                observed.Selected = selected;
+                observed.Lift = lift;
+                observed.SetPinStates = null;
+                badges.Render(observed, 0, true);
+                var noBadges = badges.CaptureMesh();
+                observed.SetPinStates = flags;
+                badges.Render(observed, 0, true);
+                var visibleBadges = badges.CaptureMesh();
+                for (var pin = 0; pin < pins; pin++)
+                    check((SurfaceAt(visibleBadges, LockPickingCutaway.PinX(pin, pins), -84)
+                        != SurfaceAt(noBadges, LockPickingCutaway.PinX(pin, pins), -84)) == flags[pin],
+                        "True-set badge remains visible at its label through insertion and lift; unconfirmed pins stay neutral");
+                check(visibleBadges.Vertices.All(v => v.Point.y >= -95 && v.Point.y <= 95),
+                    "Confirmed-set badge fits the existing compact panel");
+            }
+            if (output != null)
+                File.WriteAllText(Path.Combine(output, $"true-set-badges-{pins}.json"), Geometry(badges.CaptureMesh()));
+            flags[0] = false;
+            badges.Render(observed, 0, true);
+            var droppedBadge = SurfaceAt(badges.CaptureMesh(), LockPickingCutaway.PinX(0, pins), -84);
+            observed.SetPinStates = null;
+            badges.Render(observed, 0, true);
+            check(droppedBadge == SurfaceAt(badges.CaptureMesh(), LockPickingCutaway.PinX(0, pins), -84),
+                "Authoritative loss of true-set state immediately clears that pin's badge");
+            observed.Tension = false;
+            badges.Render(observed, 0, true);
+            var releasedBadges = badges.CaptureMesh();
+            observed.SetPinStates = flags;
+            badges.Render(observed, 0, true);
+            for (var pin = 0; pin < pins; pin++)
+                check(SurfaceAt(badges.CaptureMesh(), LockPickingCutaway.PinX(pin, pins), -84)
+                    == SurfaceAt(releasedBadges, LockPickingCutaway.PinX(pin, pins), -84),
+                    "Full release removes true-set badges even before old snapshot flags clear");
+
+            var partial = new LockPickingCutaway();
+            var cover = new PickSnapshot { Pins = pins };
+            partial.Render(cover, 0, true);
+            var baseline = partial.CaptureMesh();
+            foreach (var lift in new[] { 0f, .25f, .5f, .75f, 1f })
+            {
+                cover.Lift = lift;
+                cover.PinTypes = Enumerable.Repeat(PinType.Spool, pins).ToArray();
+                cover.PinMotion = Enumerable.Range(0, pins).Select(_ => new PickPinMotion { KeyLift = lift, DriverLift = 1 }).ToArray();
+                partial.Render(cover, 0, true);
+                var exposed = partial.CaptureMesh();
+                for (var pin = 0; pin < pins; pin++)
+                foreach (var y in new[] { LockPickingCutaway.ShearY - 4, LockPickingCutaway.ShearY + 5 })
+                {
+                    var x = LockPickingCutaway.PinX(pin, pins);
+                    check(SurfaceAt(exposed, x, y) == SurfaceAt(baseline, x, y),
+                        "Uncut plug/shell walls conceal the pin interfaces through every lift and retention state");
+                }
+            }
+        }
     }
 }

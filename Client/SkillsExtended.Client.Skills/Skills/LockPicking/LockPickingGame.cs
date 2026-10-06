@@ -1,4 +1,5 @@
 using System;
+using BepInEx.Configuration;
 using EFT;
 using EFT.Console.Core;
 using EFT.UI;
@@ -30,16 +31,19 @@ public sealed class LockPickingGame : MonoBehaviour
         _finishAt = -1,
         _receivedAt;
     private bool _closed;
-    private bool _tensionLatched, _toggleTension;
+    private bool _tensionLatched, _toggleTension, _fineControl;
     private KeyCode _tensionKey;
-    private float _tensionStrength = .35f, _clickUntil;
-    private readonly PickCueReader _visualCues = new();
+    private float _tensionStrength = .35f;
+    private readonly PickFeedbackPresenter _feedbackText = new();
     private readonly HackingInputState _input = new();
     private readonly HackingUiInputState _ui = new();
     private LockPickingArtwork _art;
     private LockPickingCutaway _cutaway;
-    private Text _tensionLabel;
+    private Text _tensionLabel, _pinTypeLabel, _seedLabel;
+    private readonly Text[] _pinLabels = new Text[5];
     private Text _status,
+        _sensation,
+        _pinTip,
         _detail,
         _help;
     private Image _wear,
@@ -47,8 +51,8 @@ public sealed class LockPickingGame : MonoBehaviour
     private LockPickingAudio _audio;
     private RectTransform _artRect;
     private GameObject _coachingPanel;
-    private Text _liftGuideLabel, _pressureGuideLabel, _holdGuideLabel;
-    private Image _liftBand, _pressureBand, _actualLiftMarker, _commandLiftMarker, _pressureMarker, _holdFill;
+    private Text _liftGuideLabel, _pressureGuideLabel, _progressGuideLabel;
+    private Image _liftBand, _pressureBand, _actualLiftMarker, _commandLiftMarker, _pressureMarker, _progressFill;
 
     public static bool Prepare()
     {
@@ -138,7 +142,7 @@ public sealed class LockPickingGame : MonoBehaviour
         var panel = Box(
             "Panel",
             transform,
-            new Vector2(1080, 820),
+            new Vector2(1080, 870),
             Vector2.zero,
             new Color(.042f, .049f, .052f, .99f)
         );
@@ -150,6 +154,8 @@ public sealed class LockPickingGame : MonoBehaviour
             new Vector2(340, 50),
             TextAnchor.MiddleLeft
         );
+        _seedLabel = Label(panel.transform, "", 12, new Vector2(0, 361),
+            new Vector2(360, 44), TextAnchor.MiddleCenter);
         Label(
             panel.transform,
             "TIER " + _difficulty + " / " + PickingRuntime.Config.Tier(_difficulty).Pins + " PINS",
@@ -169,7 +175,7 @@ public sealed class LockPickingGame : MonoBehaviour
             "Controls rule",
             panel.transform,
             new Vector2(1000, 1),
-            new Vector2(0, -332),
+            new Vector2(0, -357),
             new Color(.20f, .23f, .23f)
         );
         var artObject = new GameObject("Keyhole", typeof(RectTransform), typeof(RawImage));
@@ -191,12 +197,12 @@ public sealed class LockPickingGame : MonoBehaviour
         _cutaway.rectTransform.anchoredPosition = new Vector2(0, -120);
         _cutaway.raycastTarget = false;
         BuildCoaching(panel.transform);
-        Label(
+        _pinTypeLabel = Label(
             cutawayObject.transform,
-            "SIDE VIEW",
+            "PARTIAL CUTAWAY",
             13,
-            new Vector2(-390, 73),
-            new Vector2(170, 22),
+            new Vector2(-300, 73),
+            new Vector2(350, 22),
             TextAnchor.MiddleLeft
         );
         _tensionLabel = Label(
@@ -207,39 +213,52 @@ public sealed class LockPickingGame : MonoBehaviour
             new Vector2(230, 22),
             TextAnchor.MiddleRight
         );
+        Label(cutawayObject.transform, "APPLIED PRESSURE", 12, new Vector2(-357, 42),
+            new Vector2(184, 20), TextAnchor.MiddleLeft);
+        Label(cutawayObject.transform, "LIFT / INPUT", 11, new Vector2(-211, 42),
+            new Vector2(104, 20), TextAnchor.MiddleCenter);
+        Label(cutawayObject.transform, "SHEAR LINE", 11, new Vector2(-108, 8),
+            new Vector2(88, 18), TextAnchor.MiddleRight);
+        Label(cutawayObject.transform, "PLUG / SHELL", 11, new Vector2(411, -73),
+            new Vector2(100, 20), TextAnchor.MiddleCenter);
         var pins = PickingRuntime.Config.Tier(_difficulty).Pins;
         for (var pin = 0; pin < pins; pin++)
-            Label(
+            _pinLabels[pin] = Label(
                 cutawayObject.transform,
                 (pin + 1).ToString(),
                 12,
                 new Vector2(LockPickingCutaway.PinX(pin, pins), -84),
-                new Vector2(30, 18),
+                new Vector2(58, 18),
                 TextAnchor.MiddleCenter
             );
         _status = Label(
             panel.transform,
             "Feel for the binding pin",
-            24,
-            new Vector2(0, -247),
-            new Vector2(950, 45),
+            22,
+            new Vector2(0, -234),
+            new Vector2(950, 30),
             TextAnchor.MiddleCenter
         );
+        _sensation = Label(panel.transform, "", 17, new Vector2(0, -262),
+            new Vector2(950, 24), TextAnchor.MiddleCenter);
+        _pinTip = Label(panel.transform, "", 14, new Vector2(0, -286),
+            new Vector2(950, 22), TextAnchor.MiddleCenter);
+        _pinTip.color = new Color(.72f, .80f, .84f);
         _detail = Label(
             panel.transform,
             "",
-            17,
-            new Vector2(0, -279),
-            new Vector2(950, 35),
+            14,
+            new Vector2(0, -310),
+            new Vector2(950, 20),
             TextAnchor.MiddleCenter
         );
-        _strain = Bar(panel.transform, "STRAIN", -300, -308, new Color(.85f, .6f, .28f));
-        _wear = Bar(panel.transform, "PICK", 220, -308, new Color(.65f, .72f, .65f));
+        _strain = Bar(panel.transform, "STRAIN", -300, -333, new Color(.85f, .6f, .28f));
+        _wear = Bar(panel.transform, "PICK", 220, -333, new Color(.65f, .72f, .65f));
         _help = Label(
             panel.transform,
             "",
             17,
-            new Vector2(0, -361),
+            new Vector2(0, -386),
             new Vector2(1000, 76),
             TextAnchor.MiddleCenter
         );
@@ -259,7 +278,7 @@ public sealed class LockPickingGame : MonoBehaviour
         Image Part(Image track, string name, float height, Color color) => Box(name, track.transform, new Vector2(3, height), Vector2.zero, color);
         _liftGuideLabel = Label(root, "", 13, new Vector2(-330, 20), new Vector2(315, 22), TextAnchor.MiddleCenter);
         _pressureGuideLabel = Label(root, "", 13, new Vector2(0, 20), new Vector2(315, 22), TextAnchor.MiddleCenter);
-        _holdGuideLabel = Label(root, "", 13, new Vector2(330, 20), new Vector2(315, 22), TextAnchor.MiddleCenter);
+        _progressGuideLabel = Label(root, "", 13, new Vector2(330, 20), new Vector2(315, 22), TextAnchor.MiddleCenter);
         var liftTrack = Track(-330);
         _liftBand = Part(liftTrack, "Lift target band", 8, targetColor);
         _actualLiftMarker = Part(liftTrack, "Actual lift", 14, fontColor);
@@ -267,10 +286,10 @@ public sealed class LockPickingGame : MonoBehaviour
         var pressureTrack = Track(0);
         _pressureBand = Part(pressureTrack, "Pressure target band", 8, targetColor);
         _pressureMarker = Part(pressureTrack, "Actual pressure", 14, fontColor);
-        _holdFill = Part(Track(330), "Setting hold", 8, targetColor);
+        _progressFill = Part(Track(330), "Confirmed sets", 8, new Color(.55f, .80f, .60f));
         Label(root, "White: actual   Gold: input   Blue: target", 12, new Vector2(-330, -17), new Vector2(320, 20), TextAnchor.MiddleCenter);
         Label(root, "Keep tension applied while adjusting", 12, new Vector2(0, -17), new Vector2(320, 20), TextAnchor.MiddleCenter);
-        Label(root, "Hold inside the lift band for 0.30s", 12, new Vector2(330, -17), new Vector2(320, 20), TextAnchor.MiddleCenter);
+        Label(root, "Stop lifting when the pin sets", 12, new Vector2(330, -17), new Vector2(320, 20), TextAnchor.MiddleCenter);
         _coachingPanel.SetActive(false);
     }
 
@@ -295,10 +314,11 @@ public sealed class LockPickingGame : MonoBehaviour
         _status.text = guide.Instruction;
         _liftGuideLabel.text = $"LIFT {_state.Lift:P0} / INPUT {_lift:P0} · {guide.LiftMin:P0}–{guide.LiftMax:P0}";
         _pressureGuideLabel.text = $"TENSION {_state.TensionStrength:P0} · {guide.PressureMin:P0}–{guide.PressureMax:P0}";
-        _holdGuideLabel.text = $"SETTING HOLD {coaching.HoldProgress:P0}";
+        var sets = PickPresentation.SetCount(_state);
+        _progressGuideLabel.text = $"TRUE SET {sets}/{_state.Pins}";
         GuideRange(_liftBand, guide.LiftMin, guide.LiftMax);
         GuideRange(_pressureBand, guide.PressureMin, guide.PressureMax);
-        GuideRange(_holdFill, 0, coaching.HoldProgress);
+        GuideRange(_progressFill, 0, sets / (float)_state.Pins);
         GuideMarker(_actualLiftMarker, _state.Lift);
         GuideMarker(_commandLiftMarker, _lift);
         GuideMarker(_pressureMarker, _state.TensionStrength);
@@ -375,8 +395,9 @@ public sealed class LockPickingGame : MonoBehaviour
         _depth = _lift = 0;
         _tensionStrength = .35f;
         _tensionLatched = false;
+        _fineControl = false;
         _finishAt = -1;
-        _visualCues.Reset();
+        _feedbackText.Reset();
         _cutaway.ResetAnimation();
     }
 
@@ -428,19 +449,20 @@ public sealed class LockPickingGame : MonoBehaviour
             return;
         }
         var tension = ReadTension();
+        _fineControl = _state.Outcome == PickOutcome.Active && Shortcut(ConfigManager.LockPickingFineControl.Value);
         if (_state.Outcome == PickOutcome.Active)
         {
             if (tension)
             {
                 var notches = Input.mouseScrollDelta.y;
-                if (ConfigManager.LockPickingTensionIncrease.Value.IsDown()) notches++;
-                if (ConfigManager.LockPickingTensionDecrease.Value.IsDown()) notches--;
-                _tensionStrength = Mathf.Clamp01(_tensionStrength + notches * .05f);
+                if (Shortcut(ConfigManager.LockPickingTensionIncrease.Value, down: true)) notches++;
+                if (Shortcut(ConfigManager.LockPickingTensionDecrease.Value, down: true)) notches--;
+                _tensionStrength = PickInput.Pressure(_tensionStrength, notches, _fineControl);
             }
             var sensitivity = ConfigManager.LockPickingSensitivity.Value;
             if (_state.Lift < PinLockEngine.MoveLiftLimit)
                 _depth = Mathf.Clamp01(_depth + Input.GetAxisRaw("Mouse X") * .035f * sensitivity);
-            _lift = Mathf.Clamp01(_lift + Input.GetAxisRaw("Mouse Y") * .035f * sensitivity);
+            _lift = PickInput.Lift(_lift, _state.Lift, Input.GetAxisRaw("Mouse Y"), sensitivity, _fineControl);
             if (_practice != null)
             {
                 _practice.Advance(Time.unscaledDeltaTime, _depth, _lift, tension, _tensionStrength);
@@ -469,6 +491,16 @@ public sealed class LockPickingGame : MonoBehaviour
         Render(tension);
     }
 
+    // Allow the fine-control and tension keys to remain held alongside pressure shortcuts.
+    private static bool Shortcut(KeyboardShortcut shortcut, bool down = false)
+    {
+        if (shortcut.MainKey == KeyCode.None || !(down ? Input.GetKeyDown(shortcut.MainKey) : Input.GetKey(shortcut.MainKey)))
+            return false;
+        foreach (var modifier in shortcut.Modifiers)
+            if (!Input.GetKey(modifier)) return false;
+        return true;
+    }
+
     private bool ReadTension()
     {
         var toggle = ConfigManager.LockPickingToggleTension.Value;
@@ -495,33 +527,48 @@ public sealed class LockPickingGame : MonoBehaviour
 
     private void Render(bool tension)
     {
-        foreach (var cue in _visualCues.Read(_state))
-            if (cue.Sound == PickSound.Click) _clickUntil = Time.unscaledTime + .4f;
+        _feedbackText.Update(_state, _lift, Time.unscaledTime);
         var coaching = _practice != null
             ? (_showCoaching ? _practice.Coaching() : null)
             : _reply?.Coaching;
-        _status.text = _state.Outcome switch
-        {
-            PickOutcome.Unlocked => "Lock released",
-            PickOutcome.PickBroken => "Pick broken — the key still works",
-            _ => _state.Feedback switch
-            {
-                PickFeedback.CounterRotation => "Backward pressure on the wrench",
-                PickFeedback.Strain => "Strong resistance",
-                _ when Time.unscaledTime < _clickUntil => "A small click",
-                PickFeedback.Binding => "Resistance under the pick",
-                PickFeedback.Springy => "Spring movement",
-                _ => "Probe the lock",
-            },
-        };
+        _status.text = _feedbackText.Status;
+        _sensation.text = _feedbackText.Detail;
+        // Match the signed seed accepted by the console practice command.
+        var seed = _state.Seed.HasValue ? unchecked((int)_state.Seed.Value).ToString() : "UNAVAILABLE";
+        _seedLabel.text = $"SEED {seed}\nv{SkillsExtendedInfo.VERSION} · SKILL {_state.SkillLevel}";
         RenderCoaching(coaching);
+        var selectedType = _state.PinTypes != null && _state.PinTypes.Length == _state.Pins
+            && _state.Selected >= 0 && _state.Selected < _state.Pins
+            ? _state.PinTypes[_state.Selected] switch
+            {
+                PinType.Standard => "STANDARD",
+                PinType.Spool => "SPOOL",
+                PinType.Serrated => "SERRATED",
+                _ => "UNKNOWN",
+            }
+            : "UNKNOWN";
+        _pinTypeLabel.text = $"PARTIAL CUTAWAY · PIN {_state.Selected + 1}: {selectedType}";
+        _pinTip.text = _state.Outcome != PickOutcome.Active ? "" : selectedType switch
+        {
+            "STANDARD" => "STANDARD TIP · Hold steady tension and lift gently. Stop at a confirmed set, then lower the pick to move.",
+            "SPOOL" => "SPOOL TIP · Ease tension without releasing it; lift gently and allow the wrench to turn back.",
+            "SERRATED" => "SERRATED TIP · Small clicks may be grooves. Ease tension and lift through each catch; stop at a confirmed set.",
+            _ => "",
+        };
+        for (var pin = 0; pin < _state.Pins; pin++)
+        {
+            var set = PickPresentation.TrueSet(_state, pin);
+            _pinLabels[pin].text = set ? $"{pin + 1} SET" : (pin + 1).ToString();
+            _pinLabels[pin].color = set ? new Color(.68f, .91f, .72f) : new Color(.83f, .84f, .8f);
+        }
         _detail.text = $"DEPTH {_state.Selected + 1}/{_state.Pins}    ·    TENSION {_state.TensionStrength:P0}"
-            + (coaching != null ? $"    ·    {coaching.SetPins} TRUE SET" : "")
+            + $"    ·    TRUE SET {PickPresentation.SetCount(_state)}/{_state.Pins}"
+            + (_fineControl ? "    ·    FINE CONTROL" : "")
             + (_state.Lift >= PinLockEngine.MoveLiftLimit ? "    ·    Lower pick to move" : "");
         var tensionAction = ConfigManager.LockPickingToggleTension.Value ? "PRESS" : "HOLD";
         var tensionHelp = ConfigManager.LockPickingToggleTension.Value ? "Tension on/off" : "Tension";
         _help.text = $"MOUSE ← → Depth   ↑ ↓ Lift   {tensionAction} {ConfigManager.LpMiniGameTurnKey.Value} {tensionHelp}   ESC Leave"
-            + $"\nWHEEL / {ConfigManager.LockPickingTensionIncrease.Value} / {ConfigManager.LockPickingTensionDecrease.Value} Pressure   ·   Release tension to reset"
+            + $"\nWHEEL / {ConfigManager.LockPickingTensionIncrease.Value} / {ConfigManager.LockPickingTensionDecrease.Value} Pressure   ·   HOLD {ConfigManager.LockPickingFineControl.Value} Fine control   ·   Release tension to reset"
             + (_practice != null ? "\nPRACTICE — no items or XP affected. R after completion retries the same lock." : "");
         _strain.rectTransform.sizeDelta = new Vector2(280 * _state.Strain, 5);
         _wear.rectTransform.sizeDelta = new Vector2(280 * (1 - _state.Wear), 5);
@@ -529,7 +576,8 @@ public sealed class LockPickingGame : MonoBehaviour
             _state,
             Time.unscaledDeltaTime,
             ConfigManager.LockPickingReducedMotion.Value,
-            coaching
+            coaching,
+            _lift
         );
         _tensionLabel.text =
             _state.Outcome == PickOutcome.Unlocked ? "RELEASED"

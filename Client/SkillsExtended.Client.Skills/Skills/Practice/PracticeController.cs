@@ -115,7 +115,7 @@ internal sealed class PracticeController : MonoBehaviour
         LeftLabel(panel, "Uses your current level unless customized. Practice only.", font,
             new Vector2(512, 24), new Vector2(0, -78 + extra), 15).color = PracticeUi.Muted;
         if (_settings.Game == PracticeGame.LockPicking)
-            _coaching = PracticeUi.Checkbox(panel, "Coaching hints and true-set indicators", font, new Vector2(0, -92), value =>
+            _coaching = PracticeUi.Checkbox(panel, "Coaching hints and target guides", font, new Vector2(0, -92), value =>
             {
                 _settings.ShowCoaching = value;
                 Render();

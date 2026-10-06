@@ -51,10 +51,8 @@ public static class PickCoachingPresenter
                 : $"Pin {pin} serration catch — continue lifting through the click";
         else if (commandLift > result.LiftMax)
             result.Instruction = $"Pin {pin} — lower your input into the lift band";
-        else if (coaching.Ready)
-            result.Instruction = $"Pin {pin} — hold steady until the setting bar fills";
         else
-            result.Instruction = $"Pin {pin} — lift into the target band and hold";
+            result.Instruction = $"Pin {pin} — lift into the target band; stop at the set click";
         return result;
     }
 }

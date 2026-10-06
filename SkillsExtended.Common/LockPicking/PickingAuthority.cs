@@ -7,7 +7,7 @@ namespace SkillsExtended.LockPicking;
 
 public static class PickingProtocol
 {
-    public const int Version = 4;
+    public const int Version = 7;
     public const string UpdateMessage = "Lock-picking versions differ. Update Skills Extended core and Fika on the host and all players.";
 }
 

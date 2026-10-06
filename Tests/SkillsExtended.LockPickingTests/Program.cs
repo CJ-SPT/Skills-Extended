@@ -15,6 +15,11 @@ if (args.Contains("--audio-only"))
     Console.WriteLine($"Lock-picking audio: {checks} checks passed (simulated Unity lifecycle).");
     return;
 }
+if (args.Contains("--public-only"))
+{
+    PublicControllerChecks.Run(Check, null);
+    return;
+}
 var config = new LockPickingData
 {
     Enabled = true,
@@ -182,6 +187,18 @@ PickReply Process(PickRequest r, string error = null, int used = 0) =>
 var startRequest = Request("start");
 var start = Process(startRequest);
 Check(start.State.Outcome == PickOutcome.Active, "Session starts");
+Check(start.State.Seed == 43 && start.State.SkillLevel == 0, "Raid reports its original generation seed and effective skill");
+foreach (var reportedSeed in new uint[] { 0, 1, 2147483648, uint.MaxValue })
+{
+    var generated = PinLockDefinition.Create(config.Tier(1), reportedSeed);
+    var metadata = new PinLockEngine(generated, config, 1, 25).Snapshot();
+    var wire = Newtonsoft.Json.JsonConvert.DeserializeObject<PickSnapshot>(
+        Newtonsoft.Json.JsonConvert.SerializeObject(metadata));
+    var consoleSeed = unchecked((int)wire.Seed.Value);
+    var reproduced = PinLockDefinition.Create(config.Tier(1), unchecked((uint)consoleSeed));
+    Check(JsonSerializer.Serialize(generated) == JsonSerializer.Serialize(reproduced)
+        && wire.SkillLevel == 25, "Displayed signed seed reproduces geometry after Fika serialization, including zero and high-bit seeds");
+}
 Check(Process(Request("start", "b")).Error != null, "Another actor cannot reserve the door");
 Check(Process(Request("start", "a", "other")).Error != null, "One active session per actor");
 Process(startRequest);
@@ -219,6 +236,8 @@ Check(
     "Cancellation costs no use or XP"
 );
 var again = Process(Request("start"));
+Check(again.State.Seed == start.State.Seed && cancelled.State.Seed == start.State.Seed,
+    "Door retries and terminal replies retain the original seed");
 Check(
     again.State.Wear == worn && worn > 0 && authority.Active["d"].Engine.Coaching().SetPins == 0,
     "Reopening preserves tool wear and resets pins"
@@ -231,6 +250,8 @@ Check(
 );
 Check(authority.Advance(.05f).Count == 0, "Completed results are emitted once");
 var other = Process(Request("start", door: "other"));
+Check(other.State.Seed == 44 && other.State.Seed != again.State.Seed,
+    "A different door receives its own generation seed");
 Check(other.State.Wear == worn, "Tool wear follows the item to another door");
 authority.End("other", true);
 var inspected = Process(Request("inspect"));
@@ -347,14 +368,14 @@ catch (ArgumentException)
 Check(
     !JsonSerializer.Serialize(start).Contains("Heights")
         && !JsonSerializer.Serialize(start).Contains("Order"),
-    "Network snapshots contain no solution"
+    "Network snapshots omit explicit solution geometry"
 );
 var snapshotProbe = new PinLockEngine(def, config, 1, 0);
 Solve(snapshotProbe, def, 60);
 var snapshotJson = JsonSerializer.Serialize(snapshotProbe.Snapshot());
-Check(!snapshotJson.Contains("SetPins") && !snapshotJson.Contains("SetPinStates")
+Check(snapshotJson.Contains("SetPinStates")
     && !snapshotJson.Contains("Heights") && !snapshotJson.Contains("Order")
-    && !snapshotJson.Contains("\"Types\"") && !snapshotJson.Contains("Catches"), "Raid snapshot contains no solution or completion flags");
+    && !snapshotJson.Contains("\"Types\"") && !snapshotJson.Contains("Catches"), "Raid snapshot confirms sets without explicit solution arrays");
 var observed = snapshotProbe.Snapshot();
 var packet = Newtonsoft.Json.JsonConvert.SerializeObject(new PickReply { State = observed });
 var received = Newtonsoft.Json.JsonConvert.DeserializeObject<PickReply>(packet).State;
@@ -367,7 +388,7 @@ var cueClone = snapshotProbe.Snapshot();
 cueClone.Cues[0].Sequence = -1;
 Check(snapshotProbe.Snapshot().Cues[0].Sequence > 0, "Snapshot consumers cannot mutate retained cues");
 
-// Balance checks exercise actual setting behavior, including interrupted dwell time.
+// Balance checks preserve existing default and custom setting tolerances.
 var initialTolerances = new[] { .12f, .10f, .085f, .07f, .055f };
 for (var tier = 1; tier <= 5; tier++)
 {
@@ -389,56 +410,13 @@ for (var tier = 1; tier <= 5; tier++)
     Advance(customized, 0, edge, true, 2);
     Check(customized.Coaching().SetPins == 1, "Explicit custom tolerance remains authoritative");
 }
-var timedDefinition = new PinLockDefinition { Heights = [.5f, .5f, .5f], Order = [0, 1, 2] };
-foreach (var fps in new[] { 30, 60, 144 })
-{
-    var timed = new PinLockEngine(timedDefinition, config, 1, 0);
-    Advance(timed, 0, .5f, false, 1, fps);
-    Advance(timed, 0, .5f, true, .24f, fps);
-    Check(
-        timed.Coaching().SetPins == 0,
-        "The former 0.20-second hold is insufficient at every frame rate"
-    );
-    Advance(timed, 0, .5f, true, .1f, fps);
-    Check(
-        timed.Coaching().SetPins == 1,
-        "A continuous 0.30-second hold still sets at every frame rate"
-    );
-}
-var interruptedHold = new PinLockEngine(timedDefinition, config, 1, 0);
-Advance(interruptedHold, 0, .5f, false, 1);
-for (var step = 0; step < 14; step++)
-    interruptedHold.Advance(PinLockEngine.StepSeconds, 0, .5f, true);
-for (var step = 0; step < 10; step++)
-    interruptedHold.Advance(PinLockEngine.StepSeconds, 0, 0, true);
-Check(
-    interruptedHold.Coaching().SetPins == 0,
-    "Leaving the window before the hold finishes does not set"
-);
-for (var step = 0; step < 120 && !interruptedHold.Coaching().Ready; step++)
-    interruptedHold.Advance(PinLockEngine.StepSeconds, 0, .5f, true);
-Check(
-    interruptedHold.Coaching().Ready,
-    "Returning to the window restores ready feedback"
-);
-for (var step = 0; step < 13; step++)
-    interruptedHold.Advance(PinLockEngine.StepSeconds, 0, .5f, true);
-Check(
-    interruptedHold.Coaching().SetPins == 0,
-    "Separate visits cannot accumulate partial hold time"
-);
-interruptedHold.Advance(PinLockEngine.StepSeconds, 0, .5f, false);
-for (var step = 0; step < 14; step++)
-    interruptedHold.Advance(PinLockEngine.StepSeconds, 0, .5f, true);
-Check(interruptedHold.Coaching().SetPins == 0, "Releasing tension also resets partial hold time");
-for (var step = 0; step < 6; step++)
-    interruptedHold.Advance(PinLockEngine.StepSeconds, 0, .5f, true);
-Check(
-    interruptedHold.Coaching().SetPins == 1,
-    "The pin remains recoverable after interrupted holds"
-);
+ContactAndInputChecks.Run(Check);
 SecurityChecks.Run(Check);
 CoachingChecks.Run(Check);
 AudioChecks.Run(Check);
 CutawayChecks.Run(Check, args.FirstOrDefault());
+FeedbackChecks.Run(Check, args.FirstOrDefault());
+FeedbackTextChecks.Run(Check);
+StateCaptionChecks.Run(Check);
+PublicControllerChecks.Run(Check, args.FirstOrDefault());
 Console.WriteLine($"Lock-picking: {checks} checks passed.");

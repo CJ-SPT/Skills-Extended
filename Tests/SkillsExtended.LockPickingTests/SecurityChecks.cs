@@ -113,8 +113,9 @@ internal static class SecurityChecks
             "A serration click is not true progress");
         Advance(serrated, .1f, .5f, .20f, 2);
         check(serrated.Coaching().State == PinState.Set
-            && serrated.Snapshot().Cues.Count(c => c.Sound == PickSound.Click) == 4,
-            "Three serration catches and a true set produce the same click family");
+            && serrated.Snapshot().Cues.Count(c => c.Sound == PickSound.Catch) == 3
+            && serrated.Snapshot().Cues.Count(c => c.Sound == PickSound.Seat) == 1,
+            "Three serration catches and a true set produce distinct mechanical cues");
         var before = JsonSerializer.Serialize(serrated.Snapshot());
         serrated.Advance(.1f, .1f, .5f, true, float.NaN);
         check(before == JsonSerializer.Serialize(serrated.Snapshot()), "Nonfinite torque cannot mutate the engine");

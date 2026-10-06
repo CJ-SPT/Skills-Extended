@@ -35,7 +35,9 @@ internal sealed class LockPickingAudio : IDisposable
         _lastLift;
     private int _selected;
     private readonly PickCueReader _cues = new();
-    private readonly Queue<PickSound> _pending = new();
+    private readonly List<(PickCue Cue, float Received)> _pending = new();
+    private float _lastFeedback, _feedbackGain = 1;
+    private int _activePriority;
     private bool _initialized;
     private PickOutcome _outcome;
 
@@ -147,7 +149,7 @@ internal sealed class LockPickingAudio : IDisposable
         var volume = Mathf.Clamp01(ConfigManager.LockPickingVolume.Value / 100f);
         // The game mixer already applies UI volume; the recording bank has its own headroom.
         _movement.volume = volume * .55f;
-        _feedback.volume = volume * .85f;
+        _feedback.volume = volume * .85f * _feedbackGain;
         var now = Time.unscaledTime;
         if (!_initialized || state.Outcome == PickOutcome.Active && _outcome != PickOutcome.Active)
         {
@@ -160,44 +162,80 @@ internal sealed class LockPickingAudio : IDisposable
             _lastWarning = now - 2;
             _cues.Reset(state.Cue);
             _pending.Clear();
+            _activePriority = 0;
             Remember(state);
             return;
         }
         if (state.Outcome != PickOutcome.Active)
         {
+            _pending.Clear();
             if (state.Outcome != _outcome)
+            {
+                _feedbackGain = 1;
+                _feedback.volume = volume * .85f;
                 Play(
                     _feedback,
                     state.Outcome == PickOutcome.Unlocked ? "Unlock"
                         : state.Outcome == PickOutcome.PickBroken ? "Break"
                         : "Release"
                 );
+            }
             _movement.Stop();
             Remember(state);
             return;
         }
 
-        foreach (var mechanical in _cues.Read(state)) _pending.Enqueue(mechanical.Sound);
+        foreach (var mechanical in _cues.Read(state))
+        {
+            if (!PickPresentation.Fresh(state, mechanical)) continue;
+            // A full release invalidates earlier seating/pressure feedback.
+            if (mechanical.Sound == PickSound.Release) _pending.Clear();
+            _pending.RemoveAll(p => p.Cue.Sound == mechanical.Sound);
+            _pending.Add((mechanical, now));
+        }
+        _pending.RemoveAll(p => now - p.Received > PickPresentation.CueLifetime || !PickPresentation.Fresh(state, p.Cue));
+        if (_pending.Count > 8) _pending.RemoveRange(0, _pending.Count - 8);
         string cue = null;
-        if (!_feedback.isPlaying && _pending.Count > 0)
-            cue = _pending.Dequeue() switch
+        var priority = 0;
+        var next = -1;
+        for (var i = 0; i < _pending.Count; i++)
+            if (Priority(_pending[i].Cue.Sound) > priority)
+            { next = i; priority = Priority(_pending[i].Cue.Sound); }
+        if (next >= 0 && (!_feedback.isPlaying
+            || priority >= _activePriority && now - _lastFeedback >= (priority <= 40 ? .22f : .08f)))
+        {
+            cue = _pending[next].Cue.Sound switch
             {
                 PickSound.Click => "Pin",
+                PickSound.Catch => "Catch",
+                PickSound.Seat => "Seat",
+                PickSound.Drop or PickSound.LostSet => "Release",
+                PickSound.CounterRotation => "Counter",
+                PickSound.AdjustTension => "Adjust",
                 PickSound.Release => "Release",
                 PickSound.Tension => "Tension",
                 PickSound.Strain => "Strain",
                 _ => null,
             };
+            // Coalesce a batch of drops; do not play lower-priority cues after the event they preceded.
+            var sequence = _pending[next].Cue.Sequence;
+            _pending.RemoveAll(p => p.Cue.Sequence <= sequence);
+        }
         if (cue == null && state.Feedback == PickFeedback.Strain
             && now - _lastWarning > 1.1f && !_feedback.isPlaying)
         {
             cue = "Strain";
+            priority = 50;
             _lastWarning = now;
         }
         if (cue != null)
         {
             _movement.Stop();
+            _feedbackGain = cue == "Adjust" ? .32f : cue == "Catch" || cue == "Counter" ? .65f : 1;
+            _feedback.volume = volume * .85f * _feedbackGain;
             Play(_feedback, cue);
+            _activePriority = priority;
+            _lastFeedback = now;
             _lastMotion = now;
             _lastLift = state.Lift;
             _selected = state.Selected;
@@ -222,8 +260,33 @@ internal sealed class LockPickingAudio : IDisposable
         _outcome = state.Outcome;
     }
 
+    private static int Priority(PickSound sound) => sound switch
+    {
+        PickSound.Release => 90,
+        PickSound.LostSet => 85,
+        PickSound.Drop => 80,
+        PickSound.Seat => 75,
+        PickSound.CounterRotation => 70,
+        PickSound.Catch or PickSound.Click => 60,
+        PickSound.Strain => 50,
+        PickSound.Tension => 40,
+        PickSound.AdjustTension => 30,
+        _ => 0,
+    };
+
     private void Play(AudioSource source, string role)
     {
+        // Distinct existing excerpts at their recorded pitch, with no synthetic layers.
+        if (role == "Seat" || role == "Catch" || role == "Counter" || role == "Adjust")
+        {
+            var name = role == "Seat" ? "Pin01"
+                : role == "Catch" ? (_lastVariant.TryGetValue(role, out var last) && last == 2 ? "Pin03" : "Pin02")
+                : "Tension01";
+            if (role == "Catch") _lastVariant[role] = name == "Pin02" ? 2 : 3;
+            source.clip = _clips[name];
+            source.Play();
+            return;
+        }
         var count = Variants[role];
         var variant = _random.Next(count);
         if (count > 1 && _lastVariant.TryGetValue(role, out var previous))

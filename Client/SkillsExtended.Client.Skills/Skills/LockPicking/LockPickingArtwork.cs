@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Reflection;
+using SkillsExtended.LockPicking;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -247,14 +248,17 @@ internal sealed class LockPickingArtwork : IDisposable
             -.045f + depth * .002f
         );
         _pick.gameObject.SetActive(!broken);
-        _tension.localRotation = _tensionRest * Quaternion.Euler(0, 0, -4 * tension - cylinderRotation * 90);
+        var displayedRotation = PickPresentation.RotationDegrees(cylinderRotation);
+        var blend = reducedMotion ? 1 : 1 - Mathf.Exp(-16 * Time.unscaledDeltaTime);
+        _tension.localRotation = Quaternion.Slerp(_tension.localRotation,
+            _tensionRest * Quaternion.Euler(0, 0, -3 * tension - displayedRotation), blend);
         var rotation =
             unlocked ? 90
-            : cylinderRotation * 90;
+            : displayedRotation;
         _cylinder.localRotation = Quaternion.Slerp(
             _cylinder.localRotation,
             Quaternion.Euler(0, 0, rotation),
-            1 - Mathf.Exp(-12 * Time.unscaledDeltaTime)
+            blend
         );
         // Pull the tools clear before showing the released cylinder.
         _pick.gameObject.SetActive(!broken && !unlocked);
