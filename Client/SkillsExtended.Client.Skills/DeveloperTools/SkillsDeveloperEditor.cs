@@ -52,7 +52,7 @@ public sealed class SkillsDeveloperEditor : MonoBehaviour
     public static void ToggleCurrent()
     {
         if (Current) Current.Toggle();
-        else ElectronicsRuntime.Notify("Load a PMC raid before opening the developer editor.");
+        else ElectronicsRuntime.Notify(LocalizedText.Get("SkillsExtended.SkillsDeveloperEditor.LoadAPmcRaidBeforeOpeningTheDeveloperEditor"));
     }
     private bool Eligible()
     {
@@ -66,7 +66,7 @@ public sealed class SkillsDeveloperEditor : MonoBehaviour
     {
         if (IsOpen) { if (!_view.Typing) Close(); return; }
         if (!Eligible())
-        { ElectronicsRuntime.Notify("Enable Developer tools, then load a PMC raid. Fika editor access is granted by the server administrator."); return; }
+        { ElectronicsRuntime.Notify(LocalizedText.Get("SkillsExtended.SkillsDeveloperEditor.EnableDeveloperToolsThenLoadAPmcRaidFika")); return; }
         if (OtherModal || _opening) return;
         Open();
     }
@@ -81,7 +81,7 @@ public sealed class SkillsDeveloperEditor : MonoBehaviour
             if (!reply.Success) { ElectronicsRuntime.Notify(reply.Message); return; }
             _view ??= BuildView();
             _camera = Camera.main;
-            if (!_camera) throw new InvalidOperationException("Raid camera is not ready.");
+            if (!_camera) throw new InvalidOperationException(LocalizedText.Get("SkillsExtended.SkillsDeveloperEditor.RaidCameraIsNotReady"));
             _savedPosition = _camera.transform.position; _savedRotation = _camera.transform.rotation;
             _flyPosition = _world.MainPlayer.CameraPosition.position;
             _flyRotation = Quaternion.LookRotation(_world.MainPlayer.LookDirection);
@@ -120,7 +120,7 @@ public sealed class SkillsDeveloperEditor : MonoBehaviour
             button.SetEnabled(tool.Supports(_world.LocationId));
         }
         view.Separator(view.Toolbar);
-        var speed = view.Number(view.Toolbar, "Speed", _speed, .25f, 96, n => _speed = n);
+        var speed = view.Number(view.Toolbar, LocalizedText.Get("SkillsExtended.SkillsDeveloperEditor.Speed"), _speed, .25f, 96, n => _speed = n);
         speed.style.width = speed.style.minWidth = speed.style.maxWidth = 124;
         speed.style.height = speed.style.minHeight = speed.style.maxHeight = 28;
         speed.style.flexGrow = 0; speed.style.flexShrink = 0;
@@ -132,9 +132,9 @@ public sealed class SkillsDeveloperEditor : MonoBehaviour
         speed.labelElement.style.alignSelf = Align.Center;
         var speedInput = speed.Q(className: "unity-base-text-field__input");
         speedInput.style.minWidth = 0; speedInput.style.flexGrow = 1; speedInput.style.flexShrink = 1;
-        view.Button(view.Toolbar, "Frame [F]", () => _tool?.Frame());
+        view.Button(view.Toolbar, LocalizedText.Get("SkillsExtended.SkillsDeveloperEditor.FrameF"), () => _tool?.Frame());
         view.Separator(view.Toolbar);
-        view.Button(view.Toolbar, "Close", Close);
+        view.Button(view.Toolbar, LocalizedText.Get("SkillsExtended.SkillsDeveloperEditor.Close"), Close);
         view.Search.RegisterValueChangedCallback(_ => _tool?.RefreshList());
         return view;
     }
@@ -149,7 +149,7 @@ public sealed class SkillsDeveloperEditor : MonoBehaviour
             _tool = tool; _view.Search.SetValueWithoutNotify("");
             foreach (var tab in _view.Toolbar.Children().OfType<Button>())
                 tab.EnableInClassList("editor-selected", ReferenceEquals(tab.userData, tool));
-            _context.Status(tool.Title + " — AI and raid time continue. RMB + WASD/QE: fly; Shift/Ctrl: speed; F: frame; Ctrl+Z/Y: undo/redo.");
+            _context.Status(LocalizedText.Get("SkillsExtended.SkillsDeveloperEditor.AiAndRaidTimeContinueRmbWasdQeFly", tool.Title));
             await _tool.Activate(_context);
             if (IsOpen) _tool.BuildActions(_view.Actions);
         }
@@ -168,7 +168,7 @@ public sealed class SkillsDeveloperEditor : MonoBehaviour
             _view.Tick();
             var dirty = false;
             for (var i = 0; i < _tools.Length; i++) dirty |= _tools[i].Dirty;
-            _view.DraftState(dirty ? "Unsaved drafts" : "Drafts saved");
+            _view.DraftState(dirty ? LocalizedText.Get("SkillsExtended.SkillsDeveloperEditor.UnsavedDrafts") : LocalizedText.Get("SkillsExtended.SkillsDeveloperEditor.DraftsSaved"));
             _view.Actions.SetEnabled(!_switching && !_tool.Busy);
             _view.Inspector.SetEnabled(!_switching && !_tool.Busy);
             if (!Application.isFocused) { _cameraInput.Reset(); _tool.Cancel(); _ui.Maintain(); return; }
@@ -243,7 +243,7 @@ public sealed class SkillsDeveloperEditor : MonoBehaviour
         }
     }
     private void Fail(Exception e)
-    { SkillsExtendedPlugin.Log.LogError("Developer editor: " + e); Close(); ElectronicsRuntime.Notify("Developer editor: " + e.Message); }
+    { SkillsExtendedPlugin.Log.LogError(LocalizedText.Get("SkillsExtended.SkillsDeveloperEditor.DeveloperEditor", e)); Close(); ElectronicsRuntime.Notify(LocalizedText.Get("SkillsExtended.SkillsDeveloperEditor.DeveloperEditor", e.Message)); }
     private void OnDestroy()
     {
         Close(); foreach (var tool in _tools) tool.Dispose(); _view?.Dispose();
@@ -251,5 +251,5 @@ public sealed class SkillsDeveloperEditor : MonoBehaviour
     }
     internal static async Task<T> Post<T>(string path, object request) where T : class =>
         Helpers.ConfigurationJson.Deserialize<T>(await RequestHandler.PostJsonAsync(path, JsonConvert.SerializeObject(request)))
-        ?? throw new InvalidOperationException("Empty developer editor response.");
+        ?? throw new InvalidOperationException(LocalizedText.Get("SkillsExtended.SkillsDeveloperEditor.EmptyDeveloperEditorResponse"));
 }

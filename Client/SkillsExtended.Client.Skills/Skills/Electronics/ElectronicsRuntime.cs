@@ -83,37 +83,37 @@ public sealed class ElectronicsRuntime : MonoBehaviour
     {
         if (!Config.Enabled)
         {
-            return "Hacking is disabled.";
+            return "SkillsExtended.ElectronicsRuntime.HackingIsDisabled";
         }
 
         if (!player || player.Side == EPlayerSide.Savage || !player.HealthController.IsAlive)
         {
-            return "Only a living PMC can hack.";
+            return "SkillsExtended.ElectronicsRuntime.OnlyALivingPmcCanHack";
         }
 
         if (!ElectronicsDoorRegistry.Supports(door))
         {
-            return "Electronic lock is unavailable. Try the reader again.";
+            return "SkillsExtended.ElectronicsRuntime.ElectronicLockIsUnavailableTryTheReaderAgain";
         }
 
         if (Config.Excluded(World.LocationId, door.Id, door.KeyId))
         {
-            return "This access system cannot be bypassed.";
+            return "SkillsExtended.ElectronicsRuntime.ThisAccessSystemCannotBeBypassed";
         }
 
         if (door.DoorState != EDoorState.Locked)
         {
-            return "Door is already unlocked.";
+            return "SkillsExtended.ElectronicsRuntime.DoorIsAlreadyUnlocked";
         }
 
         if (!door.Operatable || door.NoInteractionsAllowed || !door.gameObject.activeInHierarchy)
         {
-            return "Reader is unavailable; check power and access conditions.";
+            return "SkillsExtended.ElectronicsRuntime.ReaderIsUnavailableCheckPowerAndAccessConditions";
         }
 
         if (player.MovementContext.CanInteract != null)
         {
-            return "Cannot interact in the current player state.";
+            return "SkillsExtended.ElectronicsRuntime.CannotInteractInTheCurrentPlayerState";
         }
 
         var grip = door.GetClosestGrip(player.Position);
@@ -122,7 +122,7 @@ public sealed class ElectronicsRuntime : MonoBehaviour
             || !door.Proxies.Any(p => p && p.gameObject.activeInHierarchy && p.Grips.Contains(grip))
         )
         {
-            return "Approach the active reader side.";
+            return "SkillsExtended.ElectronicsRuntime.ApproachTheActiveReaderSide";
         }
 
         if (
@@ -133,28 +133,28 @@ public sealed class ElectronicsRuntime : MonoBehaviour
             )
         )
         {
-            return "Native door requirements are not met.";
+            return "SkillsExtended.ElectronicsRuntime.NativeDoorRequirementsAreNotMet";
         }
 
         if (!HasPda(player))
         {
-            return "Carry a Modified PDA to hack this door.";
+            return "SkillsExtended.ElectronicsRuntime.CarryAModifiedPdaToHackThisDoor";
         }
 
         var position = door.GetInteractionParameters(player.Position).InteractionPosition;
         if (Vector3.Distance(player.Position, position) > 3f)
         {
-            return "Move closer to the reader.";
+            return "SkillsExtended.ElectronicsRuntime.MoveCloserToTheReader";
         }
 
         if (starting && player.InputDirection.sqrMagnitude > 0.001f)
         {
-            return "Stop moving before hacking.";
+            return "SkillsExtended.ElectronicsRuntime.StopMovingBeforeHacking";
         }
 
         if (SkillsExtendedInfo.IsFikaPresent && Transport == null)
         {
-            return "Matching Skills Extended Fika support is required.";
+            return "SkillsExtended.ElectronicsRuntime.MatchingSkillsExtendedFikaSupportIsRequired";
         }
 
         return null;
@@ -176,14 +176,14 @@ public sealed class ElectronicsRuntime : MonoBehaviour
 
         if (!HackingView.Prepare())
         {
-            Notify("Hacking UI unavailable. Check electronics_ui.bundle.");
+            Notify(LocalizedText.Get("SkillsExtended.ElectronicsRuntime.HackingUiUnavailableCheckElectronicsUiBundle"));
             return;
         }
 
         if (string.IsNullOrEmpty(_raid))
         {
             Send(new HackRequest { Actor = owner.Player.ProfileId });
-            Notify("Connecting PDA. Try again in a moment.");
+            Notify(LocalizedText.Get("SkillsExtended.ElectronicsRuntime.ConnectingPdaTryAgainInAMoment"));
             return;
         }
 
@@ -476,7 +476,7 @@ public sealed class ElectronicsRuntime : MonoBehaviour
         }
     }
 
-    public static void Notify(string text) => NotificationManager.DisplayMessageNotification(text);
+    public static void Notify(string text) => NotificationManager.DisplayMessageNotification(LocalizedText.Resolve(text));
 }
 
 public class ElectronicsRaidStartPatch : ModulePatch
@@ -530,7 +530,7 @@ public class ElectronicsKeycardPatch : ModulePatch
         var error = runtime.Eligibility(owner.Player, door, true);
         if (remaining == 0)
         {
-            error = "Hacking locked out; use a keycard";
+            error = LocalizedText.Get("SkillsExtended.ElectronicsRuntime.HackingLockedOutUseAKeycard");
         }
 
         __result.Actions.Add(
@@ -538,8 +538,8 @@ public class ElectronicsKeycardPatch : ModulePatch
             {
                 Name =
                     error == null
-                        ? $"Hack with PDA · {tier.Name} · {remaining} attempts"
-                        : $"Hack with PDA · {error}",
+                        ? LocalizedText.Get("SkillsExtended.ElectronicsRuntime.HackWithPdaAttempts", (tier.Name is "Standard" or "Secure" or "Hardened" ? LocalizedText.Get("SkillsExtended.Hacking.Tier." + tier.Name) : tier.Name), remaining)
+                        : LocalizedText.Get("SkillsExtended.ElectronicsRuntime.HackWithPda", error),
                 Disabled = error != null,
                 Action = () => runtime.Begin(owner, door),
             }

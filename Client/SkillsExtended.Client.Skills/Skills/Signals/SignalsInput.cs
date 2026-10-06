@@ -48,7 +48,7 @@ public class SignalsInventoryActionPatch : ModulePatch
         }
         actions["skills-signals"] = new DynamicContextInteraction(
             "skills-signals",
-            "Open receiver",
+            LocalizedText.Get("SkillsExtended.SignalsInput.OpenReceiver"),
             () => SignalsRuntime.Instance?.Open(),
             null
         );

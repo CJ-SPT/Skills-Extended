@@ -84,7 +84,7 @@ public sealed class LockPickingGame : MonoBehaviour
     {
         if (Utils.GameUtils.IsInRaid())
         {
-            PickingRuntime.Notify("Practice is available outside raids.");
+            PickingRuntime.Notify(LocalizedText.Get("SkillsExtended.LockPickingGame.PracticeIsAvailableOutsideRaids"));
             return;
         }
         if (Current || HackingView.IsOpen || Signals.SignalsView.Current || !Prepare())
@@ -148,7 +148,7 @@ public sealed class LockPickingGame : MonoBehaviour
         );
         Label(
             panel.transform,
-            "LOCK PICKING",
+            LocalizedText.Get("SkillsExtended.LockPickingGame.LockPicking"),
             25,
             new Vector2(-350, 361),
             new Vector2(340, 50),
@@ -158,7 +158,7 @@ public sealed class LockPickingGame : MonoBehaviour
             new Vector2(360, 44), TextAnchor.MiddleCenter);
         Label(
             panel.transform,
-            "TIER " + _difficulty + " / " + PickingRuntime.Config.Tier(_difficulty).Pins + " PINS",
+            LocalizedText.Get("SkillsExtended.LockPickingGame.TierPins", _difficulty, PickingRuntime.Config.Tier(_difficulty).Pins),
             19,
             new Vector2(405, 361),
             new Vector2(220, 50),
@@ -199,7 +199,7 @@ public sealed class LockPickingGame : MonoBehaviour
         BuildCoaching(panel.transform);
         _pinTypeLabel = Label(
             cutawayObject.transform,
-            "PARTIAL CUTAWAY",
+            LocalizedText.Get("SkillsExtended.LockPickingGame.PartialCutaway"),
             13,
             new Vector2(-300, 73),
             new Vector2(350, 22),
@@ -207,19 +207,19 @@ public sealed class LockPickingGame : MonoBehaviour
         );
         _tensionLabel = Label(
             cutawayObject.transform,
-            "TENSION OFF",
+            LocalizedText.Get("SkillsExtended.LockPickingGame.TensionOff"),
             13,
             new Vector2(360, 73),
             new Vector2(230, 22),
             TextAnchor.MiddleRight
         );
-        Label(cutawayObject.transform, "APPLIED PRESSURE", 12, new Vector2(-357, 42),
+        Label(cutawayObject.transform, LocalizedText.Get("SkillsExtended.LockPickingGame.AppliedPressure"), 12, new Vector2(-357, 42),
             new Vector2(184, 20), TextAnchor.MiddleLeft);
-        Label(cutawayObject.transform, "LIFT / INPUT", 11, new Vector2(-211, 42),
+        Label(cutawayObject.transform, LocalizedText.Get("SkillsExtended.LockPickingGame.LiftInput"), 11, new Vector2(-211, 42),
             new Vector2(104, 20), TextAnchor.MiddleCenter);
-        Label(cutawayObject.transform, "SHEAR LINE", 11, new Vector2(-108, 8),
+        Label(cutawayObject.transform, LocalizedText.Get("SkillsExtended.LockPickingGame.ShearLine"), 11, new Vector2(-108, 8),
             new Vector2(88, 18), TextAnchor.MiddleRight);
-        Label(cutawayObject.transform, "PLUG / SHELL", 11, new Vector2(411, -73),
+        Label(cutawayObject.transform, LocalizedText.Get("SkillsExtended.LockPickingGame.PlugShell"), 11, new Vector2(411, -73),
             new Vector2(100, 20), TextAnchor.MiddleCenter);
         var pins = PickingRuntime.Config.Tier(_difficulty).Pins;
         for (var pin = 0; pin < pins; pin++)
@@ -233,7 +233,7 @@ public sealed class LockPickingGame : MonoBehaviour
             );
         _status = Label(
             panel.transform,
-            "Feel for the binding pin",
+            LocalizedText.Get("SkillsExtended.LockPickingGame.FeelForTheBindingPin"),
             22,
             new Vector2(0, -234),
             new Vector2(950, 30),
@@ -252,8 +252,8 @@ public sealed class LockPickingGame : MonoBehaviour
             new Vector2(950, 20),
             TextAnchor.MiddleCenter
         );
-        _strain = Bar(panel.transform, "STRAIN", -300, -333, new Color(.85f, .6f, .28f));
-        _wear = Bar(panel.transform, "PICK", 220, -333, new Color(.65f, .72f, .65f));
+        _strain = Bar(panel.transform, LocalizedText.Get("SkillsExtended.LockPickingGame.Strain"), -300, -333, new Color(.85f, .6f, .28f));
+        _wear = Bar(panel.transform, LocalizedText.Get("SkillsExtended.LockPickingGame.Pick"), 220, -333, new Color(.65f, .72f, .65f));
         _help = Label(
             panel.transform,
             "",
@@ -287,9 +287,9 @@ public sealed class LockPickingGame : MonoBehaviour
         _pressureBand = Part(pressureTrack, "Pressure target band", 8, targetColor);
         _pressureMarker = Part(pressureTrack, "Actual pressure", 14, fontColor);
         _progressFill = Part(Track(330), "Confirmed sets", 8, new Color(.55f, .80f, .60f));
-        Label(root, "White: actual   Gold: input   Blue: target", 12, new Vector2(-330, -17), new Vector2(320, 20), TextAnchor.MiddleCenter);
-        Label(root, "Keep tension applied while adjusting", 12, new Vector2(0, -17), new Vector2(320, 20), TextAnchor.MiddleCenter);
-        Label(root, "Stop lifting when the pin sets", 12, new Vector2(330, -17), new Vector2(320, 20), TextAnchor.MiddleCenter);
+        Label(root, LocalizedText.Get("SkillsExtended.LockPickingGame.WhiteActualGoldInputBlueTarget"), 12, new Vector2(-330, -17), new Vector2(320, 20), TextAnchor.MiddleCenter);
+        Label(root, LocalizedText.Get("SkillsExtended.LockPickingGame.KeepTensionAppliedWhileAdjusting"), 12, new Vector2(0, -17), new Vector2(320, 20), TextAnchor.MiddleCenter);
+        Label(root, LocalizedText.Get("SkillsExtended.LockPickingGame.StopLiftingWhenThePinSets"), 12, new Vector2(330, -17), new Vector2(320, 20), TextAnchor.MiddleCenter);
         _coachingPanel.SetActive(false);
     }
 
@@ -312,10 +312,10 @@ public sealed class LockPickingGame : MonoBehaviour
         if (!visible) return;
         var guide = PickCoachingPresenter.Present(_state, coaching, _lift);
         _status.text = guide.Instruction;
-        _liftGuideLabel.text = $"LIFT {_state.Lift:P0} / INPUT {_lift:P0} · {guide.LiftMin:P0}–{guide.LiftMax:P0}";
-        _pressureGuideLabel.text = $"TENSION {_state.TensionStrength:P0} · {guide.PressureMin:P0}–{guide.PressureMax:P0}";
+        _liftGuideLabel.text = LocalizedText.Get("SkillsExtended.LockPickingGame.LiftInput2", _state.Lift, _lift, guide.LiftMin, guide.LiftMax);
+        _pressureGuideLabel.text = LocalizedText.Get("SkillsExtended.LockPickingGame.Tension", _state.TensionStrength, guide.PressureMin, guide.PressureMax);
         var sets = PickPresentation.SetCount(_state);
-        _progressGuideLabel.text = $"TRUE SET {sets}/{_state.Pins}";
+        _progressGuideLabel.text = LocalizedText.Get("SkillsExtended.LockPickingGame.TrueSet", sets, _state.Pins);
         GuideRange(_liftBand, guide.LiftMin, guide.LiftMax);
         GuideRange(_pressureBand, guide.PressureMin, guide.PressureMax);
         GuideRange(_progressFill, 0, sets / (float)_state.Pins);
@@ -445,7 +445,7 @@ public sealed class LockPickingGame : MonoBehaviour
         if (_runtime && Time.unscaledTime - _receivedAt > 4)
         {
             Abort();
-            PickingRuntime.Notify("Lock-picking connection lost.");
+            PickingRuntime.Notify(LocalizedText.Get("SkillsExtended.LockPickingGame.LockPickingConnectionLost"));
             return;
         }
         var tension = ReadTension();
@@ -534,43 +534,37 @@ public sealed class LockPickingGame : MonoBehaviour
         _status.text = _feedbackText.Status;
         _sensation.text = _feedbackText.Detail;
         // Match the signed seed accepted by the console practice command.
-        var seed = _state.Seed.HasValue ? unchecked((int)_state.Seed.Value).ToString() : "UNAVAILABLE";
-        _seedLabel.text = $"SEED {seed}\nv{SkillsExtendedInfo.VERSION} · SKILL {_state.SkillLevel}";
+        var seed = _state.Seed.HasValue ? unchecked((int)_state.Seed.Value).ToString() : LocalizedText.Get("SkillsExtended.LockPickingGame.Unavailable");
+        _seedLabel.text = LocalizedText.Get("SkillsExtended.LockPickingGame.SeedVSkill", seed, SkillsExtendedInfo.VERSION, _state.SkillLevel);
         RenderCoaching(coaching);
-        var selectedType = _state.PinTypes != null && _state.PinTypes.Length == _state.Pins
-            && _state.Selected >= 0 && _state.Selected < _state.Pins
-            ? _state.PinTypes[_state.Selected] switch
-            {
-                PinType.Standard => "STANDARD",
-                PinType.Spool => "SPOOL",
-                PinType.Serrated => "SERRATED",
-                _ => "UNKNOWN",
-            }
-            : "UNKNOWN";
-        _pinTypeLabel.text = $"PARTIAL CUTAWAY · PIN {_state.Selected + 1}: {selectedType}";
-        _pinTip.text = _state.Outcome != PickOutcome.Active
-            || (_practice == null && !PickingRuntime.Config.EnableRaidCoaching) ? "" : selectedType switch
+        PinType? selectedPinType = _state.PinTypes != null && _state.PinTypes.Length == _state.Pins
+            && _state.Selected >= 0 && _state.Selected < _state.Pins ? _state.PinTypes[_state.Selected] : null;
+        var selectedType = selectedPinType switch
         {
-            "STANDARD" => "STANDARD TIP · Hold steady tension and lift gently. Stop at a confirmed set, then lower the pick to move.",
-            "SPOOL" => "SPOOL TIP · Ease tension without releasing it; lift gently and allow the wrench to turn back.",
-            "SERRATED" => "SERRATED TIP · Small clicks may be grooves. Ease tension and lift through each catch; stop at a confirmed set.",
+            PinType.Standard => LocalizedText.Get("SkillsExtended.LockPickingGame.Standard"),
+            PinType.Spool => LocalizedText.Get("SkillsExtended.LockPickingGame.Spool"),
+            PinType.Serrated => LocalizedText.Get("SkillsExtended.LockPickingGame.Serrated"),
+            _ => LocalizedText.Get("SkillsExtended.LockPickingGame.Unknown"),
+        };
+        _pinTypeLabel.text = LocalizedText.Get("SkillsExtended.LockPickingGame.PartialCutawayPin", _state.Selected + 1, selectedType);
+        _pinTip.text = _state.Outcome != PickOutcome.Active
+            || (_practice == null && !PickingRuntime.Config.EnableRaidCoaching) ? "" : selectedPinType switch
+        {
+            PinType.Standard => LocalizedText.Get("SkillsExtended.LockPickingGame.StandardTipHoldSteadyTensionAndLiftGentlyStop"),
+            PinType.Spool => LocalizedText.Get("SkillsExtended.LockPickingGame.SpoolTipEaseTensionWithoutReleasingItLiftGently"),
+            PinType.Serrated => LocalizedText.Get("SkillsExtended.LockPickingGame.SerratedTipSmallClicksMayBeGroovesEaseTension"),
             _ => "",
         };
         for (var pin = 0; pin < _state.Pins; pin++)
         {
             var set = PickPresentation.TrueSet(_state, pin);
-            _pinLabels[pin].text = set ? $"{pin + 1} SET" : (pin + 1).ToString();
+            _pinLabels[pin].text = set ? LocalizedText.Get("SkillsExtended.LockPickingGame.Set", pin + 1) : (pin + 1).ToString();
             _pinLabels[pin].color = set ? new Color(.68f, .91f, .72f) : new Color(.83f, .84f, .8f);
         }
-        _detail.text = $"DEPTH {_state.Selected + 1}/{_state.Pins}    ·    TENSION {_state.TensionStrength:P0}"
-            + $"    ·    TRUE SET {PickPresentation.SetCount(_state)}/{_state.Pins}"
-            + (_fineControl ? "    ·    FINE CONTROL" : "")
-            + (_state.Lift >= PinLockEngine.MoveLiftLimit ? "    ·    Lower pick to move" : "");
-        var tensionAction = ConfigManager.LockPickingToggleTension.Value ? "PRESS" : "HOLD";
-        var tensionHelp = ConfigManager.LockPickingToggleTension.Value ? "Tension on/off" : "Tension";
-        _help.text = $"MOUSE ← → Depth   ↑ ↓ Lift   {tensionAction} {ConfigManager.LpMiniGameTurnKey.Value} {tensionHelp}   ESC Leave"
-            + $"\nWHEEL / {ConfigManager.LockPickingTensionIncrease.Value} / {ConfigManager.LockPickingTensionDecrease.Value} Pressure   ·   HOLD {ConfigManager.LockPickingFineControl.Value} Fine control   ·   Release tension to reset"
-            + (_practice != null ? "\nPRACTICE — no items or XP affected. R after completion retries the same lock." : "");
+        _detail.text = LocalizedText.Get("SkillsExtended.LockPickingGame.DepthTensionTrueSet", _state.Selected + 1, _state.Pins, _state.TensionStrength, PickPresentation.SetCount(_state), _state.Pins, (_fineControl ? LocalizedText.Get("SkillsExtended.LockPickingGame.FineControlSuffix") : ""), (_state.Lift >= PinLockEngine.MoveLiftLimit ? LocalizedText.Get("SkillsExtended.LockPickingGame.LowerPickSuffix") : ""));
+        var tensionAction = ConfigManager.LockPickingToggleTension.Value ? LocalizedText.Get("SkillsExtended.LockPickingGame.Press") : LocalizedText.Get("SkillsExtended.LockPickingGame.Hold");
+        var tensionHelp = ConfigManager.LockPickingToggleTension.Value ? LocalizedText.Get("SkillsExtended.LockPickingGame.TensionOnOff") : LocalizedText.Get("SkillsExtended.LockPickingGame.Tension2");
+        _help.text = LocalizedText.Get("SkillsExtended.LockPickingGame.MouseDepthLiftEscLeaveWheelPressureHoldFine", tensionAction, ConfigManager.LpMiniGameTurnKey.Value, tensionHelp, ConfigManager.LockPickingTensionIncrease.Value, ConfigManager.LockPickingTensionDecrease.Value, ConfigManager.LockPickingFineControl.Value, (_practice != null ? LocalizedText.Get("SkillsExtended.LockPickingGame.PracticeHint") : ""));
         _strain.rectTransform.sizeDelta = new Vector2(280 * _state.Strain, 5);
         _wear.rectTransform.sizeDelta = new Vector2(280 * (1 - _state.Wear), 5);
         _cutaway.Render(
@@ -581,10 +575,10 @@ public sealed class LockPickingGame : MonoBehaviour
             _lift
         );
         _tensionLabel.text =
-            _state.Outcome == PickOutcome.Unlocked ? "RELEASED"
-            : _state.Outcome == PickOutcome.PickBroken ? "PICK BROKEN"
-            : _state.Tension ? $"TENSION {_state.TensionStrength:P0}"
-            : "TENSION OFF";
+            _state.Outcome == PickOutcome.Unlocked ? LocalizedText.Get("SkillsExtended.LockPickingGame.Released")
+            : _state.Outcome == PickOutcome.PickBroken ? LocalizedText.Get("SkillsExtended.LockPickingGame.PickBroken")
+            : _state.Tension ? LocalizedText.Get("SkillsExtended.LockPickingGame.Tension3", _state.TensionStrength)
+            : LocalizedText.Get("SkillsExtended.LockPickingGame.TensionOff");
         _art.Render(
             _state.Lift,
             _depth,

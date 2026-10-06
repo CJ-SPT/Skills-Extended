@@ -79,7 +79,7 @@ public sealed class HackingAuthority
 
         if (request.Raid != Raid)
         {
-            reply.Error = "Raid changed. Reconnect the PDA.";
+            reply.Error = "SkillsExtended.HackingAuthority.RaidChangedReconnectThePda";
             return reply;
         }
 
@@ -89,13 +89,13 @@ public sealed class HackingAuthority
             || string.IsNullOrEmpty(request.Door)
         )
         {
-            reply.Error = "Invalid request.";
+            reply.Error = "SkillsExtended.HackingAuthority.InvalidRequest";
             return reply;
         }
 
         if (!_requests.Add(request.Actor + "/" + request.RequestId))
         {
-            reply.Error = "Duplicate request.";
+            reply.Error = "SkillsExtended.HackingAuthority.DuplicateRequest";
             return reply;
         }
 
@@ -112,13 +112,13 @@ public sealed class HackingAuthority
                 && count >= _config.AttemptsPerDoor
             )
             {
-                reply.Error = "Hacking locked out for this raid. A valid keycard still works.";
+                reply.Error = "SkillsExtended.HackingAuthority.HackingLockedOutForThisRaidAValidKeycard";
                 return reply;
             }
 
             if (Active.ContainsKey(request.Door))
             {
-                reply.Error = "Another hack is active on this door.";
+                reply.Error = "SkillsExtended.HackingAuthority.AnotherHackIsActiveOnThisDoor";
                 return reply;
             }
 
@@ -126,7 +126,7 @@ public sealed class HackingAuthority
             {
                 if (active.Actor == request.Actor)
                 {
-                    reply.Error = "Finish the current hack first.";
+                    reply.Error = "SkillsExtended.HackingAuthority.FinishTheCurrentHackFirst";
                     return reply;
                 }
             }
@@ -150,7 +150,7 @@ public sealed class HackingAuthority
             || current.Id != request.Attempt
         )
         {
-            reply.Error = "Attempt is no longer active.";
+            reply.Error = "SkillsExtended.HackingAuthority.AttemptIsNoLongerActive";
             return reply;
         }
 
@@ -165,7 +165,7 @@ public sealed class HackingAuthority
                 : request.Sequence == current.Sequence + 1;
         if (!validSequence)
         {
-            reply.Error = "Out-of-order action.";
+            reply.Error = "SkillsExtended.HackingAuthority.OutOfOrderAction";
             return reply;
         }
 
@@ -185,7 +185,7 @@ public sealed class HackingAuthority
         };
         if (!changed)
         {
-            reply.Error = "That action is not available.";
+            reply.Error = "SkillsExtended.HackingAuthority.ThatActionIsNotAvailable";
             return reply;
         }
 

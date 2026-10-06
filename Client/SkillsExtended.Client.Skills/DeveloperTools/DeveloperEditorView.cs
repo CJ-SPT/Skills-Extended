@@ -72,11 +72,11 @@ internal sealed partial class DeveloperEditorView : IDisposable
         if (!_bundle)
             _bundle = AssetBundle.LoadFromFile(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
                 "bundles", "skills_editor_toolkit.bundle"));
-        if (!_bundle) throw new InvalidOperationException("Install skills_editor_toolkit.bundle.");
+        if (!_bundle) throw new InvalidOperationException(LocalizedText.Get("SkillsExtended.DeveloperEditorView.InstallSkillsEditorToolkitBundle"));
         var template = _bundle.LoadAsset<PanelSettings>(Assets + "editorpanel.asset");
         var tree = _bundle.LoadAsset<VisualTreeAsset>(Assets + "editor.uxml");
         var font = _bundle.LoadAsset<Font>("assets/mods/wtt-campaigns.assets/fonts/bender.ttf");
-        if (!template || !tree || !font) throw new InvalidOperationException("Skills Extended developer editor UI assets are incomplete.");
+        if (!template || !tree || !font) throw new InvalidOperationException(LocalizedText.Get("SkillsExtended.DeveloperEditorView.SkillsExtendedDeveloperEditorUiAssetsAreIncomplete"));
         _settings = Object.Instantiate(template);
         _settings.scaleMode = PanelScaleMode.ConstantPixelSize; _settings.sortingOrder = 1800;
         _host = new GameObject("Skills Extended developer editor Toolkit");
@@ -102,9 +102,9 @@ internal sealed partial class DeveloperEditorView : IDisposable
             browser.style.width = DeveloperEditorLayout.BrowserWidth;
             browser.AddToClassList("editor-tool-window");
             _browserTitle = new Label(); _browserTitle.AddToClassList("editor-heading"); browser.Add(_browserTitle);
-            Search = Field(browser, "Find", "", _ => { }); Search.isDelayed = false;
+            Search = Field(browser, LocalizedText.Get("SkillsExtended.DeveloperEditorView.Find"), "", _ => { }); Search.isDelayed = false;
             Search.AddToClassList("editor-choice-search");
-            Search.tooltip = "Search names, scene names, keys or IDs.";
+            Search.tooltip = LocalizedText.Get("SkillsExtended.DeveloperEditorView.SearchNamesSceneNamesKeysOrIds");
             BrowserControls = new VisualElement(); BrowserControls.style.flexShrink = 0; browser.Add(BrowserControls);
             List = Scroll(browser);
             Inspector = Panel("Inspector", null, DeveloperEditorLayout.ToolTop, 0, DeveloperEditorLayout.PanelBottom);
@@ -115,7 +115,7 @@ internal sealed partial class DeveloperEditorView : IDisposable
             Markers.style.right = Markers.style.bottom = 0; Surface.Insert(0, Markers);
             var bottom = Panel("Status", 0, null, 0, 0); bottom.style.height = DeveloperEditorLayout.StatusHeight;
             _status = new Label(); bottom.Add(_status);
-            _controls = new Label("AI and raid time continue · RMB + WASD/QE: fly · Shift/Ctrl: speed · F: frame · Ctrl+Z/Y: undo/redo · Esc: cancel/close");
+            _controls = new Label(LocalizedText.Get("SkillsExtended.DeveloperEditorView.AiAndRaidTimeContinueRmbWasdQeFly"));
             _controls.style.fontSize = 13; bottom.Add(_controls);
             _confirmation = Panel("Confirm", null, 330, null, null);
             _confirmation.style.left = Length.Percent(32); _confirmation.style.right = Length.Percent(32);
@@ -193,7 +193,7 @@ internal sealed partial class DeveloperEditorView : IDisposable
             {
                 field.AddToClassList("editor-invalid");
                 field.style.borderBottomWidth = 2; field.style.borderBottomColor = new Color(.9f, .25f, .2f);
-                Status(name + " must be a finite number from " + min + " to " + max + ".");
+                Status(LocalizedText.Get("SkillsExtended.DeveloperEditorView.MustBeAFiniteNumberFromTo", name, min, max));
             }
         });
         return field;
@@ -202,11 +202,11 @@ internal sealed partial class DeveloperEditorView : IDisposable
     {
         DismissMenu();
         _confirmation.Clear(); _confirmation.Add(new Label(message));
-        Button(_confirmation, "Discard and reload", () => { _confirmation.style.display = DisplayStyle.None; yes(); });
-        Button(_confirmation, "Keep draft", () => _confirmation.style.display = DisplayStyle.None);
+        Button(_confirmation, LocalizedText.Get("SkillsExtended.DeveloperEditorView.DiscardAndReload"), () => { _confirmation.style.display = DisplayStyle.None; yes(); });
+        Button(_confirmation, LocalizedText.Get("SkillsExtended.DeveloperEditorView.KeepDraft"), () => _confirmation.style.display = DisplayStyle.None);
         _confirmation.style.display = DisplayStyle.Flex; _confirmation.BringToFront();
     }
-    internal void Status(string text) => _status.text = text;
+    internal void Status(string text) => _status.text = LocalizedText.Resolve(text);
     internal void DraftState(string text) { if (_draftState.text != text) _draftState.text = text; }
     internal void BrowserTitle(string title, int matches, int total) => _browserTitle.text = title.ToUpperInvariant() + " · " + matches + " / " + total;
     internal void Tick()

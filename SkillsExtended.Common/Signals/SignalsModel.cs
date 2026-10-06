@@ -211,9 +211,9 @@ public static class SignalsModel
     )
     {
         if (Math.Abs(frequency - manifest.Frequency) > Tolerance(manifest.Config, level))
-            return "Tune FREQUENCY to the peak (Left / Right).";
+            return "SkillsExtended.SignalsModel.TuneFrequencyToThePeakLeftRight";
         if (Math.Abs(Delta(bearing, ObservedBearing(manifest, position, level))) > 5)
-            return "Sweep BEARING for strongest reception (Up / Down).";
+            return "SkillsExtended.SignalsModel.SweepBearingForStrongestReceptionUpDown";
         return null;
     }
 
@@ -353,7 +353,7 @@ public sealed class SignalsAuthority
         )
         {
             Cancel(r.Actor);
-            State.Message = error ?? "Beacon unavailable.";
+            State.Message = error ?? "SkillsExtended.SignalsModel.BeaconUnavailable";
             return;
         }
         if (
@@ -377,7 +377,7 @@ public sealed class SignalsAuthority
         {
             Cancel(r.Actor);
             State.Message =
-                $"Move at least {Manifest.Config.MinimumSeparation:0.#} metres from each of your previous readings.";
+                LocalizedText.Message("SkillsExtended.SignalsModel.MoveAtLeastMetresFromEachOfYourPrevious", Manifest.Config.MinimumSeparation);
             return;
         }
         if (
@@ -390,12 +390,12 @@ public sealed class SignalsAuthority
         )
         {
             Cancel(r.Actor);
-            State.Message = "Establish a fix and approach the case.";
+            State.Message = "SkillsExtended.SignalsModel.EstablishAFixAndApproachTheCase";
             return;
         }
         if (r.Operation == "pair" && State.PairingActor != null && State.PairingActor != r.Actor)
         {
-            State.Message = "Another receiver is pairing.";
+            State.Message = "SkillsExtended.SignalsModel.AnotherReceiverIsPairing";
             return;
         }
         if (
@@ -418,7 +418,7 @@ public sealed class SignalsAuthority
         )
         {
             Cancel(r.Actor);
-            State.Message = "Stop moving before taking a reading.";
+            State.Message = "SkillsExtended.SignalsModel.StopMovingBeforeTakingAReading";
             return;
         }
         var dt = Math.Max(0, Math.Min(.35, now - op.Last));
@@ -429,13 +429,13 @@ public sealed class SignalsAuthority
             : Math.Abs(SignalsModel.Delta(r.Phase, SignalsModel.PairPhase(Manifest.Seed, now)))
             <= 12
                 ? null
-            : "Match the waveforms with PHASE (Q / E), then hold steady.";
+            : "SkillsExtended.SignalsModel.MatchTheWaveformsWithPhaseQEThenHold";
         var aligned = alignmentHint == null;
         op.Stable = aligned ? op.Stable + dt : 0;
         if (r.Operation == "pair")
             State.PairingActor = r.Actor;
         State.Message = aligned
-            ? $"{(r.Operation == "scan" ? "Recording" : "Pairing")}: {op.Stable:0.0}s"
+            ? LocalizedText.Message("SkillsExtended.SignalsModel.Progress", (r.Operation == "scan" ? "SkillsExtended.SignalsModel.Recording" : "SkillsExtended.SignalsModel.Pairing"), op.Stable)
             : alignmentHint;
         if (
             op.Stable
@@ -457,7 +457,7 @@ public sealed class SignalsAuthority
             foreach (var actor in connected.Where(_contributors.Contains).Distinct())
                 if (_completed.Add(actor))
                     Award(actor, Manifest.Config.CompletionXp);
-            State.Message = "Pairing complete. Signal cache unlocked.";
+            State.Message = "SkillsExtended.SignalsModel.PairingCompleteSignalCacheUnlocked";
             return;
         }
         if (!_positions.TryGetValue(r.Actor, out var positions))
@@ -496,10 +496,10 @@ public sealed class SignalsAuthority
             _awards[r.Actor] = count + 1;
         }
         State.Message =
-            State.HasFix ? "Fix established. Access code recovered. Search the plotted area."
+            State.HasFix ? "SkillsExtended.SignalsModel.FixEstablishedAccessCodeRecoveredSearchThePlottedArea"
             : State.Readings.Count >= 2
-                ? $"No crossing fix yet. Move sideways at least {Manifest.Config.MinimumSeparation:0.#} metres and record again."
-            : $"Bearing recorded. Move {Manifest.Config.MinimumSeparation:0.#} metres or more and take a crossing bearing.";
+                ? LocalizedText.Message("SkillsExtended.SignalsModel.NoCrossingFixYetMoveSidewaysAtLeastMetres", Manifest.Config.MinimumSeparation)
+            : LocalizedText.Message("SkillsExtended.SignalsModel.BearingRecordedMoveMetresOrMoreAndTakeA", Manifest.Config.MinimumSeparation);
     }
 
     private void Award(string actor, float xp)

@@ -96,23 +96,23 @@ public sealed partial class SignalsRuntime : MonoBehaviour
                 ?? SkillsExtendedPlugin.SkillData.SignalsIntelligence.Enabled
             )
         )
-            return "Signals Intelligence is disabled.";
+            return "SkillsExtended.SignalsRuntime.SignalsIntelligenceIsDisabled";
         if (SkillsExtendedInfo.IsFikaPresent && Transport == null)
-            return "Matching Skills Extended Fika support is required.";
+            return "SkillsExtended.SignalsRuntime.MatchingSkillsExtendedFikaSupportIsRequired";
         if (!player || player.Side == EPlayerSide.Savage || !player.HealthController.IsAlive)
-            return "A living PMC is required.";
+            return "SkillsExtended.SignalsRuntime.ALivingPmcIsRequired";
         if (!ElectronicsRuntime.HasPda(player))
-            return "Carry a Modified PDA.";
+            return "SkillsExtended.SignalsRuntime.CarryAModifiedPda";
         if (Manifest?.Error != null)
             return Manifest.Error;
         if (!SignalsMaps.IsSupported(World.LocationId))
-            return "Signal hunts are unavailable on Factory.";
+            return "SkillsExtended.SignalsRuntime.SignalHuntsAreUnavailableOnFactory";
         if (_case == null || State?.Ready != true)
             return _creating
-                ? "Signal cache preparation is still in progress."
-                : "Signal cache has not initialized. Check the game log for Signals messages.";
+                ? "SkillsExtended.SignalsRuntime.SignalCachePreparationIsStillInProgress"
+                : "SkillsExtended.SignalsRuntime.SignalCacheHasNotInitializedCheckTheGameLog";
         if (player.InputDirection.sqrMagnitude > .001f)
-            return "Stop moving before using the receiver.";
+            return "SkillsExtended.SignalsRuntime.StopMovingBeforeUsingTheReceiver";
         return null;
     }
 
@@ -449,15 +449,15 @@ public class SignalsCaseInteractionPatch : ModulePatch
             return;
         __result.Actions.Clear();
         var runtime = SignalsRuntime.Instance;
-        var error = runtime ? runtime.Eligibility(owner.Player) : "Receiver unavailable.";
+        var error = runtime ? runtime.Eligibility(owner.Player) : LocalizedText.Get("SkillsExtended.SignalsRuntime.ReceiverUnavailable");
         if (error == null && runtime.State?.HasFix != true)
-            error = "Take two crossing bearings to recover the access code.";
+            error = LocalizedText.Get("SkillsExtended.SignalsRuntime.TakeTwoCrossingBearingsToRecoverTheAccessCode");
         if (error == null)
             __result.Error = null;
         __result.Actions.Add(
             new InteractionAction
             {
-                Name = error == null ? "Pair PDA · Signal cache" : "Signal cache · " + error,
+                Name = error == null ? LocalizedText.Get("SkillsExtended.SignalsRuntime.PairPdaSignalCache") : LocalizedText.Get("SkillsExtended.SignalsRuntime.SignalCache", error),
                 Disabled = error != null,
                 Action = () => runtime.Open(true),
             }

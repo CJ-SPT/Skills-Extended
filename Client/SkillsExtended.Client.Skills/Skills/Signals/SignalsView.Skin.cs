@@ -297,8 +297,8 @@ public sealed partial class SignalsView
             );
             Bar(body, "Screw slot", x + 5, y + 9, 10, 2, Color.black);
         }
-        Label(body, "TERRAGROUP  /  FIELD SYSTEMS", 128, 32, 640, 28, 17);
-        Label(body, "MODIFIED PDA   |   RX-201", 884, 32, 416, 28, 15);
+        Label(body, LocalizedText.Get("SkillsExtended.SignalsView.Skin.TerragroupFieldSystems"), 128, 32, 640, 28, 17);
+        Label(body, LocalizedText.Get("SkillsExtended.SignalsView.Skin.ModifiedPdaRx201"), 884, 32, 416, 28, 15);
         Bar(body, "Power indicator", 1270, 43, 12, 5, Accent);
         Surface(
             body,
@@ -325,17 +325,17 @@ public sealed partial class SignalsView
                 4
             ).transform;
         screen.gameObject.AddComponent<RectMask2D>();
-        Label(body, "SIGNALS INTELLIGENCE", 130, 851, 500, 28, 19);
-        Label(body, "REUSABLE FIELD RECEIVER", 930, 851, 364, 28, 13);
+        Label(body, LocalizedText.Get("SkillsExtended.SignalsView.Skin.SignalsIntelligence"), 130, 851, 500, 28, 19);
+        Label(body, LocalizedText.Get("SkillsExtended.SignalsView.Skin.ReusableFieldReceiver"), 930, 851, 364, 28, 13);
         for (var i = 0; i < 7; i++)
             Bar(body, "Speaker grille", 644 + i * 13, 857, 5, 23, Color.black);
-        Control(body, "EXIT\nESC", 1330, 404, 62, 82, Close, out _);
+        Control(body, LocalizedText.Get("SkillsExtended.SignalsView.Skin.ExitEsc"), 1330, 404, 62, 82, Close, out _);
 
-        _heading = Label(screen, "SIGNALS / RECEIVER", 24, 12, 770, 32, 25, true);
+        _heading = Label(screen, LocalizedText.Get("SkillsExtended.SignalsView.Skin.SignalsReceiver"), 24, 12, 770, 32, 25, true);
         _mode = Label(screen, "", 810, 14, 342, 28, 13);
         _mode.alignment = TextAlignmentOptions.MidlineRight;
         Bar(screen, "Header rule", 24, 58, 1128, 1, Muted * .45f);
-        var stages = new[] { "01  TUNE", "02  BEARING", "03  FIX", "04  PAIR" };
+        var stages = new[] { LocalizedText.Get("SkillsExtended.SignalsView.Skin.01Tune"), LocalizedText.Get("SkillsExtended.SignalsView.Skin.02Bearing"), LocalizedText.Get("SkillsExtended.SignalsView.Skin.03Fix"), LocalizedText.Get("SkillsExtended.SignalsView.Skin.04Pair") };
         for (var i = 0; i < stages.Length; i++)
         {
             _stageFaces[i] = Surface(
@@ -361,7 +361,7 @@ public sealed partial class SignalsView
             new Color(.05f, .085f, .09f),
             new Color(.02f, .04f, .042f)
         );
-        _spectrumTitle = Label(spectrumCard.transform, "SPECTRUM / MHz", 16, 7, 342, 24, 13);
+        _spectrumTitle = Label(spectrumCard.transform, LocalizedText.Get("SkillsExtended.SignalsView.Skin.SpectrumMhz"), 16, 7, 342, 24, 13);
         _spectrum = Rect("Live spectrum", spectrumCard.transform, 16, 40, 342, 96)
             .gameObject.AddComponent<SignalGraphic>();
         _spectrum.View = this;
@@ -392,10 +392,10 @@ public sealed partial class SignalsView
         }
         _frequency = ReceiverControl(
             screen,
-            "FREQUENCY",
-            "LEFT / RIGHT",
-            "88 MHz",
-            "108 MHz",
+            LocalizedText.Get("SkillsExtended.SignalsView.Skin.Frequency"),
+            LocalizedText.Get("SkillsExtended.SignalsView.Skin.LeftRight"),
+            LocalizedText.Get("SkillsExtended.SignalsView.Skin.88Mhz"),
+            LocalizedText.Get("SkillsExtended.SignalsView.Skin.108Mhz"),
             298,
             88,
             108,
@@ -405,10 +405,10 @@ public sealed partial class SignalsView
         );
         _bearing = ReceiverControl(
             screen,
-            "BEARING",
-            "UP / DOWN",
-            "N / 000",
-            "360 / N",
+            LocalizedText.Get("SkillsExtended.SignalsView.Skin.Bearing"),
+            LocalizedText.Get("SkillsExtended.SignalsView.Skin.UpDown"),
+            LocalizedText.Get("SkillsExtended.SignalsView.Skin.N000"),
+            LocalizedText.Get("SkillsExtended.SignalsView.Skin.360N"),
             426,
             0,
             360,
@@ -418,8 +418,8 @@ public sealed partial class SignalsView
         );
         _phase = ReceiverControl(
             screen,
-            "PHASE ALIGNMENT",
-            "Q / E",
+            LocalizedText.Get("SkillsExtended.SignalsView.Skin.PhaseAlignment"),
+            LocalizedText.Get("SkillsExtended.SignalsView.Skin.QE"),
             "0",
             "360",
             426,
@@ -440,8 +440,8 @@ public sealed partial class SignalsView
             new Color(.045f, .075f, .08f),
             new Color(.016f, .03f, .034f)
         );
-        Label(plotCard.transform, "BEARING PLOT", 18, 8, 400, 25, 14);
-        Label(plotCard.transform, "N  /  NORTH UP", 552, 8, 168, 25, 12, true);
+        Label(plotCard.transform, LocalizedText.Get("SkillsExtended.SignalsView.Skin.BearingPlot"), 18, 8, 400, 25, 14);
+        Label(plotCard.transform, LocalizedText.Get("SkillsExtended.SignalsView.Skin.NNorthUp"), 552, 8, 168, 25, 12, true);
         _plot = Rect("Bearing plot", plotCard.transform, 18, 44, 702, 326)
             .gameObject.AddComponent<SignalGraphic>();
         _plot.View = this;
@@ -457,18 +457,18 @@ public sealed partial class SignalsView
             new Color(.042f, .07f, .071f),
             new Color(.025f, .044f, .044f)
         );
-        Label(metrics.transform, "RECEPTION", 16, 5, 130, 20, 11);
+        Label(metrics.transform, LocalizedText.Get("SkillsExtended.SignalsView.Skin.Reception"), 16, 5, 130, 20, 11);
         _signalValue = Label(metrics.transform, "", 16, 26, 90, 28, 22, true);
         Bar(metrics.transform, "Signal track", 110, 37, 166, 6, new Color(.11f, .17f, .17f));
         _strengthFill = Bar(metrics.transform, "Signal strength", 110, 37, 0, 6, Accent);
         _values = Label(metrics.transform, "", 304, 8, 535, 46, 15);
-        Label(metrics.transform, "RECOVERED ACCESS CODE", 867, 5, 244, 20, 11);
+        Label(metrics.transform, LocalizedText.Get("SkillsExtended.SignalsView.Skin.RecoveredAccessCode"), 867, 5, 244, 20, 11);
         _codeValue = Label(metrics.transform, "------", 867, 27, 244, 28, 23, true);
         _status = Label(screen, "", 24, 632, 840, 52, 17);
         _status.enableWordWrapping = true;
         _recordButton = Control(
             screen,
-            "RECORD  [ENTER]",
+            LocalizedText.Get("SkillsExtended.SignalsView.Skin.RecordEnter"),
             886,
             632,
             266,
@@ -481,7 +481,7 @@ public sealed partial class SignalsView
         {
             Control(
                 screen,
-                "WEST",
+                LocalizedText.Get("SkillsExtended.SignalsView.Skin.West"),
                 24,
                 697,
                 100,
@@ -491,7 +491,7 @@ public sealed partial class SignalsView
             );
             Control(
                 screen,
-                "EAST",
+                LocalizedText.Get("SkillsExtended.SignalsView.Skin.East"),
                 132,
                 697,
                 100,
@@ -501,7 +501,7 @@ public sealed partial class SignalsView
             );
             Control(
                 screen,
-                "NORTH",
+                LocalizedText.Get("SkillsExtended.SignalsView.Skin.North"),
                 240,
                 697,
                 100,
@@ -511,7 +511,7 @@ public sealed partial class SignalsView
             );
             Control(
                 screen,
-                "PAIRING PRACTICE",
+                LocalizedText.Get("SkillsExtended.SignalsView.Skin.PairingPractice"),
                 348,
                 697,
                 196,
@@ -525,12 +525,12 @@ public sealed partial class SignalsView
                 },
                 out _
             );
-            Label(screen, "SIMULATED MOVEMENT  /  NO XP OR LOOT", 580, 697, 572, 28, 12);
+            Label(screen, LocalizedText.Get("SkillsExtended.SignalsView.Skin.SimulatedMovementNoXpOrLoot"), 580, 697, 572, 28, 12);
         }
         else
             Label(
                 screen,
-                $"HOLD POSITION TO RECORD  /  MOVE {Manifest.Config.MinimumSeparation:0.#} m FOR A NEW BEARING  /  ESC TO CLOSE",
+                LocalizedText.Get("SkillsExtended.SignalsView.Skin.HoldPositionToRecordMoveMForANew", Manifest.Config.MinimumSeparation),
                 24,
                 697,
                 1128,
@@ -545,53 +545,53 @@ public sealed partial class SignalsView
         var offline = State.Unlocked;
         _bearingCard.gameObject.SetActive(!Pairing);
         _phaseCard.gameObject.SetActive(Pairing);
-        _heading.text = Pairing ? "SIGNALS / CACHE PAIRING" : "SIGNALS / RECEIVER";
+        _heading.text = Pairing ? LocalizedText.Get("SkillsExtended.SignalsView.Skin.SignalsCachePairing") : LocalizedText.Get("SkillsExtended.SignalsView.Skin.SignalsReceiver");
         _mode.text = InRaid
-            ? "LIVE RAID  /  "
-                + (
-                    offline ? "BEACON OFFLINE"
+            ? LocalizedText.Get("SkillsExtended.SignalsView.Skin.LiveRaid", (
+                    offline ? LocalizedText.Get("SkillsExtended.SignalsView.Skin.BeaconOffline")
                     : SignalsModel.ProximityInterval(Manifest, State, Position) > 0
-                        ? "PROXIMITY BEACON"
-                    : "RECEIVER ONLINE"
-                )
-            : "PRACTICE  /  SIMULATED SIGNAL";
-        _frequencyValue.text = $"{Frequency:0.00} MHz";
-        _bearingValue.text = $"{Bearing:000} deg";
-        _phaseValue.text = $"{Phase:000} deg";
-        _spectrumTitle.text = Pairing ? "PAIRING / MATCH THE TWO WAVEFORMS" : "SPECTRUM / MHz";
+                        ? LocalizedText.Get("SkillsExtended.SignalsView.Skin.ProximityBeacon")
+                    : LocalizedText.Get("SkillsExtended.SignalsView.Skin.ReceiverOnline")
+                ))
+            : LocalizedText.Get("SkillsExtended.SignalsView.Skin.PracticeSimulatedSignal");
+        _frequencyValue.text = LocalizedText.Get("SkillsExtended.SignalsView.Skin.Mhz", Frequency);
+        _bearingValue.text = LocalizedText.Get("SkillsExtended.SignalsView.Skin.Deg", Bearing);
+        _phaseValue.text = LocalizedText.Get("SkillsExtended.SignalsView.Skin.Deg", Phase);
+        _spectrumTitle.text = Pairing ? LocalizedText.Get("SkillsExtended.SignalsView.Skin.PairingMatchTheTwoWaveforms") : LocalizedText.Get("SkillsExtended.SignalsView.Skin.SpectrumMhz");
         foreach (var tick in _spectrumTicks)
             tick.gameObject.SetActive(!Pairing);
-        _signalValue.text = offline ? "OFF" : $"{strength * 100:0}%";
+        _signalValue.text = offline ? LocalizedText.Get("SkillsExtended.SignalsView.Skin.Off") : LocalizedText.Get("SkillsExtended.SignalsView.Skin.SignalStrength", strength * 100);
         _strengthFill.rectTransform.sizeDelta = new Vector2(
             offline ? 0 : 166 * Mathf.Clamp01(strength),
             6
         );
         _values.text =
-            $"SKILL {Level:00}    PRECISION +/-{SignalsModel.Uncertainty(Manifest.Config, Level):0.#} deg\nBEARINGS STORED: {SignalsModel.PlottedReadings(State, Level).Count()}    MEMORY: {(Level >= 51 ? 6 : 4)} SLOTS";
+            LocalizedText.Get("SkillsExtended.SignalsView.Skin.SkillPrecisionDegBearingsStoredMemorySlots", Level, SignalsModel.Uncertainty(Manifest.Config, Level), SignalsModel.PlottedReadings(State, Level).Count(), (Level >= 51 ? 6 : 4));
         _values.enableWordWrapping = true;
         _codeValue.text = State.HasFix ? State.AccessCode : "------";
         _plotStatus.text = State.HasFix
             ? Pairing || offline
-                ? $"SEARCH +/-{State.Radius:0} m  /  WHITE: YOU (CENTERED)"
-                : $"SEARCH +/-{State.Radius:0} m  /  WHITE: YOU  /  AMBER ARROW: ANTENNA"
-            : "WHITE: YOU (CENTERED)  /  AMBER: ANTENNA  /  GREEN: STORED";
+                ? LocalizedText.Get("SkillsExtended.SignalsView.Skin.SearchMWhiteYouCentered", State.Radius)
+                : LocalizedText.Get("SkillsExtended.SignalsView.Skin.SearchMWhiteYouAmberArrowAntenna", State.Radius)
+            : LocalizedText.Get("SkillsExtended.SignalsView.Skin.WhiteYouCenteredAmberAntennaGreenStored");
         var alignmentHint = Pairing
-            ? "Match the waveforms with PHASE (Q / E), then hold steady."
+            ? LocalizedText.Get("SkillsExtended.SignalsView.Skin.MatchTheWaveformsWithPhaseQEThenHold")
             : SignalsModel.ScanAlignmentHint(Manifest, Position, Level, Frequency, Bearing);
         _status.text =
-            offline ? "Cache unlocked. Beacon offline. Loot the case normally."
+            offline ? LocalizedText.Get("SkillsExtended.SignalsView.Skin.CacheUnlockedBeaconOfflineLootTheCaseNormally")
             : _recording && !Pairing && alignmentHint != null ? alignmentHint
             : State.Message == "Align the signal and hold steady."
-                ? alignmentHint ?? "Bearing aligned. Hold position to record."
+                ? alignmentHint ?? LocalizedText.Get("SkillsExtended.SignalsView.Skin.BearingAlignedHoldPositionToRecord")
             : State.Message
                 ?? (
                     Pairing ? alignmentHint
                     : State.HasFix
-                        ? "Access code recovered. Search the plotted area and pair with the case."
+                        ? LocalizedText.Get("SkillsExtended.SignalsView.Skin.AccessCodeRecoveredSearchThePlottedAreaAndPair")
                     : State.Readings.Count >= 2
-                        ? "No crossing fix yet. Move sideways, retune the bearing, and record."
-                    : "Tune the peak, sweep for the strongest bearing, then record."
+                        ? LocalizedText.Get("SkillsExtended.SignalsView.Skin.NoCrossingFixYetMoveSidewaysRetuneTheBearing")
+                    : LocalizedText.Get("SkillsExtended.SignalsView.Skin.TuneThePeakSweepForTheStrongestBearingThen")
                 );
+        _status.text = LocalizedText.Resolve(_status.text);
         _status.color =
             offline ? Accent
             : _recording ? Amber
@@ -599,10 +599,10 @@ public sealed partial class SignalsView
         _recordButton.interactable = !offline;
         _recordLabel.color = offline ? Muted : Accent;
         _recordLabel.text =
-            offline ? "CACHE UNLOCKED"
-            : _recording ? "STOP  [ENTER]"
-            : Pairing ? "PAIR  [ENTER]"
-            : "RECORD  [ENTER]";
+            offline ? LocalizedText.Get("SkillsExtended.SignalsView.Skin.CacheUnlocked")
+            : _recording ? LocalizedText.Get("SkillsExtended.SignalsView.Skin.StopEnter")
+            : Pairing ? LocalizedText.Get("SkillsExtended.SignalsView.Skin.PairEnter")
+            : LocalizedText.Get("SkillsExtended.SignalsView.Skin.RecordEnter");
         foreach (var control in _controls)
             control.interactable = !offline;
         var stage =

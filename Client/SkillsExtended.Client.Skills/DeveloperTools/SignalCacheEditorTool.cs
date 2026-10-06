@@ -14,7 +14,7 @@ namespace SkillsExtended.DeveloperTools;
 internal sealed class SignalCacheEditorTool : IDeveloperEditorTool
 {
     public string Id => "signals";
-    public string Title => "Signal caches";
+    public string Title => LocalizedText.Get("SkillsExtended.SignalCacheEditorTool.SignalCaches");
     public bool Supports(string map) => SignalsMaps.IsSupported(map);
     public bool Busy { get; private set; }
     public bool Dirty => _draft.Dirty;
@@ -62,30 +62,30 @@ internal sealed class SignalCacheEditorTool : IDeveloperEditorTool
         foreach (var mode in new[] { "add", "select", "move", "rotate" })
         {
             var captured = mode;
-            View.Button(parent, char.ToUpper(mode[0]) + mode.Substring(1), () =>
-            { if (Busy) return; Cancel(); _mode = captured; _context.Status("Cache tool: " + captured + ". Click the scene; changes are drafts until Save."); });
+            View.Button(parent, LocalizedText.Get("SkillsExtended.Editor.Mode." + mode), () =>
+            { if (Busy) return; Cancel(); _mode = captured; _context.Status(LocalizedText.Get("SkillsExtended.SignalCacheEditorTool.CacheToolClickTheSceneChangesAreDraftsUntil", LocalizedText.Get("SkillsExtended.Editor.Mode." + captured))); });
         }
         View.Separator(parent);
-        View.Button(parent, "Duplicate", Duplicate);
-        View.Button(parent, "Delete", Delete);
+        View.Button(parent, LocalizedText.Get("SkillsExtended.SignalCacheEditorTool.Duplicate"), Duplicate);
+        View.Button(parent, LocalizedText.Get("SkillsExtended.SignalCacheEditorTool.Delete"), Delete);
         View.Separator(parent);
-        View.Button(parent, "Undo", () => Undo(false));
-        View.Button(parent, "Redo", () => Undo(true));
+        View.Button(parent, LocalizedText.Get("SkillsExtended.SignalCacheEditorTool.Undo"), () => Undo(false));
+        View.Button(parent, LocalizedText.Get("SkillsExtended.SignalCacheEditorTool.Redo"), () => Undo(true));
         View.Separator(parent);
-        View.Button(parent, "Validate", () => Run(Validate));
-        View.Button(parent, "Save", () => Run(Save));
-        View.Button(parent, "Reload", RequestReload);
+        View.Button(parent, LocalizedText.Get("SkillsExtended.SignalCacheEditorTool.Validate"), () => Run(Validate));
+        View.Button(parent, LocalizedText.Get("SkillsExtended.SignalCacheEditorTool.Save"), () => Run(Save));
+        View.Button(parent, LocalizedText.Get("SkillsExtended.SignalCacheEditorTool.Reload"), RequestReload);
     }
     private async void Run(Func<Task> operation)
     {
         try { if (!Busy) await operation(); }
         catch (OperationCanceledException) { }
-        catch (Exception e) { SkillsExtendedPlugin.Log.LogError(e); _context.Status("Cache operation failed; draft retained. " + e.Message); }
+        catch (Exception e) { SkillsExtendedPlugin.Log.LogError(e); _context.Status(LocalizedText.Get("SkillsExtended.SignalCacheEditorTool.CacheOperationFailedDraftRetained", e.Message)); }
     }
     private void RequestReload()
     {
         if (Busy) return;
-        if (Dirty) View.Confirm("Discard this cache draft and reload the server configuration?", () => Run(Reload));
+        if (Dirty) View.Confirm(LocalizedText.Get("SkillsExtended.SignalCacheEditorTool.DiscardThisCacheDraftAndReloadTheServerConfiguration"), () => Run(Reload));
         else Run(Reload);
     }
     public async Task Reload()
@@ -109,7 +109,7 @@ internal sealed class SignalCacheEditorTool : IDeveloperEditorTool
         foreach (var p in _draft.Points.Where(p => p.Enabled).ToArray())
         {
             token.ThrowIfCancellationRequested();
-            _context.Status("Checking " + p.Name + "…");
+            _context.Status(LocalizedText.Get("SkillsExtended.SignalCacheEditorTool.Checking", p.Name));
             var report = await SignalsPlacement.Resolve(_context.Runner, new[] { SignalPlacementSearch.Copy(p) }, 0, token);
             if (!_draft.Record(p.Id, version, report)) return false;
         }
@@ -122,18 +122,18 @@ internal sealed class SignalCacheEditorTool : IDeveloperEditorTool
         try
         {
             var valid = await CheckAll();
-            _context.Status(valid ? "Placements accepted. Radius zero uses the exact position and yaw; areas passed placement checks." : "Some areas failed. Select a marker to see the rejection reasons.");
+            _context.Status(valid ? LocalizedText.Get("SkillsExtended.SignalCacheEditorTool.PlacementsAcceptedRadiusZeroUsesTheExactPositionAnd") : LocalizedText.Get("SkillsExtended.SignalCacheEditorTool.SomeAreasFailedSelectAMarkerToSeeThe"));
         }
         finally { Busy = false; }
     }
     public async Task Save()
     {
-        if (View.HasInvalid) { _context.Status("Correct the highlighted numeric fields before saving."); return; }
-        if (string.IsNullOrEmpty(_draft.Raid)) { _context.Status("Load placements before saving."); return; }
+        if (View.HasInvalid) { _context.Status(LocalizedText.Get("SkillsExtended.SignalCacheEditorTool.CorrectTheHighlightedNumericFieldsBeforeSaving")); return; }
+        if (string.IsNullOrEmpty(_draft.Raid)) { _context.Status(LocalizedText.Get("SkillsExtended.SignalCacheEditorTool.LoadPlacementsBeforeSaving")); return; }
         Busy = true;
         try
         {
-            if (!await CheckAll()) { _context.Status("Save blocked: enabled caches must pass placement checks."); return; }
+            if (!await CheckAll()) { _context.Status(LocalizedText.Get("SkillsExtended.SignalCacheEditorTool.SaveBlockedEnabledCachesMustPassPlacementChecks")); return; }
             _context.Cancellation().ThrowIfCancellationRequested();
             var request = _draft.Request();
             var response = await SkillsDeveloperEditor.Post<SignalAuthoringReply>("/skills-extended/signals/editor/save", request);
@@ -152,11 +152,11 @@ internal sealed class SignalCacheEditorTool : IDeveloperEditorTool
     private void Select(string id) { if (Busy) return; Cancel(); _selected = id; Inspector(); RefreshList(); }
     private void Add(Vector3 point)
     {
-        if (_draft.Points.Count >= 500) { _context.Status("The placement limit is 500 across all maps."); return; }
+        if (_draft.Points.Count >= 500) { _context.Status(LocalizedText.Get("SkillsExtended.SignalCacheEditorTool.ThePlacementLimitIs500AcrossAllMaps")); return; }
         var p = new SignalPlacement
         {
             Id = _draft.Map + "-" + Guid.NewGuid().ToString("N").Substring(0, 8), Map = _draft.Map,
-            Name = "Cache " + (_draft.Points.Count + 1),
+            Name = LocalizedText.Get("SkillsExtended.SignalCacheEditorTool.Cache", (_draft.Points.Count + 1)),
             Position = SignalPlacementSearch.PreviewRoot(SignalsCase.Point(point), SignalsPlacement.Geometry()),
             Yaw = _context.Camera().transform.eulerAngles.y, Enabled = true, SearchRadius = 0,
         };
@@ -167,7 +167,7 @@ internal sealed class SignalCacheEditorTool : IDeveloperEditorTool
         if (Busy || Selected == null) return;
         var p = SignalPlacementSearch.Copy(Selected);
         p.Id = _draft.Map + "-" + Guid.NewGuid().ToString("N").Substring(0, 8);
-        p.Name += " copy"; p.Position.X += 1;
+        p.Name += LocalizedText.Get("SkillsExtended.SignalCacheEditorTool.Copy"); p.Position.X += 1;
         _draft.Edit(points => points.Add(p)); _selected = p.Id; Refresh();
     }
     private void Delete()
@@ -179,7 +179,7 @@ internal sealed class SignalCacheEditorTool : IDeveloperEditorTool
     {
         if (!_context.IsOpen()) return;
         Reconcile(); RefreshList(); if (inspector) Inspector();
-        else if (_validationLabel != null) _validationLabel.text = "Not validated since the last edit.";
+        else if (_validationLabel != null) _validationLabel.text = LocalizedText.Get("SkillsExtended.SignalCacheEditorTool.NotValidatedSinceTheLastEdit");
     }
     public void RefreshList()
     {
@@ -188,35 +188,35 @@ internal sealed class SignalCacheEditorTool : IDeveloperEditorTool
         foreach (var p in _draft.Points.Where(p => (p.Name + " " + p.Id).IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0))
         {
             var id = p.Id;
-            View.Row(p.Name, (p.Enabled ? "Enabled" : "Disabled") + " · " + p.Id, () => Select(id), id == _selected, p.Id);
+            View.Row(p.Name, (p.Enabled ? LocalizedText.Get("SkillsExtended.SignalCacheEditorTool.Enabled") : LocalizedText.Get("SkillsExtended.SignalCacheEditorTool.Disabled")) + " · " + p.Id, () => Select(id), id == _selected, p.Id);
         }
-        View.BrowserTitle("Signal caches", View.List.childCount, _draft.Points.Count);
-        if (View.List.childCount == 0) View.List.Add(new Label("No caches match this search."));
+        View.BrowserTitle(LocalizedText.Get("SkillsExtended.SignalCacheEditorTool.SignalCaches"), View.List.childCount, _draft.Points.Count);
+        if (View.List.childCount == 0) View.List.Add(new Label(LocalizedText.Get("SkillsExtended.SignalCacheEditorTool.NoCachesMatchThisSearch")));
     }
     private void Inspector()
     {
         View.Inspector.Clear(); _validationLabel = null; var p = Selected;
-        View.Inspector.Add(new Label("CACHE PROPERTIES"));
-        if (p == null) { View.Inspector.Add(new Label("Select a cache, or choose Add and click a surface.")); return; }
+        View.Inspector.Add(new Label(LocalizedText.Get("SkillsExtended.SignalCacheEditorTool.CacheProperties")));
+        if (p == null) { View.Inspector.Add(new Label(LocalizedText.Get("SkillsExtended.SignalCacheEditorTool.SelectACacheOrChooseAddAndClickA"))); return; }
         var scroll = View.Scroll(View.Inspector);
-        View.Field(scroll, "Name", p.Name, value => Change(x => x.Name = value));
-        var toggle = new Toggle("Enabled") { value = p.Enabled };
+        View.Field(scroll, LocalizedText.Get("SkillsExtended.SignalCacheEditorTool.Name"), p.Name, value => Change(x => x.Name = value));
+        var toggle = new Toggle(LocalizedText.Get("SkillsExtended.SignalCacheEditorTool.Enabled")) { value = p.Enabled };
         toggle.AddToClassList("editor-setting");
         toggle.RegisterValueChangedCallback(e => Change(x => x.Enabled = e.newValue)); scroll.Add(toggle);
-        View.Number(scroll, "X", p.Position.X, -100000, 100000, n => Change(x => x.Position.X = n));
-        View.Number(scroll, "Y", p.Position.Y, -100000, 100000, n => Change(x => x.Position.Y = n));
-        View.Number(scroll, "Z", p.Position.Z, -100000, 100000, n => Change(x => x.Position.Z = n));
-        View.Number(scroll, "Yaw", p.Yaw, -36000, 36000, n => Change(x => x.Yaw = SignalsModel.Wrap(n)));
-        View.Number(scroll, "Search radius", p.SearchRadius, 0, 25, n => Change(x => x.SearchRadius = n));
-        var help = new Label("0 m fixes the position and yaw. A larger radius allows nearby runtime placement.");
+        View.Number(scroll, LocalizedText.Get("SkillsExtended.SignalCacheEditorTool.X"), p.Position.X, -100000, 100000, n => Change(x => x.Position.X = n));
+        View.Number(scroll, LocalizedText.Get("SkillsExtended.SignalCacheEditorTool.Y"), p.Position.Y, -100000, 100000, n => Change(x => x.Position.Y = n));
+        View.Number(scroll, LocalizedText.Get("SkillsExtended.SignalCacheEditorTool.Z"), p.Position.Z, -100000, 100000, n => Change(x => x.Position.Z = n));
+        View.Number(scroll, LocalizedText.Get("SkillsExtended.SignalCacheEditorTool.Yaw"), p.Yaw, -36000, 36000, n => Change(x => x.Yaw = SignalsModel.Wrap(n)));
+        View.Number(scroll, LocalizedText.Get("SkillsExtended.SignalCacheEditorTool.SearchRadius"), p.SearchRadius, 0, 25, n => Change(x => x.SearchRadius = n));
+        var help = new Label(LocalizedText.Get("SkillsExtended.SignalCacheEditorTool.0MFixesThePositionAndYawALarger"));
         help.style.whiteSpace = WhiteSpace.Normal; scroll.Add(help);
         var report = _draft.Check(p.Id);
-        var result = new Label(report == null ? "Not validated since the last edit." : report.ToString());
+        var result = new Label(report == null ? LocalizedText.Get("SkillsExtended.SignalCacheEditorTool.NotValidatedSinceTheLastEdit") : report.ToString());
         _validationLabel = result;
         result.style.whiteSpace = WhiteSpace.Normal; scroll.Add(result);
-        var details = new Foldout { text = "Details", value = false };
+        var details = new Foldout { text = LocalizedText.Get("SkillsExtended.SignalCacheEditorTool.Details"), value = false };
         details.AddToClassList("editor-inspector-section");
-        details.Add(new Label("Map: " + p.Map)); details.Add(new Label("ID: " + p.Id)); scroll.Add(details);
+        details.Add(new Label(LocalizedText.Get("SkillsExtended.SignalCacheEditorTool.Map", p.Map))); details.Add(new Label(LocalizedText.Get("SkillsExtended.SignalCacheEditorTool.Id", p.Id))); scroll.Add(details);
     }
     private GameObject Visual(string name)
     {
@@ -245,7 +245,7 @@ internal sealed class SignalCacheEditorTool : IDeveloperEditorTool
             preview.Case.transform.SetPositionAndRotation(SignalsCase.Vector(p.SearchRadius == 0
                 ? p.Position : SignalPlacementSearch.PreviewRoot(p.Position, SignalsPlacement.Geometry())),
                 Quaternion.Euler(0, p.Yaw, 0));
-            preview.Label.text = p.Name + (p.Enabled ? "" : " [disabled]");
+            preview.Label.text = p.Name + (p.Enabled ? "" : LocalizedText.Get("SkillsExtended.SignalCacheEditorTool.Disabled2"));
         }
         _presented = _draft.Version;
     }
@@ -341,7 +341,7 @@ internal sealed class SignalCacheEditorTool : IDeveloperEditorTool
                 .OrderBy(h => h.distance).FirstOrDefault(h => !h.collider.GetComponentInParent<Player>()
                     && !h.collider.GetComponentInParent<SignalsPlacementPreview>());
             if (hit.collider) Add(hit.point);
-            else _context.Status("No terrain or static surface under the pointer.");
+            else _context.Status(LocalizedText.Get("SkillsExtended.SignalCacheEditorTool.NoTerrainOrStaticSurfaceUnderThePointer"));
         }
         else
         {

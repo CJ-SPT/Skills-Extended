@@ -84,12 +84,12 @@ public sealed partial class SignalsView : MonoBehaviour
             return;
         if (Utils.GameUtils.IsInRaid())
         {
-            ElectronicsRuntime.Notify("Practice is available outside raids.");
+            ElectronicsRuntime.Notify(LocalizedText.Get("SkillsExtended.SignalsView.PracticeIsAvailableOutsideRaids"));
             return;
         }
         if (level < 0 || level > 51)
         {
-            ElectronicsRuntime.Notify("Signals level must be 0–51.");
+            ElectronicsRuntime.Notify(LocalizedText.Get("SkillsExtended.SignalsView.SignalsLevelMustBe051"));
             return;
         }
         var view = new GameObject("Signals practice").AddComponent<SignalsView>();

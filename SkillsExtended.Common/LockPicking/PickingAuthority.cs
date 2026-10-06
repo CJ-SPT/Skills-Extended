@@ -8,7 +8,7 @@ namespace SkillsExtended.LockPicking;
 public static class PickingProtocol
 {
     public const int Version = 7;
-    public const string UpdateMessage = "Lock-picking versions differ. Update Skills Extended core and Fika on the host and all players.";
+    public const string UpdateMessage = "SkillsExtended.PickingAuthority.LockPickingVersionsDifferUpdateSkillsExtendedCoreAnd";
 }
 
 public sealed class PickRequest
@@ -113,7 +113,7 @@ public sealed class PickingAuthority
             return reply;
         if (r.Raid != Raid || string.IsNullOrEmpty(r.Actor) || string.IsNullOrEmpty(r.Door))
         {
-            reply.Error = "Picking session is no longer available.";
+            reply.Error = "SkillsExtended.PickingAuthority.PickingSessionIsNoLongerAvailable";
             return reply;
         }
         if (r.Operation == "start" || r.Operation == "inspect")
@@ -140,18 +140,18 @@ public sealed class PickingAuthority
             }
             if (Active.ContainsKey(r.Door) || Active.Values.Any(s => s.Actor == r.Actor))
             {
-                reply.Error = "A picking session is already active.";
+                reply.Error = "SkillsExtended.PickingAuthority.APickingSessionIsAlreadyActive";
                 return reply;
             }
             if (string.IsNullOrEmpty(r.Tool))
             {
-                reply.Error = "Carry a usable lockpick set.";
+                reply.Error = "SkillsExtended.PickingAuthority.CarryAUsableLockpickSet";
                 return reply;
             }
             uses = Math.Max(uses, _uses.TryGetValue(r.Tool, out var recorded) ? recorded : 0);
             if (maximumUses > 0 && uses >= maximumUses)
             {
-                reply.Error = "This lockpick set is depleted.";
+                reply.Error = "SkillsExtended.PickingAuthority.ThisLockpickSetIsDepleted";
                 return reply;
             }
             if (!_locks.TryGetValue(r.Door, out var definition))

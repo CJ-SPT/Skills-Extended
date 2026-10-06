@@ -41,10 +41,10 @@ public sealed class PickFeedbackPresenter
         {
             _event = null;
             _until = _damageUntil = 0;
-            Status = state.Outcome == PickOutcome.Unlocked ? "Lock released"
-                : state.Outcome == PickOutcome.PickBroken ? "Pick broken — the key still works" : "Picking stopped";
-            Detail = state.Outcome == PickOutcome.Unlocked ? "The plug turns freely."
-                : state.Outcome == PickOutcome.PickBroken ? "The pick gave way under strain." : "";
+            Status = state.Outcome == PickOutcome.Unlocked ? LocalizedText.Get("SkillsExtended.PickFeedbackPresenter.LockReleased")
+                : state.Outcome == PickOutcome.PickBroken ? LocalizedText.Get("SkillsExtended.PickFeedbackPresenter.PickBrokenTheKeyStillWorks") : LocalizedText.Get("SkillsExtended.PickFeedbackPresenter.PickingStopped");
+            Detail = state.Outcome == PickOutcome.Unlocked ? LocalizedText.Get("SkillsExtended.PickFeedbackPresenter.ThePlugTurnsFreely")
+                : state.Outcome == PickOutcome.PickBroken ? LocalizedText.Get("SkillsExtended.PickFeedbackPresenter.ThePickGaveWayUnderStrain") : "";
             return;
         }
 
@@ -55,45 +55,45 @@ public sealed class PickFeedbackPresenter
         foreach (var cue in fresh)
         {
             if (!PickPresentation.Fresh(state, cue)) continue;
-            var pin = cue.Pin >= 0 && cue.Pin < state.Pins ? $"Pin {cue.Pin + 1}" : "A pin";
+            var pin = cue.Pin >= 0 && cue.Pin < state.Pins ? LocalizedText.Get("SkillsExtended.PickFeedbackPresenter.Pin", cue.Pin + 1) : LocalizedText.Get("SkillsExtended.PickFeedbackPresenter.APin");
             switch (cue.Sound)
             {
                 case PickSound.Release:
-                    Show("Turning pressure released — pins lose support.", 90, now);
+                    Show(LocalizedText.Get("SkillsExtended.PickFeedbackPresenter.TurningPressureReleasedPinsLoseSupport"), 90, now);
                     break;
                 case PickSound.Drop:
-                    Show(drops.Count > 1 ? $"{drops.Count} pins slipped down."
-                        : $"{pin} slipped down.", 80, now);
+                    Show(drops.Count > 1 ? LocalizedText.Get("SkillsExtended.PickFeedbackPresenter.PinsSlippedDown", drops.Count)
+                        : LocalizedText.Get("SkillsExtended.PickFeedbackPresenter.SlippedDown", pin), 80, now);
                     break;
                 case PickSound.Seat:
-                    Show($"{pin} set — a firm click under the pick.", 75, now);
+                    Show(LocalizedText.Get("SkillsExtended.PickFeedbackPresenter.SetAFirmClickUnderThePick", pin), 75, now);
                     break;
                 case PickSound.LostSet:
-                    Show($"{pin} lost its set.", 85, now);
+                    Show(LocalizedText.Get("SkillsExtended.PickFeedbackPresenter.LostItsSet", pin), 85, now);
                     break;
                 case PickSound.Overset:
-                    Show($"{pin} overset — ease tension and lower the pick.", 85, now, cue.Sound, cue.Pin);
+                    Show(LocalizedText.Get("SkillsExtended.PickFeedbackPresenter.OversetEaseTensionAndLowerThePick", pin), 85, now, cue.Sound, cue.Pin);
                     break;
                 case PickSound.Recovered:
-                    Show($"{pin} overset cleared.", 86, now);
+                    Show(LocalizedText.Get("SkillsExtended.PickFeedbackPresenter.OversetCleared", pin), 86, now);
                     break;
                 case PickSound.CatchCleared:
-                    Show($"{pin} catch cleared.", 70, now);
+                    Show(LocalizedText.Get("SkillsExtended.PickFeedbackPresenter.CatchCleared", pin), 70, now);
                     break;
                 case PickSound.FalseSet:
-                    Show("False set — the plug turned, but the lock is still locked.", 78, now, cue.Sound);
+                    Show(LocalizedText.Get("SkillsExtended.PickFeedbackPresenter.FalseSetThePlugTurnedButTheLockIs"), 78, now, cue.Sound);
                     break;
                 case PickSound.CounterRotation:
-                    Show("Counter-rotation — the wrench turned back as the pin lifted.", 70, now);
+                    Show(LocalizedText.Get("SkillsExtended.PickFeedbackPresenter.CounterRotationTheWrenchTurnedBackAsThePin"), 70, now);
                     break;
                 case PickSound.Catch:
-                    Show($"{pin} caught — a light tick, not a true set.", 65, now);
+                    Show(LocalizedText.Get("SkillsExtended.PickFeedbackPresenter.CaughtALightTickNotATrueSet", pin), 65, now);
                     break;
                 case PickSound.Tension:
-                    Show("Turning pressure applied through the wrench.", 30, now);
+                    Show(LocalizedText.Get("SkillsExtended.PickFeedbackPresenter.TurningPressureAppliedThroughTheWrench"), 30, now);
                     break;
                 case PickSound.AdjustTension:
-                    Show("Adjusting turning pressure through the wrench.", 20, now);
+                    Show(LocalizedText.Get("SkillsExtended.PickFeedbackPresenter.AdjustingTurningPressureThroughTheWrench"), 20, now);
                     break;
             }
         }
@@ -109,34 +109,34 @@ public sealed class PickFeedbackPresenter
             ? state.PinMotion[state.Selected] : null;
         var unsupported = motion != null && motion.DriverLift > motion.KeyLift + .025f;
         var damage = now < _damageUntil;
-        var pinName = $"Pin {state.Selected + 1}";
+        var pinName = LocalizedText.Get("SkillsExtended.PickFeedbackPresenter.Pin", state.Selected + 1);
         var overset = state.Tension && state.SelectedPinState == PinState.Overset;
         var caught = state.Tension && state.SelectedPinState == PinState.Caught;
-        Status = damage ? "Pick wearing under strain"
-            : state.Feedback == PickFeedback.Strain ? "Resisting lift"
-            : state.Feedback == PickFeedback.CounterRotation ? "Wrench pressing back"
-            : lowering ? "Lowering the pick"
-            : !state.Tension ? (state.Lift > .08f ? "Lifting without turning pressure" : "No turning pressure")
-            : state.Feedback == PickFeedback.Binding ? $"Resistance under pin {state.Selected + 1}"
-            : state.Lift <= .08f ? $"Pick beneath pin {state.Selected + 1}"
-            : unsupported ? "Little spring pressure under the pick"
-            : "Spring pressure under the pick";
+        Status = damage ? LocalizedText.Get("SkillsExtended.PickFeedbackPresenter.PickWearingUnderStrain")
+            : state.Feedback == PickFeedback.Strain ? LocalizedText.Get("SkillsExtended.PickFeedbackPresenter.ResistingLift")
+            : state.Feedback == PickFeedback.CounterRotation ? LocalizedText.Get("SkillsExtended.PickFeedbackPresenter.WrenchPressingBack")
+            : lowering ? LocalizedText.Get("SkillsExtended.PickFeedbackPresenter.LoweringThePick")
+            : !state.Tension ? (state.Lift > .08f ? LocalizedText.Get("SkillsExtended.PickFeedbackPresenter.LiftingWithoutTurningPressure") : LocalizedText.Get("SkillsExtended.PickFeedbackPresenter.NoTurningPressure"))
+            : state.Feedback == PickFeedback.Binding ? LocalizedText.Get("SkillsExtended.PickFeedbackPresenter.ResistanceUnderPin", state.Selected + 1)
+            : state.Lift <= .08f ? LocalizedText.Get("SkillsExtended.PickFeedbackPresenter.PickBeneathPin", state.Selected + 1)
+            : unsupported ? LocalizedText.Get("SkillsExtended.PickFeedbackPresenter.LittleSpringPressureUnderThePick")
+            : LocalizedText.Get("SkillsExtended.PickFeedbackPresenter.SpringPressureUnderThePick");
 
         // Damage remains distinct from pressure and is reported only after measured wear loss.
-        Detail = damage ? (overset ? $"{pinName} overset — forcing is damaging the pick."
-                : "Continued force is damaging the pick — ease your lift.")
-            : overset ? $"{pinName} overset — ease tension and lower the pick."
-            : state.Feedback == PickFeedback.Strain ? (caught ? $"{pinName} caught — resisting lift. Ease tension."
-                : "More lift is requested, but the pin is barely moving.")
+        Detail = damage ? (overset ? LocalizedText.Get("SkillsExtended.PickFeedbackPresenter.OversetForcingIsDamagingThePick", pinName)
+                : LocalizedText.Get("SkillsExtended.PickFeedbackPresenter.ContinuedForceIsDamagingThePickEaseYourLift"))
+            : overset ? LocalizedText.Get("SkillsExtended.PickFeedbackPresenter.OversetEaseTensionAndLowerThePick", pinName)
+            : state.Feedback == PickFeedback.Strain ? (caught ? LocalizedText.Get("SkillsExtended.PickFeedbackPresenter.CaughtResistingLiftEaseTension", pinName)
+                : LocalizedText.Get("SkillsExtended.PickFeedbackPresenter.MoreLiftIsRequestedButThePinIsBarely"))
             : now < _until && _priority >= 60 ? _event
-            : state.Feedback == PickFeedback.CounterRotation ? "Counter-rotation — the pin is pushing back against the wrench."
-            : state.FalseSet ? "False set — the plug turned, but the lock is still locked."
-            : caught ? $"{pinName} caught — not a true set. Ease tension to work through it."
+            : state.Feedback == PickFeedback.CounterRotation ? LocalizedText.Get("SkillsExtended.PickFeedbackPresenter.CounterRotationThePinIsPushingBackAgainstThe")
+            : state.FalseSet ? LocalizedText.Get("SkillsExtended.PickFeedbackPresenter.FalseSetThePlugTurnedButTheLockIs")
+            : caught ? LocalizedText.Get("SkillsExtended.PickFeedbackPresenter.CaughtNotATrueSetEaseTensionToWork", pinName)
             : now < _until ? _event
-            : state.Feedback == PickFeedback.Binding ? $"{pinName} binding — resistance under the pick."
-            : unsupported ? "The upper pin remains raised as the lower pin moves away."
-            : !state.Tension ? "The wrench is relaxed; pins are free to return."
-            : $"Turning pressure held at {state.TensionStrength:P0}.";
+            : state.Feedback == PickFeedback.Binding ? LocalizedText.Get("SkillsExtended.PickFeedbackPresenter.BindingResistanceUnderThePick", pinName)
+            : unsupported ? LocalizedText.Get("SkillsExtended.PickFeedbackPresenter.TheUpperPinRemainsRaisedAsTheLowerPin")
+            : !state.Tension ? LocalizedText.Get("SkillsExtended.PickFeedbackPresenter.TheWrenchIsRelaxedPinsAreFreeToReturn")
+            : LocalizedText.Get("SkillsExtended.PickFeedbackPresenter.TurningPressureHeldAt", state.TensionStrength);
     }
 
     private void Show(string text, int priority, float now, PickSound? condition = null, int pin = -1)

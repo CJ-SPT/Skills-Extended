@@ -89,21 +89,21 @@ public sealed class PickingRuntime : MonoBehaviour
     )
     {
         if (!Config.Enabled || !p || !p.HealthController.IsAlive || p.Side == EPlayerSide.Savage)
-            return "Only a living PMC can pick locks.";
+            return "SkillsExtended.PickingRuntime.OnlyALivingPmcCanPickLocks";
         if (
             !LockPickingHelpers.Supported(d)
             || LockPickingHelpers.GetLevelForDoor(World.LocationId, d.Id) < 0
         )
-            return "This lock is not supported.";
+            return "SkillsExtended.PickingRuntime.ThisLockIsNotSupported";
         if (
             d.DoorState != EDoorState.Locked
             || !d.Operatable
             || d.NoInteractionsAllowed
             || !d.gameObject.activeInHierarchy
         )
-            return "This door is unavailable.";
+            return "SkillsExtended.PickingRuntime.ThisDoorIsUnavailable";
         if (p.MovementContext.CanInteract != null)
-            return "Cannot interact in the current player state.";
+            return "SkillsExtended.PickingRuntime.CannotInteractInTheCurrentPlayerState";
         if (
             d.HasSkillRequirement
             && (
@@ -111,16 +111,16 @@ public sealed class PickingRuntime : MonoBehaviour
                 || required.Level < d.SkillMinLevelRequirement
             )
         )
-            return "Native door requirements are not met.";
+            return "SkillsExtended.PickingRuntime.NativeDoorRequirementsAreNotMet";
         if (
             Vector3.Distance(p.Position, d.GetInteractionParameters(p.Position).InteractionPosition)
             > 3
         )
-            return "Move closer to the lock.";
+            return "SkillsExtended.PickingRuntime.MoveCloserToTheLock";
         if (start && p.InputDirection.sqrMagnitude > .001f)
-            return "Stop moving before picking.";
+            return "SkillsExtended.PickingRuntime.StopMovingBeforePicking";
         if (!inspect && Tool(p, tool) == null)
-            return "Carry a usable lockpick set.";
+            return "SkillsExtended.PickingRuntime.CarryAUsableLockpickSet";
         return null;
     }
 
@@ -142,7 +142,7 @@ public sealed class PickingRuntime : MonoBehaviour
         }
         if (!inspect && !LockPickingGame.Prepare())
         {
-            Notify("Lock-picking artwork could not be loaded.");
+            Notify(LocalizedText.Get("SkillsExtended.PickingRuntime.LockPickingArtworkCouldNotBeLoaded"));
             return;
         }
         if (_protocolMismatch)
@@ -153,7 +153,7 @@ public sealed class PickingRuntime : MonoBehaviour
         if (_raid == null)
         {
             Send(new PickRequest { Actor = owner.Player.ProfileId });
-            Notify("Connecting lock-picking session. Try again shortly.");
+            Notify(LocalizedText.Get("SkillsExtended.PickingRuntime.ConnectingLockPickingSessionTryAgainShortly"));
             return;
         }
         _doors[door.Id] = door;
@@ -302,7 +302,7 @@ public sealed class PickingRuntime : MonoBehaviour
                         );
                         if (result.Failed)
                             SkillsExtendedPlugin.Log.LogWarning(
-                                "Depleted lockpick could not be discarded; it remains unusable."
+                                LocalizedText.Get("SkillsExtended.PickingRuntime.DepletedLockpickCouldNotBeDiscardedItRemainsUnusable")
                             );
                     }
                 }
@@ -317,14 +317,11 @@ public sealed class PickingRuntime : MonoBehaviour
         {
             if (reply.Difficulty > 0 && Door(reply.Door) is { } inspected)
             {
-                var key = SkillsExtendedPlugin.Keys.KeyLocale.TryGetValue(
-                    inspected.KeyId,
-                    out var name
-                )
-                    ? name
-                    : "Unknown";
+                var key = !string.IsNullOrEmpty(inspected.KeyId)
+                    ? (inspected.KeyId + " Name").Localized()
+                    : LocalizedText.Get("SkillsExtended.PickingRuntime.Unknown");
                 Notify(
-                    $"Lock tier {reply.Difficulty} · {Config.Tier(reply.Difficulty).Pins} pins · Key: {key}"
+                    LocalizedText.Get("SkillsExtended.PickingRuntime.LockTierPinsKey", reply.Difficulty, Config.Tier(reply.Difficulty).Pins, key)
                 );
             }
             return;
@@ -443,7 +440,7 @@ public sealed class PickingRuntime : MonoBehaviour
         }
     }
 
-    public static void Notify(string text) => NotificationManager.DisplayMessageNotification(text);
+    public static void Notify(string text) => NotificationManager.DisplayMessageNotification(LocalizedText.Resolve(text));
 }
 
 public class PickingRaidStartPatch : ModulePatch

@@ -29,7 +29,7 @@ public static class WorldInteractionUtils
         state.Actions.Add(
             new InteractionAction
             {
-                Name = "Pick lock",
+                Name = LocalizedText.Get("SkillsExtended.WorldInteractionUtils.PickLock"),
                 Disabled = !LockPickingHelpers.Picks(owner.Player).Any(),
                 Action = () => PickingRuntime.Instance?.Begin(owner, door, false),
             }
@@ -47,7 +47,7 @@ public static class WorldInteractionUtils
         state.Actions.Add(
             new InteractionAction
             {
-                Name = "Inspect lock",
+                Name = LocalizedText.Get("SkillsExtended.WorldInteractionUtils.InspectLock"),
                 Action = () => PickingRuntime.Instance?.Begin(owner, door, true),
             }
         );

@@ -4,4 +4,5 @@
     <Nullable>disable</Nullable>
     <LangVersion>default</LangVersion>
   </PropertyGroup>
+  <ItemGroup><EmbeddedResource Include="../Server/SkillsExtended.Server/Resources/Locales/en.json" LogicalName="SkillsExtended.Locales.en.json" /></ItemGroup>
 </Project>

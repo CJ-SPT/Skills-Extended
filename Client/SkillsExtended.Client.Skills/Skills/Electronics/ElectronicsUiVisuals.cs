@@ -64,16 +64,16 @@ namespace SkillsExtended.Hacking.UI
         public static readonly string[] Names =
         {
             "",
-            "System Core",
-            "Firewall",
-            "Antivirus",
-            "Restoration",
-            "Suppressor",
-            "Self Repair",
-            "Kernel Rot",
-            "Shield",
-            "Vector",
-            "Data Cache",
+            "SkillsExtended.ElectronicsUiVisuals.SystemCore",
+            "SkillsExtended.ElectronicsUiVisuals.Firewall",
+            "SkillsExtended.ElectronicsUiVisuals.Antivirus",
+            "SkillsExtended.ElectronicsUiVisuals.Restoration",
+            "SkillsExtended.ElectronicsUiVisuals.Suppressor",
+            "SkillsExtended.ElectronicsUiVisuals.SelfRepair",
+            "SkillsExtended.ElectronicsUiVisuals.KernelRot",
+            "SkillsExtended.ElectronicsUiVisuals.Shield",
+            "SkillsExtended.ElectronicsUiVisuals.Vector",
+            "SkillsExtended.ElectronicsUiVisuals.DataCache",
         };
         public static readonly string[] Icons =
         {
@@ -126,7 +126,7 @@ namespace SkillsExtended.Hacking.UI
                 cleared || occupied && kind >= 6 ? Amber
                 : actionable || occupied ? Cyan
                 : Color.white;
-            label.text = occupied ? Names[kind] : "";
+            label.text = occupied ? LocalizedText.Resolve(Names[kind]) : "";
             label.color = ring.color;
             health.text = defense ? hp.ToString() : "";
             health.color = Cyan;
@@ -134,7 +134,7 @@ namespace SkillsExtended.Hacking.UI
             power.color = Cyan;
             center.text =
                 revealed && cleared && kind == 0
-                    ? (clue == 0 ? "IN" : clue + (clue == 5 ? "+" : ""))
+                    ? (clue == 0 ? LocalizedText.Get("SkillsExtended.ElectronicsUiVisuals.In") : clue + (clue == 5 ? "+" : ""))
                     : "";
             center.color = cleared ? new Color(1, .65f, .36f) : Cyan;
             icon.enabled = occupied;

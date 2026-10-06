@@ -47,7 +47,7 @@ internal sealed class PracticeSkillButton : MonoBehaviour
         foreach (var label in GetComponentsInChildren<TMP_Text>(true))
             if (label.font) { _font = label.font; break; }
         if (!_font) _font = TMP_Settings.defaultFontAsset;
-        _button = PracticeUi.Button(transform, "Practice", _font,
+        _button = PracticeUi.Button(transform, LocalizedText.Get("SkillsExtended.PracticeSkillButton.Practice"), _font,
             new Vector2(icon ? 96 : 80, 24), Vector2.zero,
             () => PracticeController.Open(_screen, _skill, _font), 16);
         var rect = (RectTransform)_button.transform;

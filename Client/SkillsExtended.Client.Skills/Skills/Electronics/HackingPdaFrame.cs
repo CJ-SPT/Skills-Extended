@@ -92,8 +92,8 @@ internal static class HackingPdaFrame
             );
             Bar(body, "Screw slot", x + 5, y + 9, 10, 2, Color.black);
         }
-        Label(body, "TERRAGROUP  /  FIELD SYSTEMS", 128, 32, 640, 28, 17, font);
-        Label(body, "MODIFIED PDA   |   HK-200", width - 536, 32, 416, 28, 15, font);
+        Label(body, LocalizedText.Get("SkillsExtended.HackingPdaFrame.TerragroupFieldSystems"), 128, 32, 640, 28, 17, font);
+        Label(body, LocalizedText.Get("SkillsExtended.HackingPdaFrame.ModifiedPdaHk200"), width - 536, 32, 416, 28, 15, font);
         Bar(body, "Power indicator", width - 150, 43, 12, 5, new Color(.36f, .88f, .74f));
         Surface(
             body,
@@ -107,8 +107,8 @@ internal static class HackingPdaFrame
             13,
             5
         );
-        Label(body, "HACKING INTERFACE", 130, height - 69, 500, 28, 19, font);
-        Label(body, "REUSABLE FIELD TERMINAL", width - 490, height - 69, 364, 28, 13, font);
+        Label(body, LocalizedText.Get("SkillsExtended.HackingPdaFrame.HackingInterface"), 130, height - 69, 500, 28, 19, font);
+        Label(body, LocalizedText.Get("SkillsExtended.HackingPdaFrame.ReusableFieldTerminal"), width - 490, height - 69, 364, 28, 13, font);
         for (var i = 0; i < 7; i++)
             Bar(body, "Speaker grille", width / 2 - 66 + i * 13, height - 63, 5, 23, Color.black);
 
@@ -129,7 +129,7 @@ internal static class HackingPdaFrame
         button.targetGraphic = face;
         button.navigation = new Navigation { mode = Navigation.Mode.None };
         button.onClick.AddListener(() => exit());
-        Label(face.transform, "EXIT\nESC", 0, 0, 62, 82, 13, font).alignment =
+        Label(face.transform, LocalizedText.Get("SkillsExtended.HackingPdaFrame.ExitEsc"), 0, 0, 62, 82, 13, font).alignment =
             TextAlignmentOptions.Center;
         return body;
     }

@@ -1,4 +1,5 @@
 using System.Reflection;
+using SkillsExtended;
 using System.Text.Json.Nodes;
 using SkillsExtended.Config;
 using SkillsExtended.Config.Skills;
@@ -88,13 +89,12 @@ internal static class SignalsChecks
         var at = new SignalPoint();
         var observed = SignalsModel.ObservedBearing(a, at, 0);
         Check(
-            SignalsModel
-                .ScanAlignmentHint(a, at, 0, a.Frequency + 1, observed)
+            LocalizedText.Resolve(SignalsModel.ScanAlignmentHint(a, at, 0, a.Frequency + 1, observed))
                 .Contains("FREQUENCY"),
             "frequency misalignment names the visible frequency control"
         );
         Check(
-            SignalsModel.ScanAlignmentHint(a, at, 0, a.Frequency, observed + 6).Contains("BEARING"),
+            LocalizedText.Resolve(SignalsModel.ScanAlignmentHint(a, at, 0, a.Frequency, observed + 6)).Contains("BEARING"),
             "bearing misalignment names the visible bearing control instead of phase"
         );
         Check(
@@ -348,7 +348,7 @@ internal static class SignalsChecks
         Check(
             authority.State.Readings.Count == 1
                 && authority.State.EarnedXp["a"] == 3
-                && authority.State.Message.Contains("125"),
+                && LocalizedText.Resolve(authority.State.Message).Contains("125"),
             "under 125 metres rejects bearing and XP with useful feedback"
         );
         Scan("b", new() { X = 200 });

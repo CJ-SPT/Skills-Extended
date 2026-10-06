@@ -115,7 +115,7 @@ public sealed class SignalsCase : IDisposable
                 if (!added.Succeeded)
                     throw new InvalidOperationException("Signal item does not fit: " + added.Error);
             }
-            LootItem.CreateLootContainer(container, root, "Signal cache", world, container.Id);
+            LootItem.CreateLootContainer(container, root, LocalizedText.Get("SkillsExtended.SignalsCase.SignalCache"), world, container.Id);
             container.DoorState = EDoorState.Locked;
             if (manifest.Config?.ShowCacheArrow != false)
             {

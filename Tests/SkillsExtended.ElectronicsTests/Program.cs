@@ -13,6 +13,7 @@ using SPTarkov.Server.Core.Models.Enums;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 using Path = System.IO.Path;
 
+LocalizationChecks.Verify();
 SignalsChecks.Verify();
 SignalPlacementChecks.Verify();
 

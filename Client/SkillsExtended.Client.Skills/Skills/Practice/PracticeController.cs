@@ -61,7 +61,7 @@ internal sealed class PracticeController : MonoBehaviour
         {
             view.Close();
             SkillsExtendedPlugin.Log.LogError(error);
-            ElectronicsRuntime.Notify("Could not open practice. See the Skills Extended log.");
+            ElectronicsRuntime.Notify(LocalizedText.Get("SkillsExtended.PracticeController.CouldNotOpenPracticeSeeTheSkillsExtendedLog"));
         }
     }
 
@@ -85,37 +85,37 @@ internal sealed class PracticeController : MonoBehaviour
         PracticeUi.Frame(panel);
         var header = PracticeUi.Rect("Caption Panel", panel, new Vector2(556, 28), new Vector2(0, 164 + extra));
         PracticeUi.Skin(header, "Caption Panel", new Color(.1f, .105f, .11f));
-        LeftLabel(panel, _settings.Title.ToUpperInvariant() + " PRACTICE", font, new Vector2(490, 26), new Vector2(-11, 164 + extra), 20);
+        LeftLabel(panel, LocalizedText.Get("SkillsExtended.PracticeController.Practice", _settings.Title.ToUpperInvariant()), font, new Vector2(490, 26), new Vector2(-11, 164 + extra), 20);
         PracticeUi.CloseButton(panel, font, new Vector2(259, 164 + extra), Close);
-        LeftLabel(panel, "Practice only. No equipment required.\nNo XP, item costs, or world changes.", font,
+        LeftLabel(panel, LocalizedText.Get("SkillsExtended.PracticeController.PracticeOnlyNoEquipmentRequiredNoXpItemCosts"), font,
             new Vector2(512, 46), new Vector2(0, 112 + extra), 17).color = PracticeUi.Muted;
         PracticeUi.Rule(panel, 82 + extra);
         if (_settings.Game != PracticeGame.Signals)
         {
-            LeftLabel(panel, "Difficulty", font, new Vector2(260, 34), new Vector2(-126, 53 + extra), 18);
+            LeftLabel(panel, LocalizedText.Get("SkillsExtended.PracticeController.Difficulty"), font, new Vector2(260, 34), new Vector2(-126, 53 + extra), 18);
             _difficulty = PracticeUi.Label(panel, "", font, new Vector2(72, 32), new Vector2(164, 53 + extra), 18);
             _lessDifficulty = PracticeUi.Button(panel, "-", font, new Vector2(32, 30), new Vector2(108, 53 + extra), () => ChangeDifficulty(-1));
             _moreDifficulty = PracticeUi.Button(panel, "+", font, new Vector2(32, 30), new Vector2(220, 53 + extra), () => ChangeDifficulty(1));
         }
         else
         {
-            LeftLabel(panel, "Scenario", font, new Vector2(150, 34), new Vector2(-181, 53 + extra), 18);
-            var scenario = PracticeUi.Label(panel, "Receiver and pairing", font, new Vector2(332, 34), new Vector2(90, 53 + extra), 17);
+            LeftLabel(panel, LocalizedText.Get("SkillsExtended.PracticeController.Scenario"), font, new Vector2(150, 34), new Vector2(-181, 53 + extra), 18);
+            var scenario = PracticeUi.Label(panel, LocalizedText.Get("SkillsExtended.PracticeController.ReceiverAndPairing"), font, new Vector2(332, 34), new Vector2(90, 53 + extra), 17);
             scenario.alignment = TextAlignmentOptions.MidlineRight;
         }
-        _customize = PracticeUi.Checkbox(panel, "Customize skill level", font, new Vector2(0, 5 + extra), value =>
+        _customize = PracticeUi.Checkbox(panel, LocalizedText.Get("SkillsExtended.PracticeController.CustomizeSkillLevel"), font, new Vector2(0, 5 + extra), value =>
         {
             _settings.CustomizeLevel = value;
             Render();
         });
-        LeftLabel(panel, "Skill level", font, new Vector2(260, 34), new Vector2(-126, -44 + extra), 18);
+        LeftLabel(panel, LocalizedText.Get("SkillsExtended.PracticeController.SkillLevel"), font, new Vector2(260, 34), new Vector2(-126, -44 + extra), 18);
         _level = PracticeUi.Label(panel, "", font, new Vector2(72, 32), new Vector2(164, -44 + extra), 18);
         _lessLevel = PracticeUi.Button(panel, "-", font, new Vector2(32, 30), new Vector2(108, -44 + extra), () => ChangeLevel(-1));
         _moreLevel = PracticeUi.Button(panel, "+", font, new Vector2(32, 30), new Vector2(220, -44 + extra), () => ChangeLevel(1));
-        LeftLabel(panel, "Uses your current level unless customized. Practice only.", font,
+        LeftLabel(panel, LocalizedText.Get("SkillsExtended.PracticeController.UsesYourCurrentLevelUnlessCustomizedPracticeOnly"), font,
             new Vector2(512, 24), new Vector2(0, -78 + extra), 15).color = PracticeUi.Muted;
         if (_settings.Game == PracticeGame.LockPicking)
-            _coaching = PracticeUi.Checkbox(panel, "Coaching hints and target guides", font, new Vector2(0, -92), value =>
+            _coaching = PracticeUi.Checkbox(panel, LocalizedText.Get("SkillsExtended.PracticeController.CoachingHintsAndTargetGuides"), font, new Vector2(0, -92), value =>
             {
                 _settings.ShowCoaching = value;
                 Render();
@@ -123,8 +123,8 @@ internal sealed class PracticeController : MonoBehaviour
         _message = LeftLabel(panel, "", font, new Vector2(512, 34), new Vector2(0, -104 - extra), 14);
         _message.color = new Color(.85f, .55f, .4f);
         PracticeUi.Rule(panel, -125 - extra);
-        PracticeUi.Button(panel, "BACK", font, new Vector2(150, 32), new Vector2(-181, -151 - extra), Close, 17);
-        PracticeUi.Button(panel, "START PRACTICE", font, new Vector2(218, 32), new Vector2(147, -151 - extra), Launch, 17);
+        PracticeUi.Button(panel, LocalizedText.Get("SkillsExtended.PracticeController.Back"), font, new Vector2(150, 32), new Vector2(-181, -151 - extra), Close, 17);
+        PracticeUi.Button(panel, LocalizedText.Get("SkillsExtended.PracticeController.StartPractice"), font, new Vector2(218, 32), new Vector2(147, -151 - extra), Launch, 17);
         Render();
     }
 
@@ -166,12 +166,12 @@ internal sealed class PracticeController : MonoBehaviour
         {
             if (_session.Start(Available(_skill), AnyGameOpen, () => StartGame(seed), GameAlive, CloseGame))
                 return;
-            _message.text = "Practice could not start. Check availability and installed assets.";
+            _message.text = LocalizedText.Get("SkillsExtended.PracticeController.PracticeCouldNotStartCheckAvailabilityAndInstalledAssets");
         }
         catch (Exception error)
         {
             SkillsExtendedPlugin.Log.LogError(error);
-            _message.text = "Practice could not start. See the Skills Extended log.";
+            _message.text = LocalizedText.Get("SkillsExtended.PracticeController.PracticeCouldNotStartSeeTheSkillsExtendedLog");
         }
         ShowSetup();
     }

@@ -61,7 +61,7 @@ internal sealed partial class DeveloperEditorView
         var content = tree.Q<Label>("Caption").parent;
         content.Q<Label>("Caption").text = caption;
         value = content.Q<Label>("Value");
-        value.text = selected >= 0 && selected < options.Count ? options[selected] : "Select…";
+        value.text = selected >= 0 && selected < options.Count ? options[selected] : LocalizedText.Get("SkillsExtended.DeveloperEditorControls.Select");
         while (content.childCount > 0) button.Add(content[0]);
         return button;
     }
@@ -82,6 +82,8 @@ internal sealed partial class DeveloperEditorView
         _menu = shield; _menuAnchor = anchor; Surface.Add(shield);
         var panel = shield.Q("ChoicePanel"); var search = shield.Q<TextField>("ChoiceSearch");
         var empty = shield.Q<Label>("ChoiceEmpty"); var list = shield.Q<ListView>("Choices");
+        search.label = LocalizedText.Get("SkillsExtended.Editor.Search");
+        empty.text = LocalizedText.Get("SkillsExtended.Editor.NoMatches");
         var matches = new List<int>(); var searching = labels.Length > 10;
         search.style.display = searching ? DisplayStyle.Flex : DisplayStyle.None;
         list.fixedItemHeight = 30; list.selectionType = SelectionType.Single;

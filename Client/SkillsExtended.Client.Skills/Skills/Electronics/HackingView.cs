@@ -195,19 +195,19 @@ public sealed class HackingView : MonoBehaviour
 
         if (Utils.GameUtils.IsInRaid())
         {
-            ElectronicsRuntime.Notify("Practice is available outside raids.");
+            ElectronicsRuntime.Notify(LocalizedText.Get("SkillsExtended.HackingView.PracticeIsAvailableOutsideRaids"));
             return;
         }
 
         if (difficulty < 1 || difficulty > 3 || level < 0 || level > 51)
         {
-            ElectronicsRuntime.Notify("Usage: hacking [difficulty 1-3] [level 0-51] [seed]");
+            ElectronicsRuntime.Notify(LocalizedText.Get("SkillsExtended.HackingView.UsageHackingDifficulty13Level051Seed"));
             return;
         }
 
         if (!Prepare())
         {
-            ElectronicsRuntime.Notify("Missing or invalid electronics_ui.bundle.");
+            ElectronicsRuntime.Notify(LocalizedText.Get("SkillsExtended.HackingView.MissingOrInvalidElectronicsUiBundle"));
             return;
         }
 
@@ -248,6 +248,7 @@ public sealed class HackingView : MonoBehaviour
         view._stats = view.Text("Stats");
         view._message = view.Text("Message");
         view._tooltip = view.Text("Tooltip");
+        view._tooltip.text = LocalizedText.Get("SkillsExtended.HackingView.HoverOverANodeForDetails");
         view._boardRoot = (RectTransform)view.transform.Find("Panel/Board");
         view._gaugeMaterials = ElectronicsUiVisuals.CreateGaugeMaterials(
             view.transform.Find("Panel")
@@ -418,7 +419,7 @@ public sealed class HackingView : MonoBehaviour
                 leave.callback.AddListener(_ =>
                 {
                     _hoveredNode = -1;
-                    _tooltip.text = "Hover over a node for details.";
+                    _tooltip.text = LocalizedText.Get("SkillsExtended.HackingView.HoverOverANodeForDetails");
                     if (_fx)
                     {
                         _fx.Hover(n.Id, false);
@@ -451,43 +452,40 @@ public sealed class HackingView : MonoBehaviour
     {
         if (!n.Revealed)
         {
-            return "Unknown node. Explore along an accessible connection.";
+            return LocalizedText.Get("SkillsExtended.HackingView.UnknownNodeExploreAlongAnAccessibleConnection");
         }
 
         return n.Kind switch
         {
             NodeKind.Empty => n.Clue == 0
-                ? "Network entrance."
-                : "Distance: "
-                    + n.Clue
-                    + (n.Clue == 5 ? "+" : "")
-                    + " links to the nearest remaining core, uncollected utility or unopened cache. Updates when targets change; defenses do not count.",
-            NodeKind.Core => "Security core: destroy it to unlock the door.",
-            NodeKind.Firewall => "Firewall: blocks neighboring nodes. Attack before it retaliates.",
-            NodeKind.Antivirus => "Antivirus: fragile but strikes hard. Blocks neighboring nodes.",
+                ? LocalizedText.Get("SkillsExtended.HackingView.NetworkEntrance")
+                : LocalizedText.Get("SkillsExtended.HackingView.DistanceLinksToTheNearestRemainingCoreUncollectedUtility", n.Clue, (n.Clue == 5 ? "+" : "")),
+            NodeKind.Core => LocalizedText.Get("SkillsExtended.HackingView.SecurityCoreDestroyItToUnlockTheDoor"),
+            NodeKind.Firewall => LocalizedText.Get("SkillsExtended.HackingView.FirewallBlocksNeighboringNodesAttackBeforeItRetaliates"),
+            NodeKind.Antivirus => LocalizedText.Get("SkillsExtended.HackingView.AntivirusFragileButStrikesHardBlocksNeighboringNodes"),
             NodeKind.Restoration =>
-                "Restoration: repairs another revealed defense by 10 each turn.",
+                LocalizedText.Get("SkillsExtended.HackingView.RestorationRepairsAnotherRevealedDefenseBy10EachTurn"),
             NodeKind.Suppressor =>
-                "Suppressor: reduces your strength by 5 while active (minimum 5).",
+                LocalizedText.Get("SkillsExtended.HackingView.SuppressorReducesYourStrengthBy5WhileActiveMinimum"),
             NodeKind.SelfRepair =>
-                "Self Repair: +8 coherence each turn for 3 turns, capped at your starting value.",
+                LocalizedText.Get("SkillsExtended.HackingView.SelfRepair8CoherenceEachTurnFor3Turns"),
             NodeKind.KernelRot =>
-                "Kernel Rot: halve a revealed target's current coherence (rounded down).",
-            NodeKind.Shield => "Polymorphic Shield: prevents the next 2 retaliations.",
+                LocalizedText.Get("SkillsExtended.HackingView.KernelRotHalveARevealedTargetSCurrentCoherence"),
+            NodeKind.Shield => LocalizedText.Get("SkillsExtended.HackingView.PolymorphicShieldPreventsTheNext2Retaliations"),
             NodeKind.Vector =>
-                "Secondary Vector: 20 damage per turn for 3 turns to a revealed target.",
+                LocalizedText.Get("SkillsExtended.HackingView.SecondaryVector20DamagePerTurnFor3Turns"),
             _ =>
-                "Data cache: open to expose a utility or defense. Contents were fixed at the start.",
+                LocalizedText.Get("SkillsExtended.HackingView.DataCacheOpenToExposeAUtilityOrDefense"),
         };
     }
 
     private static string Name(NodeKind kind) =>
         kind switch
         {
-            NodeKind.SelfRepair => "Repair",
-            NodeKind.KernelRot => "Rot",
-            NodeKind.Shield => "Shield",
-            NodeKind.Vector => "Vector",
+            NodeKind.SelfRepair => LocalizedText.Get("SkillsExtended.HackingView.Repair"),
+            NodeKind.KernelRot => LocalizedText.Get("SkillsExtended.HackingView.Rot"),
+            NodeKind.Shield => LocalizedText.Get("SkillsExtended.HackingView.Shield"),
+            NodeKind.Vector => LocalizedText.Get("SkillsExtended.HackingView.Vector"),
             _ => kind.ToString(),
         };
 
@@ -499,25 +497,29 @@ public sealed class HackingView : MonoBehaviour
             _tooltip.text = Description(_board.Nodes[_hoveredNode]);
         }
 
-        _header.text = "TerraGroup Security System";
-        _stats.text = $"COHERENCE {_board.Coherence} / {_board.MaximumCoherence}";
+        transform.Find("Panel/Abort").GetComponentInChildren<TMP_Text>().text = LocalizedText.Get("SkillsExtended.HackingView.Abort");
+        transform.Find("Panel/Retry").GetComponentInChildren<TMP_Text>().text = LocalizedText.Get("SkillsExtended.HackingView.Retry");
+        Text("UtilityHeading").text = LocalizedText.Get("SkillsExtended.HackingView.UtilityHeading");
+        Text("Rules").text = LocalizedText.Get("SkillsExtended.HackingView.Rules");
+        _header.text = LocalizedText.Get("SkillsExtended.HackingView.TerragroupSecuritySystem");
+        _stats.text = LocalizedText.Get("SkillsExtended.HackingView.Coherence", _board.Coherence, _board.MaximumCoherence);
         ElectronicsUiVisuals.SetCoherence(
             _gaugeMaterials,
             (float)_board.Coherence / _board.MaximumCoherence
         );
-        Text("Strength").text = $"STRENGTH {_board.Strength}";
+        Text("Strength").text = LocalizedText.Get("SkillsExtended.HackingView.Strength2", _board.Strength);
         _message.text =
             _board.Status == HackStatus.Active
                 ? (
                     _selected >= 0
-                        ? "Select a revealed defense or core as the utility target. Click the utility again to deselect."
+                        ? LocalizedText.Get("SkillsExtended.HackingView.SelectARevealedDefenseOrCoreAsTheUtility")
                         : (
                             _practice
-                                ? $"PRACTICE / LEVEL {_level} / NO XP / TURN {_board.Turn}"
-                                : $"{_runtime.Remaining(_reply.Door)} ATTEMPTS REMAINING / TURN {_board.Turn} / RAID IS LIVE"
+                                ? LocalizedText.Get("SkillsExtended.HackingView.PracticeLevelNoXpTurn", _level, _board.Turn)
+                                : LocalizedText.Get("SkillsExtended.HackingView.AttemptsRemainingTurnRaidIsLive", _runtime.Remaining(_reply.Door), _board.Turn)
                         )
                 )
-                : "ATTEMPT " + _board.Status.ToString().ToUpperInvariant();
+                : LocalizedText.Get("SkillsExtended.HackingView.Attempt", LocalizedText.Get("SkillsExtended.Hacking.Status." + _board.Status).ToUpperInvariant());
         foreach (var edge in _edges)
         {
             var a = _board.Nodes[edge.a];
@@ -570,7 +572,7 @@ public sealed class HackingView : MonoBehaviour
             b.interactable =
                 i < _board.Utilities.Count && _board.Status == HackStatus.Active && !_waiting;
             b.GetComponentInChildren<TMP_Text>().text =
-                $"[{i + 1}] " + (i < _board.Utilities.Count ? Name(_board.Utilities[i]) : "Empty");
+                LocalizedText.Get("SkillsExtended.HackingView.UtilitySlot", i + 1, (i < _board.Utilities.Count ? Name(_board.Utilities[i]) : LocalizedText.Get("SkillsExtended.HackingView.Empty")));
             b.GetComponent<Image>().color = i == _selected ? Amber : Color.white;
             var icon = b.transform.Find("Icon").GetComponent<Image>();
             icon.enabled = i < _board.Utilities.Count;
@@ -754,7 +756,7 @@ public sealed class HackingView : MonoBehaviour
         Render();
         if (_board.Status != HackStatus.Active)
         {
-            ElectronicsRuntime.Notify("PDA: " + _board.Status);
+            ElectronicsRuntime.Notify(LocalizedText.Get("SkillsExtended.HackingView.Pda", LocalizedText.Get("SkillsExtended.Hacking.Status." + _board.Status)));
             if (_board.Status == HackStatus.Won || _board.Status == HackStatus.Lost)
             {
                 _finishAt = Time.unscaledTime + .95f;

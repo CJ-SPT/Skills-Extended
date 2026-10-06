@@ -156,3 +156,14 @@ Documentation and notices stay in the repository and are excluded from distribut
 ## License
 
 See [license.md](license.md) for the repository license. Third-party assets retain their own licenses.
+
+
+### Client translations
+
+In-game practice, lockpicking, hacking, Signals, and developer-editor UI text uses `SkillsExtended.*` keys from `Server/SkillsExtended.Server/Resources/Locales/en.json`. Add translations using the same keys in the existing language file in that directory (for example `ru.json`). The server fills missing entries with English before applying language overrides. The client resolves keys through EFT's `Localized()` lookup, so it uses the player's selected game language. F12 option names and descriptions remain unchanged.
+
+Preserve numbered placeholders and their format suffixes, such as `{0}`, `{1:0.0}`, and `{2:P0}`; they may move within a translated sentence. Preserve intentional newlines, control names, and rich-text markup. Existing skill and item locale keys remain available. Text baked into artwork, diagnostic logs, early loader failures, and console-command metadata are not part of the in-game text catalog. Custom administrator-authored names and third-party diagnostic details are displayed as supplied.
+
+For new client text, add an English key and use `LocalizedText.Get("SkillsExtended.Feature.Message", arguments...)` at the display boundary. Shared authority code must send a key or `LocalizedText.Message(key, arguments...)`; receiving UI calls `LocalizedText.Resolve(message)` so the host's language is never baked into replicated text. The shared assembly embeds the same English file for startup, offline tools, missing keys, and invalid translation-format fallback. Keep host, headless, and player binaries matched when updating. Restart the server to load edited locale files, then reconnect the client and reopen the affected screen.
+
+`Tests/SkillsExtended.ElectronicsTests/Run-SerializationChecks.ps1` includes locale-key, placeholder, fallback, language-switch, and authority-message checks. Visual fit and font coverage for each translated language still require an in-game check.

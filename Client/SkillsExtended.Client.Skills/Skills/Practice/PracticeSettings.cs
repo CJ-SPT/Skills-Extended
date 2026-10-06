@@ -19,7 +19,7 @@ internal sealed class PracticeSettings
     public int Level => CustomizeLevel ? CustomLevel : DisplayedLevel;
     public int Difficulty { get; private set; } = 1;
     public int MaxDifficulty => Game == PracticeGame.LockPicking ? 5 : Game == PracticeGame.Hacking ? 3 : 1;
-    public string Title => Game == PracticeGame.LockPicking ? "Lock Picking" : Game == PracticeGame.Hacking ? "Hacking" : "Signals";
+    public string Title => Game == PracticeGame.LockPicking ? LocalizedText.Get("SkillsExtended.PracticeSettings.LockPicking") : Game == PracticeGame.Hacking ? LocalizedText.Get("SkillsExtended.PracticeSettings.Hacking") : LocalizedText.Get("SkillsExtended.PracticeSettings.Signals");
 
     public PracticeSettings(PracticeGame game, int displayedLevel)
     {

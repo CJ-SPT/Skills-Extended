@@ -50,7 +50,7 @@ public class SignalsAuthoring
                 );
                 if (report.Placement == null)
                 {
-                    ElectronicsRuntime.Notify("Capture rejected. " + report);
+                    ElectronicsRuntime.Notify(LocalizedText.Get("SkillsExtended.SignalsAuthoring.CaptureRejected", report));
                     return;
                 }
                 p.Yaw = report.Placement.Yaw;
@@ -65,7 +65,7 @@ public class SignalsAuthoring
                     JsonConvert.SerializeObject(p, Formatting.Indented)
                 );
                 ElectronicsRuntime.Notify(
-                    "Captured " + p.Id + ". Review and add it in the Signals editor."
+                    LocalizedText.Get("SkillsExtended.SignalsAuthoring.CapturedReviewAndAddItInTheSignalsEditor", p.Id)
                 );
             }
         );
@@ -96,7 +96,7 @@ public class SignalsAuthoring
                     );
                 }
                 ElectronicsRuntime.Notify(
-                    "Signal placement results written to the game log; inspect access in-game."
+                    LocalizedText.Get("SkillsExtended.SignalsAuthoring.ResultsWritten")
                 );
             }
         );
@@ -116,7 +116,7 @@ public class SignalsAuthoring
                     );
                 if (p == null)
                 {
-                    ElectronicsRuntime.Notify("Unknown placement ID on this map.");
+                    ElectronicsRuntime.Notify(LocalizedText.Get("SkillsExtended.SignalsAuthoring.UnknownPlacement"));
                     return;
                 }
                 var report = await SignalsPlacement.Resolve(
@@ -167,12 +167,12 @@ public class SignalsAuthoring
             || !SignalsMaps.IsSupported(world.LocationId)
         )
         {
-            ElectronicsRuntime.Notify("Load a raid on any map except Factory to author signal placements.");
+            ElectronicsRuntime.Notify(LocalizedText.Get("SkillsExtended.SignalsAuthoring.LoadRaid"));
             return;
         }
         if (_busy)
         {
-            ElectronicsRuntime.Notify("A signal placement check is already running.");
+            ElectronicsRuntime.Notify(LocalizedText.Get("SkillsExtended.SignalsAuthoring.AlreadyRunning"));
             return;
         }
         _busy = true;
@@ -184,7 +184,7 @@ public class SignalsAuthoring
         catch (Exception e)
         {
             SkillsExtendedPlugin.Log.LogError("Signals authoring: " + e);
-            ElectronicsRuntime.Notify("Signal placement check failed: " + e.Message);
+            ElectronicsRuntime.Notify(LocalizedText.Get("SkillsExtended.SignalsAuthoring.CheckFailed", e.Message));
         }
         finally
         {

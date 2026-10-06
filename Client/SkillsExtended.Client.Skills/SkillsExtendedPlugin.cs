@@ -5,6 +5,7 @@ using BepInEx;
 using BepInEx.Bootstrap;
 using BepInEx.Configuration;
 using BepInEx.Logging;
+using EFT;
 using Newtonsoft.Json;
 using SkillsExtended.Config;
 using SkillsExtended.Helpers;
@@ -39,6 +40,7 @@ public class SkillsExtendedPlugin : BaseUnityPlugin
 
     private void Awake()
     {
+        LocalizedText.Resolver = key => key.Localized();
         if (!VersionChecker.CheckEftVersion(Logger, Config))
         {
             throw new Exception("Invalid EFT Version");
