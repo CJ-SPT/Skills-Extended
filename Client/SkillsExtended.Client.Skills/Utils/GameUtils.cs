@@ -1,5 +1,6 @@
 ﻿using Comfort.Common;
 using EFT;
+using EFT.UI;
 using JetBrains.Annotations;
 using SkillsExtended.Exceptions;
 using SPT.Reflection.Utils;
@@ -99,5 +100,19 @@ public static class GameUtils
         var profile = GetSession()?.Profile;
 
         return profile?.Side ?? EPlayerSide.Savage;
+    }
+
+    /// <summary>
+    /// Hide the game console under a full-screen view. The game keeps its only console in PreloaderUI;
+    /// FindObjectOfType&lt;ConsoleScreen&gt;() found the same object by searching every object in the scene.
+    /// </summary>
+    public static void HideConsole()
+    {
+        if (!MonoBehaviourSingleton<PreloaderUI>.Instantiated)
+            return;
+        var console = MonoBehaviourSingleton<PreloaderUI>.Instance.Console;
+        // FindObjectOfType only returned it while its object was active
+        if (console != null && console.gameObject.activeInHierarchy)
+            console.SetVisible(false);
     }
 }

@@ -213,7 +213,7 @@ public sealed class HackingView : MonoBehaviour
 
         try
         {
-            FindObjectOfType<ConsoleScreen>()?.SetVisible(false);
+            Utils.GameUtils.HideConsole();
             var view = Create(true);
             view._level = level;
             view._seed = unchecked((uint)seed);
