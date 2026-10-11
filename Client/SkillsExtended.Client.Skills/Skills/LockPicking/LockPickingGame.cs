@@ -101,7 +101,7 @@ public sealed class LockPickingGame : MonoBehaviour
 
     private static LockPickingGame Create(int difficulty, Player player)
     {
-        FindObjectOfType<ConsoleScreen>()?.SetVisible(false);
+        Utils.GameUtils.HideConsole();
         var go = new GameObject("Lock-picking 2.0");
         var view = go.AddComponent<LockPickingGame>();
         Current = view;

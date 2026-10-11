@@ -111,7 +111,7 @@ public sealed partial class SignalsView : MonoBehaviour
         view._practice.Ready();
         try
         {
-            FindObjectOfType<ConsoleScreen>()?.SetVisible(false);
+            Utils.GameUtils.HideConsole();
             view.Build();
         }
         catch (Exception e)

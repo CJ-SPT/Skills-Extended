@@ -75,7 +75,7 @@ public sealed class SkillsDeveloperEditor : MonoBehaviour
         _opening = true;
         try
         {
-            FindObjectOfType<ConsoleScreen>()?.SetVisible(false);
+            Utils.GameUtils.HideConsole();
             var reply = await Post<DeveloperEditorReply>("/skills-extended/editor/session", new DeveloperEditorRequest { Map = _world.LocationId });
             if (!this || !Eligible() || OtherModal) return;
             if (!reply.Success) { ElectronicsRuntime.Notify(reply.Message); return; }
